@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\lms-with-moodle.csproj": {}
+    "D:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\lms-with-moodle.csproj": {}
   },
   "projects": {
-    "d:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\lms-with-moodle.csproj": {
+    "D:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\lms-with-moodle.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\lms-with-moodle.csproj",
+        "projectUniqueName": "D:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\lms-with-moodle.csproj",
         "projectName": "lms-with-moodle",
-        "projectPath": "d:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\lms-with-moodle.csproj",
+        "projectPath": "D:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\lms-with-moodle.csproj",
         "packagesPath": "C:\\Users\\saleh\\.nuget\\packages\\",
-        "outputPath": "d:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\obj\\",
+        "outputPath": "D:\\Project\\VSCode\\LMS Moodle\\lms-with-moodle\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -39,9 +39,53 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
-            "Novell.Directory.Ldap.NETStandard": {
+            "ExcelDataReader": {
               "target": "Package",
-              "version": "[3.2.0, )"
+              "version": "[3.6.0, )"
+            },
+            "Microsoft.AspNetCore.ApiAuthorization.IdentityServer": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.AspNetCore.SpaServices.Extensions": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Novell.Directory.Ldap": {
+              "target": "Package",
+              "version": "[*, )"
+            },
+            "System.Text.Encoding.CodePages": {
+              "target": "Package",
+              "version": "[4.7.1, )"
             }
           },
           "imports": [
