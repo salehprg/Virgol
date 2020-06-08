@@ -8,6 +8,8 @@ namespace Models
         public string displayname { get; set; }
         public float Grade {get; set;}
         public int categoryId { get; set; } 
+        
+        public string CourseUrl {get; set;}
     }
 
 }

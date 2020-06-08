@@ -12,16 +12,10 @@ using Models.MoodleApiResponse.warning;
 using Newtonsoft.Json;
 
 public class MoodleApi {
-
-    class FunctionNames
-    {
-        string GetAllCourse = "core_course_get_courses";
-    }
     
     static HttpClient client;
     string BaseUrl = "http://localhost/webservice/rest/server.php?moodlewsrestformat=json";
     string token = "2123c5f4f1e627cd4d47276085961483";
-
     public MoodleApi()
     {
         client = new HttpClient();   
@@ -50,6 +44,39 @@ public class MoodleApi {
 
 
 #region ApiFunctions
+
+
+    //-------Users----------
+    #region Users
+    public class UserBase
+    {
+        public List<UserInfo> users {get; set;}
+    }
+    public class UserInfo
+    {
+        public int id {get; set;}
+        public string username {get; set;}
+    }
+    public async Task<int> GetUserId(string idNumber)
+    {
+        try
+        {
+            string FunctionName = "core_user_get_users";
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&criteria[0][key]=idnumber&criteria[0][value]=" + idNumber;
+
+            HttpResponseModel _response = await sendData(data);
+            UserInfo user = JsonConvert.DeserializeObject <UserBase> (_response.Message).users[0]; 
+
+            return user.id;
+        }
+        catch(Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ex.Message);
+            return -1;
+        }
+
+    }
     public async Task<List<CourseDetail>> getUserCourses(int UserId)
     {
         string FunctionName = "core_enrol_get_users_courses";
@@ -70,10 +97,63 @@ public class MoodleApi {
 
         return userCourses;
     }
+    public async Task<bool> AssignUsersToCourse(List<EnrolUser> _users)
+    {
+        try
+        {
+            string FunctionName = "enrol_manual_enrol_users";
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+            string information = "";
+
+            for (int i = 0; i < _users.Count; i++)
+            {
+                information += "&enrolments["+i+"][roleid]=" + _users[i].RoleId;
+                information += "&enrolments["+i+"][userid]=" + _users[i].UserId;
+                information += "&enrolments["+i+"][courseid]=" + _users[i].CourseId;
+            }
+             
+            data += information;
+
+            HttpResponseModel Response = await sendData(data);
+            string result = JsonConvert.DeserializeObject <string> (Response.Message); 
+
+            return (Response.Code == HttpStatusCode.OK ? true : false);
+        }
+        catch(Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+
+    #endregion
+    //-----------------------
     
     //-------Courses---------
     #region Courses
     
+    public async Task<List<UserCourseDetail_moodle>> GetCourseList()
+    {
+        try
+        {
+            string FunctionName = "core_course_create_courses";
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+            HttpResponseModel Response = await sendData(data);
+            List<UserCourseDetail_moodle> result = JsonConvert.DeserializeObject <List<UserCourseDetail_moodle>> (Response.Message); 
+
+            return result;
+        }
+        catch(Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
     public async Task<bool> CreateCourse(string CourseName , int CategoryId = 0)
     {
         try

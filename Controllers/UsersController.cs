@@ -25,7 +25,7 @@ using Models.User;
 namespace lms_with_moodle.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     public class UsersController : ControllerBase
     {
         private readonly AppSettings appSettings;
@@ -42,52 +42,74 @@ namespace lms_with_moodle.Controllers
             roleManager = _roleManager;
             signInManager =_signinManager;
             appSettings = _appsetting.Value;
+
         }
         
+
+//Get data fro Enrolled User from Moodle 
 #region User->indexPage
         
         [HttpGet]
-        [Authorize(Roles = "User , Admin")]
-        public async Task<IActionResult> GetCetegoryNames(int UserId)
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetCetegoryNames()
         {
             MoodleApi moodleApi = new MoodleApi();
+            
+            //userManager getuserid get MelliCode field of user beacause we set in token
+            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
 
-            List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
-            var groupedCategory = userCourses.GroupBy(course => course.categoryId).ToList(); //لیستی برای بدست اوردن ایدی دسته بندی ها
-
-            List<CategoryDetail> categoryDetails = new List<CategoryDetail>();
-
-            foreach(var id in groupedCategory)
+            if(UserId != -1)
             {
-                List<float> grades = id.Select(x => x.Grade).ToList(); //نمرات موجود در دستبه بندی 
+                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
+                var groupedCategory = userCourses.GroupBy(course => course.categoryId).ToList(); //لیستی برای بدست اوردن ایدی دسته بندی ها
 
-                float sum = 0;
-                foreach(var grade in grades)
+                List<CategoryDetail> categoryDetails = new List<CategoryDetail>();
+
+                foreach(var id in groupedCategory)
                 {
-                    sum += grade; // جمع نمرات
-                }
-                float avverage = sum / grades.Count;
-      
-                CategoryDetail categoryDetail = await moodleApi.getCategoryDetail(id.Key);
-                categoryDetail.Avverage = avverage;
-                categoryDetail.CourseCount = id.Count();
-                
-                categoryDetails.Add(categoryDetail);
-            }
+                    List<float> grades = id.Select(x => x.Grade).ToList(); //نمرات موجود در دستبه بندی 
 
-            return Ok(categoryDetails);
+                    float sum = 0;
+                    foreach(var grade in grades)
+                    {
+                        sum += grade; // جمع نمرات
+                    }
+                    float avverage = sum / grades.Count;
+        
+                    CategoryDetail categoryDetail = await moodleApi.getCategoryDetail(id.Key);
+                    categoryDetail.Avverage = avverage;
+                    categoryDetail.CourseCount = id.Count();
+                    
+                    categoryDetails.Add(categoryDetail);
+                }
+
+                return Ok(categoryDetails);
+            }
+            else{
+                return BadRequest();
+            }
         }
 
         [HttpGet]
-        [Authorize(Roles = "User , Admin")]
-        public async Task<IActionResult> GetCoursesInCategory(int CategoryId , int UserId)
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
         {
             MoodleApi moodleApi = new MoodleApi();
-            List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
+            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
 
-            userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
+            if(UserId != -1)
+            {
+                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
 
-            return Ok(userCourses);
+                userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
+                userCourses.ForEach(x => x.CourseUrl = appSettings.moddleCourseUrl + x.id);
+
+                return Ok(userCourses);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
 #endregion
@@ -95,14 +117,19 @@ namespace lms_with_moodle.Controllers
 
 #region Login/Register
         
-        [HttpPost]
-        public async Task<IActionResult> LoginUser(string Password , string Username)
+        public class InputModel
         {
-            var Result = signInManager.PasswordSignInAsync(Username , Password , false , false).Result;
+            public string Password {get; set;}
+            public string Username {get; set;}
+        }
+        [HttpPost]
+        public async Task<IActionResult> LoginUser([FromBody]InputModel inpuLogin)
+        {
+            var Result = signInManager.PasswordSignInAsync(inpuLogin.Username , inpuLogin.Password , false , false).Result;
 
             if(Result.Succeeded)
             {
-                UserModel userInformation  = await userManager.FindByNameAsync(Username);
+                UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
 
                 if(!userInformation.ConfirmedAcc)
                 {
@@ -115,7 +142,7 @@ namespace lms_with_moodle.Controllers
 
                 List<Claim> authClaims = new List<Claim>()
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, Username),
+                    new Claim(JwtRegisteredClaimNames.Sub, inpuLogin.Username),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),          
                 };
 
@@ -124,7 +151,7 @@ namespace lms_with_moodle.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
                 }
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Secret));
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWTSecret));
 
                 var token = new JwtSecurityToken(
                     issuer: "https://localhost:5001",

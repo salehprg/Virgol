@@ -49,7 +49,7 @@ namespace lms_with_moodle
 
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(appSettings.JWTSecret);
 
             services.AddAuthentication(x =>
             {

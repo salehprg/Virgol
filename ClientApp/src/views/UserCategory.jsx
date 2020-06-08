@@ -17,15 +17,42 @@
 */
 import React, { Component } from "react";
 import { Grid, Row, Col, Table } from "react-bootstrap";
-
+import {userService} from '../_Services/UserServices'
 import Card from "components/Card/Card.jsx";
 import { thArray, tdArray } from "variables/Variables.jsx";
+import { Link } from "react-router-dom";
 
-class TableList extends Component {
+class UserCategory extends Component {
+  
+  constructor (props){
+    super(props);
+    this.state = {CategoryNames : []};
+  }
+
+  async componentDidMount(){
+    try
+    {
+      const Categories = await userService.GetUserCategory();
+      if(Categories != false)
+      {
+        console.log(Categories);
+        this.setState({CategoryNames : Categories});
+      }
+      else
+      {
+        console.log("false happen")
+      }
+    }
+    catch(e)
+    {
+      console.log(e);
+    } 
+  }
+
   render() {
     return (
       <div className="content">
-        <Grid fluid>
+        {/* <Grid fluid> */}
           <Row>
             <Col md={12}>
               <Card
@@ -34,36 +61,41 @@ class TableList extends Component {
                 category="دوره هایی که برای شما فعال میباشد"
                 ctTableFullWidth
                 ctTableResponsive
-                content={
+                content={(this.state.CategoryNames ?
                   <Table striped hover>
                     <thead>
                       <tr>
-                        {thArray.map((prop, key) => {
-                          return <th key={key}>{prop}</th>;
-                        })}
+                        <th key="1">نام </th>
+                        <th key="2">معدل </th>
+                        <th key="3">تعداد دروس</th>
+                        <th key="4"></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {tdArray.map((prop, key) => {
+                      {this.state.CategoryNames.map((cat) => {
                         return (
-                          <tr key={key}>
-                            {prop.map((prop, key) => {
-                              return <td key={key}>{prop}</td>;
-                            })}
+                          <tr key={cat.id}>
+                            <td>{cat.name}</td>
+                            <td>{cat.Avverage ? '-' : cat.avverage}</td>
+                            <td>{cat.courseCount}</td>
+                            <td><Link to={{
+                              pathname : "/User/Courses",
+                              CatId : cat.id
+                              }}> جزییات</Link> </td>
                           </tr>
                         );
                       })}
                     </tbody>
                   </Table>
-                }
+                 : "موجود نیست")}
               />
             </Col>
           
           </Row>
-        </Grid>
+        {/* </Grid> */}
       </div>
     );
   }
 }
 
-export default TableList;
+export {UserCategory};

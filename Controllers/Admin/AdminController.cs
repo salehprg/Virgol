@@ -10,35 +10,40 @@ using Models.User;
 using ExcelDataReader;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-using Novell.Directory.Ldap;
+using Helper;
+using Microsoft.Extensions.Options;
+using lms_with_moodle.Helper;
 
 namespace lms_with_moodle.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
+        
+        private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
         private readonly AppDbContext appDbContext;
         private readonly SignInManager<UserModel> signInManager;
 
-        LdapConnection ldapConn;
+        LDAP_db ldap;
+        
         public AdminController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
-                                , AppDbContext dbContext)
+                                , AppDbContext dbContext
+                                , IOptions<AppSettings> _appsetting)
         {
             userManager = _userManager;
             appDbContext = dbContext;
             signInManager =_signinManager;
+            appSettings = _appsetting.Value;
 
-            // Creating an LdapConnection instance 
-            ldapConn= new LdapConnection();
-            ldapConn.Connect("localhost", 10389);
-            //Bind function will Bind the user object Credentials to the Server
-            ldapConn.Bind("uid=admin,ou=system" ,"secret");
+            ldap = new LDAP_db(appSettings);
 
         }
+    
+#region UserAction
 
         [HttpPut]
         public async Task<IActionResult> AddBulkUser()
@@ -93,7 +98,7 @@ namespace lms_with_moodle.Controllers
                             {
                                 if(userManager.AddToRoleAsync(user , "User").Result.Succeeded)
                                 {
-                                    AddUserToLDAP(user);
+                                    ldap.AddUserToLDAP(user);
                                 }
                             }
                             
@@ -121,7 +126,7 @@ namespace lms_with_moodle.Controllers
                 foreach(var user in SelectedUsers)
                 {
                     user.ConfirmedAcc = true;
-                    AddUserToLDAP(user);
+                    ldap.AddUserToLDAP(user);
                 }
 
                 appDbContext.Users.UpdateRange(SelectedUsers);
@@ -134,36 +139,27 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
-        bool AddUserToLDAP(UserModel user)
+    
+        //For assign teacher or student to Course :
+        //Teacher Role = 3
+        //Student Role = 5
+        [HttpPost]
+        public async Task<IActionResult> AssignUserToCourse([FromBody]EnrolUser[] users)
         {
-            try
+            MoodleApi api = new MoodleApi();
+            bool result = await api.AssignUsersToCourse(users.ToList());
+
+            if(result)
             {
-                //Creates the List attributes of the entry and add them to attribute set 
-                LdapAttributeSet attributeSet = new LdapAttributeSet();
-                attributeSet.Add( new LdapAttribute("objectclass", "inetOrgPerson"));
-                attributeSet.Add( new LdapAttribute("cn", user.FirstName));
-                attributeSet.Add( new LdapAttribute("sn", user.LastName));
-                attributeSet.Add( new LdapAttribute("employeenumber", user.MelliCode));
-                attributeSet.Add( new LdapAttribute("mail", user.Email));
-                attributeSet.Add( new LdapAttribute("userPassword", user.MelliCode));
-
-                // DN of the entry to be added
-                string containerName = "ou=users,o=LMS";
-                string dn = "uid=" + user.MelliCode + "," + containerName;      
-                LdapEntry newEntry = new LdapEntry( dn, attributeSet );
-
-                //Add the entry to the directory
-                ldapConn.Add( newEntry );
-
-                return true;
+                return Ok();
             }
-            catch
+            else
             {
-                return false;
+                return BadRequest();
             }
         }
 
+#endregion
 
 #region Teacher
 

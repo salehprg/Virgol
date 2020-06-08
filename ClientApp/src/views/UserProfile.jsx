@@ -17,12 +17,12 @@
 */
 import React, { Component } from "react";
 import {
-  Grid,
   Row,
   Col,
   FormGroup,
-  ControlLabel,
-  FormControl
+  FormControl,
+  Form,
+  Container
 } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
@@ -36,7 +36,7 @@ class UserProfile extends Component {
   render() {
     return (
       <div className="content">
-        <Grid fluid>
+        <Container fluid>
           <Row>
             <Col md={8}>
               <Card
@@ -130,7 +130,7 @@ class UserProfile extends Component {
                     <Row>
                       <Col md={12}>
                         <FormGroup controlId="formControlsTextarea">
-                          <ControlLabel>About Me</ControlLabel>
+                          <Form.Label>About Me</Form.Label>
                           <FormControl
                             rows="5"
                             componentClass="textarea"
@@ -180,7 +180,7 @@ class UserProfile extends Component {
               />
             </Col>
           </Row>
-        </Grid>
+        </Container>
       </div>
     );
   }
