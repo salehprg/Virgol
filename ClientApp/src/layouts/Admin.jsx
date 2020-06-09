@@ -5,15 +5,18 @@ import NotificationSystem from "react-notification-system";
 
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import Footer from "components/Footer/Footer";
-import Sidebar from "components/Sidebar/Sidebar";
+import SidebarAdmin from "components/Sidebar/SidebarAdmin";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
 
 import image from "assets/img/sidebar-3.jpg";
-import {UserCategory} from "../views/UserCategory";
-import {UserCourse} from "../views/UserCourse";
-import {userService} from "../_Services/UserServices";
 
-class User extends Component {
+import {NewUsers} from "../views/Admin/NewUsers";
+import {CategoryList} from "../views/Admin/CategoryList";
+import {CourseList} from "../views/Admin/CourseList";
+import {UserIdentityDoc} from "../views/Admin/UserIdentityDoc";
+
+
+class Admin extends Component {
   
   constructor(props) {
     super(props);
@@ -27,7 +30,6 @@ class User extends Component {
   }
   
   componentDidMount() {
-    userService.GetUserCategory();
   }
 
   componentDidUpdate(e) {
@@ -49,24 +51,22 @@ class User extends Component {
     return (
       <div className="wrapper" style={{textAlign : "right" , direction : "rtl"}}>
 
-        <Sidebar {...this.props} image={this.state.image}
+        <SidebarAdmin {...this.props} image={this.state.image}
         color={this.state.color}
         hasImage={this.state.hasImage}/>
 
         <div id="main-panel" className="main-panel" ref="mainPanel">
-          {/* <AdminNavbar
-            {...this.props}
-            brandText={this.getBrandText(this.props.location.pathname)}
-          /> */}
 
           <AdminNavbar
             {...this.props}
-            brandText="LMS"
+            brandText="LMS Admin"
           />
           
           <Switch>
-            <Route exact path="/User" component= {UserCategory}/>
-            <Route path="/User/Courses" component= {UserCourse} />
+            <Route exact path="/Admin" component= {NewUsers}/>
+            <Route path="/Admin/UserIdentityDoc" component= {UserIdentityDoc} />
+            <Route path="/Admin/CategoryList" component= {CategoryList} />
+            <Route path="/Admin/CourseList" component= {CourseList} />
           </Switch>
 
           <Footer />
@@ -76,4 +76,4 @@ class User extends Component {
   }
 }
 
-export {User}
+export {Admin}

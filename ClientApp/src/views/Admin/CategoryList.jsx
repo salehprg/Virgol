@@ -17,28 +17,28 @@
 */
 import React, { Component } from "react";
 import { Grid, Row, Col, Table } from "react-bootstrap";
-import {userService} from '../_Services/UserServices'
+import {adminService} from '../../_Services/AdminService'
 import Card from "components/Card/Card.jsx";
 import { Link } from "react-router-dom";
 
-class UserCourse extends Component {
+class CategoryList extends Component {
   
   constructor (props){
     super(props);
-    this.state = {CoursesNames : [] , CatId : props.location.CatId};
+    this.state = {CategoryNames : []};
   }
 
   async componentDidMount(){
     try
     {
-      const Courses = await userService.GetCourseIncategory(this.state.CatId);
-      if(Courses != false)
+      const Categories = await adminService.GetAllCategory();
+      if(Categories != false)
       {
-        this.setState({CoursesNames : Courses});
+        console.log(Categories);
+        this.setState({CategoryNames : Categories});
       }
       else
       {
-        this.props.location.pathname = "/Users";
         console.log("false happen")
       }
     }
@@ -56,28 +56,27 @@ class UserCourse extends Component {
             <Col md={12}>
               <Card
                 
-                title="کلاس های من"
-                category="کلاس هایی که برای شما فعال میباشد"
+                title="لیست مقاطع تحصیلی"
+                category="مقاطع تحصیلی"
                 ctTableFullWidth
                 ctTableResponsive
-                content={(this.state.CoursesNames ?
+                content={(this.state.CategoryNames ?
                   <Table striped hover>
                     <thead>
                       <tr>
-                        <th key="1">نام درس </th>
-                        <th key="2">نمره </th>
-                        <th key="3">معلم </th>
+                        <th key="1">نام مقطع </th>
                         <th key="4"></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.CoursesNames.map((course) => {
+                      {this.state.CategoryNames.map((cat) => {
                         return (
-                          <tr key={course.id}>
-                            <td>{course.displayname}</td>
-                            <td>{course.Grade ? '-' : course.Grade}</td>
-                            <td>{course.id}</td>
-                            <td><a href={course.courseUrl}> شرکت در کلاس</a> </td>
+                          <tr key={cat.id}>
+                            <td>{cat.name}</td>
+                            <td><Link to={{
+                              pathname : "/Admin/CourseList",
+                              CatId : cat.id
+                              }}> مشاهده دروس</Link> </td>
                           </tr>
                         );
                       })}
@@ -94,4 +93,4 @@ class UserCourse extends Component {
   }
 }
 
-export {UserCourse};
+export {CategoryList};

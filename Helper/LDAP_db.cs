@@ -16,15 +16,17 @@ namespace Helper
             // Creating an LdapConnection instance 
             ldapConn= new LdapConnection();
 
-            ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
-            //Bind function will Bind the user object Credentials to the Server
-            ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+            
         }
 
         public bool AddUserToLDAP(UserModel user)
             {
                 try
                 {
+                   ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    //Bind function will Bind the user object Credentials to the Server
+                    ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                    
                     //Creates the List attributes of the entry and add them to attribute set 
                     LdapAttributeSet attributeSet = new LdapAttributeSet();
                     attributeSet.Add( new LdapAttribute("objectclass", "inetOrgPerson"));
@@ -42,10 +44,12 @@ namespace Helper
                     //Add the entry to the directory
                     ldapConn.Add( newEntry );
 
+                    ldapConn.Disconnect();
                     return true;
                 }
                 catch
                 {
+                    ldapConn.Disconnect();
                     return false;
                 }
             }

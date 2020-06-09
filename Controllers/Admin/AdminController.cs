@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using Models;
+using Models.MoodleApiResponse;
 using Microsoft.AspNetCore.Identity;
 using Models.User;
 using ExcelDataReader;
@@ -40,11 +41,23 @@ namespace lms_with_moodle.Controllers
             appSettings = _appsetting.Value;
 
             ldap = new LDAP_db(appSettings);
-
         }
     
 #region UserAction
 
+        [HttpGet]
+        public IActionResult GetNewUsers()
+        {
+            try
+            {
+                List<UserModel> NewUsers = appDbContext.Users.Where(x => x.ConfirmedAcc == false).ToList();
+                return Ok(NewUsers);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpPut]
         public async Task<IActionResult> AddBulkUser()
         {
@@ -118,21 +131,19 @@ namespace lms_with_moodle.Controllers
             public int[] UsersId {get; set;}
         }
         [HttpPost]
-        public async Task<IActionResult> ConfirmUsers([FromBody]InputId input)
+        public IActionResult ConfirmUsers(int UserId)
         {
             try
             {
-                var SelectedUsers = appDbContext.Users.Where(user => input.UsersId.Contains(user.Id)).ToList();
-                foreach(var user in SelectedUsers)
-                {
-                    user.ConfirmedAcc = true;
-                    ldap.AddUserToLDAP(user);
-                }
+                var SelectedUser = appDbContext.Users.Where(user => user.Id == UserId).FirstOrDefault();
 
-                appDbContext.Users.UpdateRange(SelectedUsers);
-                await appDbContext.SaveChangesAsync();
+                SelectedUser.ConfirmedAcc = true;
+                ldap.AddUserToLDAP(SelectedUser);
 
-                return Ok();
+                appDbContext.Users.Update(SelectedUser);
+                appDbContext.SaveChanges();
+
+                return Ok(true);
             }
             catch(Exception ex)
             {
@@ -230,6 +241,22 @@ namespace lms_with_moodle.Controllers
     
 #region Courses
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllCourseIncat(int CategoryId)
+        {
+            try
+            {
+                MoodleApi moodleApi = new MoodleApi();
+                List<CourseDetail> result = await moodleApi.GetAllCourseInCat(CategoryId);
+
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
         [HttpPut]
         public async Task<IActionResult> AddNewCourse([FromBody]CourseDetail course)
         {
@@ -302,6 +329,32 @@ namespace lms_with_moodle.Controllers
 #endregion
     
 #region Categories
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllCategory()
+    {
+        try
+        {
+            MoodleApi moodleApi = new MoodleApi();
+            List<AllCourseCatDetail_moodle> result = await moodleApi.GetAllCategories();
+            List<CategoryDetail> Categories = new List<CategoryDetail>();
+
+            foreach(var cat in result)
+            {
+                CategoryDetail cateDetail = new CategoryDetail();
+                cateDetail.Id = int.Parse(cat.id);
+                cateDetail.Name = cat.categoryname;
+
+                Categories.Add(cateDetail);
+            }
+
+            return Ok(Categories);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
     [HttpPut]
     public async Task<IActionResult> AddNewCategory([FromBody]CategoryDetail Category)

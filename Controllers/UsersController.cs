@@ -130,6 +130,7 @@ namespace lms_with_moodle.Controllers
             if(Result.Succeeded)
             {
                 UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
+                int UserType = -1; // 0 = Student , 1 = Teacher , 2 = Admin
 
                 if(!userInformation.ConfirmedAcc)
                 {
@@ -149,6 +150,23 @@ namespace lms_with_moodle.Controllers
                 foreach (var item in userRoleNames)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
+                    if(UserType == -1)
+                    {
+                        switch(item)
+                        {
+                            case "Admin":
+                                UserType = 2;
+                                break;
+
+                            case "Teacher":
+                                UserType = 1;
+                                break;
+                            
+                            case "User":
+                                UserType = 0;
+                                break;
+                        }
+                    }
                 }
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWTSecret));
@@ -164,6 +182,7 @@ namespace lms_with_moodle.Controllers
                 
                 return Ok(new
                 {
+                    UserType = UserType,
                     userInformation,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo

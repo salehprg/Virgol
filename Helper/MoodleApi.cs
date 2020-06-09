@@ -83,7 +83,7 @@ public class MoodleApi {
         string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&userid=" + UserId.ToString();
 
         HttpResponseModel _response = await sendData(data);
-        List<UserCourseDetail_moodle> items = JsonConvert.DeserializeObject <List<UserCourseDetail_moodle>> (_response.Message); 
+        List<CourseDetail_moodle> items = JsonConvert.DeserializeObject <List<CourseDetail_moodle>> (_response.Message); 
 
         List<CourseDetail> userCourses = new List<CourseDetail>();
         foreach(var x in items)
@@ -134,26 +134,7 @@ public class MoodleApi {
     
     //-------Courses---------
     #region Courses
-    
-    public async Task<List<UserCourseDetail_moodle>> GetCourseList()
-    {
-        try
-        {
-            string FunctionName = "core_course_create_courses";
-            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
 
-            HttpResponseModel Response = await sendData(data);
-            List<UserCourseDetail_moodle> result = JsonConvert.DeserializeObject <List<UserCourseDetail_moodle>> (Response.Message); 
-
-            return result;
-        }
-        catch(Exception ex)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(ex.Message);
-            return null;
-        }
-    }
     public async Task<bool> CreateCourse(string CourseName , int CategoryId = 0)
     {
         try
@@ -162,7 +143,7 @@ public class MoodleApi {
             string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&courses[0][fullname]=" + CourseName + "&courses[0][shortname]=" + CourseName + "&courses[0][categoryid]=" + CategoryId;
 
             HttpResponseModel Response = await sendData(data);
-            string result = JsonConvert.DeserializeObject <List<UserCourseDetail_moodle>> (Response.Message)[0].id; 
+            string result = JsonConvert.DeserializeObject <List<CourseDetail_moodle>> (Response.Message)[0].id; 
 
             return true;
         }
@@ -358,6 +339,38 @@ public class MoodleApi {
 
 
         return userGrades;
+    }
+
+    //Admin Role needed and for that , this function only call From AdminController or maybe TeacherController
+    public async Task<List<AllCourseCatDetail_moodle>> GetAllCategories()
+    {
+        string FunctionName = "core_course_get_courses_by_field";
+        string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&field=";
+
+        HttpResponseModel response = await sendData(data);
+        List<AllCourseCatDetail_moodle> category = JsonConvert.DeserializeObject <List<AllCourseCatDetail_moodle>> (response.Message); 
+
+        return category;
+    }
+
+    public async Task<List<CourseDetail>> GetAllCourseInCat(int CategoryId)
+    {
+        string FunctionName = "core_course_get_courses_by_field";
+        string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&field=category&value=" + CategoryId;
+
+        HttpResponseModel response = await sendData(data);
+        List<CourseDetail_moodle> items = JsonConvert.DeserializeObject <List<CourseDetail_moodle>> (response.Message); 
+
+        List<CourseDetail> userCourses = new List<CourseDetail>();
+        foreach(var x in items)
+        {
+            userCourses.Add(new CourseDetail{displayname = x.displayname
+                                                    , fullname = x.fullname
+                                                    , id = int.Parse(x.id)
+                                                    , shortname = x.shortname});
+        }
+
+        return userCourses;
     }
 
 #endregion

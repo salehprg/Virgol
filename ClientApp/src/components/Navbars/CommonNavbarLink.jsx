@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { NavItem, Nav, NavDropdown, NavLink } from "react-bootstrap";
 import { authenticationService } from "../../_Services/AuthenticationService";
 
-class AdminNavbarLinks extends Component {
+class CommonNavbarLink extends Component {
   LogOut = () => {
     authenticationService.logout();
   }
@@ -18,7 +18,7 @@ class AdminNavbarLinks extends Component {
       </div>
     );
     return (
-      <div>
+      <React.Fragment>
         <Nav>
           <NavLink href="#">
             <i className="fa fa-dashboard" />
@@ -34,34 +34,13 @@ class AdminNavbarLinks extends Component {
             <NavDropdown.Item>Notification 4</NavDropdown.Item>
             <NavDropdown.Item>Another notifications</NavDropdown.Item>
           </NavDropdown>
-          <NavLink href="#">
-            <i className="fa fa-search" />
-            <p className="hidden-lg hidden-md">Search</p>
-          </NavLink>
-        </Nav>
-        <Nav>
-          <NavLink href="#">
-            Account
-          </NavLink>
-          <NavDropdown
-            title="Dropdown"
-            id="basic-nav-dropdown-right"
-          >
-            <NavDropdown.Item>Action</NavDropdown.Item>
-            <NavDropdown.Item>Another action</NavDropdown.Item>
-            <NavDropdown.Item>Something</NavDropdown.Item>
-            <NavDropdown.Item>Another action</NavDropdown.Item>
-            <NavDropdown.Item>Something</NavDropdown.Item>
-            <NavDropdown.Item divider />
-            <NavDropdown.Item>Separated link</NavDropdown.Item>
-          </NavDropdown>
           <NavLink href="#" onClick={this.LogOut}>
             Log out
           </NavLink>
         </Nav>
-      </div>
+      </React.Fragment>
     );
   }
 }
 
-export default AdminNavbarLinks;
+export default CommonNavbarLink;

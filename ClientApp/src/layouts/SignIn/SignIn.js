@@ -6,13 +6,14 @@ import {Avatar , Button , CssBaseline , TextField ,
 // import LockOutlinedIcon from '@material-ui/icons/Lo';
 import { makeStyles } from '@material-ui/core/styles';
 import { authenticationService } from '../../_Services';
+import { Spinner } from 'react-bootstrap';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="#">
+        LMS
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -25,7 +26,7 @@ export default class SignIn extends Component {
   constructor (props)
   {
     super(props);
-    this.state ={Username : "" , Password : ""};
+    this.state ={Username : "" , Password : "" , Loading : false};
     
   }
 
@@ -50,9 +51,12 @@ export default class SignIn extends Component {
   }));
 
   Login = async (event) =>{
+
+    this.setState({Loading : true});
     event.preventDefault();
     let result = await authenticationService.login(this.state.Username , this.state.Password);
-    console.log(result);
+
+    this.setState({Loading : false});
   }
   
 
@@ -60,14 +64,15 @@ export default class SignIn extends Component {
   {
     return (
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
+
         <div className={this.classes.paper}>
           <Avatar className={this.classes.avatar}>
             {/* <LockOutlinedIcon /> */}
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" te>
             ورود
           </Typography>
+          {(!this.state.Loading ?
           <form className={this.classes.form} noValidate onSubmit={this.Login}>
             <TextField
               variant="outlined"
@@ -93,10 +98,6 @@ export default class SignIn extends Component {
               autoComplete="current-password"
               onChange = { e => this.setState({ Password : e.target.value }) }
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -106,19 +107,21 @@ export default class SignIn extends Component {
             >
               ورود
             </Button>
-            <Grid container>
+            <Grid container className="mt1">
               <Grid item xs>
                 <Link href="#" variant="body2">
-                  Forgot password?
+                  رمز عبور را فراموش کردید ؟
                 </Link>
               </Grid>
               <Grid item>
                 <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {"حساب کاربری ندارید؟ ثبت نام"}
                 </Link>
               </Grid>
             </Grid>
           </form>
+          :
+          <Spinner animation="border" variant="primary" />)}
         </div>
         <Box mt={8}>
           <Copyright />

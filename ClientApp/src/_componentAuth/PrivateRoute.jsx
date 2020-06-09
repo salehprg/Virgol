@@ -4,7 +4,6 @@ import { Route, Redirect } from 'react-router-dom';
 import { authenticationService } from '../_Services/AuthenticationService';
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (
-    console.log("auth"),
     <Route {...rest} component={props => {
         const currentUser = authenticationService.currentUserValue;
         if (!currentUser) {

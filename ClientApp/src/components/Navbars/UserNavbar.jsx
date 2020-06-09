@@ -18,7 +18,7 @@
 import React, { Component } from "react";
 import { Navbar } from "react-bootstrap";
 
-import CommonNavbarLink from "./CommonNavbarLink.jsx";
+import AdminNavbarLinks from "./CommonNavbarLink.jsx";
 
 class Header extends Component {
   constructor(props) {
@@ -34,7 +34,7 @@ class Header extends Component {
 
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <CommonNavbarLink />
+          <AdminNavbarLinks />
         </Navbar.Collapse>
       </Navbar>
     );

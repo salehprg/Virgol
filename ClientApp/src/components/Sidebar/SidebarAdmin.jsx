@@ -22,7 +22,7 @@ import AdminNavbarLinks from "../Navbars/CommonNavbarLink.jsx";
 
 import logo from "assets/img/reactlogo.png";
 
-class Sidebar extends Component {
+class SidebarAdmin extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -85,6 +85,26 @@ class Sidebar extends Component {
                       
                       
                     </NavLink>
+                    <NavLink
+                      to="/Admin/CategoryList"
+                      className="nav-link"
+                      activeClassName="active"
+                    >
+                      <i className="pe-7s-graph" />
+                      <p className="mr1">لیست مقاطع</p>
+                      
+                      
+                    </NavLink>
+                    <NavLink
+                      to="/Admin/CourseList"
+                      className="nav-link"
+                      activeClassName="active"
+                    >
+                      <i className="pe-7s-graph" />
+                      <p className="mr1">لیست دروس</p>
+                      
+                      
+                    </NavLink>
             </li>
           </ul>
         </div>
@@ -93,4 +113,4 @@ class Sidebar extends Component {
   }
 }
 
-export default Sidebar;
+export default SidebarAdmin;
