@@ -1,93 +1,94 @@
-import React from 'react';
+import React , { useState , useEffect }from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { FormControl, Select, MenuItem, InputLabel } from '@material-ui/core';
 
-export default function AddressForm() {
+export default function AddressForm(props) {
+  
+  const [Info , setInfo] = useState(props.SaveData);
+
+
+  const handleInput = (value , Property) =>{
+    
+    setInfo({...Info , [Property] : value});
+    props.UpdateInfo(Property , value);
+  }
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Shipping address
+        اطلاعات تحصیلی
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="firstName"
+            id="FirstName"
             name="firstName"
-            label="First name"
+            label="نام"
             fullWidth
             autoComplete="given-name"
+            defaultValue={Info.FirstName}
+            onChange={e => handleInput(e.target.value , e.target.id)}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="lastName"
+            id="LastName"
             name="lastName"
-            label="Last name"
+            label="نام خانوادگی"
             fullWidth
             autoComplete="family-name"
+            defaultValue={Info.LastName}
+            onChange={e => handleInput(e.target.value , e.target.id)}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="address1"
+            id="MelliCode"
             name="address1"
-            label="Address line 1"
+            label="کد ملی"
             fullWidth
             autoComplete="shipping address-line1"
+            defaultValue={Info.MelliCode}
+            onChange={e => handleInput(e.target.value , e.target.id)}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            id="address2"
-            name="address2"
-            label="Address line 2"
-            fullWidth
-            autoComplete="shipping address-line2"
-          />
+        <Grid item xs={12} sm={6}>
+          {(props.CategoryInfo != null ? 
+              <FormControl className="col-12">
+                <InputLabel id="CategoryList">مقطع تحصیلی شما</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="Category"
+                  value={Info.Category}
+                  onChange={e => (handleInput(e.target.value , "Category"))}
+                >
+                {props.CategoryInfo.map((Cat) => {
+                  return (
+                  <MenuItem value={Cat.id}>{Cat.name}</MenuItem>
+                  )
+                })}
+                </Select>
+              </FormControl>
+            
+            :
+            "درحال بارگذاری...."
+            )}
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required
             id="city"
             name="city"
-            label="City"
+            label="نام مدرسه"
             fullWidth
             autoComplete="shipping address-level2"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField id="state" name="state" label="State/Province/Region" fullWidth />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="zip"
-            name="zip"
-            label="Zip / Postal code"
-            fullWidth
-            autoComplete="shipping postal-code"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="country"
-            name="country"
-            label="Country"
-            fullWidth
-            autoComplete="shipping country"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
-            label="Use this address for payment details"
           />
         </Grid>
       </Grid>

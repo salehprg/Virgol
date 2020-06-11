@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Models.Teacher;
 using Models.User;
 
 namespace Models
@@ -13,7 +14,8 @@ namespace Models
 
         }
 
-        public DbSet<TeacherModel> Teachers {get; set;}
+        public DbSet<TeacherModel_View> TeacherView {get; set;}
+        public DbSet<TeacherCourseInfo> TeacherCourse {get; set;}
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

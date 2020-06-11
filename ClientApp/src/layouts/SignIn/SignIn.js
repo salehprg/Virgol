@@ -114,7 +114,7 @@ export default class SignIn extends Component {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/SignUp" >
                   {"حساب کاربری ندارید؟ ثبت نام"}
                 </Link>
               </Grid>

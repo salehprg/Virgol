@@ -1,7 +1,4 @@
-
-namespace Models.MoodleApiResponse
-{
-    public class AllCourseCatDetail_moodle
+public class AllCourseCatDetail_items_moodle
     {
         public string id { get; set; }  //CourseID
         public string fullname { get; set; }
@@ -11,4 +8,3 @@ namespace Models.MoodleApiResponse
         public string categoryname { get; set; }
         public string format { get; set; } // just for filter topics from site
     }
-}

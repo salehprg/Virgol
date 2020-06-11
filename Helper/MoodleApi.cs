@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using lms_with_moodle.Helper;
 using Models;
 using Models.MoodleApiResponse;
 using Models.MoodleApiResponse.warning;
@@ -13,12 +14,17 @@ using Newtonsoft.Json;
 
 public class MoodleApi {
     
+    private readonly AppSettings appSettings;
     static HttpClient client;
-    string BaseUrl = "http://localhost/webservice/rest/server.php?moodlewsrestformat=json";
-    string token = "2123c5f4f1e627cd4d47276085961483";
-    public MoodleApi()
+    string BaseUrl;
+    string token;
+    public MoodleApi(AppSettings _appsetting)
     {
+        appSettings = _appsetting;
         client = new HttpClient();   
+
+        BaseUrl = _appsetting.BaseUrl_moodle;
+        token = _appsetting.Token_moodle;
     }
 
     async Task<HttpResponseModel> sendData (string data)
@@ -90,7 +96,6 @@ public class MoodleApi {
         {
             userCourses.Add(new CourseDetail{categoryId = int.Parse(x.category) 
                                                     , displayname = x.displayname
-                                                    , fullname = x.fullname
                                                     , id = int.Parse(x.id)
                                                     , shortname = x.shortname});
         }
@@ -135,7 +140,7 @@ public class MoodleApi {
     //-------Courses---------
     #region Courses
 
-    public async Task<bool> CreateCourse(string CourseName , int CategoryId = 0)
+    public async Task<bool> CreateCourse(string CourseName , int CategoryId = 1)
     {
         try
         {
@@ -159,7 +164,7 @@ public class MoodleApi {
         try
         {
             string FunctionName = "core_course_update_courses";
-            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&courses[0][id]=" + _course.id + "&courses[0][categoryid]=" + _course.categoryId + "&courses[0][fullname]=" + _course.shortname+ "&courses[0][shortname]=" + _course.shortname;
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&courses[0][id]=" + _course.id + "&courses[0][categoryid]=" + _course.categoryId + "&courses[0][fullname]=" + _course.displayname+ "&courses[0][shortname]=" + _course.shortname;
 
             HttpResponseModel Response = await sendData(data);
             var error = JsonConvert.DeserializeObject<warning>(Response.Message); 
@@ -342,30 +347,29 @@ public class MoodleApi {
     }
 
     //Admin Role needed and for that , this function only call From AdminController or maybe TeacherController
-    public async Task<List<AllCourseCatDetail_moodle>> GetAllCategories()
+    public async Task<List<CategoryDetail_moodle>> GetAllCategories()
     {
-        string FunctionName = "core_course_get_courses_by_field";
-        string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&field=";
+        string FunctionName = "core_course_get_categories";
+        string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&&criteria[0][key]=visible&criteria[0][value]=1";
 
         HttpResponseModel response = await sendData(data);
-        List<AllCourseCatDetail_moodle> category = JsonConvert.DeserializeObject <List<AllCourseCatDetail_moodle>> (response.Message); 
-
+        List<CategoryDetail_moodle> category = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (response.Message); 
+        
         return category;
     }
 
     public async Task<List<CourseDetail>> GetAllCourseInCat(int CategoryId)
     {
         string FunctionName = "core_course_get_courses_by_field";
-        string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&field=category&value=" + CategoryId;
+        string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + (CategoryId != -1 ? "&field=category&value=" + CategoryId : "");
 
         HttpResponseModel response = await sendData(data);
-        List<CourseDetail_moodle> items = JsonConvert.DeserializeObject <List<CourseDetail_moodle>> (response.Message); 
+        List<CourseDetail_moodle> items = JsonConvert.DeserializeObject <AllCourseCatDetail_moodle<CourseDetail_moodle>> (response.Message).items; 
 
         List<CourseDetail> userCourses = new List<CourseDetail>();
         foreach(var x in items)
         {
             userCourses.Add(new CourseDetail{displayname = x.displayname
-                                                    , fullname = x.fullname
                                                     , id = int.Parse(x.id)
                                                     , shortname = x.shortname});
         }

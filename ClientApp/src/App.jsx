@@ -7,6 +7,7 @@ import { PrivateRoute } from './_componentAuth';
 import {User} from './layouts/User';
 import {Admin} from './layouts/Admin';
 import SignIn from './layouts/SignIn/SignIn';
+import SignUp from './layouts/SignUp/SignUp';
 
 const getRoute = (userType) =>{
     var Result = "";
@@ -25,7 +26,6 @@ const getRoute = (userType) =>{
             break
     }
 
-    console.log("Res = " + Result + " UT = " + userType);
     return Result;
 }
 
@@ -61,9 +61,19 @@ class App extends React.Component {
                     <PrivateRoute path="/User" component={User}></PrivateRoute>
                     <PrivateRoute path="/Admin" component={Admin}></PrivateRoute>
 
-                    <Route path="/login" component={SignIn} />
+                    {(currentUser == null && 
+                            <React.Fragment>
+                                <Route path="/login" component={SignIn} />
+                                <Route path="/SignUp" component={SignUp} />
+                            </React.Fragment>  
+                    )}
+
                     <Route exact path="/">
-                        <Redirect from="/" to="/login"></Redirect>
+                        {(currentUser == null ?
+                            <Redirect from="/" to="/login"></Redirect>
+                        :
+                            <Redirect to={getRoute(currentUser.data.userType)}></Redirect>
+                        )}
                     </Route>
             </Router>
         );

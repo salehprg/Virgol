@@ -35,6 +35,7 @@ class SidebarAdmin extends Component {
   updateDimensions() {
     this.setState({ width: window.innerWidth });
   }
+  
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions.bind(this));
@@ -74,17 +75,19 @@ class SidebarAdmin extends Component {
         <div className="sidebar-wrapper">
           <ul className="nav">
             {this.state.width <= 991 ? <AdminNavbarLinks /> : null}
-            <li>
+              <li>
                     <NavLink
-                      to="/"
+                      to="/Admin"
                       className="nav-link"
                       activeClassName="active"
                     >
                       <i className="pe-7s-graph" />
-                      <p className="mr1">Dashboard</p>
+                      <p className="mr1">صفحه اصلی</p>
                       
                       
                     </NavLink>
+              </li>
+              <li>
                     <NavLink
                       to="/Admin/CategoryList"
                       className="nav-link"
@@ -92,9 +95,9 @@ class SidebarAdmin extends Component {
                     >
                       <i className="pe-7s-graph" />
                       <p className="mr1">لیست مقاطع</p>
-                      
-                      
                     </NavLink>
+              </li>
+              <li>
                     <NavLink
                       to="/Admin/CourseList"
                       className="nav-link"
@@ -102,10 +105,8 @@ class SidebarAdmin extends Component {
                     >
                       <i className="pe-7s-graph" />
                       <p className="mr1">لیست دروس</p>
-                      
-                      
                     </NavLink>
-            </li>
+              </li>
           </ul>
         </div>
       </div>

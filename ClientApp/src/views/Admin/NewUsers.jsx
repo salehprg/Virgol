@@ -16,7 +16,7 @@
 
 */
 import React, { Component } from "react";
-import { Grid, Row, Col, Table, Modal, Button } from "react-bootstrap";
+import { Grid, Row, Col, Table, Modal, Button, Spinner } from "react-bootstrap";
 import {adminService} from '../../_Services/AdminService'
 import Card from "components/Card/Card.jsx";
 import { Link } from "react-router-dom";
@@ -25,7 +25,7 @@ class NewUsers extends Component {
   
   constructor (props){
     super(props);
-    this.state = {NewUsers : [] , Show : false , ShowSuccusful : false , SelectedUser : -1 , MelliCode : 0};
+    this.state = {Loading : false ,  NewUsers : [] , Show : false , ShowSuccusful : false , SelectedUser : -1 , MelliCode : 0};
   }
 
   handleClose = () => this.setState({Show : false});
@@ -65,6 +65,8 @@ class NewUsers extends Component {
   async ConfirmUser () {
     try
     {
+      this.setState({Loading : true})
+
       const result = await adminService.ConfirmUser(this.state.SelectedUser);
       console.log(result);
       
@@ -82,6 +84,10 @@ class NewUsers extends Component {
     {
       console.log(e);
     } 
+    finally
+    {
+      this.setState({Loading : false})
+    }
   }
 
   render() {
@@ -92,7 +98,7 @@ class NewUsers extends Component {
               <Card
                 
                 title="کاربران جدید"
-                useregory="دوره هایی که برای شما فعال میباشد"
+                useregory="کاربران جدید که ثبت نام اولیه نموده اند"
                 ctTableFullWidth
                 ctTableResponsive
                 content={(this.state.NewUsers ?
@@ -131,7 +137,12 @@ class NewUsers extends Component {
             <Modal.Header closeButton>
               <Modal.Title>تایید کاربر</Modal.Title>
             </Modal.Header>
-            <Modal.Body>آیا از تایید کاربر با کد ملی {this.state.MelliCode} مطمئن هستید ؟</Modal.Body>
+            <Modal.Body>
+            {(this.state.Loading ? <Spinner animation="border" variant="primary" /> :
+              "آیا از تایید کاربر با کد ملی" + this.state.MelliCode + "مطمئن هستید ؟"
+              )}
+            </Modal.Body>
+
             <Modal.Footer>
               <Button variant="secondary" onClick={() => this.handleClose()}>
                 بستن

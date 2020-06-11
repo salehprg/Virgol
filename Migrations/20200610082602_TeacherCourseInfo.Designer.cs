@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200610082602_TeacherCourseInfo")]
+    partial class TeacherCourseInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,15 +169,15 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("TeacherCourse");
                 });
 
-            modelBuilder.Entity("Models.Teacher.TeacherModel_View", b =>
+            modelBuilder.Entity("Models.Teacher.TeacherModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CourseId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
 
                     b.Property<string>("Firstname")
                         .HasColumnType("nvarchar(max)");
@@ -183,12 +185,12 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("Lastname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TeacherId")
+                    b.Property<int>("MelliCode")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TeachersView");
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("Models.User.UserModel", b =>
@@ -208,9 +210,6 @@ namespace lms_with_moodle.Migrations
                     b.Property<bool>("ConfirmedAcc")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Document2")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -220,9 +219,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsTeacher")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -254,9 +250,6 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShDocument")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")

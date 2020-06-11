@@ -21,6 +21,8 @@ using lms_with_moodle.Helper;
 
 using Models;
 using Models.User;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace lms_with_moodle.Controllers
 {
@@ -33,6 +35,7 @@ namespace lms_with_moodle.Controllers
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
 
+        MoodleApi moodleApi;
         public UsersController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -43,6 +46,7 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             appSettings = _appsetting.Value;
 
+            moodleApi = new MoodleApi(appSettings);
         }
         
 
@@ -53,7 +57,7 @@ namespace lms_with_moodle.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetCetegoryNames()
         {
-            MoodleApi moodleApi = new MoodleApi();
+            
             
             //userManager getuserid get MelliCode field of user beacause we set in token
             int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
@@ -94,7 +98,7 @@ namespace lms_with_moodle.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
         {
-            MoodleApi moodleApi = new MoodleApi();
+            
             int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
 
             if(UserId != -1)
@@ -223,6 +227,8 @@ namespace lms_with_moodle.Controllers
             try
             {
                 _model.ConfirmedAcc = false;
+                _model.UserName = _model.MelliCode;
+                
                 IdentityResult result = userManager.CreateAsync(_model , Password).Result;
 
                 if(result.Succeeded)
@@ -234,6 +240,57 @@ namespace lms_with_moodle.Controllers
                 {
                     return BadRequest(result.Errors);
                 }
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadDocuments([FromForm]IFormCollection Files , string Mellicode)
+        {
+            var file = Files.Files[0];
+
+            if (file != null)
+            {
+                if (file.Length > 0)
+                {
+                    string path = Path.Combine(Request.Host.Value, "ClientApp/build/Documents");
+
+                    var fs = new FileStream(Path.Combine("ClientApp/build/Documents", Mellicode + "." + file.FileName.Split(".")[1]), FileMode.Create);
+                    await file.CopyToAsync(fs);
+
+                    return Ok(true);
+                }
+            }
+            return BadRequest(false);
+        }
+
+
+        //For security Reason We Use this methode here
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategory()
+        {
+            try
+            {
+                
+                List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories();
+                List<CategoryDetail> Categories = new List<CategoryDetail>();
+
+                foreach(var cat in result)
+                {
+                    if(cat.id != "1")  // Miscellaneous Category
+                    {
+                        CategoryDetail cateDetail = new CategoryDetail();
+                        cateDetail.Id = int.Parse(cat.id);
+                        cateDetail.Name = cat.name;
+
+                        Categories.Add(cateDetail);
+                    }
+                }
+
+                return Ok(Categories);
             }
             catch(Exception ex)
             {

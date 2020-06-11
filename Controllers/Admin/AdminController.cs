@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Helper;
 using Microsoft.Extensions.Options;
 using lms_with_moodle.Helper;
+using Models.Teacher;
 
 namespace lms_with_moodle.Controllers
 {
@@ -28,6 +29,7 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
         private readonly SignInManager<UserModel> signInManager;
 
+        MoodleApi moodleApi;
         LDAP_db ldap;
         
         public AdminController(UserManager<UserModel> _userManager 
@@ -40,6 +42,7 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             appSettings = _appsetting.Value;
 
+            moodleApi = new MoodleApi(appSettings);
             ldap = new LDAP_db(appSettings);
         }
     
@@ -157,8 +160,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         public async Task<IActionResult> AssignUserToCourse([FromBody]EnrolUser[] users)
         {
-            MoodleApi api = new MoodleApi();
-            bool result = await api.AssignUsersToCourse(users.ToList());
+            bool result = await moodleApi.AssignUsersToCourse(users.ToList());
 
             if(result)
             {
@@ -179,7 +181,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Teachers.ToList());
+                return Ok(appDbContext.Users.Where(user => user.IsTeacher).ToList());
             }
             catch(Exception ex)
             {
@@ -188,11 +190,16 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPut]
-        public IActionResult AddNewTeacher([FromBody]TeacherModel teacher)
+        public IActionResult AddNewTeacher([FromBody]UserModel teacher)
         {
             try
             {
-                appDbContext.Teachers.Add(teacher);
+                teacher.UserName = teacher.MelliCode;
+                teacher.IsTeacher = true;
+                
+                userManager.CreateAsync(teacher , teacher.MelliCode);
+                userManager.AddToRoleAsync(teacher , "Teacher");
+                userManager.AddToRoleAsync(teacher , "User");
                 appDbContext.SaveChanges();
 
                 return Ok();
@@ -204,11 +211,11 @@ namespace lms_with_moodle.Controllers
         }
     
         [HttpPost]
-        public IActionResult EditTeacher([FromBody]TeacherModel teacher)
+        public IActionResult EditTeacher([FromBody]UserModel teacher)
         {
             try
             {
-                appDbContext.Teachers.Update(teacher);
+                appDbContext.Users.Update(teacher);
                 appDbContext.SaveChanges();
 
                 return Ok();
@@ -224,9 +231,12 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                TeacherModel teacher = appDbContext.Teachers.Where(x => x.Id == teacherId).FirstOrDefault();
+                UserModel teacher = appDbContext.Users.Where(x => x.Id == teacherId).FirstOrDefault();
 
-                appDbContext.Teachers.Remove(teacher);
+                userManager.RemoveFromRoleAsync(teacher , "User");
+                userManager.RemoveFromRoleAsync(teacher , "Teacher");
+                userManager.DeleteAsync(teacher);
+            
                 appDbContext.SaveChanges();
 
                 return Ok();
@@ -242,14 +252,43 @@ namespace lms_with_moodle.Controllers
 #region Courses
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCourseIncat(int CategoryId)
+        public async Task<IActionResult> GetAllCourseInCat(int CategoryId)
         {
             try
             {
-                MoodleApi moodleApi = new MoodleApi();
-                List<CourseDetail> result = await moodleApi.GetAllCourseInCat(CategoryId);
+                if(CategoryId != 0)
+                {
+                    List<CourseDetail> response = await moodleApi.GetAllCourseInCat(CategoryId);
 
-                return Ok(result);
+                    List<CourseDetail> result = new List<CourseDetail>();
+
+                    foreach(var course in response)
+                    {
+                        TeacherModel_View Teacher = new TeacherModel_View();
+                        Teacher = appDbContext.TeacherView.Where(x => x.CourseId == course.id).FirstOrDefault();
+
+                        if(Teacher != null)
+                        {
+                            string TeacherName = Teacher.Firstname + Teacher.Lastname;
+
+                            course.TeacherName = TeacherName;
+                            course.TeacherId = Teacher.Id;
+                        }
+                        else
+                        {
+                            course.TeacherName = "ندارد";
+                            course.TeacherId = 0;
+                        }
+
+                        result.Add(course);
+                    }
+
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest("Category ID shouldn't be 0");
+                }
             }
             catch(Exception ex)
             {
@@ -262,16 +301,23 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                MoodleApi moodleApi = new MoodleApi();
-                bool result = await moodleApi.CreateCourse(course.shortname , course.categoryId);
+                
+                bool result = await moodleApi.CreateCourse(course.shortname , (course.categoryId != 0 ? course.categoryId : 1));
 
                 if(result)
                 {
-                    return Ok();
+                    TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
+                    teacherCourseInfo.CourseId = course.id;
+                    teacherCourseInfo.TeacherId = course.TeacherId;
+
+                    appDbContext.TeacherCourse.Add(teacherCourseInfo);
+                    appDbContext.SaveChanges();
+
+                    return Ok(true);
                 }
                 else
                 {
-                    return BadRequest();
+                    return BadRequest(false);
                 }
             }
             catch(Exception ex)
@@ -285,12 +331,12 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                MoodleApi moodleApi = new MoodleApi();
+                
                 string result = await moodleApi.DeleteCourse(course.id);
 
                 if(result == null)
                 {
-                    return Ok();
+                    return Ok(true);
                 }
                 else
                 {
@@ -309,12 +355,12 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                MoodleApi moodleApi = new MoodleApi();
+                
                 string result = await moodleApi.EditCourse(course);
 
                 if(result == null)
                 {
-                    return Ok();
+                    return Ok(true);
                 }
                 else
                 {
@@ -335,17 +381,20 @@ namespace lms_with_moodle.Controllers
     {
         try
         {
-            MoodleApi moodleApi = new MoodleApi();
-            List<AllCourseCatDetail_moodle> result = await moodleApi.GetAllCategories();
+            
+            List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories();
             List<CategoryDetail> Categories = new List<CategoryDetail>();
 
             foreach(var cat in result)
             {
-                CategoryDetail cateDetail = new CategoryDetail();
-                cateDetail.Id = int.Parse(cat.id);
-                cateDetail.Name = cat.categoryname;
+                if(cat.id != "1")  // Miscellaneous Category
+                {
+                    CategoryDetail cateDetail = new CategoryDetail();
+                    cateDetail.Id = int.Parse(cat.id);
+                    cateDetail.Name = cat.name;
 
-                Categories.Add(cateDetail);
+                    Categories.Add(cateDetail);
+                }
             }
 
             return Ok(Categories);
@@ -361,16 +410,16 @@ namespace lms_with_moodle.Controllers
     {
         try
         {
-            MoodleApi moodleApi = new MoodleApi();
+            
             bool result = await moodleApi.CreateCategory(Category.Name , Category.ParentCategory);
 
             if(result)
             {
-                return Ok();
+                return Ok(true);
             }
             else
             {
-                return BadRequest();
+                return BadRequest(false);
             }
         }
         catch(Exception ex)
@@ -384,16 +433,16 @@ namespace lms_with_moodle.Controllers
     {
         try
         {
-            MoodleApi moodleApi = new MoodleApi();
+            
             bool result = await moodleApi.EditCategory(Category);
 
             if(result)
             {
-                return Ok();
+                return Ok(true);
             }
             else
             {
-                return BadRequest();
+                return BadRequest(false);
             }
         }
         catch(Exception ex)
@@ -402,21 +451,21 @@ namespace lms_with_moodle.Controllers
         }
     }
 
-    [HttpDelete]
+    [HttpPost]
     public async Task<IActionResult> DeleteCategory([FromBody]CategoryDetail Category)
     {
         try
         {
-            MoodleApi moodleApi = new MoodleApi();
+            
             bool result = await moodleApi.DeleteCategory(Category.Id);
 
             if(result)
             {
-                return Ok();
+                return Ok(true);
             }
             else
             {
-                return BadRequest();
+                return BadRequest(false);
             }
         }
         catch(Exception ex)

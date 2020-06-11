@@ -1,0 +1,15 @@
+.appBar {
+    position: relative !important;
+    
+}
+
+.layout {
+    
+}
+
+.buttons {
+display: 'flex';
+justify-content : 'flex-end';
+}
+
+
