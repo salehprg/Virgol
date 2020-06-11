@@ -86,29 +86,10 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
-        [HttpPost]
-        public async Task<IActionResult> UploadBulkUserFile([FromForm]IFormCollection Files)
-        {
-            var file = Files.Files[0];
-
-            if (file != null)
-            {
-                if (file.Length > 0)
-                {
-                    string path = Path.Combine(Request.Host.Value, "BulkUserData");
-
-                    var fs = new FileStream(Path.Combine("BulkUserData", "BulkUser.xlsx"), FileMode.Create);
-                    await file.CopyToAsync(fs);
-
-                    return Ok(true);
-                }
-            }
-            return BadRequest(false);
-        }
+    
 
         [HttpPut]
-        public async Task<IActionResult> AddBulkUser()
+        public async Task<IActionResult> AddBulkUser([FromForm]IFormCollection Files)
         {
             try
             {
@@ -119,55 +100,77 @@ namespace lms_with_moodle.Controllers
                 //3 - Add user to Database
                 //3.1 - don't add duplicate username 
 
-                List<UserModel> users = new List<UserModel>();
-                List<string> errors = new List<string>();
-                var fileName = "./BulkUserData/BulkUser.xlsx";
+                bool FileOk = false;
 
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
+                var file = Files.Files[0];
+
+                if (file != null)
                 {
-                    using (var excelData = ExcelReaderFactory.CreateReader(stream))
+                    if (file.Length > 0)
                     {
-                        excelData.Read(); //Ignore column header name
+                        string path = Path.Combine(Request.Host.Value, "BulkUserData");
 
-                        while (excelData.Read()) //Each row of the file
-                        {
-                            UserModel selectedUser = new UserModel
-                            {
-                                FirstName = excelData.GetValue(0).ToString(),
-                                LastName = excelData.GetValue(1).ToString(),
-                                MelliCode = excelData.GetValue(2).ToString(),
-                                PhoneNumber = excelData.GetValue(3).ToString(),
-                                Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : "")
-                            };
-                            selectedUser.ConfirmedAcc = true;
-                            selectedUser.UserName = selectedUser.MelliCode;
+                        var fs = new FileStream(Path.Combine("BulkUserData", "BulkUser.xlsx"), FileMode.Create);
+                        await file.CopyToAsync(fs);
 
-                            if(await userManager.FindByNameAsync(selectedUser.UserName) == null)
-                            {
-                                users.Add(selectedUser);
-                            }
-                            else
-                            {
-                                errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
-                            }
-                        }
-
-                        foreach(var user in users)
-                        {
-                            bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
-                            if(result)
-                            {
-                                if(userManager.AddToRoleAsync(user , "User").Result.Succeeded)
-                                {
-                                    ldap.AddUserToLDAP(user);
-                                }
-                            }
-                            
-                        }
+                        FileOk = true;
                     }
                 }
-                return Ok(errors);
+
+                if(FileOk)
+                {
+                    List<UserModel> users = new List<UserModel>();
+                    List<string> errors = new List<string>();
+                    var fileName = "./BulkUserData/BulkUser.xlsx";
+
+                    System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                    using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
+                    {
+                        using (var excelData = ExcelReaderFactory.CreateReader(stream))
+                        {
+                            excelData.Read(); //Ignore column header name
+
+                            while (excelData.Read()) //Each row of the file
+                            {
+                                UserModel selectedUser = new UserModel
+                                {
+                                    FirstName = excelData.GetValue(0).ToString(),
+                                    LastName = excelData.GetValue(1).ToString(),
+                                    MelliCode = excelData.GetValue(2).ToString(),
+                                    PhoneNumber = excelData.GetValue(3).ToString(),
+                                    Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : "")
+                                };
+                                selectedUser.ConfirmedAcc = true;
+                                selectedUser.UserName = selectedUser.MelliCode;
+
+                                if(await userManager.FindByNameAsync(selectedUser.UserName) == null)
+                                {
+                                    users.Add(selectedUser);
+                                }
+                                else
+                                {
+                                    errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
+                                }
+                            }
+
+                            foreach(var user in users)
+                            {
+                                bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
+                                if(result)
+                                {
+                                    if(userManager.AddToRoleAsync(user , "User").Result.Succeeded)
+                                    {
+                                        ldap.AddUserToLDAP(user);
+                                    }
+                                }
+                                
+                            }
+                        }
+                    }
+                    return Ok(errors);
+                }
+                return BadRequest("آپلود فایل با مشکل مواجه شد");
+                
             }
             catch(Exception ex)
             {
