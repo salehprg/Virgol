@@ -48,6 +48,31 @@ namespace lms_with_moodle.Controllers
 #region UserAction
 
         [HttpGet]
+        public async Task<IActionResult> GetAllStudent()  // Get list of All verified Student from moodle
+        {
+            try
+            {
+                List<UserInfo_moodle> AllUsersMoodle = await moodleApi.getAllUser();
+                List<UserModel> AllStudent = appDbContext.Users.Where(x => !x.IsTeacher && x.ConfirmedAcc).ToList();
+
+                List<UserInfo_moodle> Result = new List<UserInfo_moodle>();
+
+                //Do this just for matching Student ID with id in moodle 
+                //Because student id in our database is diffrent from moodle database
+                foreach(var Student in AllStudent)
+                {
+                    Result.Add(AllUsersMoodle.Where(x => x.idnumber == Student.MelliCode).FirstOrDefault());
+                }
+
+                return Ok(Result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
         public IActionResult GetNewUsers()
         {
             try
@@ -222,7 +247,7 @@ namespace lms_with_moodle.Controllers
             {
                 //UserId is id in moodle
                 bool resultUnAssign = await moodleApi.UnAssignUserFromCourse(user.UserId , user.CourseId);
-                
+
                 if(user.RoleId == 3)
                 {
                     TeacherCourseInfo teacherCourse = appDbContext.TeacherCourse.Where(x => x.CourseId == user.CourseId).FirstOrDefault(); //Because every course should have one teacher
