@@ -4,4 +4,5 @@ public class EnrolUser {
     public int RoleId {get; set;}
     public int UserId {get; set;}
     public int CourseId {get; set;}
+    public int CategoryId {get; set;} // use When add student to category
 }

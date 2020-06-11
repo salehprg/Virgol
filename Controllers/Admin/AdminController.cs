@@ -157,17 +157,61 @@ namespace lms_with_moodle.Controllers
         //Teacher Role = 3
         //Student Role = 5
         [HttpPost]
+        public async Task<IActionResult> AssignStudentsToCategory([FromBody]EnrolUser[] users)
+        {
+            try
+            {
+                List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(users[0].CategoryId); //because All user will be add to same category
+
+                foreach(var enrolUser in users)
+                {
+                    List<EnrolUser> enrolsData = new List<EnrolUser>();
+                    EnrolUser enrolInfo = new EnrolUser(); // Declare here for increase performance
+                    foreach(var course in courses)
+                    {
+                        enrolInfo.CourseId = course.id;
+                        enrolInfo.RoleId = 5;
+                        enrolInfo.UserId = enrolUser.UserId;
+
+                        enrolsData.Add(enrolInfo);
+                    }
+
+                    await moodleApi.AssignUsersToCourse(enrolsData);
+                }
+                return Ok(true);
+            }
+            catch
+            {
+                return BadRequest(false);
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AssignUserToCourse([FromBody]EnrolUser[] users)
         {
             bool result = await moodleApi.AssignUsersToCourse(users.ToList());
+            
+            foreach(var enrolUser in users)
+            {
+                if(enrolUser.RoleId == 3)
+                {
+                    //Initialize teacherCourse Info
+                    TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
+                    teacherCourseInfo.CourseId = enrolUser.CourseId;
+                    teacherCourseInfo.TeacherId = enrolUser.UserId;//if we set teacher UserId came from our database
+
+                    appDbContext.TeacherCourse.Add(teacherCourseInfo);
+                    appDbContext.SaveChanges();
+                }
+            }
 
             if(result)
             {
-                return Ok();
+                return Ok(true);
             }
             else
             {
-                return BadRequest();
+                return BadRequest(false);
             }
         }
 
@@ -176,8 +220,18 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                //UserId is id in moodle
                 bool resultUnAssign = await moodleApi.UnAssignUserFromCourse(user.UserId , user.CourseId);
-                return Ok();
+                
+                if(user.RoleId == 3)
+                {
+                    TeacherCourseInfo teacherCourse = appDbContext.TeacherCourse.Where(x => x.CourseId == user.CourseId).FirstOrDefault(); //Because every course should have one teacher
+
+                    appDbContext.TeacherCourse.Remove(teacherCourse);
+                    appDbContext.SaveChanges();
+                }
+
+                return Ok(true);
             }
             catch(Exception ex)
             {
@@ -202,19 +256,37 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPut]
-        public IActionResult AddNewTeacher([FromBody]UserModel teacher)
+        public async Task<IActionResult> AddNewTeacher([FromBody]UserModel teacher)
         {
             try
             {
                 teacher.UserName = teacher.MelliCode;
                 teacher.IsTeacher = true;
                 
-                userManager.CreateAsync(teacher , teacher.MelliCode);
-                userManager.AddToRoleAsync(teacher , "Teacher");
-                userManager.AddToRoleAsync(teacher , "User");
+                await userManager.CreateAsync(teacher , teacher.MelliCode);
+                await userManager.AddToRoleAsync(teacher , "Teacher");
+                await userManager.AddToRoleAsync(teacher , "User");
                 appDbContext.SaveChanges();
+                
+                // if(CourseId >= 0)
+                // {
+                //     EnrolUser teacherEnrol = new EnrolUser();
+                //     teacherEnrol.CourseId = CourseId; //Course Id from route url
+                //     teacherEnrol.RoleId = 3;
+                //     teacherEnrol.UserId = (await userManager.FindByNameAsync(teacher.MelliCode)).Id;
 
-                return Ok();
+                //     bool result = await moodleApi.AssignUserToCourse(teacherEnrol);
+                //     if(result)
+                //     {
+                //         return Ok(true);
+                //     }
+                //     else
+                //     {
+                //         return Ok("اضافه کردن معلم به درس با مشکل روبرو شد");
+                //     }
+                // }
+
+                return Ok(true);
             }
             catch(Exception ex)
             {
@@ -363,8 +435,8 @@ namespace lms_with_moodle.Controllers
 
                 if(result == null)
                 {
-                    UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
-                    appDbContext.Remove(Teacher);
+                    TeacherCourseInfo Teacher = appDbContext.TeacherCourse.Where(x => x.TeacherId == course.TeacherId).FirstOrDefault();
+                    appDbContext.TeacherCourse.Remove(Teacher);
                     appDbContext.SaveChanges();
 
                     return Ok(true);

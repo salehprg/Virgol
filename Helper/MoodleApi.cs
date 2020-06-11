@@ -58,13 +58,9 @@ namespace lms_with_moodle.Helper
         #region Users
         public class UserBase
         {
-            public List<UserInfo> users {get; set;}
+            public List<UserInfo_moodle> users {get; set;}
         }
-        public class UserInfo
-        {
-            public int id {get; set;}
-            public string username {get; set;}
-        }
+        
         public async Task<int> GetUserId(string idNumber)
         {
             try
@@ -73,7 +69,7 @@ namespace lms_with_moodle.Helper
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&criteria[0][key]=idnumber&criteria[0][value]=" + idNumber;
 
                 HttpResponseModel _response = await sendData(data);
-                UserInfo user = JsonConvert.DeserializeObject <UserBase> (_response.Message).users[0]; 
+                UserInfo_moodle user = JsonConvert.DeserializeObject <UserBase> (_response.Message).users[0]; 
 
                 return user.id;
             }
@@ -104,6 +100,27 @@ namespace lms_with_moodle.Helper
 
             return userCourses;
         }
+        
+        public async Task<List<UserInfo_moodle>> getAllUser()
+        {
+            try
+            {
+                string FunctionName = "core_user_get_users";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&criteria[0][key]=auth&criteria[0][value]=ldap";
+
+                HttpResponseModel _response = await sendData(data);
+                UserBase user = JsonConvert.DeserializeObject <UserBase> (_response.Message); 
+
+                return user.users;
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+        
         public async Task<bool> AssignUsersToCourse(List<EnrolUser> _users)
         {
             try
@@ -121,6 +138,30 @@ namespace lms_with_moodle.Helper
                 }
                 
                 data += information;
+
+                HttpResponseModel Response = await sendData(data);
+                string result = JsonConvert.DeserializeObject <string> (Response.Message); 
+
+                return (Response.Code == HttpStatusCode.OK ? true : false);
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> AssignUserToCourse(EnrolUser _users)
+        {
+            try
+            {
+                string FunctionName = "enrol_manual_enrol_users";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+                data += "&enrolments[0][roleid]=" + _users.RoleId;
+                data += "&enrolments[0][userid]=" + _users.UserId;
+                data += "&enrolments[0][courseid]=" + _users.CourseId;
+                
 
                 HttpResponseModel Response = await sendData(data);
                 string result = JsonConvert.DeserializeObject <string> (Response.Message); 

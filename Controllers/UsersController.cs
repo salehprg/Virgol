@@ -233,6 +233,10 @@ namespace lms_with_moodle.Controllers
             {
                 _model.ConfirmedAcc = false;
                 _model.UserName = _model.MelliCode;
+
+                //These file name Are set by default and its extension should be checked between jpg/png
+                _model.ShDocument = _model.MelliCode;
+                _model.Document2 = _model.MelliCode + "_Doc2";
                 
                 IdentityResult result = userManager.CreateAsync(_model , Password).Result;
 
