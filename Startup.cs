@@ -24,6 +24,7 @@ namespace lms_with_moodle
             Configuration = configuration;
         }
 
+        public readonly string AllowOrigin = "AllowOrigin";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -44,6 +45,13 @@ namespace lms_with_moodle
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddCors(o => o.AddPolicy(
+                AllowOrigin , builder => {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                }
+            ));
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
@@ -103,6 +111,8 @@ namespace lms_with_moodle
 
             app.UseRouting();
             
+            app.UseCors(AllowOrigin);
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
