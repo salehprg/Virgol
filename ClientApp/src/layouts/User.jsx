@@ -13,6 +13,8 @@ import {UserCategory} from "../views/UserCategory";
 import {UserCourse} from "../views/UserCourse";
 import {userService} from "../_Services/UserServices";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 class User extends Component {
   
   constructor(props) {

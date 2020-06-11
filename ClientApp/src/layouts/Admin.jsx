@@ -15,6 +15,7 @@ import {CategoryList} from "../views/Admin/CategoryList";
 import {CourseList} from "../views/Admin/CourseList";
 import {UserIdentityDoc} from "../views/Admin/UserIdentityDoc";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class Admin extends Component {
   

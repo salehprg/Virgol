@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using Models.User;
 using Novell.Directory.Ldap;
 
-namespace Helper
+namespace lms_with_moodle.Helper
 {
     public class LDAP_db {
         LdapConnection ldapConn;

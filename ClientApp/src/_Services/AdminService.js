@@ -133,20 +133,19 @@ async function GetAllTeachers() {
     return await GetData("TeacherList");
 }
 
-async function AddTeacher(TeacherListData){
+async function AddTeacher(TeacherData){
 
-    return await PutData("AddNewTeacherList" , TeacherListData);
+    return await PutData("AddNewTeacher" , TeacherData);
 }
 
-async function EditTeacher(TeacherListData){
+async function EditTeacher(TeacherData){
 
-    return await PostData("EditTeacherList" , TeacherListData);
+    return await PostData("EditTeacher" , TeacherData);
 }
 
-async function DeleteTeacher(TeacherListData){
+async function DeleteTeacher(TeacherData){
 
-    console.log(TeacherListData);
-    return await PostData("DeleteTeacherList" , TeacherListData);
+    return await PostData("DeleteTeacher" , TeacherData);
 }
 
 //#endregion

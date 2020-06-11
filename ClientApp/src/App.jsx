@@ -7,6 +7,7 @@ import { PrivateRoute } from './_componentAuth';
 import {User} from './layouts/User';
 import {Admin} from './layouts/Admin';
 import SignIn from './layouts/SignIn/SignIn';
+import LogIn from './layouts/SignIn/Login';
 import SignUp from './layouts/SignUp/SignUp';
 
 const getRoute = (userType) =>{
@@ -62,10 +63,10 @@ class App extends React.Component {
                     <PrivateRoute path="/Admin" component={Admin}></PrivateRoute>
 
                     {(currentUser == null && 
-                            <React.Fragment>
-                                <Route path="/login" component={SignIn} />
+                            <div>
+                                <Route path="/login" component={LogIn} />
                                 <Route path="/SignUp" component={SignUp} />
-                            </React.Fragment>  
+                            </div>  
                     )}
 
                     <Route exact path="/">

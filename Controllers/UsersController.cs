@@ -34,19 +34,24 @@ namespace lms_with_moodle.Controllers
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
+        private readonly AppDbContext appDbContext;
 
         MoodleApi moodleApi;
+        FarazSmsApi SMSApi;
         public UsersController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , IOptions<AppSettings> _appsetting)
+                                , IOptions<AppSettings> _appsetting
+                                , AppDbContext _appdbContext)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             signInManager =_signinManager;
             appSettings = _appsetting.Value;
+            appDbContext = _appdbContext;
 
             moodleApi = new MoodleApi(appSettings);
+            SMSApi = new FarazSmsApi(appSettings);
         }
         
 
@@ -247,6 +252,103 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+    #region ForgotPassword
+        async Task<bool> SendCode(UserModel user)
+        {
+            try
+            {
+                string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);// Make new Verification code
+                string SmsResult = SMSApi.SendSms(new String[] {user.PhoneNumber} , Code);
+
+                VerificationCodeModel verification = new VerificationCodeModel();
+                verification.LastSend = DateTime.Now;
+                verification.UserId = user.Id;
+                verification.VerificationCode = Code;
+
+                appDbContext.VerificationCodes.Add(verification);
+                appDbContext.SaveChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendVerificationCode([FromBody]UserModel _input)
+        {
+            UserModel user = appDbContext.Users.Where(x => x.MelliCode == _input.MelliCode).FirstOrDefault();
+
+
+            //Every user can get just 3 Verification code in last 30 minutes
+            List<VerificationCodeModel> lastestCodeInfo = new List<VerificationCodeModel>();
+            lastestCodeInfo = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
+                                                            .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList();
+            
+            if(lastestCodeInfo.Count != 3 && lastestCodeInfo.Count > 0) // Rich limit Send sms
+            {
+                if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
+                {   
+                    return Ok(await SendCode(user));
+                }
+                else
+                {
+                    return Ok("Limit Reached");
+                }
+            }
+            else if(lastestCodeInfo.Count == 0)
+            {
+                if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
+                {   
+                    return Ok(await SendCode(user));
+                }
+                else
+                {
+                    return Ok("Limit Reached");
+                }
+            }
+            else
+            {
+                return Ok("Limit Reached");
+            }
+            
+            
+        }
+
+
+        public class VerificationInput
+        {
+            public string MelliCode {get; set;}
+            public string VerificationCode {get; set;}
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword([FromBody]VerificationInput _input)
+        {
+            UserModel user = appDbContext.Users.Where(x => x.MelliCode == _input.MelliCode).FirstOrDefault();
+
+            string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);
+
+            bool resultVerify = (Code == _input.VerificationCode);
+
+            if(resultVerify)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                //Check verification if user Reach limit Code by Check last sent Code 
+
+                VerificationCodeModel lastVerifyCode = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
+                                                            .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList()[0];
+                string LastCode = lastVerifyCode.VerificationCode;
+                
+                return Ok(LastCode == _input.VerificationCode);
+            }
+        }
+
+    #endregion
+        
         [HttpPost]
         public async Task<IActionResult> UploadDocuments([FromForm]IFormCollection Files , string Mellicode)
         {

@@ -11,9 +11,8 @@ using Models.User;
 using ExcelDataReader;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-using Helper;
-using Microsoft.Extensions.Options;
 using lms_with_moodle.Helper;
+using Microsoft.Extensions.Options;
 using Models.Teacher;
 
 namespace lms_with_moodle.Controllers
@@ -172,6 +171,19 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UnAssignFromCourse([FromBody]EnrolUser user)
+        {
+            try
+            {
+                bool resultUnAssign = await moodleApi.UnAssignUserFromCourse(user.UserId , user.CourseId);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 #endregion
 
 #region Teacher
@@ -302,13 +314,28 @@ namespace lms_with_moodle.Controllers
             try
             {
                 
-                bool result = await moodleApi.CreateCourse(course.shortname , (course.categoryId != 0 ? course.categoryId : 1));
+                int CourseId = await moodleApi.CreateCourse(course.shortname , (course.categoryId != 0 ? course.categoryId : 1));
+                UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
 
-                if(result)
+                if(CourseId != -1)
                 {
+                    //Initialize teacherCourse Info
                     TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
-                    teacherCourseInfo.CourseId = course.id;
+                    teacherCourseInfo.CourseId = CourseId;
                     teacherCourseInfo.TeacherId = course.TeacherId;
+
+                    //Get teacher id from moodle database by its MelliCode from our database
+                    List<EnrolUser> Teachers = new List<EnrolUser>();
+                    EnrolUser CurrentTeacher = new EnrolUser();
+                    CurrentTeacher.CourseId = CourseId;
+                    CurrentTeacher.RoleId = 3;
+
+                    int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode);
+                    CurrentTeacher.UserId = TeacherId;
+
+                    Teachers.Add(CurrentTeacher);
+
+                    bool result = await moodleApi.AssignUsersToCourse(Teachers);
 
                     appDbContext.TeacherCourse.Add(teacherCourseInfo);
                     appDbContext.SaveChanges();
@@ -336,6 +363,10 @@ namespace lms_with_moodle.Controllers
 
                 if(result == null)
                 {
+                    UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
+                    appDbContext.Remove(Teacher);
+                    appDbContext.SaveChanges();
+
                     return Ok(true);
                 }
                 else
@@ -356,15 +387,44 @@ namespace lms_with_moodle.Controllers
             try
             {
                 
-                string result = await moodleApi.EditCourse(course);
+                string response = await moodleApi.EditCourse(course);
 
-                if(result == null)
+                UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
+
+                if(string.IsNullOrEmpty(response))
                 {
-                    return Ok(true);
+                    //Initialize teacherCourse Info
+                    TeacherCourseInfo teacherCourseInfo = appDbContext.TeacherCourse.Where(x => x.CourseId == course.id).FirstOrDefault();
+                    teacherCourseInfo.TeacherId = course.TeacherId;
+
+                    //Get teacher id from moodle database by its MelliCode from our database
+                    List<EnrolUser> Teachers = new List<EnrolUser>();
+                    EnrolUser CurrentTeacher = new EnrolUser();
+                    CurrentTeacher.CourseId = course.id;
+                    CurrentTeacher.RoleId = 3;
+
+                    int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode); //Teacher id in moodle
+                    CurrentTeacher.UserId = TeacherId;
+
+                    Teachers.Add(CurrentTeacher);
+
+                    bool resultUnAssign = await moodleApi.UnAssignUserFromCourse(CurrentTeacher.UserId , CurrentTeacher.CourseId);
+                    if(resultUnAssign)
+                    {
+                        bool resultAssign = await moodleApi.AssignUsersToCourse(Teachers);
+                        if(resultAssign)
+                        {
+                            appDbContext.TeacherCourse.Update(teacherCourseInfo);
+                            appDbContext.SaveChanges();
+                            return Ok(true);
+                        }
+                    }
+
+                    return Ok(false);
                 }
                 else
                 {
-                    return BadRequest(result);
+                    return BadRequest(false);
                 }
             }
             catch(Exception ex)

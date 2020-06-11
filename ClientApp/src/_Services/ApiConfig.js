@@ -1,7 +1,7 @@
 
 export const ApiConfig = {
 
-BaseUrl : "http://lms.legace.ir/api/",
+BaseUrl : "https://localhost:5001/api/",
 AdminUrl : "Admin/",
 UserUrl : "Users/"
 

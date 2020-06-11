@@ -16,6 +16,9 @@ namespace Models
 
         public DbSet<TeacherModel_View> TeacherView {get; set;}
         public DbSet<TeacherCourseInfo> TeacherCourse {get; set;}
+        public DbSet<VerificationCodeModel> VerificationCodes {get; set;}
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
