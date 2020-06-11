@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using lms_with_moodle.Helper;
 using Microsoft.Extensions.Options;
 using Models.Teacher;
+using Microsoft.AspNetCore.Http;
 
 namespace lms_with_moodle.Controllers
 {
@@ -85,6 +86,27 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> UploadBulkUserFile([FromForm]IFormCollection Files)
+        {
+            var file = Files.Files[0];
+
+            if (file != null)
+            {
+                if (file.Length > 0)
+                {
+                    string path = Path.Combine(Request.Host.Value, "BulkUserData");
+
+                    var fs = new FileStream(Path.Combine("BulkUserData", "BulkUser.xlsx"), FileMode.Create);
+                    await file.CopyToAsync(fs);
+
+                    return Ok(true);
+                }
+            }
+            return BadRequest(false);
+        }
+
         [HttpPut]
         public async Task<IActionResult> AddBulkUser()
         {
@@ -99,7 +121,7 @@ namespace lms_with_moodle.Controllers
 
                 List<UserModel> users = new List<UserModel>();
                 List<string> errors = new List<string>();
-                var fileName = "./ExcelData/Users.xlsx";
+                var fileName = "./BulkUserData/BulkUser.xlsx";
 
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
