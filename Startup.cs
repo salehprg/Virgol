@@ -102,6 +102,9 @@ namespace lms_with_moodle
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors(AllowOrigin);
+            // We only use kerstrel in HTTP mode
+            // app.UseHttpsRedirection();
             else
             {
                 app.UseExceptionHandler("/Error");
@@ -110,10 +113,6 @@ namespace lms_with_moodle
             }
 
             app.UseRouting();
-            
-            app.UseCors(AllowOrigin);
-
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
