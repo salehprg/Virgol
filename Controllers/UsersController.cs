@@ -143,7 +143,7 @@ namespace lms_with_moodle.Controllers
 
                 if(!userInformation.ConfirmedAcc)
                 {
-                    return Unauthorized("حساب کاربری شما تایید نشده است");
+                    return StatusCode(423);
                 }
 
                 var userRoleNames = new List<string>();
@@ -243,7 +243,7 @@ namespace lms_with_moodle.Controllers
                 if(result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(_model , "User");
-                    return Ok(result.Succeeded);
+                    return Ok(true);
                 }
                 else
                 {
@@ -280,9 +280,9 @@ namespace lms_with_moodle.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> SendVerificationCode([FromBody]UserModel _input)
+        public async Task<IActionResult> SendVerificationCode(string IdNumer)
         {
-            UserModel user = appDbContext.Users.Where(x => x.MelliCode == _input.MelliCode).FirstOrDefault();
+            UserModel user = appDbContext.Users.Where(x => x.MelliCode == IdNumer).FirstOrDefault();
 
 
             //Every user can get just 3 Verification code in last 30 minutes
@@ -298,7 +298,8 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    return Ok("Limit Reached");
+                    //return Ok("Limit Reached");
+                    return BadRequest(false);
                 }
             }
             else if(lastestCodeInfo.Count == 0)
@@ -309,12 +310,12 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    return Ok("Limit Reached");
+                    return BadRequest(false);
                 }
             }
             else
             {
-                return Ok("Limit Reached");
+                return BadRequest(false);
             }
             
             
