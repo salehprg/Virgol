@@ -60,7 +60,7 @@ export default function AddressForm(props) {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          {(props.CategoryInfo != null ? 
+          {props.CategoryInfo ? 
               <FormControl className="col-12">
                 <InputLabel id="CategoryList">مقطع تحصیلی شما</InputLabel>
                 <Select
@@ -79,7 +79,7 @@ export default function AddressForm(props) {
             
             :
             "درحال بارگذاری...."
-            )}
+            }
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField

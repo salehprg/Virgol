@@ -4,20 +4,27 @@ import Home from "./Home";
 import Bases from "./Bases";
 import Courses from "./Courses";
 import Teachers from "./Teachers";
+import '../../../assets/main.css'
 
-class Admin extends React.Component {
+class AdminDashboard extends React.Component {
 
-    state = { activePanel: 'home' }
+    state = { activePanel: 'home' , Category : null}
+    
 
     toggleActive = (option) => {
-        this.setState({ activePanel: option });
+        this.setState({ activePanel: option , Category : null});
+    }
+
+    callBackFunction = (categoryId , View) =>
+    {
+        this.setState({activePanel : View , Category : categoryId});
     }
 
     renderPanel = () => {
         switch (this.state.activePanel) {
             case "home": return <Home />;
-            case "bases": return <Bases />;
-            case "courses": return <Courses />;
+            case "bases": return <Bases setInParent={this.callBackFunction}/>;
+            case "courses": return <Courses Category={this.state.Category}/>;
             case "teachers": return <Teachers />;
             default: return null;
         }
@@ -49,4 +56,4 @@ class Admin extends React.Component {
 
 }
 
-export default Admin;
+export default AdminDashboard;

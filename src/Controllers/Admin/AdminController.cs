@@ -405,6 +405,7 @@ namespace lms_with_moodle.Controllers
             {
                 teacher.UserName = teacher.MelliCode;
                 teacher.IsTeacher = true;
+                teacher.ConfirmedAcc = true;
                 
                 await userManager.CreateAsync(teacher , teacher.MelliCode);
                 await userManager.AddToRoleAsync(teacher , "Teacher");
@@ -445,7 +446,7 @@ namespace lms_with_moodle.Controllers
                 appDbContext.Users.Update(teacher);
                 appDbContext.SaveChanges();
 
-                return Ok();
+                return Ok(true);
             }
             catch(Exception ex)
             {
@@ -466,7 +467,7 @@ namespace lms_with_moodle.Controllers
             
                 appDbContext.SaveChanges();
 
-                return Ok();
+                return Ok(true);
             }
             catch(Exception ex)
             {
@@ -496,7 +497,7 @@ namespace lms_with_moodle.Controllers
 
                         if(Teacher != null)
                         {
-                            string TeacherName = Teacher.Firstname + Teacher.Lastname;
+                            string TeacherName = Teacher.Firstname + " " + Teacher.Lastname;
 
                             course.TeacherName = TeacherName;
                             course.TeacherId = Teacher.Id;
@@ -568,7 +569,7 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteCourse([FromBody]CourseDetail course)
         {
             try

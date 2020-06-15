@@ -5,7 +5,7 @@ import { history } from './_helper';
 import {authenticationService} from './_Services';
 import { PrivateRoute } from './_componentAuth';
 import {User} from './layouts/User';
-import {Admin} from './layouts/Admin';
+import AdminDashboard from './Panels/Admin/admin/AdminDashboard';
 import SignIn from './layouts/SignIn/SignIn';
 import LogIn from './layouts/SignIn/Login';
 import SignUp from './layouts/SignUp/SignUp';
@@ -60,7 +60,7 @@ class App extends React.Component {
                     }
                     
                     <PrivateRoute path="/User" component={User}></PrivateRoute>
-                    <PrivateRoute path="/Admin" component={Admin}></PrivateRoute>
+                    <PrivateRoute path="/Admin" component={AdminDashboard}></PrivateRoute>
 
                     {(currentUser == null && 
                             <div>

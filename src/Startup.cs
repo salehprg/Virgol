@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 using Models;
 using System.Text;
@@ -30,7 +31,6 @@ namespace lms_with_moodle
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -77,9 +77,14 @@ namespace lms_with_moodle
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
-                    ValidAudience = "https://localhost:5001",
-                    ValidIssuer = "https://localhost:5001"
+                    ValidAudience = "http://lms.legace.ir",
+                    ValidIssuer = "http://lms.legace.ir"
                 };
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LMS API", Version = "v1" });
             });
 
             // services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
@@ -100,8 +105,15 @@ namespace lms_with_moodle
             app.UseCors(AllowOrigin);
             // We only use kerstrel in HTTP mode
             // app.UseHttpsRedirection();s
+
             if (env.IsDevelopment())
             {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS API V1");
+                });
+
                 app.UseDeveloperExceptionPage();
             }
             else

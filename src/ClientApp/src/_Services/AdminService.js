@@ -100,6 +100,11 @@ async function GetNewUsers() {
     return await GetData("GetNewUsers");
 }
 
+async function GetAllStudent() {
+
+    return await GetData("GetAllStudent");
+}
+
 
 //#region Category
 

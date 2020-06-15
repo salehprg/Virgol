@@ -38,7 +38,7 @@ export default class SignUp extends Component{
     super(props);
     this.state = {Succes : 0 , Loading : false , activeStep : 0 , UserInfo : {Username : "" , Passsword : "" , FirstName : "" , LastName : ""
                                                 , MelliCode : "" , Category : "" , Shfile : null , Doc2 : null}
-                  , Categories : []};
+                  , Categories : null};
 
   }
 

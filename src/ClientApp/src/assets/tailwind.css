@@ -1,0 +1,23 @@
+@tailwind base;
+
+@tailwind components;
+
+@font-face {
+    font-family: vazirRegular;
+    src: url(/fonts/Vazir.woff);
+}
+
+@font-face {
+    font-family: vazirBold;
+    src: url(/fonts/Vazir-Bold.woff);
+}
+
+.rtl {
+    direction: rtl;
+}
+
+.left-next {
+    left: -30px;
+}
+
+@tailwind utilities;
