@@ -89,7 +89,7 @@ namespace lms_with_moodle.Helper
         {
             string json = JsonConvert.SerializeObject(Numbers);
 
-            string postData = "op=send&uname" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
+            string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
 
             return SendData(postData);
         }

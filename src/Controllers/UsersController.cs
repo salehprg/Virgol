@@ -304,14 +304,7 @@ namespace lms_with_moodle.Controllers
             }
             else if(lastestCodeInfo.Count == 0)
             {
-                if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
-                {   
-                    return Ok(await SendCode(user));
-                }
-                else
-                {
-                    return BadRequest(false);
-                }
+                return Ok(await SendCode(user));
             }
             else
             {
