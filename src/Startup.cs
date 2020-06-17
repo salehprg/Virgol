@@ -8,13 +8,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-
-using Models;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+
+using System.Text;
+
+using Models;
 using Models.User;
 using lms_with_moodle.Helper;
+using Schedule;
+
+using Quartz.Spi;
+using Quartz;
+using Quartz.Impl;
+
 
 namespace lms_with_moodle
 {
@@ -87,6 +94,17 @@ namespace lms_with_moodle
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LMS API", Version = "v1" });
             });
 
+             // Add Quartz services
+            services.AddSingleton<IJobFactory, SingletonJobFactory>();
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+
+            // Add our job
+            services.AddSingleton<SendNotifyJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(SendNotifyJob),
+                cronExpression: "* 0/5 * ? * * *"));
+
+            services.AddHostedService<QuartzHostedService>();
             // services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
             // services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 

@@ -4,11 +4,10 @@ import { Router, Route, Link, Redirect } from 'react-router-dom';
 import { history } from './_helper';
 import {authenticationService} from './_Services';
 import { PrivateRoute } from './_componentAuth';
-import {User} from './layouts/User';
-import AdminDashboard from './Panels/Admin/admin/AdminDashboard';
-import SignIn from './layouts/SignIn/SignIn';
+import StudentDashboard from './layouts/Panels/student/StudentDashboard';
+import AdminDashboard from './layouts/Panels/Admin/AdminDashboard';
 import LogIn from './layouts/SignIn/Login';
-import SignUp from './layouts/SignUp/SignUp';
+import SignUp from './layouts/SignUp/Signup';
 
 const getRoute = (userType) =>{
     var Result = "";
@@ -59,7 +58,7 @@ class App extends React.Component {
                         <Redirect from="/login" to={getRoute(currentUser.data.userType)}></Redirect>
                     }
                     
-                    <PrivateRoute path="/User" component={User}></PrivateRoute>
+                    <PrivateRoute path="/User" component={StudentDashboard}></PrivateRoute>
                     <PrivateRoute path="/Admin" component={AdminDashboard}></PrivateRoute>
 
                     {(currentUser == null && 

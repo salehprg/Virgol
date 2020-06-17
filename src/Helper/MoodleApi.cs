@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using lms_with_moodle.Helper;
 using Models;
+using Models.User;
 using Models.MoodleApiResponse;
 using Models.MoodleApiResponse.warning;
 using Newtonsoft.Json;
@@ -61,6 +62,43 @@ namespace lms_with_moodle.Helper
             public List<UserInfo_moodle> users {get; set;}
         }
         
+        
+        public async Task<bool> CreateUsers(List<UserModel> users)
+        {
+            try
+            {
+                string FunctionName = "core_user_create_users";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+                string information = "";
+
+                for (int i = 0; i < users.Count; i++)
+                {
+                    information += "&users["+i+"][username]=" + users[i].UserName;
+                    information += "&users["+i+"][auth]=ldap";
+                    information += "&users["+i+"][firstname]=" + users[i].FirstName;
+                    information += "&users["+i+"][lastname]=" + users[i].LastName;
+                    information += "&users["+i+"][email]=" + users[i].MelliCode + "@legace.ir";
+                    information += "&users["+i+"][idnumber]=" + users[i].MelliCode;
+                }
+                
+                data += information;
+
+                HttpResponseModel _response = await sendData(data);
+                List<UserInfo_moodle> user = JsonConvert.DeserializeObject <List<UserInfo_moodle>> (_response.Message); 
+
+                return (user.Count > 0);
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+
+        }
+
+
         public async Task<int> GetUserId(string idNumber)
         {
             try

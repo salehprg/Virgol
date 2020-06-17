@@ -54,18 +54,20 @@ namespace lms_with_moodle.Controllers
             try
             {
                 List<UserInfo_moodle> AllUsersMoodle = await moodleApi.getAllUser();
-                List<UserModel> AllStudent = appDbContext.Users.Where(x => !x.IsTeacher && x.ConfirmedAcc).ToList();
+                List<UserModel> AllStudent = appDbContext.Users.Where(x => !x.IsTeacher && x.ConfirmedAcc && x.Id != 1).ToList();
 
-                List<UserInfo_moodle> Result = new List<UserInfo_moodle>();
+                List<UserModel> Result = new List<UserModel>();
 
                 //Do this just for matching Student ID with id in moodle 
                 //Because student id in our database is diffrent from moodle database
-                foreach(var Student in AllStudent)
+                foreach(var Student in AllUsersMoodle)
                 {
-                    Result.Add(AllUsersMoodle.Where(x => x.idnumber == Student.MelliCode).FirstOrDefault());
+                    UserModel user = appDbContext.Users.Where(x => x.MelliCode == Student.idnumber).FirstOrDefault();
+                    if(user != null)
+                        Result.Add(user);
                 }
 
-                return Ok(Result);
+                return Ok(AllStudent);
             }
             catch(Exception ex)
             {
@@ -110,8 +112,9 @@ namespace lms_with_moodle.Controllers
                     {
                         string path = Path.Combine(Request.Host.Value, "BulkUserData");
 
-                        var fs = new FileStream(Path.Combine("BulkUserData", "BulkUser.xlsx"), FileMode.Create);
+                        var fs = new FileStream(Path.Combine("BulkUserData", "BulkUserData.xlsx"), FileMode.Create);
                         await file.CopyToAsync(fs);
+                        fs.Close();
 
                         FileOk = true;
                     }
@@ -121,50 +124,63 @@ namespace lms_with_moodle.Controllers
                 {
                     List<UserModel> users = new List<UserModel>();
                     List<string> errors = new List<string>();
-                    var fileName = "./BulkUserData/BulkUser.xlsx";
-
+                    var fileName = "./BulkUserData/BulkUserData.xlsx";
+                    
                     System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                     using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
                     {
                         using (var excelData = ExcelReaderFactory.CreateReader(stream))
                         {
-                            excelData.Read(); //Ignore column header name
-
-                            while (excelData.Read()) //Each row of the file
+                            try
                             {
-                                UserModel selectedUser = new UserModel
+                                excelData.Read(); //Ignore column header name
+                                
+                                while (excelData.Read()) //Each row of the file
                                 {
-                                    FirstName = excelData.GetValue(0).ToString(),
-                                    LastName = excelData.GetValue(1).ToString(),
-                                    MelliCode = excelData.GetValue(2).ToString(),
-                                    PhoneNumber = excelData.GetValue(3).ToString(),
-                                    Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : "")
-                                };
-                                selectedUser.ConfirmedAcc = true;
-                                selectedUser.UserName = selectedUser.MelliCode;
-                                selectedUser.IsTeacher = false;
-
-                                if(await userManager.FindByNameAsync(selectedUser.UserName) == null)
-                                {
-                                    users.Add(selectedUser);
-                                }
-                                else
-                                {
-                                    errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
-                                }
-                            }
-
-                            foreach(var user in users)
-                            {
-                                bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
-                                if(result)
-                                {
-                                    if(userManager.AddToRoleAsync(user , "User").Result.Succeeded)
+                                    UserModel selectedUser = new UserModel
                                     {
-                                        ldap.AddUserToLDAP(user);
+                                        FirstName = excelData.GetValue(0).ToString(),
+                                        LastName = excelData.GetValue(1).ToString(),
+                                        MelliCode = excelData.GetValue(2).ToString(),
+                                        PhoneNumber = excelData.GetValue(3).ToString(),
+                                        Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : "")
+                                    };
+                                    selectedUser.ConfirmedAcc = true;
+                                    selectedUser.UserName = selectedUser.MelliCode;
+                                    selectedUser.IsTeacher = false;
+
+                                    if(await userManager.FindByNameAsync(selectedUser.UserName) == null)
+                                    {
+                                        users.Add(selectedUser);
+                                    }
+                                    else
+                                    {
+                                        errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
                                     }
                                 }
-                                
+
+                                foreach(var user in users)
+                                {
+                                    bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
+                                    if(result)
+                                    {
+                                        if(userManager.AddToRoleAsync(user , "User").Result.Succeeded)
+                                        {
+                                            ldap.AddUserToLDAP(user);
+                                        }
+                                    }
+                                    
+                                }
+
+                                await moodleApi.CreateUsers(users);
+                            }
+                            catch(Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                            finally
+                            {
+                                excelData.Close();
                             }
                         }
                     }

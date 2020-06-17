@@ -17,6 +17,9 @@ export const adminService = {
     DeleteTeacher,
     AddCourse,
     EditCourse,
+    AddBulkStudent,
+    GetAllStudent,
+    AddBulkTeacher,
     DeleteCourse
 };
 
@@ -94,6 +97,64 @@ async function DeleteData(MethodeName , Data) {
     return Result;
 }
 
+async function UploadFile(MethodeName , File) {
+
+    let form = new FormData();
+    form.append('user', "Document");
+    form.append('file', File);
+
+    let result;
+    const type = 'multipart/form-data'
+
+    const config = authHeader(type);
+    console.log(config);
+
+    //Url config and other config automatically get from ApiConfig.js
+    await Axios.post(ApiConfig.BaseUrl + ApiConfig.AdminUrl + MethodeName , form, config)
+    .then(Result => {
+        result = true;
+    })
+    .catch(e => {
+        console.log(e);
+        //Toastr["error"]("نام کاربری یا رمز عبور اشتباه است");
+        result = e;
+    });
+
+    return result;
+}
+
+//#region Users
+
+async function AddBulkStudent(File) {
+
+    return await UploadFile("AddBulkUser" , File);
+}
+
+async function AddBulkTeacher(File) {
+
+    let form = new FormData();
+    form.append('user', "Document");
+    form.append('file', File);
+
+    let result;
+
+    //Url config and other config automatically get from ApiConfig.js
+    await Axios.post(ApiConfig.BaseUrl + ApiConfig.AdminUrl + "AddBulkTeacher" , form, {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    })
+    .then(Result => {
+        result = true;
+    })
+    .catch(e => {
+        console.log(e);
+        //Toastr["error"]("نام کاربری یا رمز عبور اشتباه است");
+        result = e;
+    });
+
+    return result;
+}
 
 async function GetNewUsers() {
 
@@ -104,6 +165,8 @@ async function GetAllStudent() {
 
     return await GetData("GetAllStudent");
 }
+
+//#endregion
 
 
 //#region Category

@@ -10,5 +10,8 @@ namespace Models.MoodleApiResponse
         public string lastname {get; set;}
         public string email {get; set;}
         public string idnumber {get; set;}
+
+        public string password  {get; set;} // use when create user
+        public string auth {get; set;}
     }
 }

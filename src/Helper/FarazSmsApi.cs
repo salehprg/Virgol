@@ -65,8 +65,7 @@ namespace lms_with_moodle.Helper
 
             string[] Splited = responseFromServer.Split(',');
 
-            string code = Splited[0].Remove(0 , 2);
-            code = code.Remove(code.Length - 1 , 1);
+            string code = Splited[0].Remove(0 , 1);
 
             string Message = Splited[1].Remove(0 , 1);
             Message = Message.Remove(Message.Length - 2 , 2);

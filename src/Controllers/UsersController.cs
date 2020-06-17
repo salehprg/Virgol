@@ -274,8 +274,9 @@ namespace lms_with_moodle.Controllers
 
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
@@ -294,12 +295,13 @@ namespace lms_with_moodle.Controllers
             {
                 if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
                 {   
-                    return Ok(await SendCode(user));
+                    bool sendCodeResult = await SendCode(user);
+                    return Ok(sendCodeResult);
                 }
                 else
                 {
                     //return Ok("Limit Reached");
-                    return BadRequest(false);
+                    return Ok(false);
                 }
             }
             else if(lastestCodeInfo.Count == 0)
@@ -308,7 +310,7 @@ namespace lms_with_moodle.Controllers
             }
             else
             {
-                return BadRequest(false);
+                return Ok(false);
             }
             
             
@@ -331,6 +333,8 @@ namespace lms_with_moodle.Controllers
 
             if(resultVerify)
             {
+                string token = await userManager.GeneratePasswordResetTokenAsync(user);
+                await userManager.ResetPasswordAsync(user , token , user.MelliCode);
                 return Ok(true);
             }
             else

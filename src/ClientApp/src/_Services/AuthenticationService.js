@@ -10,9 +10,61 @@ export const authenticationService = {
     GetAllCategory,
     Register,
     UploadFile,
+    SendCode,
+    ConfirmCode,
     currentUser: currentUserSubject.asObservable(),
     get currentUserValue () { return currentUserSubject.value }
 };
+
+//#region Forgot Password
+
+async function SendCode(MelliCode) {
+
+    let result = false;
+
+    //Url config and other config automatically get from ApiConfig.js
+    await Axios.post(ApiConfig.BaseUrl + ApiConfig.UserUrl + "SendVerificationCode?IdNumer=" + MelliCode , null, {
+        headers: {
+            'content-type': 'application/json'
+        }
+    })
+    .then(SendRes => result = SendRes.data)
+    .catch(e => {
+        console.log(e);
+        //Toastr["error"]("نام کاربری یا رمز عبور اشتباه است");
+        result = false;
+    });
+
+    return result;
+}
+
+async function ConfirmCode(MelliCode , Code) {
+
+    let result = false;
+    
+    const params = {
+        "MelliCode" : MelliCode,
+        "VerificationCode" : Code
+    }
+
+    //Url config and other config automatically get from ApiConfig.js
+    await Axios.post(ApiConfig.BaseUrl + ApiConfig.UserUrl + "ForgotPassword" , params, {
+        headers: {
+            'content-type': 'application/json'
+        }
+    })
+    .then(VerifyRes => result = VerifyRes.data)
+    .catch(e => {
+        console.log(e);
+        //Toastr["error"]("نام کاربری یا رمز عبور اشتباه است");
+        result = e;
+    });
+
+    return result;
+}
+
+//#endregion
+
 
 async function login(username, password) {
 

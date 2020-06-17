@@ -15,6 +15,7 @@ namespace Models
         }
 
         public DbSet<TeacherModel_View> TeacherView {get; set;}
+        public DbSet<ScheduleDetail> ScheduleDetails {get; set;}
         public DbSet<TeacherCourseInfo> TeacherCourse {get; set;}
         public DbSet<VerificationCodeModel> VerificationCodes {get; set;}
 
