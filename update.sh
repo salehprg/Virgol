@@ -1,4 +1,3 @@
-cd lms-with-moodle 
 sudo git pull
 docker build -t goldenstarc/lms:0.3 .
 docker stop lms_0.3
