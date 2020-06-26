@@ -48,8 +48,10 @@ namespace lms_with_moodle.Controllers
     
 #region UserAction
 
+
         [HttpGet]
-        public async Task<IActionResult> GetAllStudent()  // Get list of All verified Student from moodle
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        public async Task<IActionResult> GetAllStudent() 
         {
             try
             {
@@ -76,6 +78,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
         public IActionResult GetNewUsers()
         {
             try
@@ -91,6 +94,7 @@ namespace lms_with_moodle.Controllers
     
 
         [HttpPost]
+        [ProducesResponseType(typeof(List<string>), 200)]
         public async Task<IActionResult> AddBulkUser([FromForm]IFormCollection Files)
         {
             try
@@ -196,6 +200,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(List<string>), 200)]
         public async Task<IActionResult> AddBulkTeacher([FromForm]IFormCollection Files)
         {
             try
@@ -292,6 +297,7 @@ namespace lms_with_moodle.Controllers
             public int[] UsersId {get; set;}
         }
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
         public IActionResult ConfirmUsers(int UserId)
         {
             try
@@ -316,6 +322,7 @@ namespace lms_with_moodle.Controllers
         //Teacher Role = 3
         //Student Role = 5
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> AssignStudentsToCategory([FromBody]EnrolUser[] users)
         {
             try
@@ -346,6 +353,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(string), 200)]
         public async Task<IActionResult> AssignUserToCourse([FromBody]EnrolUser[] users)
         {
             bool result = await moodleApi.AssignUsersToCourse(users.ToList());
@@ -402,6 +410,7 @@ namespace lms_with_moodle.Controllers
 #region Teacher
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
         public IActionResult TeacherList()
         {
             try
@@ -415,6 +424,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> AddNewTeacher([FromBody]UserModel teacher)
         {
             try
@@ -455,6 +465,7 @@ namespace lms_with_moodle.Controllers
         }
     
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
         public IActionResult EditTeacher([FromBody]UserModel teacher)
         {
             try
@@ -471,6 +482,7 @@ namespace lms_with_moodle.Controllers
         }
     
         [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
         public IActionResult DeleteTeacher(int teacherId)
         {
             try
@@ -496,6 +508,7 @@ namespace lms_with_moodle.Controllers
 #region Courses
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public async Task<IActionResult> GetAllCourseInCat(int CategoryId)
         {
             try
@@ -541,6 +554,7 @@ namespace lms_with_moodle.Controllers
         }
         
         [HttpPut]
+        [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> AddNewCourse([FromBody]CourseDetail course)
         {
             try
@@ -586,6 +600,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> DeleteCourse([FromBody]CourseDetail course)
         {
             try
@@ -614,6 +629,7 @@ namespace lms_with_moodle.Controllers
 
         //For add course to category just set category id other wise category id not set
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> EditCourse([FromBody]CourseDetail course)
         {
             try
@@ -669,6 +685,7 @@ namespace lms_with_moodle.Controllers
 #region Categories
 
     [HttpGet]
+    [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
     public async Task<IActionResult> GetAllCategory()
     {
         try
@@ -698,6 +715,7 @@ namespace lms_with_moodle.Controllers
     }
 
     [HttpPut]
+    [ProducesResponseType(typeof(bool), 200)]
     public async Task<IActionResult> AddNewCategory([FromBody]CategoryDetail Category)
     {
         try
@@ -721,6 +739,7 @@ namespace lms_with_moodle.Controllers
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(bool), 200)]
     public async Task<IActionResult> EditCategory([FromBody]CategoryDetail Category)
     {
         try
@@ -744,6 +763,7 @@ namespace lms_with_moodle.Controllers
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(bool), 200)]
     public async Task<IActionResult> DeleteCategory([FromBody]CategoryDetail Category)
     {
         try

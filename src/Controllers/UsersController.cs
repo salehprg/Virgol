@@ -60,6 +60,7 @@ namespace lms_with_moodle.Controllers
         
         [HttpGet]
         [Authorize(Roles = "User")]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public async Task<IActionResult> GetCetegoryNames()
         {
             
@@ -101,6 +102,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpGet]
         [Authorize(Roles = "User")]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
         {
             
@@ -202,6 +204,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(bool), 200)]
         //Sameple Data : Users/RegisterNewUser?Password=Saleh-1379   _model post as json data
         public async Task<IActionResult> RegisterNewUser([FromBody]UserModel _model , string Password)
         {
@@ -281,6 +284,7 @@ namespace lms_with_moodle.Controllers
             }
         }
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> SendVerificationCode(string IdNumer)
         {
             UserModel user = appDbContext.Users.Where(x => x.MelliCode == IdNumer).FirstOrDefault();
@@ -323,6 +327,7 @@ namespace lms_with_moodle.Controllers
             public string VerificationCode {get; set;}
         }
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> ForgotPassword([FromBody]VerificationInput _input)
         {
             UserModel user = appDbContext.Users.Where(x => x.MelliCode == _input.MelliCode).FirstOrDefault();
@@ -352,6 +357,7 @@ namespace lms_with_moodle.Controllers
     #endregion
         
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> UploadDocuments([FromForm]IFormCollection Files , string Mellicode)
         {
             var file = Files.Files[0];
@@ -374,6 +380,7 @@ namespace lms_with_moodle.Controllers
 
         //For security Reason We Use this methode here
         [HttpGet]
+        [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
         public async Task<IActionResult> GetAllCategory()
         {
             try
