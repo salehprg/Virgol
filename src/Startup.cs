@@ -124,14 +124,14 @@ namespace lms_with_moodle
             // We only use kerstrel in HTTP mode
             // app.UseHttpsRedirection();s
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS API V1");
+            }); 
+
             if (env.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS API V1");
-                });
-
                 app.UseDeveloperExceptionPage();
             }
             else
