@@ -27,19 +27,37 @@ namespace lms_with_moodle
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration , IWebHostEnvironment _env)
         {
             Configuration = configuration;
+            environment = _env;
         }
 
         public readonly string AllowOrigin = "AllowOrigin";
+        public readonly IWebHostEnvironment environment;
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddCors(o => o.AddPolicy(
+                AllowOrigin , builder => {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                }
+            ));
+            
+            if(environment.IsDevelopment())
+            {
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+            }
+            else
+            {
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("PublishConnection")));
+            }
 
             services.AddIdentity<UserModel , IdentityRole<int>>(
                 options => 
@@ -52,13 +70,7 @@ namespace lms_with_moodle
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddCors(o => o.AddPolicy(
-                AllowOrigin , builder => {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
-                }
-            ));
+            
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
