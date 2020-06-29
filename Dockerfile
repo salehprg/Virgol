@@ -11,6 +11,7 @@ RUN apt update -yq \
     && curl -sL https://deb.nodesource.com/setup_12.x | bash \
     && apt install nodejs -yq
 
+
 # copy everything else and build app
 COPY src/. ./aspnetapp/
 WORKDIR /source/aspnetapp
@@ -20,6 +21,8 @@ RUN ls
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+RUN apt update -yq \
+    && apt install nano -yq
 WORKDIR /app
 COPY --from=build /app ./
 ENTRYPOINT ["./lms-with-moodle"]
