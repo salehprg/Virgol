@@ -1,9 +1,9 @@
 const INITIAL_STATE = {
-    'newUsers' : null,
-    'categories': null,
-    'courses': null,
-    'teachers' : null,
-    'students' : null
+    'newUsers' : [],
+    'categories': [],
+    'courses': [],
+    'teachers' : [],
+    'students' : [],
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -22,6 +22,18 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === 'GET_ALL_STUDENTS')
         return { ...state, students: action.payload };
+
+    if (action.type === 'ADD_NEW_CATEGORY')
+        return { ...state, students: [...state.students, action.payload]};
+
+    if (action.type === 'ADD_NEW_TEACHER')
+        return { ...state, teachers: [...state.teachers, action.payload]};
+
+    if (action.type === 'DELETE_CATEGORY')
+        return { ...state, categories: state.categories.filter(element => element.id !== action.payload) }
+
+    if (action.type === 'LOGOUT')
+        return INITIAL_STATE
 
     return state;
 

@@ -1,39 +1,29 @@
 import React from "react";
-import { getAllStudents } from "../../../actions";
+import Select from 'react-select';
+import { getAllStudents, addBulkUser } from "../../../actions";
 import {book, edit, errorOutline, loading, remove} from "../../../assets/icons";
 import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
+import AddPerson from "./AddPerson";
 
 class Students extends React.Component {
 
     state = {
-        selectedCourses: null,
+        addStudentState: null,
         showTeacherCourses: false,
-        dragging: false,
         excel: null
     }
-    dropRef = React.createRef();
 
     componentDidMount() {
         this.props.getAllStudents(this.props.auth.token);
-
-        this.dragCounter = 0
-        let div = this.dropRef.current;
-        div.addEventListener('dragenter', this.handleDragEnter)
-        div.addEventListener('dragleave', this.handleDragOut)
-        div.addEventListener('dragover', this.handleDrag)
-        div.addEventListener('drop', this.handleDrop)
-    }
-
-    componentWillUnmount() {
-        let div = this.dropRef.current;
-        div.removeEventListener('dragenter', this.handleDragEnter)
-        div.removeEventListener('dragleave', this.handleDragOut)
-        div.removeEventListener('dragover', this.handleDrag)
-        div.removeEventListener('drop', this.handleDrop)
     }
 
     renderStudents = () => {
+
+        if (this.props.isThereLoading && this.props.loadingComponent === 'GetAllStudents') {
+            return loading("w-16 h-16 text-blueish")
+        }
+
         const { students } = this.props;
 
         if (students !== null) {
@@ -72,67 +62,81 @@ class Students extends React.Component {
             }
         }
 
-        return loading("w-16 h-16 text-blueish")
     }
 
-    handleDragEnter = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        this.dragCounter++;
-        if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-            this.setState({dragging: true})
-        }
+    renderFormInputs = ({ input, meta, placeholder }) => {
+        return (
+            <div className={`flex px-1 flex-row py-3 my-3 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
+                <input
+                    {...input}
+                    dir="rtl"
+                    className="w-full px-2 placeholder-grayish focus:outline-none"
+                    type="text"
+                    placeholder={placeholder}
+                />
+            </div>
+        );
     }
 
-    handleDragOut = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        this.dragCounter--;
-        if (this.dragCounter > 0) return
-        this.setState({dragging: false})
+    handleFileChange = (file) => {
+        this.setState({ excel: file })
     }
 
-    handleDrag = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
+    onAddStudent = () => {
+
     }
 
-    handleDrop = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        this.setState({dragging: false})
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            this.setState({ excel: e.dataTransfer.files })
-            console.log(this.state.excel)
-            e.dataTransfer.clearData()
-            this.dragCounter = 0
-        }
-    }
-
-    onAddBase = () => {
-
+    onAddBulkStudent = () => {
+        this.props.addBulkUser(this.props.auth.token, this.state.excel);
     }
 
     render() {
         return (
-            <div className="w-full h-full pt-12 flex md:flex-row flex-col md:items-start items-center justify-evenly">
-                <div className="md:w-1/4 w-5/6 md:order-1 order-2 flex flex-col items-end">
-                    <input
-                        className="md:w-1/3 w-1/2 invisible mb-2 px-4 py-1 rounded-lg text-right text-grayish focus:outline-none focus:shadow-outline"
-                        type="text"
-                        placeholder="جست و جو"
-                    />
-                    <div ref={this.dropRef} className={`${this.state.dragging ? 'bg-green-200' : 'bg-white'} w-full flex flex-col py-2 justify-start items-center overflow-auto`}>
-                        <span className="font-vb text-blueish text-2xl mb-8">افزودن دانش آموز</span>
-                        <form className="w-3/4 flex flex-col text-center" onSubmit={this.onAddBase}>
-                            <div className="w-full h-64 flex flex-col justify-center">
-                                <span className="text-2xl text-green-900">{this.state.excel === null ? 'فایل اکسل را رها کنید' : this.state.excel[0].name}</span>
-                            </div>
-                            <button className={`bg-golden my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg ${this.state.excel === null ? 'hidden' : 'block'}`}>افزودن</button>
-                        </form>
+            <div className="w-full h-full pt-12 flex md:flex-row flex-col md:items-start items-center justify-end">
+                <div className="md:w-1/4 w-5/6 md:mx-4 mx-0 md:order-1 order-2 flex flex-col items-end">
+                    <div className={`w-full md:mx-4 flex flex-col items-end`}>
+                        <input
+                            className="md:w-1/3 w-1/2 invisible mb-2 px-4 py-1 rounded-lg text-right text-grayish focus:outline-none focus:shadow-outline"
+                            type="text"
+                            placeholder="جست و جو"
+                        />
+                        <div
+                            onClick={() => this.setState({ addStudentState: this.state.addStudentState === 'manual' ? null : 'manual'})}
+                            className="bg-white w-full flex flex-col py-2 cursor-pointer justify-start items-center overflow-hidden">
+                            <span className="font-vb text-blueish text-xl mb-4">افزودن دانش آموز به صورت دستی</span>
+                            <form className={`w-3/4 flex flex-col transition-height ${this.state.addStudentState === 'manual' ? 'max-h-1000' : 'max-h-0'}`} onSubmit={this.props.handleSubmit(this.onAddStudent)}>
+                                <Field
+                                    name="firstName"
+                                    placeholder="نام"
+                                    component={this.renderFormInputs}
+                                />
+                                <Field
+                                    name="lastName"
+                                    placeholder="نام خانوادگی"
+                                    component={this.renderFormInputs}
+                                />
+                                <Field
+                                    name="melliCode"
+                                    placeholder="کد ملی"
+                                    component={this.renderFormInputs}
+                                />
+                                <Field
+                                    name="phoneNumber"
+                                    placeholder="شماره همراه"
+                                    component={this.renderFormInputs}
+                                />
+                                <button className="bg-golden my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg">افزودن</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div className="w-full md:mx-4 mx-0 md:mb-0 mb-4 flex flex-col items-center">
+                        <AddPerson
+                            handleFile={this.handleFileChange}
+                            onSubmit={this.onAddBulkStudent}
+                        />
                     </div>
                 </div>
-                <div className="md:w-1/2 w-5/6 max-h-screen mb-12 md:order-12 order-1 flex flex-col items-end">
+                <div className="md:w-2/3 w-5/6 max-h-screen mb-12 md:order-12 order-1 flex flex-col items-end">
                     <input
                         className="md:w-1/3 w-1/2 mb-2 px-4 py-1 rounded-lg text-right text-grayish focus:outline-none focus:shadow-outline"
                         type="text"
@@ -149,11 +153,29 @@ class Students extends React.Component {
 
 }
 
+const validate = (formValues) => {
+    const errors = {}
+
+    if (!formValues.firstName) errors.firstName = true;
+    if (!formValues.lastName) errors.lastName = true;
+    if (!formValues.melliCode) errors.melliCode = true;
+    if (!formValues.phoneNumber) errors.phoneNumber = true;
+
+    return errors;
+}
+
+const formWrapped = reduxForm({
+    form: 'addStudent',
+    validate
+})(Students);
+
 const mapStateToProps = (state) => {
     return {
         auth: state.auth.userInfo,
         students: state.adminData.students,
+        isThereLoading: state.loading.isThereLoading,
+        loadingComponent: state.loading.loadingComponent
     }
 }
 
-export default connect(mapStateToProps, { getAllStudents })(Students);
+export default connect(mapStateToProps, { getAllStudents, addBulkUser })(formWrapped);

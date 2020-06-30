@@ -9,10 +9,19 @@ import Students from "./Students";
 
 class Dashboard extends React.Component {
 
-    state = { sidebarIsActive: true, activePanel: 'home' }
+    state = { sidebarIsActive: false, activePanel: 'home' }
+
+    componentDidMount() {
+        if (window.innerWidth > 768) {
+            this.setState({ sidebarIsActive: true})
+        }
+    }
 
     onActivePanelChange = (active) => {
         this.setState({ activePanel: active })
+        if (window.innerWidth < 768) {
+            this.setState({ sidebarIsActive: false})
+        }
     }
 
     toggleSidebar = () => {
@@ -43,14 +52,14 @@ class Dashboard extends React.Component {
                 <div className="fixed test z-30 md:hidden block" onClick={this.toggleSidebar}>
                     {this.renderSidebarIcon()}
                 </div>
-                <div className={`md:static md:bg-transparent bg-dark-blue fixed md:w-1/6 w-full transform origin-top duration-200 ease-in-out ${this.state.sidebarIsActive ? 'scale-y-100' : 'scale-y-0'}`}>
+                <div className={`md:static fixed md:bg-transparent order-2 bg-dark-blue fixed md:w-1/6 w-full transform origin-top duration-200 ease-in-out ${this.state.sidebarIsActive ? 'scale-y-100' : 'scale-y-0'}`}>
                     <Sidebar
                         active={this.state.activePanel}
                         isActive={this.state.sidebarIsActive}
                         onOptionChange={this.onActivePanelChange}
                     />
                 </div>
-                <div className="md:w-5/6 w-full">
+                <div className="md:w-5/6 w-full order-1">
                     {this.renderPanel()}
                 </div>
             </div>

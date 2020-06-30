@@ -17,7 +17,8 @@ const App = (props) => {
                 <AuthenticatedRoute
                     path="/t/dashboard"
                     component={Dashboard}
-                    appProps={ props.authenticated }
+                    logged={props.authenticated}
+                    type={props.userType}
                 />
             </Router>
         </div>
@@ -26,7 +27,8 @@ const App = (props) => {
 }
 
 const mapStateToProps = (state) => {
-    return { authenticated: state.auth.isLogged };
+    const userType = state.auth.userInfo !== null ? state.auth.userInfo.userType : -1;
+    return { authenticated: state.auth.isLogged, userType: userType};
 }
 
 export default connect(mapStateToProps)(App);

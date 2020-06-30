@@ -13,14 +13,19 @@ class Course extends React.Component {
     }
 
     renderCourses = () => {
+
+        if (this.props.isThereLoading && this.props.loadingComponent === 'GetAllCourses') {
+            return loading("w-16 h-16 text-blueish")
+        }
+
         const { courses } = this.props;
 
         if (courses !== null) {
             const courseCards = courses.map((course) => {
-                if (course.displayname.includes(this.state.query) || course.teacherName.includes(this.state.query)) {
+                if (course.shortname.includes(this.state.query) || course.teacherName.includes(this.state.query)) {
                     return (
                         <tr key={course.id}>
-                            <td className="py-2">{course.displayname}</td>
+                            <td className="py-2">{course.shortname}</td>
                             <td className="py-2">{course.teacherName}</td>
                         </tr>
                     );
@@ -51,13 +56,12 @@ class Course extends React.Component {
             }
         }
 
-        return loading("w-16 h-16 text-blueish")
     }
 
     render() {
         return (
-            <div className="w-full h-full pt-12 flex items-start justify-center">
-                <div className="md:w-3/4 w-5/6 flex flex-col items-end">
+            <div className="w-full h-full pt-12 flex items-start md:justify-end justify-center">
+                <div className="md:w-11/12 w-5/6 flex flex-col items-end">
                     <input
                         value={this.state.query}
                         onChange={(e) => this.setState({ query: e.target.value })}
@@ -80,6 +84,8 @@ const mapStateToProps = (state) => {
     return {
         auth: state.auth.userInfo,
         courses: state.adminData.courses,
+        isThereLoading: state.loading.isThereLoading,
+        loadingComponent: state.loading.loadingComponent
     }
 }
 

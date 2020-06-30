@@ -14,6 +14,9 @@ export default (state = INITIAL_STATE, action) => {
     if (action.type === 'REGISTER')
         return { ...state, isLogged: true, userInfo: action.payload }
 
+    if (action.type === 'LOGOUT')
+        return INITIAL_STATE
+
     return state;
 
 }

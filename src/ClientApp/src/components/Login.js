@@ -7,13 +7,13 @@ import {fingerprint, lock, loading} from "../assets/icons";
 
 class Login extends React.Component {
 
-    renderFormInputs = ({ input, meta, placeholder, icon }) => {
+    renderFormInputs = ({ input, meta, placeholder, icon, type }) => {
         return (
             <div className={`flex px-1 flex-row py-3 my-6 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
                 <input
                     {...input}
                     className="w-full px-2 placeholder-grayish focus:outline-none"
-                    type="text"
+                    type={type}
                     placeholder={placeholder}
                 />
                 {icon}
@@ -33,7 +33,7 @@ class Login extends React.Component {
         return (
             <div className="w-screen min-h-screen bg-dark-blue flex flex-col md:flex-row justify-center items-center">
                 <div className="max-w-xl py-8 text-center order-2 md:order-1">
-                    <p className="text-golden text-3xl mb-12">سیستم مدیریت یکپارچه آموزش مدارس</p>
+                    <p className="text-golden text-3xl mb-12">ویرگول <br />سیستم مدیریت یکپارچه آموزش مدارس</p>
                     <Link className="bg-blueish hover:bg-darker-blueish text-white text-xl transition-all duration-200 px-12 py-2 rounded-full" to="/SignUp">ثبت نام</Link>
                 </div>
 
@@ -42,12 +42,14 @@ class Login extends React.Component {
                     <form className="w-3/4 text-center" onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         <Field
                             name="username"
+                            type="text"
                             placeholder="نام کاربری"
                             component={this.renderFormInputs}
                             icon={fingerprint("text-golden w-6 h-6")}
                         />
                         <Field
                             name="password"
+                            type="password"
                             placeholder="رمز ورود"
                             component={this.renderFormInputs}
                             icon={lock("text-golden w-6 h-6")}

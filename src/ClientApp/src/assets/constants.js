@@ -1,12 +1,12 @@
 const prod = {
     url: {
-        API_URL: ''
+        API_URL: 'https://lms.legace.ir/'
     }
 }
 
 const dev = {
     url: {
-        API_URL: ''
+        API_URL: 'https://localhost:5001/'
     }
 }
 
