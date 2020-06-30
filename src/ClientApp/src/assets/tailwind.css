@@ -12,12 +12,17 @@
     src: url(/fonts/Vazir-Bold.woff);
 }
 
-.rtl {
-    direction: rtl;
+::placeholder {
+    text-align: right;
 }
 
-.left-next {
-    left: -30px;
+.test {
+    top: 25px;
+    right: 25px;
+}
+
+.trans {
+    transition: height 1s;
 }
 
 @tailwind utilities;
