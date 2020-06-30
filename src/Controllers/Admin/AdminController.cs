@@ -298,16 +298,19 @@ namespace lms_with_moodle.Controllers
         }
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
-        public IActionResult ConfirmUsers(int UserId)
+        public IActionResult ConfirmUsers([FromBody]List<int> usersId)
         {
             try
             {
-                var SelectedUser = appDbContext.Users.Where(user => user.Id == UserId).FirstOrDefault();
+                foreach(var id in usersId)
+                {
+                    var SelectedUser = appDbContext.Users.Where(user => user.Id == id).FirstOrDefault();
+                    SelectedUser.ConfirmedAcc = true;
+                    ldap.AddUserToLDAP(SelectedUser);
 
-                SelectedUser.ConfirmedAcc = true;
-                ldap.AddUserToLDAP(SelectedUser);
+                    appDbContext.Users.Update(SelectedUser);
+                }
 
-                appDbContext.Users.Update(SelectedUser);
                 appDbContext.SaveChanges();
 
                 return Ok(true);
@@ -323,27 +326,29 @@ namespace lms_with_moodle.Controllers
         //Student Role = 5
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
-        public async Task<IActionResult> AssignStudentsToCategory([FromBody]EnrolUser[] users)
+        public async Task<IActionResult> AssignUsersToCategory([FromBody]EnrolUser[] users)
         {
             try
             {
                 List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(users[0].CategoryId); //because All user will be add to same category
+                List<EnrolUser> enrolsData = new List<EnrolUser>();
 
                 foreach(var enrolUser in users)
                 {
-                    List<EnrolUser> enrolsData = new List<EnrolUser>();
-                    EnrolUser enrolInfo = new EnrolUser(); // Declare here for increase performance
                     foreach(var course in courses)
                     {
+                        EnrolUser enrolInfo = new EnrolUser();
                         enrolInfo.CourseId = course.id;
-                        enrolInfo.RoleId = 5;
+                        enrolInfo.RoleId = enrolUser.RoleId;
                         enrolInfo.UserId = enrolUser.UserId;
 
                         enrolsData.Add(enrolInfo);
                     }
 
-                    await moodleApi.AssignUsersToCourse(enrolsData);
+                    
                 }
+
+                await moodleApi.AssignUsersToCourse(enrolsData);
                 return Ok(true);
             }
             catch
@@ -353,8 +358,40 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        public async Task<IActionResult> UnAssignUsersFromCategory([FromBody]EnrolUser[] users)
+        {
+            try
+            {
+                List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(users[0].CategoryId); //because All user will be remove from same category
+                List<EnrolUser> enrolsData = new List<EnrolUser>();
+                    
+                foreach(var enrolUser in users)
+                {
+
+                    foreach(var course in courses)
+                    {
+                        EnrolUser enrolInfo = new EnrolUser();
+                        enrolInfo.CourseId = course.id;
+                        enrolInfo.UserId = enrolUser.UserId;
+
+                        enrolsData.Add(enrolInfo);
+                    }
+                }
+
+                await moodleApi.UnAssignUsersFromCourse(enrolsData);
+                return Ok(true);
+            }
+            catch
+            {
+                return BadRequest(false);
+            }
+        }
+
+
+        [HttpPost]
         [ProducesResponseType(typeof(string), 200)]
-        public async Task<IActionResult> AssignUserToCourse([FromBody]EnrolUser[] users)
+        public async Task<IActionResult> AssignUsersToCourse([FromBody]EnrolUser[] users)
         {
             bool result = await moodleApi.AssignUsersToCourse(users.ToList());
             
@@ -388,7 +425,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 //UserId is id in moodle
-                bool resultUnAssign = await moodleApi.UnAssignUserFromCourse(user.UserId , user.CourseId);
+                bool resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {user});
 
                 if(user.RoleId == 3)
                 {
@@ -424,7 +461,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(UserModel), 200)]
         public async Task<IActionResult> AddNewTeacher([FromBody]UserModel teacher)
         {
             try
@@ -456,7 +493,7 @@ namespace lms_with_moodle.Controllers
                 //     }
                 // }
 
-                return Ok(true);
+                return Ok(teacher);
             }
             catch(Exception ex)
             {
@@ -656,7 +693,7 @@ namespace lms_with_moodle.Controllers
 
                     Teachers.Add(CurrentTeacher);
 
-                    bool resultUnAssign = await moodleApi.UnAssignUserFromCourse(CurrentTeacher.UserId , CurrentTeacher.CourseId);
+                    bool resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {CurrentTeacher});
                     if(resultUnAssign)
                     {
                         bool resultAssign = await moodleApi.AssignUsersToCourse(Teachers);
@@ -725,7 +762,7 @@ namespace lms_with_moodle.Controllers
 
             if(result)
             {
-                return Ok(true);
+                return Ok(Category);
             }
             else
             {

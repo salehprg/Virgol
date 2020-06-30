@@ -38,6 +38,7 @@ export const getNewUsers = token => async dispatch => {
             }
         });
 
+        console.log(response.data);
         dispatch({ type: 'GET_NEW_USERS', payload: response.data });
 
     } catch (e) {
