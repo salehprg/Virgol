@@ -1,16 +1,42 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import './index.css';
-import './assets/main.css'
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react'
+import storage from 'redux-persist/lib/storage';
+import './assets/main.css';
+import App from './components/App';
+import * as serviceWorker from './serviceWorker';
+import {persistReducer, persistStore} from "redux-persist";
+import {applyMiddleware, compose, createStore} from "redux";
+import thunk from "redux-thunk";
+import reducers from "./reducers";
+import Loading from "./components/Loading";
 
-import "./assets/sass/light-bootstrap-dashboard-react.scss?v=1.3.0";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import "./assets/css/pe-icon-7-stroke.css";
+const persistConfig = {
+    key: 'root',
+    storage,
+    blacklist: ['error', 'loading', 'form']
+}
+
+const persistedReducer = persistReducer(persistConfig, reducers);
+
+let store = createStore(persistedReducer, applyMiddleware(thunk));
+if (process.env.NODE_ENV === 'development') {
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    store = createStore(persistedReducer, composeEnhancers(applyMiddleware(thunk)));
+}
+let persistor = persistStore(store)
 
 ReactDOM.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-    document.getElementById("root")
-)
+    <Provider store={store}>
+        <PersistGate loading={<Loading />} persistor={persistor}>
+            <App />
+        </PersistGate>
+    </Provider>,
+  document.getElementById('root')
+);
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
