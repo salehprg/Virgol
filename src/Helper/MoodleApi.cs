@@ -170,57 +170,41 @@ namespace lms_with_moodle.Helper
 
                 for (int i = 0; i < _users.Count; i++)
                 {
+                    information += "&enrolments["+i+"][userid]=" + _users[i].UserId;
+                    information += "&enrolments["+i+"][courseid]=" + _users[i].CourseId;
                     information += "&enrolments["+i+"][roleid]=" + _users[i].RoleId;
+                }
+                
+                data += information;
+                
+                HttpResponseModel Response = await sendData(data);
+                string result = JsonConvert.DeserializeObject <string> (Response.Message); 
+
+                return (Response.Code == HttpStatusCode.OK ? true : false);
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> UnAssignUsersFromCourse(List<EnrolUser> _users)
+        {
+            try
+            {
+                string FunctionName = "enrol_manual_unenrol_users";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+                string information = "";
+
+                for (int i = 0; i < _users.Count; i++)
+                {
                     information += "&enrolments["+i+"][userid]=" + _users[i].UserId;
                     information += "&enrolments["+i+"][courseid]=" + _users[i].CourseId;
                 }
                 
                 data += information;
-
-                HttpResponseModel Response = await sendData(data);
-                string result = JsonConvert.DeserializeObject <string> (Response.Message); 
-
-                return (Response.Code == HttpStatusCode.OK ? true : false);
-            }
-            catch(Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-        }
-        public async Task<bool> AssignUserToCourse(EnrolUser _users)
-        {
-            try
-            {
-                string FunctionName = "enrol_manual_enrol_users";
-                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
-
-                data += "&enrolments[0][roleid]=" + _users.RoleId;
-                data += "&enrolments[0][userid]=" + _users.UserId;
-                data += "&enrolments[0][courseid]=" + _users.CourseId;
-                
-
-                HttpResponseModel Response = await sendData(data);
-                string result = JsonConvert.DeserializeObject <string> (Response.Message); 
-
-                return (Response.Code == HttpStatusCode.OK ? true : false);
-            }
-            catch(Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-        }
-        public async Task<bool> UnAssignUserFromCourse(int userId , int CourseId)
-        {
-            try
-            {
-                string FunctionName = "enrol_manual_unenrol_users";
-                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName
-                                                + "&enrolments[0][userid]=" + userId 
-                                                + "&enrolments[0][courseid]=" + CourseId;
 
                 HttpResponseModel Response = await sendData(data);
                 string result = JsonConvert.DeserializeObject <string> (Response.Message); 

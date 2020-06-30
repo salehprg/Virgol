@@ -55,7 +55,7 @@ export const getNewUsers = token => async dispatch => {
             }
         });
 
-        dispatch({ type: 'FADE_LOADING' });
+        console.log(response.data);
         dispatch({ type: 'GET_NEW_USERS', payload: response.data });
 
     } catch (e) {

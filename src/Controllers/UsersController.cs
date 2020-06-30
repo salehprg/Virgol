@@ -204,7 +204,8 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(UserModel), 200)]
+        [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
         //Sameple Data : Users/RegisterNewUser?Password=Saleh-1379   _model post as json data
         public async Task<IActionResult> RegisterNewUser([FromBody]UserModel _model , string Password)
         {
@@ -246,7 +247,7 @@ namespace lms_with_moodle.Controllers
                 if(result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(_model , "User");
-                    return Ok(true);
+                    return Ok(_model);
                 }
                 else
                 {

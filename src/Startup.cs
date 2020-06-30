@@ -51,12 +51,16 @@ namespace lms_with_moodle
             if(environment.IsDevelopment())
             {
                 services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+                    options.UseSqlServer(Configuration.GetConnectionString("PublishConnection")));
+
+                // services.AddDbContext<AppDbContext>(options =>
+                //     options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
             }
             else
             {
                 services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PublishConnection")));
+                    
             }
 
             services.AddIdentity<UserModel , IdentityRole<int>>(
