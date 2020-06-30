@@ -13,6 +13,14 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, isThereError: true, errorMessage: action.payload }
     }
 
+    if (action.type === "ERROR_ADDING_NEW_CATEGORY") {
+            return { ...state, isThereError: true, errorMessage: action.payload }
+    }
+
+    if (action.type === "ERROR_ADDING_NEW_TEACHER") {
+            return { ...state, isThereError: true, errorMessage: action.payload }
+    }
+
     if (action.type === 'FADE_ERROR') {
         return INITIAL_STATE
     }

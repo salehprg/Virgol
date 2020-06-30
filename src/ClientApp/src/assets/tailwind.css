@@ -21,8 +21,8 @@
     right: 25px;
 }
 
-.trans {
-    transition: height 1s;
+.transition-height {
+    transition: max-height 1s ease-out;
 }
 
 @tailwind utilities;

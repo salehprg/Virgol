@@ -1,6 +1,6 @@
 import React from "react";
 import SidebarCard from "./SidebarCard";
-import {base, book, home, students, teachers} from "../../assets/icons";
+import {base, book, home, logoutIcon, students, teachers} from "../../assets/icons";
 
 class Sidebar extends React.Component {
 
@@ -10,7 +10,7 @@ class Sidebar extends React.Component {
 
     render() {
         return (
-            <div className="md:mt-0 mt-12 md:bg-transparent bg-dark-blue w-full h-full flex md:flex-col flex-row overflow-x-auto md:justify-start md:items-center items-auto">
+            <div className="md:mt-0 mt-12 md:mb-0 mb-6 md:bg-transparent bg-dark-blue md:w-full md:h-full w-screen h-90 flex flex-col overflow-x-auto justify-start items-center items-auto">
                 <SidebarCard
                     id="home"
                     title="خانه"
