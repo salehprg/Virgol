@@ -175,7 +175,8 @@ namespace lms_with_moodle.Helper
                     information += "&enrolments["+i+"][roleid]=" + _users[i].RoleId;
                 }
                 
-
+                data += information;
+                
                 HttpResponseModel Response = await sendData(data);
                 string result = JsonConvert.DeserializeObject <string> (Response.Message); 
 
