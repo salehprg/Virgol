@@ -8,6 +8,6 @@ namespace Models.MoodleApiResponse
         public string fullname { get; set; }
         public string displayname { get; set; }
         public string category { get; set; }  //Category id
-        public string format { get; set; }  //Category id
+        public string format { get; set; }
     }
 }

@@ -379,8 +379,8 @@ namespace lms_with_moodle.Controllers
                     }
                 }
 
-                await moodleApi.UnAssignUsersFromCourse(enrolsData);
-                return Ok(true);
+                bool result = await moodleApi.UnAssignUsersFromCourse(enrolsData);
+                return Ok(result);
             }
             catch
             {

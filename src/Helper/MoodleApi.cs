@@ -455,9 +455,12 @@ namespace lms_with_moodle.Helper
             List<CourseDetail> userCourses = new List<CourseDetail>();
             foreach(var x in items)
             {
-                userCourses.Add(new CourseDetail{displayname = x.displayname
-                                                        , id = int.Parse(x.id)
-                                                        , shortname = x.shortname});
+                if(x.format != "site")
+                {
+                    userCourses.Add(new CourseDetail{displayname = x.displayname
+                                                            , id = int.Parse(x.id)
+                                                            , shortname = x.shortname});
+                }
             }
 
             return userCourses;
