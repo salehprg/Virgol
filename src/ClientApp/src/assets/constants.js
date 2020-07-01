@@ -6,7 +6,8 @@ const prod = {
 
 const dev = {
     url: {
-        API_URL: 'https://localhost:5001/'
+        // API_URL: 'https://localhost:5001/'
+        API_URL: 'https://lms.legace.ir/'
     }
 }
 
