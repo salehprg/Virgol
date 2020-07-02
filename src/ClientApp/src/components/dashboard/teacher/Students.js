@@ -20,10 +20,6 @@ class Students extends React.Component {
 
     renderStudents = () => {
 
-        if (this.props.isThereLoading && this.props.loadingComponent === 'GetAllStudents') {
-            return loading("w-16 h-16 text-blueish")
-        }
-
         const { students } = this.props;
 
         if (students !== null) {
@@ -61,6 +57,8 @@ class Students extends React.Component {
                 );
             }
         }
+
+        return loading("w-16 h-16 text-blueish")
 
     }
 

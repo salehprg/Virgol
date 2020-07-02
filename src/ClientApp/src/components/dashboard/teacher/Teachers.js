@@ -20,10 +20,6 @@ class Teachers extends React.Component {
 
     renderTeachers = () => {
 
-        if (this.props.isThereLoading && this.props.loadingComponent === 'GetAllTeachers') {
-            return loading("w-16 h-16 text-blueish")
-        }
-
         const { teachers } = this.props;
 
         if (teachers !== null) {
@@ -61,6 +57,8 @@ class Teachers extends React.Component {
                 );
             }
         }
+
+        return loading("w-16 h-16 text-blueish")
 
     }
 

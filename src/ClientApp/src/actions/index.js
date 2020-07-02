@@ -7,9 +7,20 @@ export const login = formValues => async dispatch => {
 
         dispatch({ type: 'LOGIN_LOADING' });
         const response = await lms.post('/api/Users/LoginUser', formValues);
-        dispatch({ type: 'LOGIN', payload: response.data });
         dispatch({ type: 'FADE_LOADING' });
-        history.push("/t/dashboard");
+
+        const { userType } = response.data;
+        const { confirmedAcc } = response.data.userInformation;
+
+        if (!confirmedAcc) {
+            dispatch({ type: 'USER_STATUS', payload: response.data });
+            history.push("/status");
+        } else {
+            dispatch({ type: 'LOGIN', payload: response.data });
+            switch (userType) {
+                case 2: history.push("/a/dashboard");
+            }
+        }
 
     } catch (e) {
         dispatch({ type: 'LOGIN_FAILED', payload: 'نام کاربری یا رمز عبور اشتباه است' });
@@ -42,6 +53,22 @@ export const register = formValues => async dispatch => {
         dispatch({ type: 'REGISTER_FAILED', payload: 'ارور در ثبت نام' });
         dispatch({ type: 'FADE_LOADING' });
     }
+}
+
+export const sendVerificationCode = formValues => async dispatch => {
+
+    try {
+        dispatch({ type: 'SEND_CODE_LOADING' });
+        const response = await lms.post('​/api/Users/SendVerificationCode', formValues);
+        dispatch({ type: 'SEND_CODE' });
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        console.log(e)
+        dispatch({ type: 'SEND_CODE_FAILED', payload: 'خطایی در برقراری ارتباط رخ داد' });
+        dispatch({ type: 'FADE_LOADING' });
+    }
+
 }
 
 export const getNewUsers = token => async dispatch => {
@@ -228,6 +255,10 @@ export const deleteCategory = (token, id) => async dispatch => {
 
     }
 
+}
+
+export const removeStatus = () => {
+    return { type: 'REMOVE_STATUS' }
 }
 
 export const fadeError = (message) => {

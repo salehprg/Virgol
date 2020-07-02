@@ -1,13 +1,12 @@
 import React from "react";
 import {Redirect, Route} from "react-router-dom";
 
-export default function AuthenticatedRoute({ component: C, logged, type, ...rest }) {
-    console.log(type)
+export default function AuthenticatedRoute({ component: C, conditions, ...rest }) {
     return (
         <Route
             {...rest}
             render={props =>
-                logged && type === 2
+                conditions
                     ? <C {...props}  />
                     : <Redirect
                         to={"/"}

@@ -1,5 +1,4 @@
 import React from "react";
-import faker from 'faker';
 import { connect } from 'react-redux';
 import { getNewUsers, logout } from "../../../actions";
 import {book, check, edit, errorOutline, loading, logoutIcon, remove, verified} from "../../../assets/icons";
@@ -10,14 +9,11 @@ class Home extends React.Component {
     state = { query: '' }
 
     componentDidMount() {
+        console.log("comp")
         this.props.getNewUsers(this.props.auth.token);
     }
 
     renderNewStudents = () => {
-
-        if (this.props.isThereLoading && this.props.loadingComponent === 'GetNewUsers') {
-            return loading("w-16 h-16 text-blueish")
-        }
 
         const { newUsers } = this.props;
 
@@ -66,6 +62,8 @@ class Home extends React.Component {
                 );
             }
         }
+
+        return loading("w-16 h-16 text-blueish")
     }
 
     render() {

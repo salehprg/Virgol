@@ -21,6 +21,10 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, isThereError: true, errorMessage: action.payload }
     }
 
+    if (action.type === "SEND_CODE_FAILED") {
+        return { ...state, isThereError: true, errorMessage: action.payload }
+    }
+
     if (action.type === 'FADE_ERROR') {
         return INITIAL_STATE
     }

@@ -48,10 +48,6 @@ class Base extends React.Component {
 
     renderBases = () => {
 
-        if (this.props.isThereLoading && this.props.loadingComponent === 'GetAllCategory') {
-            return loading("w-16 h-16 text-blueish")
-        }
-
         const { categories } = this.props;
 
         if (categories !== null) {
@@ -108,6 +104,8 @@ class Base extends React.Component {
                 );
             }
         }
+
+        return loading("w-16 h-16 text-blueish")
 
     }
 

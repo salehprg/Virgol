@@ -1,9 +1,9 @@
 const INITIAL_STATE = {
-    'newUsers' : [],
-    'categories': [],
-    'courses': [],
-    'teachers' : [],
-    'students' : [],
+    'newUsers' : null,
+    'categories': null,
+    'courses': null,
+    'teachers' : null,
+    'students' : null,
 }
 
 export default (state = INITIAL_STATE, action) => {

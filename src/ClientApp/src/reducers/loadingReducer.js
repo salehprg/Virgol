@@ -37,6 +37,10 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, isThereLoading: true, loadingComponent: 'addNewTeacher'}
     }
 
+    if (action.type === "SEND_CODE_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: 'sendCode'}
+    }
+
     if (action.type === 'FADE_LOADING') {
         return INITIAL_STATE
     }
