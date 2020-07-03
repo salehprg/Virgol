@@ -27,13 +27,6 @@ RUN dotnet build Virgol.School.csproj -c Release
 # WORKDIR /src/Presentation/Virgol.School 
 RUN dotnet publish Virgol.School.csproj -c Release -o /app/published --self-contained false
 
-# # copy everything else and build app
-# COPY src/. ./aspnetapp/
-# WORKDIR /source/aspnetapp
-# RUN dotnet publish -c release -o /app --self-contained false
-RUN ls
-# --no-restore
-
 # final stage/image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 
@@ -41,6 +34,6 @@ RUN apt update -yq \
     && apt install nano -yq
 WORKDIR /app
 
-COPY --from=build /app ./
+COPY --from=build /app/published ./
 ENTRYPOINT ["./Virgol.School"]
 # ENTRYPOINT ["tail", "-f", "/dev/null"]
