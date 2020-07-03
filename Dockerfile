@@ -25,5 +25,5 @@ RUN apt update -yq \
     && apt install nano -yq
 WORKDIR /app
 COPY --from=build /app ./
-ENTRYPOINT ["./lms-with-moodle"]
+ENTRYPOINT ["./Virgol.School"]
 # ENTRYPOINT ["tail", "-f", "/dev/null"]

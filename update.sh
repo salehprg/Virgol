@@ -9,4 +9,5 @@ docker run \
     --restart=always \
     --name=lms_0.3 \
     -d goldenstarc/lms:0.3
+# docker login
 # docker push goldenstarc/lms:0.3

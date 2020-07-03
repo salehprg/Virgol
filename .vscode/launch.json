@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/bin/Debug/netcoreapp3.1/lms-with-moodle.dll",
+            "program": "${workspaceFolder}/src/bin/Debug/netcoreapp3.1/Virgol.School.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
