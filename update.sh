@@ -1,4 +1,4 @@
-# sudo git pull
+sudo git pull
 # git config --global user.name 'your user name'
 # git config --global user.password 'your password'
 docker build -t goldenstarc/virgol:1.2.0 .
