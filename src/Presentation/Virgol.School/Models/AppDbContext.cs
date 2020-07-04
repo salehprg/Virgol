@@ -15,9 +15,11 @@ namespace Models
         }
 
         public DbSet<TeacherModel_View> TeacherView {get; set;}
-        public DbSet<ScheduleDetail> ScheduleDetails {get; set;}
+        public DbSet<CourseNotify> CourseNotifies {get; set;}
         public DbSet<TeacherCourseInfo> TeacherCourse {get; set;}
         public DbSet<VerificationCodeModel> VerificationCodes {get; set;}
+        public DbSet<Meeting> Meetings {get; set;}
+        public DbSet<ParticipantInfo> ParticipantInfos {get; set;}
 
 
         protected override void OnModelCreating(ModelBuilder builder)

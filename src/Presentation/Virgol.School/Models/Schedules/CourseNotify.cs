@@ -1,6 +1,6 @@
 using System;
 
-public class ScheduleDetail {
+public class CourseNotify {
     //we set name data in database for having better performance
     public int Id {get; set;}
     public int StudentId {get; set;}

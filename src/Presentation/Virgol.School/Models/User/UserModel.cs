@@ -12,6 +12,7 @@ namespace Models.User
 
         public string ShDocument {get; set;}
         public string Document2 {get; set;}
+        public int Moodle_Id {get; set;}
     }
 
 }

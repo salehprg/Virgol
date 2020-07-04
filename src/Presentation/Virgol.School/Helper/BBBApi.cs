@@ -41,7 +41,7 @@ namespace lms_with_moodle.Helper
             string checkSum = "";
             checkSum = SHA1Creator.sha1Creator(data + appSettings.BBBSecret);
 
-            Uri uri = new Uri (BaseUrl + modifiedData + "checksum=" + checkSum );
+            Uri uri = new Uri (BaseUrl + modifiedData + "checksum=" + checkSum.ToLower() );
             HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
             
             if (response.IsSuccessStatusCode)  
@@ -61,7 +61,7 @@ namespace lms_with_moodle.Helper
 
 #region ApiFunctions
 
-        public async Task<Meetings> GetMeetings()
+        public async Task<MeetingsResponse> GetMeetings()
         {
             try
             {
@@ -72,7 +72,7 @@ namespace lms_with_moodle.Helper
 
                 var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
 
-                return meetingsInfo.meetings;
+                return meetingsInfo;
             }
             catch(Exception ex)
             {

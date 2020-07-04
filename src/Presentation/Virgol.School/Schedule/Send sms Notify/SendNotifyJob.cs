@@ -32,7 +32,7 @@ namespace Schedule
                 {
                     var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
                     var appSetting = scope.ServiceProvider.GetService<IOptions<AppSettings>>().Value;
-                    List<ScheduleDetail> courseNotifies = dbContext.ScheduleDetails.Where(x => !x.Sent 
+                    List<CourseNotify> courseNotifies = dbContext.CourseNotifies.Where(x => !x.Sent 
                                                                                             && (x.CourseTime - DateTime.Now).TotalMinutes <= 30).ToList(); // Courses in next 30 minutes
 
                     PersianCalendar pc = new PersianCalendar();
@@ -53,7 +53,7 @@ namespace Schedule
 
                         smsApi.SendSms(new String[] {student.PhoneNumber} , Message);
 
-                        dbContext.ScheduleDetails.Update(courseNotif);
+                        dbContext.CourseNotifies.Update(courseNotif);
                         dbContext.SaveChanges();
                     }
                 }

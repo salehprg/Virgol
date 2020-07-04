@@ -119,6 +119,27 @@ namespace lms_with_moodle.Helper
             }
 
         }
+
+        public async Task<string> GetUserIdNumber(string userId)
+        {
+            try
+            {
+                string FunctionName = "core_user_get_users";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&criteria[0][key]=id&criteria[0][value]=" + userId;
+
+                HttpResponseModel _response = await sendData(data);
+                UserInfo_moodle user = JsonConvert.DeserializeObject <UserBase> (_response.Message).users[0]; 
+
+                return user.idnumber;
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+
+        }
         public async Task<List<CourseDetail>> getUserCourses(int UserId)
         {
             string FunctionName = "core_enrol_get_users_courses";

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200704083955_AttendeeCheck")]
+    partial class AttendeeCheck
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,20 +61,14 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("CheckCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("Finished")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModeretorId")
+                    b.Property<int>("Moodle_Id")
                         .HasColumnType("int");
 
                     b.Property<int>("PresentCount")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -295,9 +291,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<string>("MelliCode")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Moodle_Id")
-                        .HasColumnType("int");
 
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(256)")
