@@ -72,6 +72,7 @@ namespace Schedule
                         else
                         {
                             Meeting meeting = new Meeting();
+                            meeting.MeetingName = newMeeting.meetingName;
                             meeting.BBB_MeetingId = newMeeting.meetingID;
                             meeting.StartTime = DateTime.Now;
                             meeting.ModeretorId = newMeeting.attendees.attendee.Where(x => x.role == "MODERATOR").FirstOrDefault().userID;

@@ -2,6 +2,7 @@ using System;
 
 public class Meeting {
     public int Id {get; set;}
+    public string MeetingName {get; set;} //Meeting Id that bbb give us
     public string BBB_MeetingId {get; set;} //Meeting Id that bbb give us
     public int AttendeeCount {get; set;}
     public int PresentCount {get; set;}
