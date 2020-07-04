@@ -89,7 +89,7 @@ namespace lms_with_moodle.Controllers
                     participant.FirstName = user.FirstName;
                     participant.LasstName = user.LastName;
                     participant.IdNumber = user.MelliCode;
-                    participant.PresentPercent = attendee.PresentCount / meeting.CheckCount * 100;
+                    participant.PresentPercent = ((float)attendee.PresentCount / (float)meeting.CheckCount) * 100;
 
                     participant.IsPresent = (participant.PresentPercent < 75 ? false : true);
 

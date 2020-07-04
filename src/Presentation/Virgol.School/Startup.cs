@@ -118,14 +118,14 @@ namespace lms_with_moodle
             services.AddSingleton<SendNotifyJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(SendNotifyJob),
-                cronExpression: "* 0/5 * ? * * *"));
+                cronExpression: "0 */5 * ? * * *"));
 
 
             // Add Send Sms Notify job
             services.AddSingleton<CheckAttendeeJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(CheckAttendeeJob),
-                cronExpression: "* 0/5 * ? * * *"));
+                cronExpression: "0 */1 * ? * * *"));
 
 
             services.AddHostedService<QuartzHostedService>();

@@ -3,6 +3,6 @@ public class Participant_View {
     public string FirstName {get; set;}
     public string LasstName {get; set;}
     public string IdNumber {get; set;}
-    public int PresentPercent {get; set;}
+    public float PresentPercent {get; set;}
     public bool IsPresent {get; set;}
 }
