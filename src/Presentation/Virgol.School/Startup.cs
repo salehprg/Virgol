@@ -125,7 +125,7 @@ namespace lms_with_moodle
             services.AddSingleton<CheckAttendeeJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(CheckAttendeeJob),
-                cronExpression: "0 */1 * ? * * *"));
+                cronExpression: "0 */5 * ? * * *"));
 
 
             services.AddHostedService<QuartzHostedService>();
