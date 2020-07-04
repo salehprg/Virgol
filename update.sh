@@ -9,5 +9,5 @@ docker run \
     --restart=always \
     --name=virgol_1.2.0 \
     -d goldenstarc/virgol_1.2.0
-docker login
-docker push goldenstarc/virgol:1.2.0
+# docker login
+# docker push goldenstarc/virgol:1.2.0
