@@ -1,12 +1,13 @@
 sudo git pull
 # git config --global user.name 'your user name'
 # git config --global user.password 'your password'
-docker build -t goldenstarc/lms:0.3 .
-docker stop lms_0.3
-docker rm lms_0.3
+docker build -t goldenstarc/virgol:1.2.0 .
+docker stop virgol_1.2.0
+docker rm virgol_1.2.0
 docker run \
     -p 5001:80 \
     --restart=always \
-    --name=lms_0.3 \
-    -d goldenstarc/lms:0.3
-# docker push goldenstarc/lms:0.3
+    --name=virgol_1.2.0 \
+    -d goldenstarc/virgol_1.2.0
+docker login
+docker push goldenstarc/virgol:1.2.0

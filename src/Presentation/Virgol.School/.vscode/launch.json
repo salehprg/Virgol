@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/bin/Debug/netcoreapp3.1/Virgol.School.dll",
+            "program": "${workspaceFolder}/bin/Debug/netcoreapp3.1/Virgol.School.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
@@ -21,7 +21,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/src/Views"
+                "/Views": "${workspaceFolder}/Views"
             }
         },
         {
