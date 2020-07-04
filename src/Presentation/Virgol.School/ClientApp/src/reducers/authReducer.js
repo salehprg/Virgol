@@ -2,7 +2,11 @@ const INITIAL_STATE = {
     'isLogged' : false,
     'userInfo' : null,
     'status' : null,
-    'sendCode' : false
+    'sendCode' : {
+        status: false,
+        melliCode: null,
+        success: null
+    }
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -20,13 +24,22 @@ export default (state = INITIAL_STATE, action) => {
         return INITIAL_STATE
 
     if (action.type === 'USER_STATUS')
-        return { ...state, status: action.payload }
+        return { ...state, status: true }
 
     if (action.type === 'REMOVE_STATUS')
         return { ...state, status: null }
 
     if (action.type === 'SEND_CODE')
-        return { ...state, sendCode: true }
+        return { ...state, sendCode: { status: true, melliCode: action.payload, success: null } }
+
+    if (action.type === 'FORGOT_PASS_OK')
+        return { ...state, sendCode: { status: false, melliCode: null, success: true } }
+
+    if (action.type === 'FORGOT_PASS_OK_FADE')
+        return { ...state, sendCode: { status: false, melliCode: null, success: null } }
+
+    if (action.type === 'FADE_SEND_CODE')
+        return { ...state, sendCode: { status: false, melliCode: null, success: null } }
 
     return state;
 

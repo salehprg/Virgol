@@ -1,5 +1,6 @@
 import history from "../history";
 import lms from "../apis/lms";
+import {config} from "../assets/constants";
 
 export const login = formValues => async dispatch => {
 
@@ -9,21 +10,24 @@ export const login = formValues => async dispatch => {
         const response = await lms.post('/api/Users/LoginUser', formValues);
         dispatch({ type: 'FADE_LOADING' });
 
-        const { userType } = response.data;
-        const { confirmedAcc } = response.data.userInformation;
-
-        if (!confirmedAcc) {
-            dispatch({ type: 'USER_STATUS', payload: response.data });
-            history.push("/status");
-        } else {
-            dispatch({ type: 'LOGIN', payload: response.data });
-            switch (userType) {
-                case 2: history.push("/a/dashboard");
-            }
+        dispatch({ type: 'LOGIN', payload: response.data })
+        switch (response.data.userType) {
+            case 2:
+                history.push('/a/dashboard');
         }
 
+
     } catch (e) {
-        dispatch({ type: 'LOGIN_FAILED', payload: 'نام کاربری یا رمز عبور اشتباه است' });
+        switch (e.response.status) {
+            case 401:
+                dispatch({ type: 'LOGIN_FAILED', payload: 'نام کاربری یا رمز عبور اشتباه است' });
+                break;
+
+            case 423:
+                dispatch({ type: 'USER_STATUS' })
+                history.push('/status');
+        }
+
         dispatch({ type: 'FADE_LOADING' });
     }
 
@@ -59,16 +63,44 @@ export const sendVerificationCode = formValues => async dispatch => {
 
     try {
         dispatch({ type: 'SEND_CODE_LOADING' });
-        const response = await lms.post('​/api/Users/SendVerificationCode', formValues);
-        dispatch({ type: 'SEND_CODE' });
+        const response = await lms.post(`/api/Users/SendVerificationCode?IdNumer=${formValues.IdNumer}`);
+        dispatch({ type: 'SEND_CODE', payload: formValues.IdNumer });
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
-        console.log(e)
         dispatch({ type: 'SEND_CODE_FAILED', payload: 'خطایی در برقراری ارتباط رخ داد' });
         dispatch({ type: 'FADE_LOADING' });
     }
 
+}
+
+export const forgotPassword = (melliCode, verificationCode) => async dispatch => {
+
+    try {
+        dispatch({ type: 'FORGOT_PASS_LOADING' });
+        const response = await lms.post(`/api/Users/SendVerificationCode`, { melliCode, verificationCode });
+
+        if (response.data) {
+            dispatch({ type: 'FORGOT_PASS_OK' });
+        } else {
+            dispatch({ type: 'WRONG_CODE_ERROR', payload: 'کد وارد شده اشتباه است' });
+        }
+
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        dispatch({ type: 'FORGOT_PASS_FAILED', payload: 'خطایی در برقراری ارتباط رخ داد' });
+        dispatch({ type: 'FADE_LOADING' });
+    }
+
+}
+
+export const forgotPassFade = () => {
+    return { type: 'FORGOT_PASS_OK_FADE' }
+}
+
+export const sendCodeFade = () => {
+    return { type: 'FADE_SEND_CODE' }
 }
 
 export const getNewUsers = token => async dispatch => {
@@ -182,8 +214,6 @@ export const addNewCategory = (token, formValues) => async dispatch => {
             }
         });
 
-        console.log(response.data)
-
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ADD_NEW_CATEGORY', payload: response.data });
 
@@ -243,6 +273,7 @@ export const deleteCategory = (token, id) => async dispatch => {
 
     try {
 
+        dispatch({ type: 'DELETE_CATEGORY_LOADING', payload: id });
         const response = await lms.post("/api/Admin/DeleteCategory", {"id": id} ,{
             headers: {
                 authorization: `Bearer ${token}`
@@ -250,9 +281,10 @@ export const deleteCategory = (token, id) => async dispatch => {
         });
 
         dispatch({ type: 'DELETE_CATEGORY', payload: id})
+        dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
-
+        dispatch({ type: 'FADE_LOADING' });
     }
 
 }

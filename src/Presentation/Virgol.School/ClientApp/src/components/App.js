@@ -26,7 +26,7 @@ const App = (props) => {
                     <AuthenticatedRoute
                         path="/status"
                         component={Status}
-                        conditions={props.status !== null}
+                        conditions={props.status}
                         exact
                     />
                     <Route path="" component={NoFound} />

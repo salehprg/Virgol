@@ -5,10 +5,11 @@ import {book, edit, remove, loading, errorOutline} from "../../../assets/icons";
 import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
 import lms from "../../../apis/lms";
+import Modal from "../../Modal";
 
 class Base extends React.Component {
 
-    state = { shownCatId: null, courses: [], loading: null, query: '' }
+    state = { shownCatId: null, courses: [], loading: null, query: '', renderModal: false, deleteHolderId: null }
 
     componentDidMount() {
         this.props.getAllCategory(this.props.auth.token);
@@ -58,8 +59,12 @@ class Base extends React.Component {
                             <td className="py-2">{category.name}</td>
                             <td className="flex flex-col items-center py-2">
                                 <div className="flex flex-row justify-center">
-                                    <div onClick={() => this.props.deleteCategory(this.props.auth.token, category.id)} data-tip="حذف">
-                                        {remove("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")}
+                                    <div onClick={() => this.showModal(category.id)} data-tip="حذف">
+                                        {this.props.loadingComponent !== category.id ?
+                                            remove("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")
+                                            :
+                                            loading("w-8 h-8 text-blueish")
+                                        }
                                     </div>
                                     <div data-tip="ویرایش">
                                         {edit("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")}
@@ -154,10 +159,24 @@ class Base extends React.Component {
         this.props.addNewCategory(this.props.auth.token, { name: formValues.baseName });
     }
 
+    showModal = (id) => {
+        this.setState({ renderModal: true, deleteHolderId: id })
+    }
+
+    onAcceptDelete = () => {
+        this.props.deleteCategory(this.props.auth.token, this.state.deleteHolderId);
+        this.setState({ renderModal: false, deleteHolderId: null })
+    }
+
+    onCancelDelete = () => {
+        this.setState({ renderModal: false, deleteHolderId: null })
+    }
+
     render() {
         return (
             <div className="w-full h-full pt-12 flex md:flex-row flex-col md:items-start items-center md:justify-end">
                 <ReactTooltip />
+                {this.state.renderModal ? <Modal accept={this.onAcceptDelete} cancel={this.onCancelDelete} /> : null}
                 <div className="md:w-1/4 w-5/6 md:order-1 order-2 flex flex-col items-end">
                     <input
                         type="text"

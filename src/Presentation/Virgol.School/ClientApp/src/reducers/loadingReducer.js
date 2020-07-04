@@ -37,8 +37,16 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, isThereLoading: true, loadingComponent: 'addNewTeacher'}
     }
 
+    if (action.type === "DELETE_CATEGORY_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: action.payload}
+    }
+
     if (action.type === "SEND_CODE_LOADING") {
         return { ...state, isThereLoading: true, loadingComponent: 'sendCode'}
+    }
+
+    if (action.type === "FORGOT_PASS_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: 'forgotPass'}
     }
 
     if (action.type === 'FADE_LOADING') {

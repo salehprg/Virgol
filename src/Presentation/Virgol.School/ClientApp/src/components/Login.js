@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import { connect } from 'react-redux';
-import { login, fadeError, sendVerificationCode } from "../actions";
+import { login, fadeError, sendVerificationCode, sendCodeFade, forgotPassFade } from "../actions";
 import {Field, reduxForm} from "redux-form";
 import {fingerprint, lock, loading, heart} from "../assets/icons";
 import ForgotPassCode from "./ForgotPassCode";
@@ -10,10 +10,35 @@ class Login extends React.Component {
 
     state = { renderContent: "loginForm" }
 
+    goHome = () => {
+        this.setState({ renderContent: 'loginForm' })
+        this.props.sendCodeFade()
+    }
+
+    fadeSuccess = () => {
+        this.props.forgotPassFade();
+        this.setState({ renderContent: 'loginForm' })
+    }
+
     renderContent = () => {
 
-        if (this.state.sendCode) {
-            this.setState({ renderContent: "get code" })
+        if (this.props.sendCode.success) {
+            return (
+                <React.Fragment>
+                    <p dir="rtl" className="text-center w-5/6">رمز ورودتو موقتا به کد ملیت تغییر دادیم وارد شو و رمز ورودتو حتما عوض کن</p>
+                    <span onClick={this.fadeSuccess} className="cursor-pointer transition-all duration-200 hover:text-green-400">بازگشت به صفحه ورود</span>
+                </React.Fragment>
+            );
+        }
+
+        if (this.props.sendCode.status) {
+            return (
+                <React.Fragment>
+                    <ForgotPassCode />
+                    <span onClick={() => this.setState({ renderContent: 'forgot password' })} className="cursor-pointer transition-all duration-200 hover:text-red-400">پیامکی دریافت نکردید؟</span>
+                    <span onClick={this.goHome} className="cursor-pointer transition-all duration-200 hover:text-green-400">بازگشبت به صفحه ورود</span>
+                </React.Fragment>
+            );
         }
 
         if (this.state.renderContent === 'loginForm') {
@@ -60,13 +85,6 @@ class Login extends React.Component {
                     <span onClick={() => this.setState({ renderContent: 'loginForm' })} className="cursor-pointer transition-all duration-200 hover:text-green-400">بازگشت به صفحه ورود</span>
                 </React.Fragment>
         );
-        } else {
-            return (
-                <React.Fragment>
-                    <ForgotPassCode />
-                    <span onClick={() => this.setState({ renderContent: 'forgot password' })} className="cursor-pointer transition-all duration-200 hover:text-red-400">پیامکی دریافت نکردید؟</span>
-                </React.Fragment>
-            );
         }
 
     }
@@ -113,7 +131,7 @@ class Login extends React.Component {
                     className={`bg-red-500 absolute top-0 hover:bg-red-700 text-white text-center px-4 py-2 mt-12 ${this.props.isThereError ? 'opacity-100 cursor-pointer transition-all duration-500' : 'opacity-0'}`}
                     onClick={this.hideError}
                 >
-                        {this.props.errorMessage ? this.props.errorMessage : ''}
+                        {this.props.isThereError ? this.props.errorMessage : ''}
                     </span>
             </div>
         );
@@ -146,4 +164,4 @@ const formWrapped = reduxForm({
     validate
 })(Login);
 
-export default connect(mapStateToProps, {login, fadeError, sendVerificationCode})(formWrapped);
+export default connect(mapStateToProps, {login, fadeError, sendVerificationCode, sendCodeFade, forgotPassFade})(formWrapped);

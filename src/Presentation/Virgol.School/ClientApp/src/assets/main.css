@@ -7898,7 +7898,7 @@ video {
 }
 
 .max-w-250 {
-  max-width: 250px;
+  max-width: 120px;
 }
 
 .max-w-none {
@@ -22276,7 +22276,7 @@ video {
   }
 
   .sm\:max-w-250 {
-    max-width: 250px;
+    max-width: 120px;
   }
 
   .sm\:max-w-none {
@@ -36655,7 +36655,7 @@ video {
   }
 
   .md\:max-w-250 {
-    max-width: 250px;
+    max-width: 120px;
   }
 
   .md\:max-w-none {
@@ -51034,7 +51034,7 @@ video {
   }
 
   .lg\:max-w-250 {
-    max-width: 250px;
+    max-width: 120px;
   }
 
   .lg\:max-w-none {
@@ -65413,7 +65413,7 @@ video {
   }
 
   .xl\:max-w-250 {
-    max-width: 250px;
+    max-width: 120px;
   }
 
   .xl\:max-w-none {
