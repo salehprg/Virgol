@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getNewUsers, logout } from "../../../actions";
 import {book, check, edit, errorOutline, loading, logoutIcon, remove, verified} from "../../../assets/icons";
 import ReactTooltip from "react-tooltip";
+import Modal from "../../Modal";
 
 class Home extends React.Component {
 

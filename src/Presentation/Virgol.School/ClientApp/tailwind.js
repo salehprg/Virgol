@@ -30,7 +30,7 @@ module.exports = {
         '1000' : '1000px',
       },
       maxWidth:{
-        '250' : '250px'
+        '250' : '120px'
       },
       minWidth: {
         '90' : '90px',

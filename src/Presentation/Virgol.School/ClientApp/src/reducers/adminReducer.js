@@ -24,7 +24,7 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, students: action.payload };
 
     if (action.type === 'ADD_NEW_CATEGORY')
-        return { ...state, students: [...state.students, action.payload]};
+        return { ...state, categories: [...state.categories, action.payload]};
 
     if (action.type === 'ADD_NEW_TEACHER')
         return { ...state, teachers: [...state.teachers, action.payload]};
