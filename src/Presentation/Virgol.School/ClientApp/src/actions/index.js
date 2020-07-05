@@ -1,6 +1,5 @@
 import history from "../history";
 import lms from "../apis/lms";
-import {config} from "../assets/constants";
 
 export const login = formValues => async dispatch => {
 
@@ -203,6 +202,26 @@ export const getAllStudents = token => async dispatch => {
 
 }
 
+export const getCatCourses = (token, id) => async dispatch => {
+
+    try {
+
+        dispatch({ type: 'GET_CAT_COURSES_LOADING' });
+        const response = await lms.get(`/api/Admin/GetAllCourseInCat?CategoryId=${id}`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'GET_CAT_INFO', payload: response.data })
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        dispatch({ type: 'FADE_LOADING' });
+    }
+
+}
+
 export const addNewCategory = (token, formValues) => async dispatch => {
 
     try {
@@ -214,8 +233,8 @@ export const addNewCategory = (token, formValues) => async dispatch => {
             }
         });
 
-        dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ADD_NEW_CATEGORY', payload: response.data });
+        dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
         dispatch({ type: 'FADE_LOADING' });
@@ -260,11 +279,19 @@ export const addBulkUser = (token, excel) => async dispatch => {
         });
 
         dispatch({ type: 'FADE_LOADING' });
-        // dispatch({ type: 'ADD_NEW_TEACHER', payload: response.data });
+        dispatch({ type: 'ADDED_BULK_USER' });
+
+        setTimeout(() => {
+            dispatch({ type: 'ADDED_BULK_USER_SUCCESS_FADE' });
+        }, 3000);
 
     } catch (e) {
         dispatch({ type: 'FADE_LOADING' });
-        dispatch({ type: 'ERROR_ADDING_NEW_TEACHER', payload: 'add new teacher error' });
+        dispatch({ type: 'ERROR_ADDING_BULK_USER', payload: 'add bulk user error' });
+
+        setTimeout(() => {
+            dispatch({ type: 'FADE_ERROR' });
+        }, 2000);
     }
 
 }
@@ -291,6 +318,73 @@ export const deleteCategory = (token, id) => async dispatch => {
 
 export const removeStatus = () => {
     return { type: 'REMOVE_STATUS' }
+}
+
+export const addNewCourse = (token, formValues) => async dispatch => {
+
+    try {
+
+        dispatch({ type: 'ADD_NEW_COURSE_LOADING' });
+        const response = await lms.put("/api/Admin/AddNewCourse", formValues ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'ADD_NEW_COURSE', payload: response.data });
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        dispatch({ type: 'FADE_LOADING' });
+        dispatch({ type: 'ERROR_ADDING_NEW_COURSE', payload: 'add new course error' });
+    }
+
+}
+
+export const deleteCatCourse = (token, id, catId) => async dispatch => {
+
+    try {
+
+        const body = catId === null ? {"id": id} : {"id": id, "categoryId": catId};
+
+        dispatch({ type: 'DELETE_COURSE_LOADING', payload: id });
+        const response = await lms.post("/api/Admin/DeleteCourse", body,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'DELETE_COURSE', payload: id})
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        dispatch({ type: 'FADE_LOADING' });
+    }
+
+}
+
+export const deleteTeacher = (token, id) => async dispatch => {
+
+    try {
+
+        dispatch({ type: 'DELETE_TEACHER_LOADING', payload: id });
+        const response = await lms.delete(`/api/Admin/DeleteTeacher?teacherId=${id}` ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'DELETE_TEACHER', payload: id})
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        dispatch({ type: 'FADE_LOADING' });
+    }
+
+}
+
+export const wipeCatInfo = () => {
+    return {type: 'WIPE_CAT_INFO'}
 }
 
 export const fadeError = (message) => {

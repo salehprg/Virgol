@@ -3,12 +3,12 @@ import {Link} from "react-router-dom";
 import { connect } from 'react-redux';
 import { login, fadeError, sendVerificationCode, sendCodeFade, forgotPassFade } from "../actions";
 import {Field, reduxForm} from "redux-form";
-import {fingerprint, lock, loading, heart} from "../assets/icons";
+import {fingerprint, lock, loading, heart, eye} from "../assets/icons";
 import ForgotPassCode from "./ForgotPassCode";
 
 class Login extends React.Component {
 
-    state = { renderContent: "loginForm" }
+    state = { renderContent: "loginForm", passVisible: false }
 
     goHome = () => {
         this.setState({ renderContent: 'loginForm' })
@@ -54,7 +54,7 @@ class Login extends React.Component {
                         />
                         <Field
                             name="password"
-                            type="password"
+                            type={this.state.passVisible ? "text" : "password"}
                             placeholder="رمز ورود"
                             component={this.renderFormInputs}
                             icon={lock("text-golden w-6 h-6")}
@@ -89,9 +89,20 @@ class Login extends React.Component {
 
     }
 
+    revealPass = () => {
+        this.setState({ passVisible: true })
+    }
+
+    hidePass = () => {
+        this.setState({ passVisible: false })
+    }
+
     renderFormInputs = ({ input, meta, placeholder, icon, type }) => {
         return (
             <div className={`flex px-1 flex-row my-6 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
+                <div onMouseDown={this.revealPass} onMouseUp={this.hidePass} >
+                    {eye(`w-5 h-5 text-grayish cursor-pointer ${input.name === "password" ? '' : 'invisible'}`)}
+                </div>
                 <input
                     {...input}
                     className="w-full px-2 py-3 placeholder-grayish focus:outline-none"

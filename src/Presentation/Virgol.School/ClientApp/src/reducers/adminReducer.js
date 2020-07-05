@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     'courses': null,
     'teachers' : null,
     'students' : null,
+    'catInfo': null
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -23,6 +24,9 @@ export default (state = INITIAL_STATE, action) => {
     if (action.type === 'GET_ALL_STUDENTS')
         return { ...state, students: action.payload };
 
+    if (action.type === 'GET_CAT_INFO')
+        return { ...state, catInfo: action.payload };
+
     if (action.type === 'ADD_NEW_CATEGORY')
         return { ...state, categories: [...state.categories, action.payload]};
 
@@ -31,6 +35,24 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === 'DELETE_CATEGORY')
         return { ...state, categories: state.categories.filter(element => element.id !== action.payload) }
+
+    if (action.type === 'ADD_NEW_COURSE')
+        return { ...state, teachers: [...state.teachers, action.payload]};
+
+    if (action.type === 'ADD_NEW_COURSE')
+        return { ...state, catInfo: [...state.catInfo, action.payload]};
+
+    if (action.type === 'DELETE_COURSE')
+        return { ...state,
+            courses: state.courses.filter(element => element.id !== action.payload),
+            catInfo: state.catInfo.filter(element => element.id !== action.payload)
+    }
+
+    if (action.type === 'DELETE_TEACHER')
+        return { ...state, teachers: state.teachers.filter(element => element.id !== action.payload) }
+
+    if (action.type === 'WIPE_CAT_INFO')
+        return { ...state, catInfo: null }
 
     if (action.type === 'LOGOUT')
         return INITIAL_STATE

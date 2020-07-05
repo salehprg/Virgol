@@ -84,14 +84,27 @@ class Students extends React.Component {
 
     }
 
-    onAddBulkStudent = () => {
+    onAddBulkStudent = (e) => {
+        e.preventDefault();
         this.props.addBulkUser(this.props.auth.token, this.state.excel);
+    }
+
+    renderAddBulkStatus = () => {
+        if (this.props.isThereSuccess) {
+            return (
+                <span className={`text-center w-5/6 bg-green-300 px-2 py-1 transition-all duration-300 ${this.props.isThereSuccess ? 'opacity-100' : 'opacity-0'}`}>اپلود با موفقیت انجام شد. لیست دانش آموزان تا لحظاتی دیگر بروزرسانی میشود</span>
+            );
+        } else if (this.props.isThereError) {
+            return (
+                <span className={`text-center w-5/6 bg-red-300 px-2 py-1 transition-all duration-300 ${this.props.isThereError ? 'opacity-100' : 'opacity-0'}`}>خطایی رخ داد</span>
+            );
+        }
     }
 
     render() {
         return (
             <div className="w-full h-full pt-12 flex md:flex-row flex-col md:items-start items-center justify-end">
-                <div className="md:w-1/4 w-5/6 md:mx-4 mx-0 md:order-1 order-2 flex flex-col items-end">
+                <div className="md:w-1/4 w-5/6 md:mx-4 mx-0 md:order-1 order-2 flex flex-col items-center">
                     <div className={`w-full md:mx-4 flex flex-col items-end`}>
                         <input
                             className="md:w-1/3 w-1/2 invisible mb-2 px-4 py-1 rounded-lg text-right text-grayish focus:outline-none focus:shadow-outline"
@@ -133,6 +146,7 @@ class Students extends React.Component {
                             onSubmit={this.onAddBulkStudent}
                         />
                     </div>
+                    {this.renderAddBulkStatus()}
                 </div>
                 <div className="md:w-2/3 w-5/6 max-h-screen mb-12 md:order-12 order-1 flex flex-col items-end">
                     <input
@@ -172,7 +186,11 @@ const mapStateToProps = (state) => {
         auth: state.auth.userInfo,
         students: state.adminData.students,
         isThereLoading: state.loading.isThereLoading,
-        loadingComponent: state.loading.loadingComponent
+        loadingComponent: state.loading.loadingComponent,
+        isThereSuccess: state.success.isThereSuccess,
+        successMessage: state.success.successMessage,
+        isThereError: state.error.isThereError,
+        errorMessage: state.error.errorMessage
     }
 }
 

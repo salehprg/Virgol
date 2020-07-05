@@ -8,6 +8,7 @@ import Dashboard from "./dashboard/teacher/Dashboard";
 import SignUp from "./SignUp";
 import Status from "./Status";
 import NoFound from "./NoFound";
+import ShowCat from "./dashboard/teacher/Category/ShowCat";
 
 const App = (props) => {
 
@@ -27,6 +28,12 @@ const App = (props) => {
                         path="/status"
                         component={Status}
                         conditions={props.status}
+                        exact
+                    />
+                    <AuthenticatedRoute
+                        path="/cat/:id"
+                        component={ShowCat}
+                        conditions={props.authenticated && props.userType === 2}
                         exact
                     />
                     <Route path="" component={NoFound} />
