@@ -12,6 +12,7 @@ using Models.User;
 using Models.MoodleApiResponse;
 using Models.MoodleApiResponse.warning;
 using Newtonsoft.Json;
+using Models.MoodleApiResponse.Activity_Grade_Info;
 
 namespace lms_with_moodle.Helper
 {
@@ -348,6 +349,29 @@ namespace lms_with_moodle.Helper
             }
         }
         
+        //Admin Role needed and for that , this function only call From AdminController or maybe TeacherController
+        public async Task<List<CourseDetail>> GetAllCourseInCat(int CategoryId)
+        {
+            string FunctionName = "core_course_get_courses_by_field";
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + (CategoryId != -1 ? "&field=category&value=" + CategoryId : "");
+
+            HttpResponseModel response = await sendData(data);
+            List<CourseDetail_moodle> items = JsonConvert.DeserializeObject <AllCourseCatDetail_moodle<CourseDetail_moodle>> (response.Message).items; 
+
+            List<CourseDetail> userCourses = new List<CourseDetail>();
+            foreach(var x in items)
+            {
+                if(x.format != "site")
+                {
+                    userCourses.Add(new CourseDetail{displayname = x.displayname
+                                                            , id = int.Parse(x.id)
+                                                            , shortname = x.shortname});
+                }
+            }
+
+            return userCourses;
+        }
+        
         #endregion
         //-----------------------
         
@@ -411,6 +435,17 @@ namespace lms_with_moodle.Helper
                 return false;
             }
         } 
+        
+        public async Task<List<CategoryDetail_moodle>> GetAllCategories()
+        {
+            string FunctionName = "core_course_get_categories";
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&&criteria[0][key]=visible&criteria[0][value]=1";
+
+            HttpResponseModel response = await sendData(data);
+            List<CategoryDetail_moodle> category = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (response.Message); 
+            
+            return category;
+        }
         public async Task<CategoryDetail> getCategoryDetail(int CategoryId)
         {
             string FunctionName = "core_course_get_categories";
@@ -432,6 +467,9 @@ namespace lms_with_moodle.Helper
         #endregion
         //-----------------------
 
+
+        //-------GradeReport-----
+        #region GradeReport
         public async Task<List<UserGrades>> getGrades(int UserId)
         {
             string FunctionName = "gradereport_overview_get_course_grades";
@@ -453,39 +491,33 @@ namespace lms_with_moodle.Helper
             return userGrades;
         }
 
-        //Admin Role needed and for that , this function only call From AdminController or maybe TeacherController
-        public async Task<List<CategoryDetail_moodle>> GetAllCategories()
-        {
-            string FunctionName = "core_course_get_categories";
-            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&&criteria[0][key]=visible&criteria[0][value]=1";
 
-            HttpResponseModel response = await sendData(data);
-            List<CategoryDetail_moodle> category = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (response.Message); 
-            
-            return category;
+        public class Grades
+        {
+            public List<AssignmentGrades_moodle> usergrades {get; set;}
         }
-
-        public async Task<List<CourseDetail>> GetAllCourseInCat(int CategoryId)
+        public async Task<List<AssignmentGrades_moodle>> getAllGradesInCourse(int CourseId)
         {
-            string FunctionName = "core_course_get_courses_by_field";
-            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + (CategoryId != -1 ? "&field=category&value=" + CategoryId : "");
-
-            HttpResponseModel response = await sendData(data);
-            List<CourseDetail_moodle> items = JsonConvert.DeserializeObject <AllCourseCatDetail_moodle<CourseDetail_moodle>> (response.Message).items; 
-
-            List<CourseDetail> userCourses = new List<CourseDetail>();
-            foreach(var x in items)
+            try
             {
-                if(x.format != "site")
-                {
-                    userCourses.Add(new CourseDetail{displayname = x.displayname
-                                                            , id = int.Parse(x.id)
-                                                            , shortname = x.shortname});
-                }
-            }
+                string FunctionName = "gradereport_user_get_grade_items";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&courseid=" + CourseId;
 
-            return userCourses;
+                HttpResponseModel response = await sendData(data);
+                Grades Grades = JsonConvert.DeserializeObject<Grades> (response.Message , new JsonSerializerSettings(){NullValueHandling = NullValueHandling.Ignore}); 
+
+                return Grades.usergrades;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
         }
+        #endregion
+        //-----------------------
+
+        
 
     #endregion
 

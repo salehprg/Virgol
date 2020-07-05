@@ -23,11 +23,13 @@ using Models;
 using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Models.MoodleApiResponse.Activity_Grade_Info;
 
 namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [Authorize(Roles = "Teacher")]
     public class TeacherController : ControllerBase
     {
         private readonly AppSettings appSettings;
@@ -49,6 +51,8 @@ namespace lms_with_moodle.Controllers
             ldap = new LDAP_db(appSettings);
         }
 
+
+#region Meeting
 
         [HttpGet]
         [ProducesResponseType(typeof(List<Meeting>), 200)]
@@ -103,5 +107,107 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+    
+#endregion
+
+#region Category
+        [HttpGet]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        public async Task<IActionResult> GetCetegoryNames()
+        {
+            
+            //userManager getuserid get MelliCode field of user beacause we set in token
+            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
+
+            if(UserId != -1)
+            {
+                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
+                var groupedCategory = userCourses.GroupBy(course => course.categoryId).ToList(); //لیستی برای بدست اوردن ایدی دسته بندی ها
+
+                List<CategoryDetail> categoryDetails = new List<CategoryDetail>();
+
+                foreach(var id in groupedCategory)
+                {
+                    CategoryDetail categoryDetail = await moodleApi.getCategoryDetail(id.Key);
+                    categoryDetail.CourseCount = id.Count();
+                    
+                    categoryDetails.Add(categoryDetail);
+                }
+
+                return Ok(categoryDetails.Where(x => x.ParentCategory != 0).ToList());
+            }
+            else{
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
+        {
+            
+            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
+
+            if(UserId != -1)
+            {
+                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
+
+                userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
+                userCourses.ForEach(x => x.CourseUrl = appSettings.moddleCourseUrl + x.id);
+
+                return Ok(userCourses);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+#endregion
+
+#region Grades
+        [HttpGet]
+        [ProducesResponseType(typeof(List<GradeReport>), 200)]
+        public async Task<IActionResult> GetGradesInCourse(int CourseId) 
+        {
+            try
+            {
+                List<AssignmentGrades_moodle> allGrades = await moodleApi.getAllGradesInCourse(CourseId);
+                List<GradeReport> gradeReports = new List<GradeReport>();
+
+                foreach(var grade in allGrades)
+                {
+                    GradeReport gradeReport = new GradeReport();
+
+                    List<GradeDetails> gradeDetails = new List<GradeDetails>();
+                    float totalGrade = 0;
+
+                    foreach(var detail in grade.gradeitems.Where(x => x.itemmodule == "quiz" || x.itemmodule == "assign"))
+                    {
+                        GradeDetails gradeDetail = new GradeDetails();
+                        gradeDetail.ActivityGrade = detail.graderaw;
+                        gradeDetail.ActivityName = detail.itemname;
+
+                        gradeDetails.Add(gradeDetail);
+
+                        totalGrade += detail.graderaw;
+                    }
+
+                    gradeReport.FullName = grade.userfullname;
+                    gradeReport.gradeDetails = gradeDetails;
+                    gradeReport.TotalGrade = totalGrade;
+
+                    gradeReports.Add(gradeReport);
+                }
+                
+                return Ok(gradeReports);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+#endregion
+
     }
 }

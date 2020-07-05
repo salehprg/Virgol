@@ -8,6 +8,6 @@ namespace Models.Teacher
 
         public int id {get; set;}
         public int TeacherId {get; set;}
-        public int CourseId {get; set;}
+        public int CourseId {get; set;} // Course Id in Moodle
     }
 }
