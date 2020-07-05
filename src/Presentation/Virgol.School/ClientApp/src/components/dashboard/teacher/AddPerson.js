@@ -60,13 +60,14 @@ class AddPerson extends React.Component {
     }
 
     handleFileChange = (e) => {
-        this.setState({ file: e.target.files[0] })
+        this.setState({ file: e.target.files[0] });
+        this.props.handleFile(e.target.files[0]);
     }
 
     render() {
         return (
             <div ref={this.dropRef} className={`${this.state.dragging ? 'bg-green-200' : 'bg-white'} w-full mt-4 mx-4 flex flex-col items-center justify-center`}>
-                <form className="w-3/4 flex flex-col items-center pt-4 pb-8" onSubmit={() => this.props.onSubmit()}>
+                <form className="w-3/4 flex flex-col items-center pt-4 pb-8" onSubmit={(e) => this.props.onSubmit(e)}>
                     <input
                         onChange={(e) => this.handleFileChange(e)}
                         className="hidden"

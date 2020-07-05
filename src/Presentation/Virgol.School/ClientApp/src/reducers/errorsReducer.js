@@ -25,6 +25,14 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, isThereError: true, errorMessage: action.payload }
     }
 
+    if (action.type === "WRONG_CODE_ERROR") {
+        return { ...state, isThereError: true, errorMessage: action.payload }
+    }
+
+    if (action.type === "ERROR_ADDING_BULK_USER") {
+        return { ...state, isThereError: true, errorMessage: action.payload }
+    }
+
     if (action.type === 'FADE_ERROR') {
         return INITIAL_STATE
     }

@@ -177,6 +177,13 @@ namespace lms_with_moodle.Controllers
                                 }
 
                                 await moodleApi.CreateUsers(users);
+                                foreach(var user in users)
+                                {
+                                    int userMoodle_id = await moodleApi.GetUserId(user.MelliCode);
+                                    user.Moodle_Id = userMoodle_id;
+                                    appDbContext.Users.Update(user);
+                                }
+                                appDbContext.SaveChanges();
                             }
                             catch(Exception ex)
                             {

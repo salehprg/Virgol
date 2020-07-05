@@ -29,6 +29,10 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, isThereLoading: true, loadingComponent: 'GetAllStudents'}
     }
 
+    if (action.type === "GET_CAT_COURSES_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: 'getCatCourse'}
+    }
+
     if (action.type === "ADD_NEW_CATEGORY_LOADING") {
         return { ...state, isThereLoading: true, loadingComponent: 'addNewCategory'}
     }
@@ -37,8 +41,28 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, isThereLoading: true, loadingComponent: 'addNewTeacher'}
     }
 
+    if (action.type === "ADD_NEW_COURSE_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: 'addNewCourse'}
+    }
+
+    if (action.type === "DELETE_CATEGORY_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: action.payload}
+    }
+
+    if (action.type === "DELETE_TEACHER_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: action.payload}
+    }
+
     if (action.type === "SEND_CODE_LOADING") {
         return { ...state, isThereLoading: true, loadingComponent: 'sendCode'}
+    }
+
+    if (action.type === "FORGOT_PASS_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: 'forgotPass'}
+    }
+
+    if (action.type === "DELETE_COURSE_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: action.payload}
     }
 
     if (action.type === 'FADE_LOADING') {

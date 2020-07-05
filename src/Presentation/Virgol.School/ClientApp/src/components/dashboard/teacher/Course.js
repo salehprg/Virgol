@@ -1,15 +1,33 @@
 import React from "react";
 import faker from "faker";
 import { connect } from 'react-redux';
-import { getAllCourses } from "../../../actions";
+import { getAllCourses,deleteCatCourse } from "../../../actions";
 import {book, edit, errorOutline, loading, remove} from "../../../assets/icons";
+import Modal from "../../Modal";
 
 class Course extends React.Component {
 
-    state = { query: '' }
+    state = {
+        query: '',
+        renderModal: false,
+        deleteHolderId: null
+    }
 
     componentDidMount() {
         this.props.getAllCourses(this.props.auth.token);
+    }
+
+    showModal = (id, catID) => {
+        this.setState({ renderModal: true, deleteHolderId: id})
+    }
+
+    onAcceptDelete = () => {
+        this.props.deleteCatCourse(this.props.auth.token, this.state.deleteHolderId, null);
+        this.setState({ renderModal: false, deleteHolderId: null })
+    }
+
+    onCancelDelete = () => {
+        this.setState({ renderModal: false, deleteHolderId: null })
     }
 
     renderCourses = () => {
@@ -23,6 +41,17 @@ class Course extends React.Component {
                         <tr key={course.id}>
                             <td className="py-2">{course.shortname}</td>
                             <td className="py-2">{course.teacherName}</td>
+                            <td className="flex flex-col items-center py-2">
+                                <div className="flex flex-row justify-center">
+                                    <div onClick={() => this.showModal(course.id)} data-tip="حذف">
+                                        {this.props.loadingComponent !== course.id ?
+                                            remove("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")
+                                            :
+                                            loading("w-8 h-8 text-blueish")
+                                        }
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                     );
                 }
@@ -42,6 +71,7 @@ class Course extends React.Component {
                         <tr className="border-b-2 border-blueish">
                             <th className="px-8 py-2">نام</th>
                             <th className="px-8">نام معلم</th>
+                            <th className="px-8"> </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -59,6 +89,7 @@ class Course extends React.Component {
     render() {
         return (
             <div className="w-full h-full pt-12 flex items-start md:justify-end justify-center">
+                {this.state.renderModal ? <Modal accept={this.onAcceptDelete} cancel={this.onCancelDelete} /> : null}
                 <div className="md:w-11/12 w-5/6 flex flex-col items-end">
                     <input
                         value={this.state.query}
@@ -87,4 +118,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { getAllCourses })(Course);
+export default connect(mapStateToProps, { getAllCourses, deleteCatCourse })(Course);

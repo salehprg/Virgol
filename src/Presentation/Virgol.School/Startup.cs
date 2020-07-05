@@ -50,11 +50,11 @@ namespace lms_with_moodle
             
             if(environment.IsDevelopment())
             {
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("PublishConnection")));
-
                 // services.AddDbContext<AppDbContext>(options =>
-                //     options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+                //     options.UseSqlServer(Configuration.GetConnectionString("PublishConnection")));
+
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
             }
             else
             {
@@ -114,13 +114,22 @@ namespace lms_with_moodle
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
-            // Add our job
+            // Add Send Sms Notify job
             services.AddSingleton<SendNotifyJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(SendNotifyJob),
-                cronExpression: "* 0/5 * ? * * *"));
+                cronExpression: "0 */5 * ? * * *"));
+
+
+            // Add Send Sms Notify job
+            services.AddSingleton<CheckAttendeeJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(CheckAttendeeJob),
+                cronExpression: "0 */5 * ? * * *"));
+
 
             services.AddHostedService<QuartzHostedService>();
+
             // services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
             // services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 

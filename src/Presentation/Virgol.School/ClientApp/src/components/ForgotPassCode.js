@@ -1,5 +1,7 @@
 import React from 'react';
 import {loading} from "../assets/icons";
+import { connect } from 'react-redux';
+import { forgotPassword } from "../actions";
 
 class ForgotPassCode extends React.Component {
 
@@ -54,7 +56,6 @@ class ForgotPassCode extends React.Component {
     }
 
     printValue = (index) => {
-        console.log(index);
         switch (index) {
             case 0: return this.state.code1;
             case 1: return this.state.code2;
@@ -127,8 +128,21 @@ class ForgotPassCode extends React.Component {
         }
     }
 
-    submitCode = () => {
+    getCode = () => {
+        let code = ""
+        code = code + this.state.code1
+        code = code + this.state.code2
+        code = code + this.state.code3
+        code = code + this.state.code4
+        code = code + this.state.code5
+        code = code + this.state.code6
+        return code;
+    }
 
+    submitCode = () => {
+        if (this.getCode().length === 6) {
+            this.props.forgotPassword(this.props.melliCode, this.getCode());
+        }
     }
 
     render() {
@@ -155,7 +169,7 @@ class ForgotPassCode extends React.Component {
                 <button
                     onClick={this.submitCode}
                     className="bg-golden hover:bg-darker-golden transition-all duration-200 flex justify-center font-vb text-xl text-dark-green w-full py-2 rounded-lg">
-                    {this.props.isThereLoading && this.props.loadingComponent === 'Login' ? loading("w-8 h-8 text-dark-green") : 'تایید'}
+                    {this.props.isThereLoading && this.props.loadingComponent === 'forgotPass' ? loading("w-8 h-8 text-dark-green") : 'تایید'}
                 </button>
             </div>
         );
@@ -163,4 +177,12 @@ class ForgotPassCode extends React.Component {
 
 }
 
-export default ForgotPassCode;
+const mapStateToProps = state => {
+    return {
+        melliCode: state.auth.sendCode.melliCode,
+        isThereLoading: state.loading.isThereLoading,
+        loadingComponent: state.loading.loadingComponent
+    }
+}
+
+export default connect(mapStateToProps, { forgotPassword })(ForgotPassCode);

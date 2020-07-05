@@ -351,7 +351,14 @@ namespace lms_with_moodle.Controllers
                                                             .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList()[0];
                 string LastCode = lastVerifyCode.VerificationCode;
                 
-                return Ok(LastCode == _input.VerificationCode);
+                if(LastCode == _input.VerificationCode)
+                {
+                    string token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    await userManager.ResetPasswordAsync(user , token , user.MelliCode);
+                    return Ok(true);
+                }
+
+                return Ok(false);
             }
         }
 

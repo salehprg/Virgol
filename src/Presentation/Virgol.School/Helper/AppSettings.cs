@@ -32,5 +32,11 @@ namespace lms_with_moodle.Helper
 
         //-----------------------
 
+
+        //BBB Configuration Setting
+        public string BBBBaseUrl { get; set; }
+        public string BBBSecret { get; set; }
+        //------------------------
+
     }
 }

@@ -1,21 +1,37 @@
 import React from "react";
 import Select from 'react-select';
-import { getAllTeachers, addNewTeacher, fadeError } from "../../../actions";
+import { getAllTeachers, addNewTeacher, fadeError, deleteTeacher } from "../../../actions";
 import {book, edit, errorOutline, loading, remove} from "../../../assets/icons";
 import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
 import AddPerson from "./AddPerson";
+import Modal from "../../Modal";
 
 class Teachers extends React.Component {
 
     state = {
         addTeacherState: null,
         showTeacherCourses: false,
-        excel: null
+        excel: null,
+        renderModal: false,
+        deleteHolderId: null
     }
 
     componentDidMount() {
         this.props.getAllTeachers(this.props.auth.token);
+    }
+
+    showModal = (id) => {
+        this.setState({ renderModal: true, deleteHolderId: id })
+    }
+
+    onAcceptDelete = () => {
+        this.props.deleteTeacher(this.props.auth.token, this.state.deleteHolderId);
+        this.setState({ renderModal: false, deleteHolderId: null })
+    }
+
+    onCancelDelete = () => {
+        this.setState({ renderModal: false, deleteHolderId: null })
     }
 
     renderTeachers = () => {
@@ -37,6 +53,17 @@ class Teachers extends React.Component {
                             <td className="py-2">{teacher.firstName}</td>
                             <td className="py-2">{teacher.lastName}</td>
                             <td className="py-2">{teacher.melliCode}</td>
+                            <td className="flex flex-col items-center py-2">
+                                <div className="flex flex-row justify-center">
+                                    <div onClick={() => this.showModal(teacher.id)} data-tip="حذف">
+                                        {this.props.loadingComponent !== teacher.id ?
+                                            remove("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")
+                                            :
+                                            loading("w-8 h-8 text-blueish")
+                                        }
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                     );
                 })
@@ -48,6 +75,7 @@ class Teachers extends React.Component {
                             <th className="px-8 py-2">نام</th>
                             <th className="px-8 py-2">نام خانوادگی</th>
                             <th className="px-8">کد ملی</th>
+                            <th className="px-8"> </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -114,6 +142,7 @@ class Teachers extends React.Component {
     render() {
         return (
             <div className="w-full h-full pt-12 flex md:flex-row flex-col md:items-start items-center justify-end">
+                {this.state.renderModal ? <Modal accept={this.onAcceptDelete} cancel={this.onCancelDelete} /> : null}
                 <div className="md:w-1/4 w-5/6 md:mx-4 mx-0 md:order-1 order-2 flex flex-col items-end">
                     <div className={`w-full md:mx-4 mx-0 flex flex-col items-end`}>
                         <input
@@ -204,4 +233,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { getAllTeachers, addNewTeacher, fadeError })(formWrapped);
+export default connect(mapStateToProps, { getAllTeachers, addNewTeacher, fadeError, deleteTeacher })(formWrapped);

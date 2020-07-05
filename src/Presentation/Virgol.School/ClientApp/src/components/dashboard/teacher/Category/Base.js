@@ -1,14 +1,24 @@
 import React from "react";
 import ReactTooltip from "react-tooltip";
-import { getAllCategory, addNewCategory, deleteCategory, fadeError } from "../../../actions";
-import {book, edit, remove, loading, errorOutline} from "../../../assets/icons";
+import { getAllCategory, addNewCategory, deleteCategory, fadeError, wipeCatInfo } from "../../../../actions";
+import {book, edit, remove, loading, errorOutline} from "../../../../assets/icons";
 import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
-import lms from "../../../apis/lms";
+import lms from "../../../../apis/lms";
+import Modal from "../../../Modal";
+import ShowCat from "./ShowCat";
 
 class Base extends React.Component {
 
-    state = { shownCatId: null, courses: [], loading: null, query: '' }
+    state = {
+        renderState: 'allBases',
+        shownCatId: null,
+        courses: [],
+        loading: null,
+        query: '',
+        renderModal: false,
+        deleteHolderId: null
+    }
 
     componentDidMount() {
         this.props.getAllCategory(this.props.auth.token);
@@ -58,19 +68,23 @@ class Base extends React.Component {
                             <td className="py-2">{category.name}</td>
                             <td className="flex flex-col items-center py-2">
                                 <div className="flex flex-row justify-center">
-                                    <div onClick={() => this.props.deleteCategory(this.props.auth.token, category.id)} data-tip="حذف">
-                                        {remove("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")}
-                                    </div>
-                                    <div data-tip="ویرایش">
-                                        {edit("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")}
-                                    </div>
-                                    <div onClick={() => this.getCourses(category.id)} data-tip="نمایش دروس">
-                                        {this.state.loading !== category.id ?
-                                            book("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")
+                                    <div onClick={() => this.showModal(category.id)} data-tip="حذف">
+                                        {this.props.loadingComponent !== category.id ?
+                                            remove("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")
                                             :
                                             loading("w-8 h-8 text-blueish")
                                         }
                                     </div>
+                                    <div onClick={() => this.renderCatInfo(category)} data-tip="ویرایش">
+                                        {edit("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")}
+                                    </div>
+                                    {/*<div onClick={() => this.getCourses(category.id)} data-tip="نمایش دروس">*/}
+                                    {/*    {this.state.loading !== category.id ?*/}
+                                    {/*        book("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")*/}
+                                    {/*        :*/}
+                                    {/*        loading("w-8 h-8 text-blueish")*/}
+                                    {/*    }*/}
+                                    {/*</div>*/}
                                 </div>
                                 <div className={`w-full flex flex-col ${this.state.shownCatId === category.id ? 'block' : 'hidden'}`}>
                                     {this.catCourses()}
@@ -107,6 +121,11 @@ class Base extends React.Component {
 
         return loading("w-16 h-16 text-blueish")
 
+    }
+
+    renderCatInfo = (cat) => {
+        ReactTooltip.hide();
+        this.setState({ renderState: cat })
     }
 
     renderFormInputs = ({ input, meta, placeholder }) => {
@@ -154,10 +173,42 @@ class Base extends React.Component {
         this.props.addNewCategory(this.props.auth.token, { name: formValues.baseName });
     }
 
+    showModal = (id) => {
+        this.setState({ renderModal: true, deleteHolderId: id })
+    }
+
+    onAcceptDelete = () => {
+        this.props.deleteCategory(this.props.auth.token, this.state.deleteHolderId);
+        this.setState({ renderModal: false, deleteHolderId: null })
+    }
+
+    onCancelDelete = () => {
+        this.setState({ renderModal: false, deleteHolderId: null })
+    }
+
+    renderContent = () => {
+        if (this.state.renderState === 'allBases') {
+            return this.renderBases();
+        } else {
+            return (
+                <ShowCat
+                    cat={this.state.renderState}
+                    token={this.props.auth.token}
+                    exit={this.exitCat}
+                />
+            );
+        }
+    }
+
+    exitCat = () => {
+        this.setState({ renderState: 'allBases' })
+    }
+
     render() {
         return (
             <div className="w-full h-full pt-12 flex md:flex-row flex-col md:items-start items-center md:justify-end">
                 <ReactTooltip />
+                {this.state.renderModal ? <Modal accept={this.onAcceptDelete} cancel={this.onCancelDelete} /> : null}
                 <div className="md:w-1/4 w-5/6 md:order-1 order-2 flex flex-col items-end">
                     <input
                         type="text"
@@ -185,8 +236,8 @@ class Base extends React.Component {
                         placeholder="جست و جو"
                     />
                     <div className="bg-white w-full min-h-75 flex flex-col py-2 justify-start items-center overflow-auto">
-                        <span className="font-vb text-blueish text-2xl mb-8">مقاطع تحصیلی</span>
-                        {this.renderBases()}
+                        <span className="font-vb text-blueish text-2xl mb-8">{this.state.renderState === 'allBases' ? 'مقاطع تحصیلی' : 'اطلاعات مقطع'}</span>
+                        {this.renderContent()}
                     </div>
                 </div>
             </div>
@@ -220,4 +271,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { getAllCategory, addNewCategory, deleteCategory, fadeError })(formWrapped);
+export default connect(mapStateToProps, { getAllCategory, addNewCategory, deleteCategory, fadeError, wipeCatInfo })(formWrapped);

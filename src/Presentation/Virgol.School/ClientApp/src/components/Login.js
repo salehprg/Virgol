@@ -1,19 +1,44 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import { connect } from 'react-redux';
-import { login, fadeError, sendVerificationCode } from "../actions";
+import { login, fadeError, sendVerificationCode, sendCodeFade, forgotPassFade } from "../actions";
 import {Field, reduxForm} from "redux-form";
-import {fingerprint, lock, loading, heart} from "../assets/icons";
+import {fingerprint, lock, loading, heart, eye} from "../assets/icons";
 import ForgotPassCode from "./ForgotPassCode";
 
 class Login extends React.Component {
 
-    state = { renderContent: "loginForm" }
+    state = { renderContent: "loginForm", passVisible: false }
+
+    goHome = () => {
+        this.setState({ renderContent: 'loginForm' })
+        this.props.sendCodeFade()
+    }
+
+    fadeSuccess = () => {
+        this.props.forgotPassFade();
+        this.setState({ renderContent: 'loginForm' })
+    }
 
     renderContent = () => {
 
-        if (this.state.sendCode) {
-            this.setState({ renderContent: "get code" })
+        if (this.props.sendCode.success) {
+            return (
+                <React.Fragment>
+                    <p dir="rtl" className="text-center w-5/6">رمز ورودتو موقتا به کد ملیت تغییر دادیم وارد شو و رمز ورودتو حتما عوض کن</p>
+                    <span onClick={this.fadeSuccess} className="cursor-pointer transition-all duration-200 hover:text-green-400">بازگشت به صفحه ورود</span>
+                </React.Fragment>
+            );
+        }
+
+        if (this.props.sendCode.status) {
+            return (
+                <React.Fragment>
+                    <ForgotPassCode />
+                    <span onClick={() => this.setState({ renderContent: 'forgot password' })} className="cursor-pointer transition-all duration-200 hover:text-red-400">پیامکی دریافت نکردید؟</span>
+                    <span onClick={this.goHome} className="cursor-pointer transition-all duration-200 hover:text-green-400">بازگشبت به صفحه ورود</span>
+                </React.Fragment>
+            );
         }
 
         if (this.state.renderContent === 'loginForm') {
@@ -29,7 +54,7 @@ class Login extends React.Component {
                         />
                         <Field
                             name="password"
-                            type="password"
+                            type={this.state.passVisible ? "text" : "password"}
                             placeholder="رمز ورود"
                             component={this.renderFormInputs}
                             icon={lock("text-golden w-6 h-6")}
@@ -60,20 +85,24 @@ class Login extends React.Component {
                     <span onClick={() => this.setState({ renderContent: 'loginForm' })} className="cursor-pointer transition-all duration-200 hover:text-green-400">بازگشت به صفحه ورود</span>
                 </React.Fragment>
         );
-        } else {
-            return (
-                <React.Fragment>
-                    <ForgotPassCode />
-                    <span onClick={() => this.setState({ renderContent: 'forgot password' })} className="cursor-pointer transition-all duration-200 hover:text-red-400">پیامکی دریافت نکردید؟</span>
-                </React.Fragment>
-            );
         }
 
+    }
+
+    revealPass = () => {
+        this.setState({ passVisible: true })
+    }
+
+    hidePass = () => {
+        this.setState({ passVisible: false })
     }
 
     renderFormInputs = ({ input, meta, placeholder, icon, type }) => {
         return (
             <div className={`flex px-1 flex-row my-6 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
+                <div onMouseDown={this.revealPass} onMouseUp={this.hidePass} >
+                    {eye(`w-5 h-5 text-grayish cursor-pointer ${input.name === "password" ? '' : 'invisible'}`)}
+                </div>
                 <input
                     {...input}
                     className="w-full px-2 py-3 placeholder-grayish focus:outline-none"
@@ -113,7 +142,7 @@ class Login extends React.Component {
                     className={`bg-red-500 absolute top-0 hover:bg-red-700 text-white text-center px-4 py-2 mt-12 ${this.props.isThereError ? 'opacity-100 cursor-pointer transition-all duration-500' : 'opacity-0'}`}
                     onClick={this.hideError}
                 >
-                        {this.props.errorMessage ? this.props.errorMessage : ''}
+                        {this.props.isThereError ? this.props.errorMessage : ''}
                     </span>
             </div>
         );
@@ -146,4 +175,4 @@ const formWrapped = reduxForm({
     validate
 })(Login);
 
-export default connect(mapStateToProps, {login, fadeError, sendVerificationCode})(formWrapped);
+export default connect(mapStateToProps, {login, fadeError, sendVerificationCode, sendCodeFade, forgotPassFade})(formWrapped);
