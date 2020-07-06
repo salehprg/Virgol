@@ -399,10 +399,10 @@ namespace lms_with_moodle.Controllers
 
                 foreach(var cat in result)
                 {
-                    if(cat.id != "1")  // Miscellaneous Category
+                    if(cat.id != 1)  // Miscellaneous Category
                     {
                         CategoryDetail cateDetail = new CategoryDetail();
-                        cateDetail.Id = int.Parse(cat.id);
+                        cateDetail.Id = cat.id;
                         cateDetail.Name = cat.name;
 
                         Categories.Add(cateDetail);

@@ -1,10 +1,14 @@
 
+using Newtonsoft.Json;
+
 namespace Models.MoodleApiResponse
 {
     public class CategoryDetail_moodle
     {
-        public string id { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
+
+        [JsonIgnore]
         public string parent { get; set; }
     }
 }

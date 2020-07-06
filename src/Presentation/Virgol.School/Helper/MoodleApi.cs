@@ -378,7 +378,7 @@ namespace lms_with_moodle.Helper
         //-------Categories------
         #region Categories
         
-        public async Task<bool> CreateCategory(string Name , int ParentId = 0)
+        public async Task<int> CreateCategory(string Name , int ParentId = 0)
         {
             try
             {
@@ -386,15 +386,15 @@ namespace lms_with_moodle.Helper
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&categories[0][name]=" + Name + "&categories[0][parent]=" + ParentId;
 
                 HttpResponseModel Response = await sendData(data);
-                //string categoryName = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (Response.Message)[0].name; 
+                int categoryId = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (Response.Message)[0].id; 
 
-                return (Response.Code == HttpStatusCode.OK ? true : false);
+                return categoryId;
             }
             catch(Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
-                return false;
+                return -1;
             }
         }
         public async Task<bool> EditCategory(CategoryDetail _category)
@@ -456,7 +456,7 @@ namespace lms_with_moodle.Helper
 
             //Convert Moodle API response to our Model
             CategoryDetail resultCategory = new CategoryDetail(); 
-            resultCategory.Id = int.Parse(category.id);
+            resultCategory.Id = category.id;
             resultCategory.ParentCategory = int.Parse(category.parent);
             resultCategory.Name = category.name;
 

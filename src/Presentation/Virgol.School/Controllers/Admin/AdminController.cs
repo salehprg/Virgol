@@ -51,6 +51,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> GetAllStudent() 
         {
             try
@@ -79,6 +80,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public IActionResult GetNewUsers()
         {
             try
@@ -95,6 +97,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> AddBulkUser([FromForm]IFormCollection Files)
         {
             try
@@ -208,6 +211,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> AddBulkTeacher([FromForm]IFormCollection Files)
         {
             try
@@ -305,6 +309,7 @@ namespace lms_with_moodle.Controllers
         }
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public IActionResult ConfirmUsers([FromBody]List<int> usersId)
         {
             try
@@ -333,6 +338,7 @@ namespace lms_with_moodle.Controllers
         //Student Role = 5
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> AssignUsersToCategory([FromBody]EnrolUser[] users)
         {
             try
@@ -358,14 +364,15 @@ namespace lms_with_moodle.Controllers
                 await moodleApi.AssignUsersToCourse(enrolsData);
                 return Ok(true);
             }
-            catch
+            catch(Exception ex)
             {
-                return BadRequest(false);
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> UnAssignUsersFromCategory([FromBody]EnrolUser[] users)
         {
             try
@@ -389,15 +396,16 @@ namespace lms_with_moodle.Controllers
                 bool result = await moodleApi.UnAssignUsersFromCourse(enrolsData);
                 return Ok(result);
             }
-            catch
+            catch(Exception ex)
             {
-                return BadRequest(false);
+                return BadRequest(ex.Message);
             }
         }
 
 
         [HttpPost]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(bool), 401)]
         public async Task<IActionResult> AssignUsersToCourse([FromBody]EnrolUser[] users)
         {
             bool result = await moodleApi.AssignUsersToCourse(users.ToList());
@@ -427,6 +435,8 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> UnAssignFromCourse([FromBody]EnrolUser user)
         {
             try
@@ -455,6 +465,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public IActionResult TeacherList()
         {
             try
@@ -469,6 +480,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> AddNewTeacher([FromBody]UserModel teacher)
         {
             try
@@ -500,7 +512,7 @@ namespace lms_with_moodle.Controllers
                 //     }
                 // }
 
-                return Ok(teacher);
+                return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
             }
             catch(Exception ex)
             {
@@ -510,6 +522,7 @@ namespace lms_with_moodle.Controllers
     
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public IActionResult EditTeacher([FromBody]UserModel teacher)
         {
             try
@@ -517,7 +530,8 @@ namespace lms_with_moodle.Controllers
                 appDbContext.Users.Update(teacher);
                 appDbContext.SaveChanges();
 
-                return Ok(true);
+                UserModel editedTeacher = appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault();
+                return Ok(editedTeacher);
             }
             catch(Exception ex)
             {
@@ -527,6 +541,7 @@ namespace lms_with_moodle.Controllers
     
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public IActionResult DeleteTeacher(int teacherId)
         {
             try
@@ -553,6 +568,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> GetAllCourseInCat(int CategoryId)
         {
             try
@@ -598,7 +614,8 @@ namespace lms_with_moodle.Controllers
         }
         
         [HttpPut]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(CourseDetail), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> AddNewCourse([FromBody]CourseDetail course)
         {
             try
@@ -614,12 +631,13 @@ namespace lms_with_moodle.Controllers
                     teacherCourseInfo.CourseId = CourseId;
                     teacherCourseInfo.TeacherId = course.TeacherId;
 
-                    //Get teacher id from moodle database by its MelliCode from our database
+                    
                     List<EnrolUser> Teachers = new List<EnrolUser>();
                     EnrolUser CurrentTeacher = new EnrolUser();
                     CurrentTeacher.CourseId = CourseId;
                     CurrentTeacher.RoleId = 3;
 
+                    //Get teacher id from moodle database by its MelliCode from our database
                     int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode);
                     CurrentTeacher.UserId = TeacherId;
 
@@ -630,11 +648,14 @@ namespace lms_with_moodle.Controllers
                     appDbContext.TeacherCourse.Add(teacherCourseInfo);
                     appDbContext.SaveChanges();
 
-                    return Ok(true);
+                    CourseDetail courseDetail = course;
+                    courseDetail.id = CourseId;
+
+                    return Ok(courseDetail);
                 }
                 else
                 {
-                    return BadRequest(false);
+                    return BadRequest("مشکلی در ثبت درس در مودل بوجود آمده است");
                 }
             }
             catch(Exception ex)
@@ -643,8 +664,62 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        //For add course to category just set category id other wise category id not set
+        [HttpPost]
+        [ProducesResponseType(typeof(CourseDetail), 200)]
+        [ProducesResponseType(typeof(string), 401)]
+        public async Task<IActionResult> EditCourse([FromBody]CourseDetail course)
+        {
+            try
+            {
+                string response = await moodleApi.EditCourse(course);
+
+                UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
+
+                if(string.IsNullOrEmpty(response))
+                {
+                    //Initialize teacherCourse Info
+                    TeacherCourseInfo teacherCourseInfo = appDbContext.TeacherCourse.Where(x => x.CourseId == course.id).FirstOrDefault();
+                    teacherCourseInfo.TeacherId = course.TeacherId;
+
+                    //Get teacher id from moodle database by its MelliCode from our database
+                    EnrolUser CurrentTeacher = new EnrolUser();
+                    CurrentTeacher.CourseId = course.id;
+                    CurrentTeacher.RoleId = 3;
+
+                    int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode); //Teacher id in moodle
+                    CurrentTeacher.UserId = TeacherId;
+
+
+                    bool resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {CurrentTeacher});
+                    if(resultUnAssign)
+                    {
+                        bool resultAssign = await moodleApi.AssignUsersToCourse(new List<EnrolUser>() {CurrentTeacher});
+                        if(resultAssign)
+                        {
+                            appDbContext.TeacherCourse.Update(teacherCourseInfo);
+                            appDbContext.SaveChanges();
+                            return Ok(course);
+                        }
+                    }
+
+                    return Ok(false);
+                }
+                else
+                {
+                    return BadRequest("در ویرایش درس در سرور مودل مشکلی پیش آمد");
+                }
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
         public async Task<IActionResult> DeleteCourse([FromBody]CourseDetail course)
         {
             try
@@ -671,65 +746,13 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-        //For add course to category just set category id other wise category id not set
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        public async Task<IActionResult> EditCourse([FromBody]CourseDetail course)
-        {
-            try
-            {
-                
-                string response = await moodleApi.EditCourse(course);
-
-                UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
-
-                if(string.IsNullOrEmpty(response))
-                {
-                    //Initialize teacherCourse Info
-                    TeacherCourseInfo teacherCourseInfo = appDbContext.TeacherCourse.Where(x => x.CourseId == course.id).FirstOrDefault();
-                    teacherCourseInfo.TeacherId = course.TeacherId;
-
-                    //Get teacher id from moodle database by its MelliCode from our database
-                    List<EnrolUser> Teachers = new List<EnrolUser>();
-                    EnrolUser CurrentTeacher = new EnrolUser();
-                    CurrentTeacher.CourseId = course.id;
-                    CurrentTeacher.RoleId = 3;
-
-                    int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode); //Teacher id in moodle
-                    CurrentTeacher.UserId = TeacherId;
-
-                    Teachers.Add(CurrentTeacher);
-
-                    bool resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {CurrentTeacher});
-                    if(resultUnAssign)
-                    {
-                        bool resultAssign = await moodleApi.AssignUsersToCourse(Teachers);
-                        if(resultAssign)
-                        {
-                            appDbContext.TeacherCourse.Update(teacherCourseInfo);
-                            appDbContext.SaveChanges();
-                            return Ok(true);
-                        }
-                    }
-
-                    return Ok(false);
-                }
-                else
-                {
-                    return BadRequest(false);
-                }
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 #endregion
     
 #region Categories
 
     [HttpGet]
     [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
+    [ProducesResponseType(typeof(string), 401)]
     public async Task<IActionResult> GetAllCategory()
     {
         try
@@ -740,10 +763,10 @@ namespace lms_with_moodle.Controllers
 
             foreach(var cat in result)
             {
-                if(cat.id != "1")  // Miscellaneous Category
+                if(cat.id != 1)  // Miscellaneous Category
                 {
                     CategoryDetail cateDetail = new CategoryDetail();
-                    cateDetail.Id = int.Parse(cat.id);
+                    cateDetail.Id = cat.id;
                     cateDetail.Name = cat.name;
 
                     Categories.Add(cateDetail);
@@ -759,13 +782,39 @@ namespace lms_with_moodle.Controllers
     }
 
     [HttpPut]
-    [ProducesResponseType(typeof(bool), 200)]
+    [ProducesResponseType(typeof(CategoryDetail), 200)]
+    [ProducesResponseType(typeof(bool), 401)]
     public async Task<IActionResult> AddNewCategory([FromBody]CategoryDetail Category)
     {
         try
         {
-            
-            bool result = await moodleApi.CreateCategory(Category.Name , Category.ParentCategory);
+            int categoryId = await moodleApi.CreateCategory(Category.Name , Category.ParentCategory);
+
+            if(categoryId != -1)
+            {
+                Category.Id = categoryId;
+
+                return Ok(Category);
+            }
+            else
+            {
+                return BadRequest(false);
+            }
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(CategoryDetail), 200)]
+    [ProducesResponseType(typeof(bool), 401)]
+    public async Task<IActionResult> EditCategory([FromBody]CategoryDetail Category)
+    {
+        try
+        {
+            bool result = await moodleApi.EditCategory(Category);
 
             if(result)
             {
@@ -784,30 +833,7 @@ namespace lms_with_moodle.Controllers
 
     [HttpPost]
     [ProducesResponseType(typeof(bool), 200)]
-    public async Task<IActionResult> EditCategory([FromBody]CategoryDetail Category)
-    {
-        try
-        {
-            
-            bool result = await moodleApi.EditCategory(Category);
-
-            if(result)
-            {
-                return Ok(true);
-            }
-            else
-            {
-                return BadRequest(false);
-            }
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpPost]
-    [ProducesResponseType(typeof(bool), 200)]
+    [ProducesResponseType(typeof(bool), 401)]
     public async Task<IActionResult> DeleteCategory([FromBody]CategoryDetail Category)
     {
         try
