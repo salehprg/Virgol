@@ -93,7 +93,7 @@ namespace lms_with_moodle.Controllers
                     categoryDetails.Add(categoryDetail);
                 }
 
-                return Ok(categoryDetails);
+                return Ok(categoryDetails.Where(x => x.ParentCategory != 0));
             }
             else{
                 return BadRequest();
