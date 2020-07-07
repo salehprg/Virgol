@@ -3,7 +3,7 @@ import Sidebar from "../Sidebar";
 import {clear, headline} from "../../../assets/icons";
 import Home from "./Home";
 import Base from "./Category/Base";
-import Course from "./Course";
+import Course from "./course/Course";
 import Teachers from './Teachers';
 import Students from "./Students";
 

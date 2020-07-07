@@ -1,243 +1,117 @@
 import React from "react";
 import ReactTooltip from "react-tooltip";
 import { getAllCategory, addNewCategory, deleteCategory, fadeError, wipeCatInfo } from "../../../../actions";
-import {book, edit, remove, loading, errorOutline} from "../../../../assets/icons";
+import {book, edit, remove, loading, errorOutline, add, clear} from "../../../../assets/icons";
 import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
 import lms from "../../../../apis/lms";
 import Modal from "../../../Modal";
 import ShowCat from "./ShowCat";
+import {Link} from "react-router-dom";
 
 class Base extends React.Component {
 
     state = {
-        renderState: 'allBases',
-        shownCatId: null,
-        courses: [],
-        loading: null,
         query: '',
         renderModal: false,
-        deleteHolderId: null
     }
 
     componentDidMount() {
         this.props.getAllCategory(this.props.auth.token);
     }
 
-    getCourses = async (id) => {
-
-        if (this.state.shownCatId !== id) {
-            try {
-                this.setState({ loading: id })
-                const response = await lms.get(`/api/Admin/GetAllCourseInCat?CategoryId=${id}`, {
-                    headers: {
-                        authorization: `Bearer ${this.props.auth.token}`
-                    }
-                });
-
-                this.setState({ loading: null, shownCatId: id, courses: response.data })
-            } catch (e) {
-
-            }
-        } else {
-            this.setState({ shownCatId: null, courses: [] })
-        }
-
-    }
-
-    catCourses = () => {
-
-        if (this.state.shownCatId !== null) {
-            return this.state.courses.map(course => {
-                return (
-                    <span key={course.id}>{course.displayname}</span>
-                );
-            });
-        }
-    }
-
-    renderBases = () => {
+    renderCards = () => {
 
         const { categories } = this.props;
 
         if (categories !== null) {
-            const bases = categories.map((category) => {
+
+            const cards = categories.map((category) => {
                 if (category.name.includes(this.state.query)) {
                     return (
-                        <tr key={category.id}>
-                            <td className="py-2">{category.name}</td>
-                            <td className="flex flex-col items-center py-2">
-                                <div className="flex flex-row justify-center">
-                                    <div onClick={() => this.showModal(category.id)} data-tip="حذف">
-                                        {this.props.loadingComponent !== category.id ?
-                                            remove("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")
-                                            :
-                                            loading("w-8 h-8 text-blueish")
-                                        }
-                                    </div>
-                                    <div onClick={() => this.renderCatInfo(category)} data-tip="ویرایش">
-                                        {edit("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")}
-                                    </div>
-                                    {/*<div onClick={() => this.getCourses(category.id)} data-tip="نمایش دروس">*/}
-                                    {/*    {this.state.loading !== category.id ?*/}
-                                    {/*        book("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")*/}
-                                    {/*        :*/}
-                                    {/*        loading("w-8 h-8 text-blueish")*/}
-                                    {/*    }*/}
-                                    {/*</div>*/}
-                                </div>
-                                <div className={`w-full flex flex-col ${this.state.shownCatId === category.id ? 'block' : 'hidden'}`}>
-                                    {this.catCourses()}
-                                </div>
-                            </td>
-                        </tr>
+                        <div key={category.id} className="w-5/6 max-w-300 sm:ml-12 ml-0 mb-12 py-4 bg-white flex flex-col items-center">
+                            <span className="text-xl text-blueish font-vb">{category.name}</span>
+                            <span className="my-4" dir="rtl">تعداد دروس: {category.courseCount}</span>
+                            <Link className="w-5/6 py-2 bg-dark-blue text-center text-white rounded-full" to={`/cat/${category.id}`}>ویرایش</Link>
+                        </div>
                     );
                 }
             })
 
-            if (!bases[0]) {
-                return (
-                    <div className="w-full flex-grow flex flex-col justify-center items-center">
-                        {errorOutline("w-24 h-24 text-blueish")}
-                        <span className="text-xl mt-4 text-dark-blue">هیچ مقطعی وجود ندارد</span>
-                    </div>
-                );
-            } else {
-                return (
-                    <table dir="rtl" className="table-auto w-5/6 text-center">
-                        <thead>
-                        <tr className="border-b-2 border-blueish">
-                            <th className="px-8 py-2">نام مقطع</th>
-                            <th className="px-8"> </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {bases}
-                        </tbody>
-                    </table>
-                );
-            }
+            return cards;
+
+        } else {
+            return loading("w-16 h-16 text-blueish")
         }
 
-        return loading("w-16 h-16 text-blueish")
-
     }
 
-    renderCatInfo = (cat) => {
-        ReactTooltip.hide();
-        this.setState({ renderState: cat })
-    }
-
-    renderFormInputs = ({ input, meta, placeholder }) => {
+    renderAddCatFormFields = ({ input, meta, placeholder }) => {
         return (
-            <div className={`flex px-1 flex-row py-3 my-6 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
-                <input
-                    {...input}
-                    dir="rtl"
-                    className="w-full px-2 placeholder-grayish focus:outline-none"
-                    type="text"
-                    placeholder={placeholder}
-                />
-            </div>
+            <input
+                {...input}
+                dir="rtl"
+                className={`w-1/2 px-2 py-2  placeholder-grayish focus:outline-none focus:shadow-outline border-2  ${meta.error && meta.touched ? 'border-red-600' : 'border-white'}`}
+                type="text"
+                placeholder={placeholder}
+            />
         );
     }
 
-    renderAddButton = () => {
-        if (this.props.isThereLoading && this.props.loadingComponent === 'addNewCategory') {
-            return (
-                <button className="bg-golden flex flex-col items-center my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg focus:outline-none">
-                    {loading("w-8 h-8 text-dark-green")}
-                </button>
-            );
-        }
-
-        if (this.props.isThereError && this.props.errorMessage === 'add new category error') {
-            setTimeout(() => {
-                this.props.fadeError();
-            }, 1000);
-            return (
-                <button className="bg-red-500 my-6 transition-all duration-200 font-vb text-xl text-white w-full py-2 rounded-lg focus:outline-none">
-                    خطا
-                </button>
-            );
-        }
-
-        return (
-            <button className="bg-golden my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg focus:outline-none">
-                افزودن
-            </button>
-        );
+    renderAddCatModal = (id) => {
+        this.setState({ renderModal: true })
     }
 
-    onAddBase = (formValues) => {
-        this.props.addNewCategory(this.props.auth.token, { name: formValues.baseName });
-    }
-
-    showModal = (id) => {
-        this.setState({ renderModal: true, deleteHolderId: id })
-    }
-
-    onAcceptDelete = () => {
-        this.props.deleteCategory(this.props.auth.token, this.state.deleteHolderId);
-        this.setState({ renderModal: false, deleteHolderId: null })
+    onAddCategory = (formValues) => {
+        this.props.addNewCategory(this.props.auth.token, formValues);
+        this.setState({ renderModal: false })
     }
 
     onCancelDelete = () => {
         this.setState({ renderModal: false, deleteHolderId: null })
     }
 
-    renderContent = () => {
-        if (this.state.renderState === 'allBases') {
-            return this.renderBases();
-        } else {
-            return (
-                <ShowCat
-                    cat={this.state.renderState}
-                    token={this.props.auth.token}
-                    exit={this.exitCat}
-                />
-            );
-        }
-    }
-
-    exitCat = () => {
-        this.setState({ renderState: 'allBases' })
-    }
-
     render() {
         return (
             <div className="w-full h-full pt-12 flex md:flex-row flex-col md:items-start items-center md:justify-end">
                 <ReactTooltip />
-                {this.state.renderModal ? <Modal accept={this.onAcceptDelete} cancel={this.onCancelDelete} /> : null}
-                <div className="md:w-1/4 w-5/6 md:order-1 order-2 flex flex-col items-end">
-                    <input
-                        type="text"
-                        className="md:w-1/3 w-1/2 invisible mb-2 px-4 py-1 rounded-lg text-right text-grayish focus:outline-none focus:shadow-outline"
-                        placeholder="جست و جو"
-                    />
-                    <div className="bg-white w-full flex flex-col py-2 md:mx-4 mx-0 justify-start items-center overflow-auto">
-                        <span className="font-vb text-blueish text-2xl mb-8">افزودن مقطع</span>
-                        <form className="w-3/4 flex flex-col text-center" onSubmit={this.props.handleSubmit(this.onAddBase)}>
-                            <Field
-                                name="baseName"
-                                placeholder="نام مقطع"
-                                component={this.renderFormInputs}
-                            />
-                            {this.renderAddButton()}
-                        </form>
+                {this.state.renderModal ?
+                    <Modal cancel={this.onCancelDelete}>
+                        <div onClick={(e) => e.stopPropagation()} className="md:w-1/3 w-5/6 py-16 px-4 relative flex flex-col items-end addCat bg-cover font-vb">
+                            <div onClick={this.onCancelDelete} className="absolute top-0">
+                                {clear("w-6 h-8 text-white cursor-pointer")}
+                            </div>
+                            <span className="text-dark-green my-4 text-2xl">اضافه کردن مقطع</span>
+                            <form onSubmit={this.props.handleSubmit(this.onAddCategory)} className="w-full flex flex-row-reverse justify-start items-center" >
+                                <Field
+                                    name="name"
+                                    placeholder="نام مقطع"
+                                    component={this.renderAddCatFormFields}
+                                />
+                                <button type="submit" className="focus:outline-none">
+                                    {add("w-8 h-8 mx-2 text-dark-green")}
+                                </button>
+                            </form>
+                        </div>
+                    </Modal>
+                : null}
+                <div className="w-full min-h-screen md:mb-12 mb-0 md:order-12 order-1 flex flex-col items-end">
+                    <div className="w-full flex flex-row-reverse justify-start items-center">
+                        <input
+                            value={this.state.query}
+                            onChange={(e) => this.setState({ query: e.target.value })}
+                            className="md:w-1/3 w-1/2 mb-2 px-4 py-1 rounded-lg text-right text-grayish focus:outline-none focus:shadow-outline"
+                            type="text"
+                            placeholder="جست و جو"
+                        />
+                        <button
+                            onClick={this.renderAddCatModal}
+                            className="mx-8 px-8 py-2 rounded-lg border-2 border-blueish font-vb text-blueish focus:outline-none focus:shadow-outline hover:bg-blueish hover:text-white">
+                            افزودن مقطع
+                        </button>
                     </div>
-                </div>
-                <div className="md:w-2/3 w-5/6 max-h-screen md:mb-12 mb-0 md:order-12 order-1 flex flex-col items-end">
-                    <input
-                        value={this.state.query}
-                        onChange={(e) => this.setState({ query: e.target.value })}
-                        className="md:w-1/3 w-1/2 mb-2 px-4 py-1 rounded-lg text-right text-grayish focus:outline-none focus:shadow-outline"
-                        type="text"
-                        placeholder="جست و جو"
-                    />
-                    <div className="bg-white w-full min-h-75 flex flex-col py-2 justify-start items-center overflow-auto">
-                        <span className="font-vb text-blueish text-2xl mb-8">{this.state.renderState === 'allBases' ? 'مقاطع تحصیلی' : 'اطلاعات مقطع'}</span>
-                        {this.renderContent()}
+                    <div className="w-full mt-8 flex flex-row-reverse flex-wrap justify-center">
+                        {this.renderCards()}
                     </div>
                 </div>
             </div>
@@ -249,7 +123,7 @@ class Base extends React.Component {
 const validate = (formValues) => {
     const errors = {}
 
-    if (!formValues.baseName) errors.baseName = true;
+    if (!formValues.name) errors.name = true;
 
     return errors;
 }

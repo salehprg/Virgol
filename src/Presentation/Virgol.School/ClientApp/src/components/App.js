@@ -9,6 +9,7 @@ import SignUp from "./SignUp";
 import Status from "./Status";
 import NoFound from "./NoFound";
 import ShowCat from "./dashboard/teacher/Category/ShowCat";
+import ShowCourse from "./dashboard/teacher/course/ShowCourse";
 
 const App = (props) => {
 
@@ -33,6 +34,12 @@ const App = (props) => {
                     <AuthenticatedRoute
                         path="/cat/:id"
                         component={ShowCat}
+                        conditions={props.authenticated && props.userType === 2}
+                        exact
+                    />
+                    <AuthenticatedRoute
+                        path="/course/:id"
+                        component={ShowCourse}
                         conditions={props.authenticated && props.userType === 2}
                         exact
                     />

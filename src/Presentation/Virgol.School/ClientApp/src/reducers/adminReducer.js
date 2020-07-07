@@ -4,7 +4,7 @@ const INITIAL_STATE = {
     'courses': null,
     'teachers' : null,
     'students' : null,
-    'catInfo': []
+    'catInfo': null
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -50,6 +50,9 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === 'DELETE_TEACHER')
         return { ...state, teachers: state.teachers.filter(element => element.id !== action.payload) }
+
+    if (action.type === 'EDIT_CATEGORY')
+        return { ...state, categories: state.categories.map(el => el.id === action.payload.id ? action.payload : el) }
 
     if (action.type === 'WIPE_CAT_INFO')
         return { ...state, catInfo: null }

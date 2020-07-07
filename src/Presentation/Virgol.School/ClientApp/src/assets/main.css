@@ -631,6 +631,18 @@ video {
   transition: max-height 1s ease-out;
 }
 
+.addCat {
+  background-image: url("/yellow.jpg");
+}
+
+.addCourse {
+  background-image: url("/pencils.jpg");
+}
+
+.addCourseInCourses {
+  background-image: url("/book.jpg");
+}
+
 .space-y-0 > :not(template) ~ :not(template) {
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));
@@ -7899,6 +7911,14 @@ video {
 
 .max-w-250 {
   max-width: 120px;
+}
+
+.max-w-300 {
+  max-width: 200px;
+}
+
+.max-w-600 {
+  max-width: 600px;
 }
 
 .max-w-none {
@@ -22277,6 +22297,14 @@ video {
 
   .sm\:max-w-250 {
     max-width: 120px;
+  }
+
+  .sm\:max-w-300 {
+    max-width: 200px;
+  }
+
+  .sm\:max-w-600 {
+    max-width: 600px;
   }
 
   .sm\:max-w-none {
@@ -36658,6 +36686,14 @@ video {
     max-width: 120px;
   }
 
+  .md\:max-w-300 {
+    max-width: 200px;
+  }
+
+  .md\:max-w-600 {
+    max-width: 600px;
+  }
+
   .md\:max-w-none {
     max-width: none;
   }
@@ -51037,6 +51073,14 @@ video {
     max-width: 120px;
   }
 
+  .lg\:max-w-300 {
+    max-width: 200px;
+  }
+
+  .lg\:max-w-600 {
+    max-width: 600px;
+  }
+
   .lg\:max-w-none {
     max-width: none;
   }
@@ -65414,6 +65458,14 @@ video {
 
   .xl\:max-w-250 {
     max-width: 120px;
+  }
+
+  .xl\:max-w-300 {
+    max-width: 200px;
+  }
+
+  .xl\:max-w-600 {
+    max-width: 600px;
   }
 
   .xl\:max-w-none {

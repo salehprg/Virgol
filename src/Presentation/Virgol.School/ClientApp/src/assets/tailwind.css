@@ -25,4 +25,17 @@
     transition: max-height 1s ease-out;
 }
 
+.addCat {
+    background-image: url("/yellow.jpg");
+}
+
+.addCourse {
+    background-image: url("/pencils.jpg");
+}
+
+.addCourseInCourses {
+    background-image: url("/book.jpg");
+}
+
+
 @tailwind utilities;

@@ -59,7 +59,7 @@ class Login extends React.Component {
                             component={this.renderFormInputs}
                             icon={lock("text-golden w-6 h-6")}
                         />
-                        <button className="bg-golden hover:bg-darker-golden transition-all duration-200 flex justify-center font-vb text-xl text-dark-green w-full py-2 rounded-lg">
+                        <button className="bg-golden hover:bg-darker-golden transition-all duration-200 flex justify-center font-vb text-xl text-dark-green w-full py-2 rounded-lg focus:outline-none focus:shadow-outline">
                             {this.props.isThereLoading && this.props.loadingComponent === 'Login' ? loading("w-8 h-8 text-dark-green") : 'ورود'}
                         </button>
                     </form>
@@ -78,7 +78,7 @@ class Login extends React.Component {
                             component={this.renderFormInputs}
                             icon={heart("text-golden w-6 h-6")}
                         />
-                        <button className="bg-golden hover:bg-darker-golden transition-all duration-200 flex justify-center font-vb text-xl text-dark-green w-full py-2 rounded-lg">
+                        <button className="bg-golden hover:bg-darker-golden transition-all duration-200 flex justify-center font-vb text-xl text-dark-green w-full py-2 rounded-lg focus:outline-none focus:shadow-outline">
                             {this.props.isThereLoading && this.props.loadingComponent === 'sendCode' ? loading("w-8 h-8 text-dark-green") : 'ارسال کد'}
                         </button>
                     </form>

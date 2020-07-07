@@ -46,7 +46,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     if (action.type === "DELETE_CATEGORY_LOADING") {
-        return { ...state, isThereLoading: true, loadingComponent: action.payload}
+        return { ...state, isThereLoading: true, loadingComponent: 'deleteCat'}
     }
 
     if (action.type === "DELETE_TEACHER_LOADING") {
@@ -63,6 +63,10 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === "DELETE_COURSE_LOADING") {
         return { ...state, isThereLoading: true, loadingComponent: action.payload}
+    }
+
+    if (action.type === "EDIT_CAT_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: 'editCat'}
     }
 
     if (action.type === 'FADE_LOADING') {

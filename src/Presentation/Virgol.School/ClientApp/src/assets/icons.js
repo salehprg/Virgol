@@ -248,3 +248,52 @@ export const eye = (styles) => {
         </svg>
     );
 }
+
+export const add = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+        </svg>
+    );
+}
+
+export const arrow = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+    );
+}
+
+export const doubleArrow = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g><rect fill="none" height="24" width="24"/></g><g><g><polygon points="15.5,5 11,5 16,12 11,19 15.5,19 20.5,12"/>
+            <polygon points="8.5,5 4,5 9,12 4,19 8.5,19 13.5,12"/></g></g>
+        </svg>
+    );
+}
+
+export const bookInfo = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <g id="background">
+                <rect fill="none" height="32" width="32"/>
+            </g>
+            <g id="book_x5F_text_x5F_information">
+                <path d="M32,23.001c0-3.917-2.506-7.24-5.998-8.477V4h-2V1.999h2V0h-23C2.918,0.004,2.294-0.008,1.556,0.354   C0.808,0.686-0.034,1.645,0.001,3c0,0.006,0.001,0.012,0.001,0.018V30c0,2,2,2,2,2h21.081l-0.007-0.004   C28.013,31.955,32,27.946,32,23.001z M2.853,3.981C2.675,3.955,2.418,3.869,2.274,3.743C2.136,3.609,2.017,3.5,2.002,3   c0.033-0.646,0.194-0.686,0.447-0.856c0.13-0.065,0.289-0.107,0.404-0.125C2.97,1.997,3,2.005,3.002,1.999h19V4h-19   C3,4,2.97,4.002,2.853,3.981z M4,30V6h20v8.06C23.671,14.023,23.337,14,22.998,14c-2.142,0-4.106,0.751-5.651,2H6v2h9.516   c-0.413,0.616-0.743,1.289-0.995,2H6v2h8.057c-0.036,0.329-0.059,0.662-0.059,1.001c0,2.829,1.307,5.35,3.348,6.999H4z M23,30   c-3.865-0.008-6.994-3.135-7-6.999c0.006-3.865,3.135-6.995,7-7.001c3.865,0.006,6.992,3.136,7,7.001   C29.992,26.865,26.865,29.992,23,30z M22,12H6v2h16V12z"/>
+                <path d="M22,28h2v-6h-2V28z M22,18v2h2v-2H22z"/>
+            </g>
+        </svg>
+    );
+}

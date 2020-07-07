@@ -1,143 +1,212 @@
 import React from 'react';
-import { Fields, reduxForm } from "redux-form";
 import { connect } from 'react-redux';
-import {edit, loading, remove} from "../../../../assets/icons";
-import {Field} from "redux-form";
-import {getCatCourses, addNewCourse, deleteCatCourse} from "../../../../actions";
+import Select from 'react-select';
+import { getCatCourses, editCategory, wipeCatInfo, deleteCategory, getAllCourses, editCourse } from "../../../../actions";
+import {loading, person} from "../../../../assets/icons";
+import history from "../../../../history";
 import Modal from "../../../Modal";
 
 class ShowCat extends React.Component {
 
     state = {
-        renderModal: false,
-        deleteHolderId: null
+        name: '',
+        renderDeleteModal: false,
+        renderAddCourseModal: false,
+        selectedCourses: null
     }
 
     componentDidMount() {
-        this.props.getCatCourses(this.props.token, this.props.cat.id);
+        this.props.wipeCatInfo()
+        this.props.getAllCourses(this.props.auth.token);
+        this.props.getCatCourses(this.props.auth.token, this.props.match.params.id);
+        this.setState({ name: this.props.category.name })
     }
 
-    showModal = (id) => {
-        this.setState({ renderModal: true, deleteHolderId: id })
+    componentWillUnmount() {
+        this.props.wipeCatInfo()
     }
 
-    onAcceptDelete = () => {
-        this.props.deleteCatCourse(this.props.token, this.state.deleteHolderId, this.props.cat.id);
-        this.setState({ renderModal: false, deleteHolderId: null })
+    handleChange = (name) => {
+        this.setState({ name: name })
+    }
+
+    renderCards = () => {
+        return this.props.courses.map(course => {
+            return (
+                <div key={course.id} className="w-5/6 max-w-300 sm:ml-12 ml-0 mb-12 py-4 bg-white flex flex-col items-center">
+                    <span className="text-xl text-blueish font-vb">{course.shortname}</span>
+                    <div className="w-full my-4 flex flex-row justify-center items-center">
+                        <span>{course.teacherName}</span>
+                        {person("w-8 h-8")}
+                    </div>
+                    <button onClick={() => this.deleteCourse(course.id)} className="px-4 py-1 text-red-600 rounded-lg font-vb border-2 border-red-600">حذف</button>
+                </div>
+            );
+        })
+    }
+
+    deleteCat = () => {
+        const values = { id: parseInt(this.props.match.params.id) }
+        this.props.deleteCategory(this.props.auth.token, values);
+        history.push("/a/dashboard");
+    }
+
+    deleteCourse = (id) => {
+        const values = {
+            id,
+            categoryId: 0
+        }
+        this.props.editCourse(this.props.auth.token, values)
     }
 
     onCancelDelete = () => {
-        this.setState({ renderModal: false, deleteHolderId: null })
+        this.setState({ renderDeleteModal: false })
     }
 
-    catCourses = () => {
-        return this.props.courses.map(course => {
-            return (
-                <div className="flex flex-row-reverse items-center justify-center">
-                    <span className="my-2 mx-2" key={course.id}>{course.displayname}</span>
-                    <div onClick={() => this.showModal(course.id)}>
-                        {this.props.isThereLoading && this.props.loadingComponent === course.id ?
-                            loading("w-6 h-6 text-blueish")
-                            :
-                            remove("w-6 h-6 transition-all cursor-pointer duration-200 hover:text-red-500")
-                        }
-                    </div>
-                </div>
-            );
-        });
+    onCancelAddCourse = () => {
+        this.setState({ renderAddCourseModal: false })
     }
 
-    renderFormInputs = ({ input, meta, placeholder }) => {
-        return (
-            <div className={`flex px-1 flex-row py-3 my-3 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
-                <input
-                    {...input}
-                    dir="rtl"
-                    className="w-full px-2 placeholder-grayish focus:outline-none"
-                    type="text"
-                    placeholder={placeholder}
-                />
-            </div>
-        );
+    addCourse = () => {
+        this.setState({ renderAddCourseModal: true })
     }
 
-    onAddCourse = (formValues) => {
-        formValues = {...formValues, categoryId: this.props.cat.id}
-        this.props.addNewCourse(this.props.token, formValues);
+    renderSelectableCourses = () => {
+        let options = []
+
+        this.props.allCourses.map(course => {
+            if (!this.props.courses.some(e => e.id === course.id)) {
+                options.push({
+                    value: course.id,
+                    label: course.shortname
+                });
+            }
+        })
+
+        return options;
     }
 
-    renderContent = () => {
-        if (this.props.isThereLoading && this.props.loadingComponent === 'getCatCourse') return loading("w-10 h-10 text-blueish")
-        return (
-            <div className="w-full flex flex-row">
-                {this.state.renderModal ? <Modal accept={this.onAcceptDelete} cancel={this.onCancelDelete} /> : null}
-                <div className="w-1/3 flex flex-col items-center">
-                    <span className="text-2xl text-blueish">افزودن درس</span>
-                    <form className={`w-3/4 flex flex-col transition-height`} onSubmit={this.props.handleSubmit(this.onAddCourse)}>
-                        <Field
-                            name="shortname"
-                            placeholder="نام"
-                            component={this.renderFormInputs}
-                        />
-                        <Field
-                            name="teacherName"
-                            placeholder="نام معلم"
-                            component={this.renderFormInputs}
-                        />
-                        <button className="bg-golden flex justify-center items-center my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg">
-                            {this.props.isThereLoading && this.props.loadingComponent === 'addNewCourse' ? loading("w-6 h-6 text-dark-green") : 'افزودن'}
-                        </button>
-                    </form>
-                </div>
-                <div className="w-1/3 flex flex-col items-center">
-                    <span className="text-2xl text-blueish mb-4">دروس</span>
-                    {this.catCourses()}
-                </div>
-                <div className="w-1/3 flex flex-col items-center">
-                    <div className="flex flex-row justify-center items-center">
-                        {/*{edit("w-6 h-6 hover:text-blueish cursor-pointer")}*/}
-                        <span className="text-2xl text-blueish mx-2">
-                        نام مقطع
-                        </span>
-                    </div>
-                    <span className="mb-8">{this.props.cat.name}</span>
-                    <button
-                        onClick={this.props.exit}
-                        className="px-6 py-1 text-xl text-red-500 border-2 border-red-500 transition-all duration-200 hover:text-white hover:bg-red-500">خروج</button>
-                </div>
-            </div>
-        );
+    handleSelectCourses = selectedCourses => {
+        this.setState({ selectedCourses });
+    };
+
+    addSelectedCourses = () => {
+        this.setState({ renderAddCourseModal: false })
+    }
+
+    save = () => {
+        const values = { id: parseInt(this.props.match.params.id), name: this.state.name }
+        this.props.editCategory(this.props.auth.token, values);
+    }
+
+    cancel = () => {
+        this.props.wipeCatInfo();
+        history.push("/a/dashboard");
     }
 
     render() {
+        if (!this.props.courses || !this.props.allCourses) {
+            return (
+                <div className="w-screen h-screen flex justify-center items-center">
+                    {loading("w-24 h-24 text-blueish")}
+                </div>
+            );
+        }
+
         return (
-            <div className="w-full flex flex-col justify-center items-center">
-                {this.renderContent()}
+            <div className="w-screen min-h-screen bg-light-white flex flex-col justify-center items-center">
+                {this.state.renderDeleteModal ?
+                    <Modal cancel={this.onCancelDelete}>
+                        <div onClick={(e) => e.stopPropagation()} className="md:w-1/3 w-5/6 p-8 flex flex-col items-center bg-white font-vb">
+                            <span className="py-2 text-center">آیا از حذف کامل این مقطع مطمئن هستید؟</span>
+                            <div className="flex md:flex-row flex-col">
+                                <button
+                                    onClick={this.onCancelDelete}
+                                    className="px-8 py-2 mx-2 my-2 text-red-600 border-2 border-red-600 rounded-lg focus:outline-none"
+                                >خیر</button>
+                                <button
+                                    onClick={() => this.deleteCat()}
+                                    className="px-8 py-2 mx-2 my-2 text-white bg-red-600 rounded-lg focus:outline-none"
+                                >بله</button>
+                            </div>
+                        </div>
+                    </Modal>
+                    : null}
+                {this.state.renderAddCourseModal ?
+                    <Modal cancel={this.onCancelAddCourse}>
+                        <div onClick={(e) => e.stopPropagation()} className="addCourse bg-center md:w-2/3 w-5/6 px-8 py-24 flex flex-col items-end font-vb">
+                            <span className="text-xl text-center my-4 text-dark-green">دروس مورد نظر خود را از لیست زیر انتخاب نمایید</span>
+                            <div className="md:w-2/3 w-full flex md:flex-row-reverse flex-col md:items-start items-center">
+                                <Select
+                                    className="w-5/6 mx-3"
+                                    value={this.state.selectedCourses}
+                                    onChange={this.handleSelectCourses}
+                                    options={this.renderSelectableCourses()}
+                                    isMulti
+                                    isSearchable
+                                    placeholder="دروس"
+                                />
+                                <button onClick={this.addSelectedCourses} className="px-8 py-2 md:my-0 my-4 bg-blueish text-white">ذخیره</button>
+                            </div>
+                        </div>
+                    </Modal>
+                    : null}
+                <span className="text-4xl font-vb text-dark-green my-8">اطلاعات مقطع</span>
+                <div className="md:w-2/3 w-11/12 flex md:flex-row flex-col-reverse justify-around">
+                    <div className="flex flex-row justify-center items-center">
+                        <button
+                            onClick={() => this.setState({ renderDeleteModal: true })}
+                            className="px-6 py-2 border-2 font-vb mx-4 border-red-600 text-red-600"
+                        >
+                            حذف مقطع
+                        </button>
+                        <button
+                            onClick={this.addCourse}
+                            className="px-6 py-2 border-2 font-vb mx-4 border-green-600 text-green-600"
+                        >
+                            افزودن درس
+                        </button>
+                    </div>
+                    <div className="md:my-0 my-4 flex flex-row-reverse items-center">
+                        <span className="mx-4 text-2xl text-dark-green">نام مقطع</span>
+                        <input
+                            className="my-2 px-2 py-1 text-xl focus:outline-none focus:shadow-outline"
+                            dir="rtl"
+                            value={this.state.name}
+                            onChange={(e => this.handleChange(e.target.value))}
+                        />
+                    </div>
+                </div>
+                <div className="w-5/6 flex mt-8 flex-row-reverse flex-wrap justify-center">
+                    {this.renderCards()}
+                </div>
+                <div className="flex flex-row justify-center items-center">
+                    <button onClick={this.save} className="px-12 py-2 mx-1 rounded-lg bg-blueish text-xl font-vb text-white focus:outline-none focus:shadow-outline">
+                        {this.props.isThereLoading && this.props.loadingComponent === 'editCat' ?
+                            loading("w-6 h-6 text-white")
+                            :
+                            "ذخیره"
+                        }
+                    </button>
+                    <button
+                        onClick={this.cancel}
+                        className="px-12 py-2 mx-2 rounded-lg border-2 border-blueish text-xl font-vb text-blueish focus:outline-none focus:shadow-outline">لغو</button>
+                </div>
             </div>
         );
     }
 
 }
 
-const validate = (formValues) => {
-    const errors = {}
-
-    if (!formValues.shortname) errors.shortname = true;
-
-    return errors;
-}
-
-const formWrapped = reduxForm({
-    form: 'addCourseToCat',
-    validate
-})(ShowCat);
-
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, myProps) => {
     return {
+        auth: state.auth.userInfo,
+        category: state.adminData.categories.find(el => el.id === parseInt(myProps.match.params.id)),
         courses: state.adminData.catInfo,
+        allCourses: state.adminData.courses,
         isThereLoading: state.loading.isThereLoading,
         loadingComponent: state.loading.loadingComponent
     }
 }
 
-export default connect(mapStateToProps, { getCatCourses, addNewCourse, deleteCatCourse })(formWrapped);
+export default connect(mapStateToProps, { getCatCourses, editCategory, wipeCatInfo, deleteCategory, getAllCourses, editCourse })(ShowCat);
