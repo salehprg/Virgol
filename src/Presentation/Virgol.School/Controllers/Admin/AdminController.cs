@@ -289,6 +289,15 @@ namespace lms_with_moodle.Controllers
                                 }
                                 
                             }
+
+                            await moodleApi.CreateUsers(users);
+                            foreach(var user in users)
+                            {
+                                int userMoodle_id = await moodleApi.GetUserId(user.MelliCode);
+                                user.Moodle_Id = userMoodle_id;
+                                appDbContext.Users.Update(user);
+                            }
+                            appDbContext.SaveChanges();
                         }
                     }
                     return Ok(errors);
@@ -494,23 +503,15 @@ namespace lms_with_moodle.Controllers
                 await userManager.AddToRoleAsync(teacher , "User");
                 appDbContext.SaveChanges();
                 
-                // if(CourseId >= 0)
-                // {
-                //     EnrolUser teacherEnrol = new EnrolUser();
-                //     teacherEnrol.CourseId = CourseId; //Course Id from route url
-                //     teacherEnrol.RoleId = 3;
-                //     teacherEnrol.UserId = (await userManager.FindByNameAsync(teacher.MelliCode)).Id;
+                ldap.AddUserToLDAP(teacher);
 
-                //     bool result = await moodleApi.AssignUserToCourse(teacherEnrol);
-                //     if(result)
-                //     {
-                //         return Ok(true);
-                //     }
-                //     else
-                //     {
-                //         return Ok("اضافه کردن معلم به درس با مشکل روبرو شد");
-                //     }
-                // }
+                await moodleApi.CreateUsers(new List<UserModel>() {teacher});
+
+                int userMoodle_id = await moodleApi.GetUserId(teacher.MelliCode);
+                teacher.Moodle_Id = userMoodle_id;
+                appDbContext.Users.Update(teacher);
+
+                appDbContext.SaveChanges();
 
                 return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
             }
@@ -565,6 +566,45 @@ namespace lms_with_moodle.Controllers
 #endregion
     
 #region Courses
+
+
+        [HttpPut]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
+        public async Task<IActionResult> AddCoursesToCategory([FromBody]List<int> CourseIds , int CategoryId)
+        {
+            string error = await moodleApi.AddCoursesToCategory(CourseIds , CategoryId);
+            
+            if(error == null)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return BadRequest(error);
+            }
+            
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 401)]
+        public async Task<IActionResult> RemoveCourseFromCategory(int courseId )
+        {
+            string error = await moodleApi.RemoveCourseFromCategory(courseId);
+            
+            if(error == null)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return BadRequest(error);
+            }
+            
+        }
+
+        
 
         [HttpGet]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]

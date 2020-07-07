@@ -321,12 +321,54 @@ namespace lms_with_moodle.Helper
                 return ex.Message;
             }
         }
-        public async Task<string> AddCourseToCategory(string CourseId , int CategoryId)
+        public async Task<string> AddCoursesToCategory(List<int> CourseIds , int CategoryId)
         {
             try
             {
                 string FunctionName = "core_course_update_courses";
-                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&courses[0][id]=" + CourseId + "&courses[0][categoryid]=" + CategoryId;
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+                string information = "";
+
+                for (int i = 0; i < CourseIds.Count; i++)
+                {
+                    information += "&courses["+i+"][id]=" + CourseIds[i];
+                    information += "&courses["+i+"][categoryid]=" + CategoryId;
+                }
+                
+                data += information;
+
+                HttpResponseModel Response = await sendData(data);
+                var error = JsonConvert.DeserializeObject<warning>(Response.Message); 
+
+                if(error.warnings.Count > 0)
+                {
+                    Console.WriteLine(error.warnings[0].message);
+                    return error.warnings[0].message;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return ex.Message;
+            }
+        }
+        
+        public async Task<string> RemoveCourseFromCategory(int CourseId)
+        {
+            try
+            {
+                string FunctionName = "core_course_update_courses";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+                string information = "&courses[0][id]=" + CourseId + "&courses[0][categoryid]=1";
+                
+                data += information;
 
                 HttpResponseModel Response = await sendData(data);
                 var error = JsonConvert.DeserializeObject<warning>(Response.Message); 
