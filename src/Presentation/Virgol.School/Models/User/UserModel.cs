@@ -9,9 +9,6 @@ namespace Models.User
         public string MelliCode {get; set;}    
         public bool ConfirmedAcc {get; set;}
         public bool IsTeacher {get; set;}
-
-        public string ShDocument {get; set;}
-        public string Document2 {get; set;}
         public int Moodle_Id {get; set;}
     }
 

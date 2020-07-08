@@ -319,7 +319,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 401)]
-        public IActionResult ConfirmUsers([FromBody]List<int> usersId)
+        public async Task<IActionResult> ConfirmUsers([FromBody]List<int> usersId)
         {
             try
             {
@@ -328,6 +328,10 @@ namespace lms_with_moodle.Controllers
                     var SelectedUser = appDbContext.Users.Where(user => user.Id == id).FirstOrDefault();
                     SelectedUser.ConfirmedAcc = true;
                     ldap.AddUserToLDAP(SelectedUser);
+
+                    await moodleApi.CreateUsers(new List<UserModel>(){SelectedUser});
+                    int userMoodle_id = await moodleApi.GetUserId(SelectedUser.MelliCode);
+                    SelectedUser.Moodle_Id = userMoodle_id;
 
                     appDbContext.Users.Update(SelectedUser);
                 }

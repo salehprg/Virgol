@@ -23,6 +23,7 @@ using Models;
 using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Models.User.InputModel;
 
 namespace lms_with_moodle.Controllers
 {
@@ -206,8 +207,8 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
-        //Sameple Data : Users/RegisterNewUser?Password=Saleh-1379   _model post as json data
-        public async Task<IActionResult> RegisterNewUser([FromBody]UserModel _model , string Password)
+        //Sameple Data : Users/RegisterNewUser?Password=Saleh-1379   newUser post as json data
+        public async Task<IActionResult> RegisterNewUser([FromBody]UserInputModel _model)
         {
             //Check for admin Account 
             UserModel adminUser = await userManager.FindByNameAsync("Admin");
@@ -235,19 +236,34 @@ namespace lms_with_moodle.Controllers
 
             try
             {
-                _model.ConfirmedAcc = false;
-                _model.UserName = _model.MelliCode;
-
-                //These file name Are set by default and its extension should be checked between jpg/png
-                _model.ShDocument = _model.MelliCode;
-                _model.Document2 = _model.MelliCode + "_Doc2";
+                UserModel newUser = _model;
+                newUser.ConfirmedAcc = false;
+                newUser.UserName = _model.MelliCode;
                 
-                IdentityResult result = userManager.CreateAsync(_model , Password).Result;
-
+                IdentityResult result = userManager.CreateAsync(newUser , newUser.MelliCode).Result;
+                
                 if(result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(_model , "User");
-                    return Ok(_model);
+                    await userManager.AddToRoleAsync(newUser , "User");
+
+                    int userId = userManager.FindByNameAsync(newUser.MelliCode).Result.Id;
+
+                     //These file name Are set by default and its extension should be checked between jpg/png
+                    UserDetail userDetail = new UserDetail();
+                    userDetail.ShDocument = _model.MelliCode;
+                    userDetail.Document2 = _model.MelliCode + "_Doc2";
+                    userDetail.BaseId = _model.BaseId;
+                    userDetail.BirthDate = _model.BirthDate;
+                    userDetail.FatherMelliCode = _model.FatherMelliCode;
+                    userDetail.MotherMelliCode = _model.MotherMelliCode;
+                    userDetail.FatherName = _model.FatherName;
+                    userDetail.MotherName = _model.MotherName;
+                    userDetail.UserId = userId;
+
+                    appDbContext.UserDetails.Add(userDetail);
+                    appDbContext.SaveChanges();
+                    
+                    return Ok(newUser);
                 }
                 else
                 {

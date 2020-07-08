@@ -20,6 +20,7 @@ namespace Models
         public DbSet<VerificationCodeModel> VerificationCodes {get; set;}
         public DbSet<Meeting> Meetings {get; set;}
         public DbSet<ParticipantInfo> ParticipantInfos {get; set;}
+        public DbSet<UserDetail> UserDetails {get; set;}
 
 
         // protected override void OnModelCreating(ModelBuilder builder)
