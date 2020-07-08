@@ -29,6 +29,7 @@ namespace lms_with_moodle.Helper
         public string FarazAPI_URL { get; set; }
         public string FarazAPI_SendNumber { get; set; }
         public string FarazAPI_Password { get; set; }
+        public string FarazAPI_ApiKey { get; set; }
 
         //-----------------------
 

@@ -78,7 +78,7 @@ export const forgotPassword = (melliCode, verificationCode) => async dispatch =>
 
     try {
         dispatch({ type: 'FORGOT_PASS_LOADING' });
-        const response = await lms.post(`/api/Users/SendVerificationCode`, { melliCode, verificationCode });
+        const response = await lms.post(`/api/Users/ForgotPassword`, { melliCode, verificationCode });
 
         if (response.data) {
             dispatch({ type: 'FORGOT_PASS_OK' });

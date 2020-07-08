@@ -282,17 +282,25 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);// Make new Verification code
-                string SmsResult = SMSApi.SendSms(new String[] {user.PhoneNumber} , Code);
+                //bool SmsResult = SMSApi.SendForgotSms(user.PhoneNumber , Code);
+                bool SmsResult = SMSApi.SendSms(new string[] {user.PhoneNumber} , Code);
 
-                VerificationCodeModel verification = new VerificationCodeModel();
-                verification.LastSend = DateTime.Now;
-                verification.UserId = user.Id;
-                verification.VerificationCode = Code;
+                if(SmsResult)
+                {
+                    VerificationCodeModel verification = new VerificationCodeModel();
+                    verification.LastSend = DateTime.Now;
+                    verification.UserId = user.Id;
+                    verification.VerificationCode = Code;
 
-                appDbContext.VerificationCodes.Add(verification);
-                appDbContext.SaveChanges();
+                    appDbContext.VerificationCodes.Add(verification);
+                    appDbContext.SaveChanges();
 
-                return true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch(Exception ex)
             {
