@@ -630,10 +630,10 @@ namespace lms_with_moodle.Controllers
 
                         if(Teacher != null)
                         {
-                            string TeacherName = Teacher.Firstname + " " + Teacher.Lastname;
+                            string TeacherName = Teacher.FirstName + " " + Teacher.LastName;
 
                             course.TeacherName = TeacherName;
-                            course.TeacherId = Teacher.Id;
+                            course.TeacherId = Teacher.id;
                         }
                         else
                         {
