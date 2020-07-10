@@ -5,11 +5,14 @@ import history from "../history";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import Login from './Login';
 import Dashboard from "./dashboard/teacher/Dashboard";
-import SignUp from "./SignUp";
+import SignUp from "./signup/SignUp";
 import Status from "./Status";
 import NoFound from "./NoFound";
-import ShowCat from "./dashboard/teacher/Category/ShowCat";
 import ShowCourse from "./dashboard/teacher/course/ShowCourse";
+import AddTeacher from "./dashboard/teacher/teachers/AddTeacher";
+import AddTeacherByExcel from "./dashboard/teacher/teachers/AddTeacherByExcel";
+import TeacherInfo from "./dashboard/teacher/teachers/TeacherInfo";
+import ShowCat from "./dashboard/teacher/category/ShowCat";
 
 const App = (props) => {
 
@@ -40,6 +43,24 @@ const App = (props) => {
                     <AuthenticatedRoute
                         path="/course/:id"
                         component={ShowCourse}
+                        conditions={props.authenticated && props.userType === 2}
+                        exact
+                    />
+                    <AuthenticatedRoute
+                        path="/teacher/:id"
+                        component={TeacherInfo}
+                        conditions={props.authenticated && props.userType === 2}
+                        exact
+                    />
+                    <AuthenticatedRoute
+                        path="/addTeacher"
+                        component={AddTeacher}
+                        conditions={props.authenticated && props.userType === 2}
+                        exact
+                    />
+                    <AuthenticatedRoute
+                        path="/addTeacherByExcel"
+                        component={AddTeacherByExcel}
                         conditions={props.authenticated && props.userType === 2}
                         exact
                     />

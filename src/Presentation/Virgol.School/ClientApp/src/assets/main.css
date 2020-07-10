@@ -643,6 +643,10 @@ video {
   background-image: url("/book.jpg");
 }
 
+.teacherInfoBg {
+  background-image: linear-gradient(to right, #1BA098, #fff);
+}
+
 .space-y-0 > :not(template) ~ :not(template) {
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));
@@ -7921,6 +7925,10 @@ video {
   max-width: 600px;
 }
 
+.max-w-1000 {
+  max-width: 1000px;
+}
+
 .max-w-none {
   max-width: none;
 }
@@ -7983,6 +7991,10 @@ video {
 
 .max-w-screen-xl {
   max-width: 1280px;
+}
+
+.max-w-300o {
+  max-width: 300px;
 }
 
 .min-h-0 {
@@ -22307,6 +22319,10 @@ video {
     max-width: 600px;
   }
 
+  .sm\:max-w-1000 {
+    max-width: 1000px;
+  }
+
   .sm\:max-w-none {
     max-width: none;
   }
@@ -22369,6 +22385,10 @@ video {
 
   .sm\:max-w-screen-xl {
     max-width: 1280px;
+  }
+
+  .sm\:max-w-300o {
+    max-width: 300px;
   }
 
   .sm\:min-h-0 {
@@ -36694,6 +36714,10 @@ video {
     max-width: 600px;
   }
 
+  .md\:max-w-1000 {
+    max-width: 1000px;
+  }
+
   .md\:max-w-none {
     max-width: none;
   }
@@ -36756,6 +36780,10 @@ video {
 
   .md\:max-w-screen-xl {
     max-width: 1280px;
+  }
+
+  .md\:max-w-300o {
+    max-width: 300px;
   }
 
   .md\:min-h-0 {
@@ -51081,6 +51109,10 @@ video {
     max-width: 600px;
   }
 
+  .lg\:max-w-1000 {
+    max-width: 1000px;
+  }
+
   .lg\:max-w-none {
     max-width: none;
   }
@@ -51143,6 +51175,10 @@ video {
 
   .lg\:max-w-screen-xl {
     max-width: 1280px;
+  }
+
+  .lg\:max-w-300o {
+    max-width: 300px;
   }
 
   .lg\:min-h-0 {
@@ -65468,6 +65504,10 @@ video {
     max-width: 600px;
   }
 
+  .xl\:max-w-1000 {
+    max-width: 1000px;
+  }
+
   .xl\:max-w-none {
     max-width: none;
   }
@@ -65530,6 +65570,10 @@ video {
 
   .xl\:max-w-screen-xl {
     max-width: 1280px;
+  }
+
+  .xl\:max-w-300o {
+    max-width: 300px;
   }
 
   .xl\:min-h-0 {

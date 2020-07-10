@@ -5,6 +5,10 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
 
+    if (action.type === "CONFIRM_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: 'confirm'}
+    }
+
     if (action.type === "LOGIN_LOADING") {
         return { ...state, isThereLoading: true, loadingComponent: 'Login'}
     }

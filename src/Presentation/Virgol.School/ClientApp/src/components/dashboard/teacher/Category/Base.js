@@ -30,8 +30,8 @@ class Base extends React.Component {
                 if (category.name.includes(this.state.query)) {
                     return (
                         <div key={category.id} className="w-5/6 max-w-300 sm:ml-12 ml-0 mb-12 py-4 bg-white flex flex-col items-center">
-                            <span className="text-xl text-blueish font-vb">{category.name}</span>
-                            <span className="my-4" dir="rtl">تعداد دروس: {category.courseCount}</span>
+                            <span className="text-xl text-blueish font-vb text-center">{category.name}</span>
+                            <span className="my-4 text-center" dir="rtl">تعداد دروس: {category.courseCount}</span>
                             <Link className="w-5/6 py-2 bg-dark-blue text-center text-white rounded-full" to={`/cat/${category.id}`}>ویرایش</Link>
                         </div>
                     );

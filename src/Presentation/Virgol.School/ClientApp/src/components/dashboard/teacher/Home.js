@@ -1,17 +1,19 @@
 import React from "react";
 import { connect } from 'react-redux';
-import { getNewUsers, logout } from "../../../actions";
-import {book, check, edit, errorOutline, loading, logoutIcon, remove, verified} from "../../../assets/icons";
+import { getNewUsers, logout, confirmUser } from "../../../actions";
+import {check, errorOutline, loading, logoutIcon, verified} from "../../../assets/icons";
 import ReactTooltip from "react-tooltip";
-import Modal from "../../Modal";
 
 class Home extends React.Component {
 
     state = { query: '' }
 
     componentDidMount() {
-        console.log("comp")
         this.props.getNewUsers(this.props.auth.token);
+    }
+
+    confirm = id => {
+        this.props.confirmUser(this.props.auth.token, id)
     }
 
     renderNewStudents = () => {
@@ -39,7 +41,13 @@ class Home extends React.Component {
                                 <td className="py-2">{student.lastName}</td>
                                 <td className="py-2">{student.melliCode}</td>
                                 <td className="flex flex-row justify-center py-2">
-                                    {check("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")}
+                                    <div onClick={() => this.confirm(student.id)}>
+                                        {this.props.isThereLoading && this.props.loadingComponent === 'confirm' ?
+                                            loading("w-8 h-8 mx-2 text-blueish")
+                                            :
+                                            check("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         );
@@ -114,4 +122,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { getNewUsers, logout })(Home);
+export default connect(mapStateToProps, { getNewUsers, logout, confirmUser })(Home);

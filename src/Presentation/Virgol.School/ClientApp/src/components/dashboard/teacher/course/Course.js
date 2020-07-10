@@ -133,6 +133,7 @@ class Course extends React.Component {
                     </div>
                     <CoursesList
                         courses={currentCards}
+                        query={this.state.query}
                     />
                     <Pagination
                         cardsPerPage={this.state.cardsPerPage}

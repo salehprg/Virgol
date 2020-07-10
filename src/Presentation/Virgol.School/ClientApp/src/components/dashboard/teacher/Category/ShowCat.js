@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
-import { getCatCourses, editCategory, wipeCatInfo, deleteCategory, getAllCourses, editCourse } from "../../../../actions";
-import {loading, person} from "../../../../assets/icons";
+import { getCatCourses, editCategory, addCoursesToCat, wipeCatInfo, deleteCategory, getAllCourses, editCourse, deleteCourseFromCat } from "../../../../actions";
+import {add, loading, person} from "../../../../assets/icons";
 import history from "../../../../history";
 import Modal from "../../../Modal";
 
@@ -12,6 +12,8 @@ class ShowCat extends React.Component {
         name: '',
         renderDeleteModal: false,
         renderAddCourseModal: false,
+        renderDeleteCourseModal: false,
+        deleteCourseIdHolder: null,
         selectedCourses: null
     }
 
@@ -30,6 +32,10 @@ class ShowCat extends React.Component {
         this.setState({ name: name })
     }
 
+    showConfirm = (id) => {
+        this.setState({ renderDeleteCourseModal: true, deleteCourseIdHolder: id })
+    }
+
     renderCards = () => {
         return this.props.courses.map(course => {
             return (
@@ -39,7 +45,7 @@ class ShowCat extends React.Component {
                         <span>{course.teacherName}</span>
                         {person("w-8 h-8")}
                     </div>
-                    <button onClick={() => this.deleteCourse(course.id)} className="px-4 py-1 text-red-600 rounded-lg font-vb border-2 border-red-600">حذف</button>
+                    <button onClick={() => this.showConfirm(course.id)} className="px-4 py-1 text-red-600 rounded-lg font-vb border-2 border-red-600">حذف</button>
                 </div>
             );
         })
@@ -51,12 +57,9 @@ class ShowCat extends React.Component {
         history.push("/a/dashboard");
     }
 
-    deleteCourse = (id) => {
-        const values = {
-            id,
-            categoryId: 0
-        }
-        this.props.editCourse(this.props.auth.token, values)
+    deleteCourse = () => {
+        this.props.deleteCourseFromCat(this.props.auth.token, this.state.deleteCourseIdHolder, this.props.match.params.id);
+        this.setState({ renderDeleteCourseModal: false, deleteCourseIdHolder: null })
     }
 
     onCancelDelete = () => {
@@ -91,6 +94,13 @@ class ShowCat extends React.Component {
     };
 
     addSelectedCourses = () => {
+
+        const adds = []
+        this.state.selectedCourses.map(course => {
+            adds.push(course.value)
+        })
+
+        this.props.addCoursesToCat(this.props.auth.token, adds);
         this.setState({ renderAddCourseModal: false })
     }
 
@@ -102,6 +112,10 @@ class ShowCat extends React.Component {
     cancel = () => {
         this.props.wipeCatInfo();
         history.push("/a/dashboard");
+    }
+
+    onCancelDeleteCourse = () => {
+        this.setState({ renderDeleteCourseModal: false, deleteCourseIdHolder: null })
     }
 
     render() {
@@ -126,6 +140,23 @@ class ShowCat extends React.Component {
                                 >خیر</button>
                                 <button
                                     onClick={() => this.deleteCat()}
+                                    className="px-8 py-2 mx-2 my-2 text-white bg-red-600 rounded-lg focus:outline-none"
+                                >بله</button>
+                            </div>
+                        </div>
+                    </Modal>
+                    : null}
+                {this.state.renderDeleteCourseModal ?
+                    <Modal cancel={this.onCancelDeleteCourse}>
+                        <div onClick={(e) => e.stopPropagation()} className="md:w-1/3 w-5/6 p-8 flex flex-col items-center bg-white font-vb">
+                            <span className="py-2 text-center">آیا از حذف این درس از این مقطع مطمئن هستید؟</span>
+                            <div className="flex md:flex-row flex-col">
+                                <button
+                                    onClick={this.onCancelDeleteCourse}
+                                    className="px-8 py-2 mx-2 my-2 text-red-600 border-2 border-red-600 rounded-lg focus:outline-none"
+                                >خیر</button>
+                                <button
+                                    onClick={() => this.deleteCourse()}
                                     className="px-8 py-2 mx-2 my-2 text-white bg-red-600 rounded-lg focus:outline-none"
                                 >بله</button>
                             </div>
@@ -209,4 +240,4 @@ const mapStateToProps = (state, myProps) => {
     }
 }
 
-export default connect(mapStateToProps, { getCatCourses, editCategory, wipeCatInfo, deleteCategory, getAllCourses, editCourse })(ShowCat);
+export default connect(mapStateToProps, { getCatCourses, editCategory, addCoursesToCat,wipeCatInfo, deleteCategory, getAllCourses, editCourse, deleteCourseFromCat })(ShowCat);

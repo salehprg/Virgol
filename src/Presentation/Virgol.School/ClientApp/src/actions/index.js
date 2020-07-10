@@ -43,7 +43,7 @@ export const register = formValues => async dispatch => {
     try {
 
         dispatch({ type: 'REGISTER_LOADING' });
-        const response = await lms.post('/api/Users/RegisterNewUser', {
+        const response = await lms.put('/api/Users/RegisterNewUser?password=s.shaffaf2', {
             firstName: formValues.firstName,
             lastName: formValues.lastName,
             melliCode: formValues.melliCode
@@ -55,6 +55,26 @@ export const register = formValues => async dispatch => {
 
     } catch (e) {
         dispatch({ type: 'REGISTER_FAILED', payload: 'ارور در ثبت نام' });
+        dispatch({ type: 'FADE_LOADING' });
+    }
+}
+
+export const confirmUser = (token, id) => async dispatch => {
+
+    try {
+
+        dispatch({ type: 'CONFIRM_LOADING' });
+        const response = await lms.post("/api/Admin/ConfirmUsers", [id],{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
+
+        dispatch({ type: 'CONFIRM', payload: id });
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        dispatch({ type: 'CONFIRM_FAILED', payload: 'خطا' });
         dispatch({ type: 'FADE_LOADING' });
     }
 }
@@ -78,7 +98,7 @@ export const forgotPassword = (melliCode, verificationCode) => async dispatch =>
 
     try {
         dispatch({ type: 'FORGOT_PASS_LOADING' });
-        const response = await lms.post(`/api/Users/ForgotPassword`, { melliCode, verificationCode });
+        const response = await lms.post(`/api/Users/SendVerificationCode`, { melliCode, verificationCode });
 
         if (response.data) {
             dispatch({ type: 'FORGOT_PASS_OK' });
@@ -174,6 +194,7 @@ export const getAllTeachers = token => async dispatch => {
             }
         });
 
+        console.log(response.data)
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'GET_ALL_TEACHERS', payload: response.data });
 
@@ -247,7 +268,6 @@ export const addNewCategory = (token, formValues) => async dispatch => {
 export const addNewTeacher = (token, formValues) => async dispatch => {
 
     try {
-        console.log(formValues)
         dispatch({ type: 'ADD_NEW_TEACHER_LOADING' });
         const response = await lms.put("/api/Admin/AddNewTeacher", formValues ,{
             headers: {
@@ -297,6 +317,30 @@ export const addBulkUser = (token, excel) => async dispatch => {
 
 }
 
+export const addBulkTeacher = (token, excel) => async dispatch => {
+
+    try {
+
+        dispatch({ type: 'ADD_BULK_TEACHER_LOADING' });
+
+        const data = new FormData()
+        data.append('Files', excel)
+        const response = await lms.post("/api/Admin/AddBulkTeacher", data, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'FADE_LOADING' });
+        dispatch({ type: 'ADDED_BULK_TEACHER' });
+
+    } catch (e) {
+        dispatch({ type: 'FADE_LOADING' });
+        dispatch({ type: 'ERROR_ADDING_BULK_USER', payload: 'add bulk user error' });
+    }
+
+}
+
 export const deleteCategory = (token, values) => async dispatch => {
 
     try {
@@ -332,28 +376,52 @@ export const addNewCourse = (token, formValues) => async dispatch => {
             }
         });
 
+        console.log(response.data)
+
         dispatch({ type: 'ADD_NEW_COURSE', payload: response.data });
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
+        console.log(e.response)
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ERROR_ADDING_NEW_COURSE', payload: 'add new course error' });
     }
 
 }
 
-export const deleteCatCourse = (token, values) => async dispatch => {
+export const addCoursesToCat = (token, courses) => async dispatch => {
 
     try {
 
-        dispatch({ type: 'DELETE_COURSE_LOADING', payload: values.id });
-        const response = await lms.post("/api/Admin/DeleteCourse", values,{
+        dispatch({ type: 'ADD_COURSES_TO_CAT_LOADING' });
+        const response = await lms.put("/api/Admin/AddCoursesToCategory", courses ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: 'DELETE_COURSE', payload: values.id})
+        dispatch({ type: 'ADD_COURSES_TO_CAT', payload: response.data });
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        dispatch({ type: 'FADE_LOADING' });
+        dispatch({ type: 'ERROR_ADDING_COURSES', payload: 'add courses error' });
+    }
+
+}
+
+export const deleteCourse = (token, id) => async dispatch => {
+
+    try {
+
+        dispatch({ type: 'DELETE_COURSE_LOADING', payload: id });
+        const response = await lms.post("/api/Admin/DeleteCourse", { "id": id },{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'DELETE_COURSE', payload: id})
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
@@ -363,10 +431,34 @@ export const deleteCatCourse = (token, values) => async dispatch => {
 
 }
 
-export const deleteTeacher = (token, id) => async dispatch => {
+export const deleteCourseFromCat = (token, courseId, catId) => async dispatch => {
 
     try {
 
+        const body = {
+            "id" : courseId,
+            "courseId" : catId
+        }
+
+        dispatch({ type: 'DELETE_COURSE_FROM_CAT_LOADING', payload: catId });
+        const response = await lms.post("/api/Admin/DeleteCourseFromCat", { body },{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'DELETE_COURSE', payload: catId})
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        dispatch({ type: 'FADE_LOADING' });
+    }
+
+}
+
+export const deleteTeacher = (token, id) => async dispatch => {
+
+    try {
         dispatch({ type: 'DELETE_TEACHER_LOADING', payload: id });
         const response = await lms.delete(`/api/Admin/DeleteTeacher?teacherId=${id}` ,{
             headers: {
@@ -413,10 +505,33 @@ export const editCourse = (token, values) => async dispatch => {
             }
         });
 
+        console.log(response.data)
+
         dispatch({ type: 'EDIT_COURSE', payload: response.data})
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
+        console.log(e.response)
+        dispatch({ type: 'FADE_LOADING' });
+    }
+
+}
+
+export const editTeacher = (token, values) => async dispatch => {
+
+    try {
+        dispatch({ type: 'EDIT_TEACHER_LOADING' });
+        const response = await lms.post('​/api/Admin/EditTeacher', values,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'EDIT_TEACHER', payload: response.data})
+        dispatch({ type: 'FADE_LOADING' });
+
+    } catch (e) {
+        console.log(e.response)
         dispatch({ type: 'FADE_LOADING' });
     }
 

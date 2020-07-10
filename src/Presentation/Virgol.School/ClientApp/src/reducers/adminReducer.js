@@ -9,6 +9,9 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
 
+    if (action.type === 'CONFIRM')
+        return { ...state, newUsers: state.newUsers.filter(element => element.id !== action.payload) };
+
     if (action.type === 'GET_NEW_USERS')
         return { ...state, newUsers: action.payload };
 
@@ -53,6 +56,9 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === 'EDIT_CATEGORY')
         return { ...state, categories: state.categories.map(el => el.id === action.payload.id ? action.payload : el) }
+
+    if (action.type === 'EDIT_TEACHER')
+        return { ...state, teachers: state.teachers.map(el => el.id === action.payload.id ? action.payload : el) }
 
     if (action.type === 'WIPE_CAT_INFO')
         return { ...state, catInfo: null }

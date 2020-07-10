@@ -1,7 +1,6 @@
 import React from "react";
-import Select from 'react-select';
 import { getAllStudents, addBulkUser } from "../../../actions";
-import {book, edit, errorOutline, loading, remove} from "../../../assets/icons";
+import {errorOutline, loading} from "../../../assets/icons";
 import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
 import AddPerson from "./AddPerson";

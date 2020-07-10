@@ -2,9 +2,9 @@ import React from "react";
 import Sidebar from "../Sidebar";
 import {clear, headline} from "../../../assets/icons";
 import Home from "./Home";
-import Base from "./Category/Base";
+import Base from "./category/Base";
 import Course from "./course/Course";
-import Teachers from './Teachers';
+import Teachers from './teachers/Teachers';
 import Students from "./Students";
 
 class Dashboard extends React.Component {

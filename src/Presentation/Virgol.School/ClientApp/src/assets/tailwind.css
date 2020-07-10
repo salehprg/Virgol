@@ -37,5 +37,8 @@
     background-image: url("/book.jpg");
 }
 
+.teacherInfoBg {
+    background-image: linear-gradient(to right, #1BA098, #fff);
+}
 
 @tailwind utilities;
