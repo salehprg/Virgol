@@ -271,8 +271,9 @@ namespace lms_with_moodle.Helper
         {
             try
             {
+
                 string FunctionName = "core_course_update_courses";
-                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&courses[0][id]=" + _course.id + "&courses[0][categoryid]=" + _course.categoryId + "&courses[0][fullname]=" + _course.displayname+ "&courses[0][shortname]=" + _course.shortname;
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&courses[0][id]=" + _course.id + "&courses[0][categoryid]=" + _course.categoryId + "&courses[0][fullname]=" + _course.shortname + "&courses[0][shortname]=" + _course.shortname;
 
                 HttpResponseModel Response = await sendData(data);
                 var error = JsonConvert.DeserializeObject<warning>(Response.Message); 
@@ -412,6 +413,28 @@ namespace lms_with_moodle.Helper
             }
 
             return userCourses;
+        }
+        
+        public async Task<CourseDetail> GetCourseDetail(int CourseId)
+        {
+            string FunctionName = "core_course_get_courses_by_field";
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&field=id&value=" + CourseId;
+
+            HttpResponseModel response = await sendData(data);
+            List<CourseDetail_moodle> items = JsonConvert.DeserializeObject <AllCourseCatDetail_moodle<CourseDetail_moodle>> (response.Message).items; 
+
+            List<CourseDetail> courseDetail = new List<CourseDetail>();
+            foreach(var x in items)
+            {
+                if(x.format != "site")
+                {
+                    courseDetail.Add(new CourseDetail{displayname = x.displayname
+                                                            , id = int.Parse(x.id)
+                                                            , shortname = x.shortname});
+                }
+            }
+
+            return courseDetail[0];
         }
         
         #endregion
