@@ -532,7 +532,13 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                appDbContext.Users.Update(teacher);
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == teacher.Id).FirstOrDefault();
+                userModel.FirstName = teacher.FirstName;
+                userModel.LastName = teacher.LastName;
+                userModel.MelliCode = teacher.MelliCode;
+                userModel.PhoneNumber = teacher.PhoneNumber;
+
+                appDbContext.Users.Update(userModel);
                 appDbContext.SaveChanges();
 
                 UserModel editedTeacher = appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault();

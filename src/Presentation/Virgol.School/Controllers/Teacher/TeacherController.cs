@@ -51,7 +51,6 @@ namespace lms_with_moodle.Controllers
             ldap = new LDAP_db(appSettings);
         }
 
-
 #region Meeting
 
         [HttpGet]
