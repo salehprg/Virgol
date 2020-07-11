@@ -4,9 +4,9 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src                                                                    
 COPY ./src ./
 
-RUN apt update -yq \
+RUN apt update -yq --allow-releaseinfo-change \
     && apt install curl gnupg libgdiplus libc6-dev -yq \
-    && curl -sL https://deb.nodesource.com/setup_12.x | bash \
+    && curl -sL https://deb.nodesource.com/setup_14.x | bash \
     && apt install nodejs -yq
 
 # restore solution
@@ -30,8 +30,8 @@ RUN dotnet publish Virgol.School.csproj -c Release -o /app/published --self-cont
 # final stage/image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 
-RUN apt update -yq \
-    && apt install nano -yq
+# RUN apt update -yq \
+#     && apt install nano -yq
 WORKDIR /app
 
 COPY --from=build /app/published ./
