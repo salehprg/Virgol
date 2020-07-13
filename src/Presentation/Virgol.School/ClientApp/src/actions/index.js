@@ -441,7 +441,7 @@ export const deleteCourseFromCat = (token, courseId, catId) => async dispatch =>
         }
 
         dispatch({ type: 'DELETE_COURSE_FROM_CAT_LOADING', payload: catId });
-        const response = await lms.post("/api/Admin/DeleteCourseFromCat", { body },{
+        const response = await lms.post("/api/Admin/RemoveCourseFromCategory?courseId=" + courseId,{
             headers: {
                 authorization: `Bearer ${token}`
             }
