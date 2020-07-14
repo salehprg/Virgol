@@ -19,7 +19,7 @@ class CoursesList extends React.Component {
 
     render() {
         return (
-            <div className="w-full mt-8 flex flex-row-reverse flex-wrap justify-center">
+            <div className="w-full mt-8 flex flex-row-reverse flex-wrap md:justify-start justify-center">
                 {this.renderCards()}
             </div>
         );

@@ -14,7 +14,8 @@ class ShowCat extends React.Component {
         renderAddCourseModal: false,
         renderDeleteCourseModal: false,
         deleteCourseIdHolder: null,
-        selectedCourses: null
+        selectedCourses: null,
+        delCatLoading: false
     }
 
     componentDidMount() {
@@ -51,9 +52,10 @@ class ShowCat extends React.Component {
         })
     }
 
-    deleteCat = () => {
-        const values = { id: parseInt(this.props.match.params.id) }
-        this.props.deleteCategory(this.props.auth.token, values);
+    deleteCat = async () => {
+        this.setState({delCatLoading: true})
+        const values = {id: parseInt(this.props.match.params.id)}
+        await this.props.deleteCategory(this.props.auth.token, values);
         history.push("/a/dashboard");
     }
 
@@ -100,7 +102,7 @@ class ShowCat extends React.Component {
             adds.push(course.value)
         })
 
-        this.props.addCoursesToCat(this.props.auth.token, adds);
+        this.props.addCoursesToCat(this.props.auth.token, adds, this.props.match.params.id);
         this.setState({ renderAddCourseModal: false })
     }
 
@@ -185,12 +187,15 @@ class ShowCat extends React.Component {
                 <span className="text-4xl font-vb text-dark-green my-8">اطلاعات مقطع</span>
                 <div className="md:w-2/3 w-11/12 flex md:flex-row flex-col-reverse justify-around">
                     <div className="flex flex-row justify-center items-center">
-                        <button
-                            onClick={() => this.setState({ renderDeleteModal: true })}
-                            className="px-6 py-2 border-2 font-vb mx-4 border-red-600 text-red-600"
-                        >
-                            حذف مقطع
-                        </button>
+                        {this.state.delCatLoading ?
+                            loading("w-12 text-red-600")
+                            :
+                            <button
+                                onClick={() => this.setState({ renderDeleteModal: true })}
+                                className="px-6 py-2 border-2 font-vb mx-4 border-red-600 text-red-600"
+                            >
+                                حذف مقطع
+                            </button>}
                         <button
                             onClick={this.addCourse}
                             className="px-6 py-2 border-2 font-vb mx-4 border-green-600 text-green-600"
@@ -211,7 +216,7 @@ class ShowCat extends React.Component {
                 <div className="w-5/6 flex mt-8 flex-row-reverse flex-wrap justify-center">
                     {this.renderCards()}
                 </div>
-                <div className="flex flex-row justify-center items-center">
+                <div className="flex flex-row w-full justify-center items-center">
                     <button onClick={this.save} className="px-12 py-2 mx-1 rounded-lg bg-blueish text-xl font-vb text-white focus:outline-none focus:shadow-outline">
                         {this.props.isThereLoading && this.props.loadingComponent === 'editCat' ?
                             loading("w-6 h-6 text-white")

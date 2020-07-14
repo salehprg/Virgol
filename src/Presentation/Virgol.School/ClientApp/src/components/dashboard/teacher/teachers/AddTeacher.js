@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { addNewTeacher } from "../../../../actions";
 import {Field, reduxForm} from "redux-form";
-import {clear, teaching} from "../../../../assets/icons";
+import {clear, teaching, loading} from "../../../../assets/icons";
 import history from "../../../../history";
 
 class AddTeacher extends React.Component {
+
+    state = { loading: false }
 
     renderFormInputs = ({ input, meta, placeholder }) => {
         return (
@@ -21,8 +23,9 @@ class AddTeacher extends React.Component {
         );
     }
 
-    onSubmit = (formValues) => {
-        this.props.addNewTeacher(this.props.token, formValues);
+    onSubmit = async (formValues) => {
+        this.setState({ loading: true });
+        await this.props.addNewTeacher(this.props.token, formValues);
         history.push("/a/dashboard");
     }
 
@@ -55,7 +58,9 @@ class AddTeacher extends React.Component {
                             placeholder="شماره همراه"
                             component={this.renderFormInputs}
                         />
-                        <button className="bg-golden my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg">افزودن</button>
+                        <button className="bg-golden my-6 flex justify-center items-center hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg">
+                            {this.state.loading ? loading("w-8 text-dark-green") : 'افزودن'}
+                        </button>
                     </form>
                 </div>
             </div>

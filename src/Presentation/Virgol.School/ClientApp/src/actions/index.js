@@ -43,11 +43,7 @@ export const register = formValues => async dispatch => {
     try {
 
         dispatch({ type: 'REGISTER_LOADING' });
-        const response = await lms.put('/api/Users/RegisterNewUser?password=s.shaffaf2', {
-            firstName: formValues.firstName,
-            lastName: formValues.lastName,
-            melliCode: formValues.melliCode
-        })
+        const response = await lms.put('/api/Users/RegisterNewUser', formValues)
 
         dispatch({ type: 'REGISTER', payload: response.data });
         dispatch({ type: 'FADE_LOADING' });
@@ -194,7 +190,6 @@ export const getAllTeachers = token => async dispatch => {
             }
         });
 
-        console.log(response.data)
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'GET_ALL_TEACHERS', payload: response.data });
 
@@ -376,8 +371,6 @@ export const addNewCourse = (token, formValues) => async dispatch => {
             }
         });
 
-        console.log(response.data)
-
         dispatch({ type: 'ADD_NEW_COURSE', payload: response.data });
         dispatch({ type: 'FADE_LOADING' });
 
@@ -389,12 +382,12 @@ export const addNewCourse = (token, formValues) => async dispatch => {
 
 }
 
-export const addCoursesToCat = (token, courses) => async dispatch => {
+export const addCoursesToCat = (token, courses, catId) => async dispatch => {
 
     try {
 
         dispatch({ type: 'ADD_COURSES_TO_CAT_LOADING' });
-        const response = await lms.put("/api/Admin/AddCoursesToCategory", courses ,{
+        const response = await lms.put(`/api/Admin/AddCoursesToCategory?CategoryId=${catId}`, courses ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -404,6 +397,7 @@ export const addCoursesToCat = (token, courses) => async dispatch => {
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
+        console.log(e.response)
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ERROR_ADDING_COURSES', payload: 'add courses error' });
     }
@@ -434,14 +428,8 @@ export const deleteCourse = (token, id) => async dispatch => {
 export const deleteCourseFromCat = (token, courseId, catId) => async dispatch => {
 
     try {
-
-        const body = {
-            "id" : courseId,
-            "courseId" : catId
-        }
-
         dispatch({ type: 'DELETE_COURSE_FROM_CAT_LOADING', payload: catId });
-        const response = await lms.post("/api/Admin/RemoveCourseFromCategory?courseId=" + courseId,{
+        const response = await lms.post(`/api/Admin/RemoveCourseFromCategory?courseId=${courseId}`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -470,6 +458,7 @@ export const deleteTeacher = (token, id) => async dispatch => {
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
+        console.log(e.response)
         dispatch({ type: 'FADE_LOADING' });
     }
 

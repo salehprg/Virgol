@@ -2,14 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {Field, reduxForm} from "redux-form";
 import { deleteTeacher, editTeacher } from "../../../../actions";
-import {glasses} from "../../../../assets/icons";
+import {glasses, loading} from "../../../../assets/icons";
 import {Link} from "react-router-dom";
 import Modal from "../../../Modal";
 import history from "../../../../history";
 
 class TeacherInfo extends React.Component {
 
-    state = { showDeleteConfirm: false }
+    state = { showDeleteConfirm: false, delLoading: false, delEdit: false }
 
     renderFormInputs = ({ input, meta, placeholder }) => {
         return (
@@ -25,9 +25,10 @@ class TeacherInfo extends React.Component {
         );
     }
 
-    onSubmit = (formValues) => {
+    onSubmit = async (formValues) => {
         formValues.id = this.props.match.params.id;
-        this.props.editTeacher(this.props.token, formValues);
+        this.setState({ editLoading: true })
+        await this.props.editTeacher(this.props.token, formValues);
         history.push("/a/dashboard");
     }
 
@@ -39,8 +40,9 @@ class TeacherInfo extends React.Component {
         this.setState({ showDeleteConfirm: false })
     }
 
-    onDeleteTeacher = () => {
-        this.props.deleteTeacher(this.props.token, this.props.match.params.id);
+    onDeleteTeacher = async () => {
+        this.setState({ delLoading: true })
+        await this.props.deleteTeacher(this.props.token, this.props.match.params.id);
         history.push("/a/dashboard");
     }
 
@@ -50,7 +52,7 @@ class TeacherInfo extends React.Component {
                 {this.state.showDeleteConfirm ?
                     <Modal cancel={this.onCancelDelete}>
                         <div onClick={(e) => e.stopPropagation()} className="md:w-1/3 w-5/6 p-8 flex flex-col items-center bg-white font-vb">
-                            <span className="py-2 text-center">آیا از حذف کامل این درس مطمئن هستید؟</span>
+                            <span className="py-2 text-center">آیا از حذف کامل این معلم مطمئن هستید؟</span>
                             <div className="flex md:flex-row flex-col">
                                 <button
                                     onClick={this.onCancelDelete}
@@ -94,8 +96,8 @@ class TeacherInfo extends React.Component {
                             />
                             <button type="submit" className="bg-golden my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg">ذخیره</button>
                             <div className="w-full flex flex-row justify-between items-center">
-                                <button type="button" onClick={() => this.showConfirm()} className="w-2/5 py-2 text-center rounded-lg text-white font-vb bg-red-600">
-                                    حذف معلم
+                                <button type="button" onClick={() => this.showConfirm()} className="w-2/5 py-2 text-center flex justify-center items-center rounded-lg text-white font-vb bg-red-600">
+                                    {this.state.delLoading ? loading("w-6 text-white") : 'حذف معلم'}
                                 </button>
                                 <Link className="w-2/5 py-2 text-grayish text-center rounded-lg font-vb border-2 border-grayish" to="/a/dashboard">لغو</Link>
                             </div>

@@ -12,7 +12,9 @@ class ShowCourse extends React.Component {
     state = {
         name: '',
         selectedTeacher: null,
-        showDeleteConfirm: false
+        showDeleteConfirm: false,
+        delCourseLoading: false,
+        editLoading: false
     }
 
     componentDidMount() {
@@ -23,6 +25,7 @@ class ShowCourse extends React.Component {
             this.props.getAllTeachers(this.props.auth.token);
             this.setState({ name: this.props.course.shortname })
 
+            console.log(this.props.course)
             const teacher = this.props.teachers.find(el => el.id ===  this.props.course.teacherId)
             if (teacher) {
                 const initial = [
@@ -57,8 +60,9 @@ class ShowCourse extends React.Component {
         return options;
     }
 
-    deleteCourse = () => {
-        this.props.deleteCourse(this.props.auth.token, this.props.course.id);
+    deleteCourse = async () => {
+        this.setState({ delCourseLoading: true })
+        await this.props.deleteCourse(this.props.auth.token, this.props.course.id);
         history.push("/a/dashboard");
     }
 
@@ -70,13 +74,14 @@ class ShowCourse extends React.Component {
         this.setState({ showDeleteConfirm: false })
     }
 
-    save = () => {
-        let values = { id: this.props.course.id, shortname: this.state.name };
+    save = async () => {
+        let values = {id: this.props.course.id, shortname: this.state.name};
         if (this.state.selectedTeacher != null) {
             values.teacherId = this.state.selectedTeacher.value;
         }
 
-        this.props.editCourse(this.props.auth.token, values);
+        this.setState({ editLoading: true })
+        await this.props.editCourse(this.props.auth.token, values);
         history.push("/a/dashboard");
     }
 
@@ -132,13 +137,18 @@ class ShowCourse extends React.Component {
                         />
                     </div>
                     <div className="w-full flex md:flex-row flex-col justify-center items-center">
-                        <button onClick={this.save} className="px-8 py-2 mx-2 my-2 rounded-lg font-vb text-white bg-blueish">ذخیره</button>
+                        <button onClick={this.save} className="px-8 py-2 mx-2 my-2 rounded-lg font-vb text-white bg-blueish">
+                            {this.state.editLoading ? loading("w-6 text-white") : 'ذخیره'}
+                        </button>
                         <button onClick={() => history.push("/a/dashboard")} className="px-8 py-2 mx-2 my-2 rounded-lg font-vb text-blueish border-2 border-blueish">
                             لغو
                         </button>
-                        <button onClick={this.showConfirm} className="px-8 py-2 mx-2 my-2   rounded-lg font-vb text-white bg-red-500">
-                            حذف درس
-                        </button>
+                        {this.state.delCourseLoading ?
+                        loading("w-10 text-red-600")
+                        :
+                            <button onClick={this.showConfirm} className="px-8 py-2 mx-2 my-2   rounded-lg font-vb text-white bg-red-500">
+                                حذف درس
+                            </button>}
                     </div>
                 </div>
             </div>

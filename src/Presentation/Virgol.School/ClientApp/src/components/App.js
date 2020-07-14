@@ -13,6 +13,8 @@ import AddTeacher from "./dashboard/teacher/teachers/AddTeacher";
 import AddTeacherByExcel from "./dashboard/teacher/teachers/AddTeacherByExcel";
 import TeacherInfo from "./dashboard/teacher/teachers/TeacherInfo";
 import ShowCat from "./dashboard/teacher/category/ShowCat";
+import StudentInfo from "./dashboard/teacher/students/StudentInfo";
+import AddStudents from "./dashboard/teacher/students/AddStudents";
 
 const App = (props) => {
 
@@ -61,6 +63,18 @@ const App = (props) => {
                     <AuthenticatedRoute
                         path="/addTeacherByExcel"
                         component={AddTeacherByExcel}
+                        conditions={props.authenticated && props.userType === 2}
+                        exact
+                    />
+                    <AuthenticatedRoute
+                        path="/student/:id"
+                        component={StudentInfo}
+                        conditions={props.authenticated && props.userType === 2}
+                        exact
+                    />
+                    <AuthenticatedRoute
+                        path="/addStudents"
+                        component={AddStudents}
                         conditions={props.authenticated && props.userType === 2}
                         exact
                     />

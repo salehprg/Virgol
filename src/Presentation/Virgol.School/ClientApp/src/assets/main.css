@@ -644,7 +644,16 @@ video {
 }
 
 .teacherInfoBg {
-  background-image: linear-gradient(to right, #1BA098, #fff);
+  background: linear-gradient(to right, #1BA098, #fff);
+}
+
+.studentInfoBg {
+  background: linear-gradient(to bottom, #1BA098 50%, #fff 50%);
+}
+
+.cont::after {
+  content: "";
+  flex: auto;
 }
 
 .space-y-0 > :not(template) ~ :not(template) {

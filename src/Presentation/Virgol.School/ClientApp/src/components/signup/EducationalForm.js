@@ -1,24 +1,25 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
-import {account, face, locationIcon, person, school, verified} from "../../assets/icons";
+import {school} from "../../assets/icons";
 import Select from "react-select";
 
-const EducationalForm = props => {
+const renderTextBoxes = ({ input, meta, placeholder, icon, dir }) => {
+    return (
+        <div className={`w-5/6 mx-2 max-w-300o flex px-1 flex-row py-3 my-3 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
+            <span className={`bg-red-600 text-white text-sm px-3 py-1 ${meta.touched && meta.error ? 'block' : 'hidden'}`}>نامعتبر</span>
+            <input
+                {...input}
+                className="w-full px-2 placeholder-grayish focus:outline-none"
+                type="text"
+                placeholder={placeholder}
+                dir={dir}
+            />
+            {icon}
+        </div>
+    );
+}
 
-    const renderTextBoxes = ({ input, meta, placeholder, icon, dir }) => {
-        return (
-            <div className={`w-5/6 mx-2 max-w-300o flex px-1 flex-row py-3 my-3 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
-                <input
-                    {...input}
-                    className="w-full px-2 placeholder-grayish focus:outline-none"
-                    type="text"
-                    placeholder={placeholder}
-                    dir={dir}
-                />
-                {icon}
-            </div>
-        );
-    }
+const EducationalForm = props => {
 
     const renderSelectableCategories = () => {
         return [
@@ -55,6 +56,7 @@ const EducationalForm = props => {
                 <Select
                     className="w-5/6 max-w-300o mx-3"
                     value={props.selectedCategory}
+                    defaultValue={{ value: '1', label: 'اول دبستان' }}
                     onChange={handleSelectedCategory}
                     options={renderSelectableCategories()}
                     isSearchable
@@ -73,10 +75,14 @@ const EducationalForm = props => {
     )
 }
 
+const checkPersian = (value) => {
+    return /^[پچجحخهعغآ؟.،آفقثصضشسیبلاتنمکگوئدذرزطظژ!!ؤإأءًٌٍَُِّ\s]+$/u.test(value)
+}
+
 const validate = (formValues) => {
     const errors = {}
 
-    if (!formValues.schoolName) errors.schoolName = true;
+    if (!checkPersian(formValues.schoolName)) errors.schoolName = true;
 
     return errors;
 }

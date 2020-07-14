@@ -9,6 +9,10 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, isThereLoading: true, loadingComponent: 'confirm'}
     }
 
+    if (action.type === "REGISTER_LOADING") {
+        return { ...state, isThereLoading: true, loadingComponent: 'register'}
+    }
+
     if (action.type === "LOGIN_LOADING") {
         return { ...state, isThereLoading: true, loadingComponent: 'Login'}
     }

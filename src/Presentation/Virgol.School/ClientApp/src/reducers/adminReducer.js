@@ -40,7 +40,10 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, categories: state.categories.filter(element => element.id !== action.payload) }
 
     if (action.type === 'ADD_NEW_COURSE')
-        return { ...state, teachers: [...state.teachers, action.payload]};
+        return { ...state, courses: [...state.courses, action.payload]};
+
+    if (action.type === 'ADD_COURSES_TO_CAT')
+        return { ...state, catInfo: [...state.catInfo, action.payload]};
 
     if (action.type === 'ADD_NEW_COURSE')
         return { ...state, catInfo: [...state.catInfo, action.payload]};

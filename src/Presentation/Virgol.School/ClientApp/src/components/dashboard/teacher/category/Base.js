@@ -14,6 +14,7 @@ class Base extends React.Component {
     state = {
         query: '',
         renderModal: false,
+        loading: false
     }
 
     componentDidMount() {
@@ -62,9 +63,10 @@ class Base extends React.Component {
         this.setState({ renderModal: true })
     }
 
-    onAddCategory = (formValues) => {
-        this.props.addNewCategory(this.props.auth.token, formValues);
-        this.setState({ renderModal: false })
+    onAddCategory = async (formValues) => {
+        this.setState({ loading: true })
+        await this.props.addNewCategory(this.props.auth.token, formValues);
+        this.setState({loading: false, renderModal: false})
     }
 
     onCancelDelete = () => {
@@ -89,7 +91,7 @@ class Base extends React.Component {
                                     component={this.renderAddCatFormFields}
                                 />
                                 <button type="submit" className="focus:outline-none">
-                                    {add("w-8 h-8 mx-2 text-dark-green")}
+                                    {this.state.loading ? loading("w-8 h-8 mx-2 text-dark-green") : add("w-8 h-8 mx-2 text-dark-green")}
                                 </button>
                             </form>
                         </div>
@@ -110,7 +112,7 @@ class Base extends React.Component {
                             افزودن مقطع
                         </button>
                     </div>
-                    <div className="w-full mt-8 flex flex-row-reverse flex-wrap justify-center">
+                    <div className="w-full mt-8 flex flex-row-reverse flex-wrap items-center md:justify-start justify-center">
                         {this.renderCards()}
                     </div>
                 </div>

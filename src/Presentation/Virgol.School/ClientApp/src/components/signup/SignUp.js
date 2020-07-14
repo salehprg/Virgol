@@ -19,46 +19,14 @@ class SignUp extends React.Component {
     }
 
     previousPage = () => {
-        this.setState({ page: this.state.page - 1 })
-    }
-
-    renderDocumentInputs = ({ placeholder, input: {value: omitValue, ...inputProps }, meta, ...props }) => {
-
-        let borderColor = 'border-dark-blue';
-        let iconColor = 'text-dark-blue';
-
-        if (!meta.error) {
-            borderColor = 'border-green-500'
+        if (!(this.props.isThereLoading && this.props.loadingComponent === 'register')) {
+            this.setState({ page: this.state.page - 1 })
         }
-
-        if (meta.error && meta.submitFailed) {
-            borderColor = 'border-red-500'
-            iconColor = 'text-red-500'
-        }
-
-        return (
-            <React.Fragment>
-                <input
-                    {...inputProps}
-                    {...props}
-                    className="hidden"
-                    type="file"
-                    id={placeholder}
-                />
-                <label className={`md:w-1/2 w-5/6 py-2 my-3 border-2 flex flex-row justify-center items-center ${borderColor}`}
-                       htmlFor={placeholder}
-                >
-                    {meta.error ? upload("w-8 h-8 mr-2 " + iconColor) : uploadDone("w-8 h-8 mr-2 text-green-500")}
-                    {placeholder}
-                </label>
-            </React.Fragment>
-        );
     }
 
     onSubmit = (formValues) => {
         formValues.categoryId = this.state.selectedCategory.value;
-        console.log(formValues)
-        // this.props.register(formValues);
+        this.props.register(formValues);
     }
 
     handleSelectedCategory = selectedCategory => {
@@ -76,6 +44,7 @@ class SignUp extends React.Component {
             return (
                 <EducationalForm
                     select={this.handleSelectedCategory}
+                    selected={this.state.selectedCategory}
                     previousPage={this.previousPage}
                     onSubmit = {this.nextPage}
                 />
@@ -124,7 +93,12 @@ class SignUp extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    return { isThereError: state.error.isThereError, errorMessage: state.error.errorMessage }
+    return {
+        isThereLoading: state.loading.isThereLoading,
+        loadingComponent: state.loading.loadingComponent,
+        isThereError: state.error.isThereError,
+        errorMessage: state.error.errorMessage
+    }
 }
 
 export default connect(mapStateToProps, {register, fadeError})(SignUp);

@@ -5,7 +5,7 @@ import Home from "./Home";
 import Base from "./category/Base";
 import Course from "./course/Course";
 import Teachers from './teachers/Teachers';
-import Students from "./Students";
+import Students from "./students/Students";
 
 class Dashboard extends React.Component {
 

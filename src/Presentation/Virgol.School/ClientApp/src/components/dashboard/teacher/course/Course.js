@@ -15,7 +15,8 @@ class Course extends React.Component {
         renderModal: false,
         selectedTeacher: null,
         currentPage: 1,
-        cardsPerPage: 15
+        cardsPerPage: 15,
+        loading: false
     }
 
     componentDidMount() {
@@ -39,11 +40,12 @@ class Course extends React.Component {
         this.setState({ renderModal: true })
     }
 
-    onAddCourse = (formValues) => {
+    onAddCourse = async (formValues) => {
+        this.setState({ loading: true })
         if (this.state.selectedTeacher !== null) formValues.teacherId = this.state.selectedTeacher.value
-        this.props.addNewCourse(this.props.auth.token, formValues);
-        this.props.getAllCourses(this.props.auth.token);
-        this.setState({ renderModal: false })
+        await this.props.addNewCourse(this.props.auth.token, formValues);
+        // this.props.getAllCourses(this.props.auth.token);
+        this.setState({renderModal: false, loading: false})
     }
 
     onCancelAdd = () => {
@@ -109,7 +111,10 @@ class Course extends React.Component {
                                         placeholder="معلم"
                                     />
                                     <button type="submit" className="focus:outline-none">
-                                        {add("w-8 h-8 mx-2 text-dark-green")}
+                                        {this.state.loading ?
+                                            loading("w-8 h-8 mx-2 text-dark-green")
+                                        :
+                                            add("w-8 h-8 mx-2 text-dark-green")}
                                     </button>
                                 </div>
                             </form>
