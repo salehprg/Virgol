@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200708111650_PostgreInitial")]
-    partial class PostgreInitial
+    [Migration("20200715181528_InitialDb")]
+    partial class InitialDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -233,7 +233,7 @@ namespace lms_with_moodle.Migrations
 
             modelBuilder.Entity("Models.Teacher.TeacherModel_View", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -241,18 +241,66 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Firstname")
+                    b.Property<string>("FirstName")
                         .HasColumnType("text");
 
-                    b.Property<string>("Lastname")
+                    b.Property<string>("LastName")
                         .HasColumnType("text");
 
                     b.Property<int>("TeacherId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("TeacherView");
+                });
+
+            modelBuilder.Entity("Models.User.UserDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("BaseId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Document2")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FatherMelliCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FatherName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FatherPhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinFirstname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinLastname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MotherMelliCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MotherName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShDocument")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("Models.User.UserModel", b =>
@@ -271,9 +319,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<bool>("ConfirmedAcc")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("Document2")
-                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasColumnType("character varying(256)")
@@ -321,9 +366,6 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ShDocument")
                         .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")

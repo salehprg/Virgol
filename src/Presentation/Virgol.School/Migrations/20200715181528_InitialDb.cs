@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace lms_with_moodle.Migrations
 {
-    public partial class PostgreInitial : Migration
+    public partial class InitialDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,8 +48,6 @@ namespace lms_with_moodle.Migrations
                     MelliCode = table.Column<string>(nullable: true),
                     ConfirmedAcc = table.Column<bool>(nullable: false),
                     IsTeacher = table.Column<bool>(nullable: false),
-                    ShDocument = table.Column<string>(nullable: true),
-                    Document2 = table.Column<string>(nullable: true),
                     Moodle_Id = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -127,16 +125,40 @@ namespace lms_with_moodle.Migrations
                 name: "TeacherView",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TeacherId = table.Column<int>(nullable: false),
                     CourseId = table.Column<int>(nullable: false),
-                    Firstname = table.Column<string>(nullable: true),
-                    Lastname = table.Column<string>(nullable: true)
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TeacherView", x => x.Id);
+                    table.PrimaryKey("PK_TeacherView", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(nullable: false),
+                    LatinFirstname = table.Column<string>(nullable: true),
+                    LatinLastname = table.Column<string>(nullable: true),
+                    ShDocument = table.Column<string>(nullable: true),
+                    Document2 = table.Column<string>(nullable: true),
+                    FatherName = table.Column<string>(nullable: true),
+                    FatherPhoneNumber = table.Column<string>(nullable: true),
+                    FatherMelliCode = table.Column<string>(nullable: true),
+                    MotherName = table.Column<string>(nullable: true),
+                    MotherMelliCode = table.Column<string>(nullable: true),
+                    BaseId = table.Column<int>(nullable: false),
+                    BirthDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserDetails", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -329,6 +351,9 @@ namespace lms_with_moodle.Migrations
 
             migrationBuilder.DropTable(
                 name: "TeacherView");
+
+            migrationBuilder.DropTable(
+                name: "UserDetails");
 
             migrationBuilder.DropTable(
                 name: "VerificationCodes");

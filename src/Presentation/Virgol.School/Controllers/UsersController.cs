@@ -234,9 +234,11 @@ namespace lms_with_moodle.Controllers
                 {}
             }
 
+            UserModel newUser = _model;
+
             try
             {
-                UserModel newUser = _model;
+                
                 newUser.ConfirmedAcc = false;
                 newUser.UserName = _model.MelliCode;
                 
@@ -252,12 +254,13 @@ namespace lms_with_moodle.Controllers
                     UserDetail userDetail = new UserDetail();
                     userDetail.ShDocument = _model.MelliCode;
                     userDetail.Document2 = _model.MelliCode + "_Doc2";
-                    userDetail.BaseId = _model.BaseId;
-                    userDetail.BirthDate = _model.BirthDate;
-                    userDetail.FatherMelliCode = _model.FatherMelliCode;
-                    userDetail.MotherMelliCode = _model.MotherMelliCode;
-                    userDetail.FatherName = _model.FatherName;
-                    userDetail.MotherName = _model.MotherName;
+                    userDetail.BaseId = _model.userDetail.BaseId;
+                    userDetail.BirthDate = _model.userDetail.BirthDate;
+                    userDetail.FatherMelliCode = _model.userDetail.FatherMelliCode;
+                    userDetail.MotherMelliCode = _model.userDetail.MotherMelliCode;
+                    userDetail.FatherName = _model.userDetail.FatherName;
+                    userDetail.FatherPhoneNumber = _model.userDetail.FatherPhoneNumber;
+                    userDetail.MotherName = _model.userDetail.MotherName;
                     userDetail.UserId = userId;
 
                     appDbContext.UserDetails.Add(userDetail);
@@ -272,6 +275,7 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
+                //await userManager.DeleteAsync(newUser);
                 return BadRequest(ex.Message);
             }
         }

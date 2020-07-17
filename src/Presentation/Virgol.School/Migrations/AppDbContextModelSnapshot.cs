@@ -231,7 +231,7 @@ namespace lms_with_moodle.Migrations
 
             modelBuilder.Entity("Models.Teacher.TeacherModel_View", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -239,16 +239,16 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Firstname")
+                    b.Property<string>("FirstName")
                         .HasColumnType("text");
 
-                    b.Property<string>("Lastname")
+                    b.Property<string>("LastName")
                         .HasColumnType("text");
 
                     b.Property<int>("TeacherId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("TeacherView");
                 });
@@ -273,6 +273,15 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FatherName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FatherPhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinFirstname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinLastname")
                         .HasColumnType("text");
 
                     b.Property<string>("MotherMelliCode")
