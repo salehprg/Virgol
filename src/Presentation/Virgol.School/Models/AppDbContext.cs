@@ -21,6 +21,8 @@ namespace Models
         public DbSet<Meeting> Meetings {get; set;}
         public DbSet<ParticipantInfo> ParticipantInfos {get; set;}
         public DbSet<UserDetail> UserDetails {get; set;}
+        public DbSet<SchoolModel> Schools {get; set;}
+        public DbSet<Manager> Managers {get; set;}
 
 
         // protected override void OnModelCreating(ModelBuilder builder)
