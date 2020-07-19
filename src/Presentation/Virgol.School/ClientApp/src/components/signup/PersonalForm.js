@@ -85,7 +85,7 @@ const checkPersian = (value) => {
     return /^[پچجحخهعغآ؟.،آفقثصضشسیبلاتنمکگوئدذرزطظژ!!ؤإأءًٌٍَُِّ\s]+$/u.test(value)
 }
 
-const checkMelliCode = (value) =>{
+const checkMelliCode = (value) => {
     if (!/^\d{10}$/.test(value))
         return false;
 

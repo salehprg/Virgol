@@ -5,7 +5,6 @@ import { getAllTeachers, editCourse, deleteCourse } from "../../../../actions";
 import Select from "react-select";
 import history from "../../../../history";
 import Modal from "../../../Modal";
-import {Field} from "redux-form";
 
 class ShowCourse extends React.Component {
 
@@ -25,7 +24,6 @@ class ShowCourse extends React.Component {
             this.props.getAllTeachers(this.props.auth.token);
             this.setState({ name: this.props.course.shortname })
 
-            console.log(this.props.course)
             const teacher = this.props.teachers.find(el => el.id ===  this.props.course.teacherId)
             if (teacher) {
                 const initial = [
@@ -63,7 +61,7 @@ class ShowCourse extends React.Component {
     deleteCourse = async () => {
         this.setState({ delCourseLoading: true })
         await this.props.deleteCourse(this.props.auth.token, this.props.course.id);
-        history.push("/a/dashboard");
+        this.setState({ delCourseLoading: false, showDeleteConfirm: false })
     }
 
     showConfirm = () => {
@@ -78,11 +76,12 @@ class ShowCourse extends React.Component {
         let values = {id: this.props.course.id, shortname: this.state.name};
         if (this.state.selectedTeacher != null) {
             values.teacherId = this.state.selectedTeacher.value;
+        } else {
+            values.teacherId = this.props.course.teacherId
         }
 
         this.setState({ editLoading: true })
         await this.props.editCourse(this.props.auth.token, values);
-        history.push("/a/dashboard");
     }
 
     render() {

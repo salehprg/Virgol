@@ -26,7 +26,7 @@ class AddTeacher extends React.Component {
     onSubmit = async (formValues) => {
         this.setState({ loading: true });
         await this.props.addNewTeacher(this.props.token, formValues);
-        history.push("/a/dashboard");
+        this.setState({ loading: false })
     }
 
     render() {

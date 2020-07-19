@@ -1,5 +1,6 @@
 import history from "../history";
 import lms from "../apis/lms";
+import { alert} from "./alerts";
 
 export const login = formValues => async dispatch => {
 
@@ -11,16 +12,18 @@ export const login = formValues => async dispatch => {
 
         dispatch({ type: 'LOGIN', payload: response.data })
         switch (response.data.userType) {
-            case 2:
+            case 2: {
                 history.push('/a/dashboard');
+                break;
+            }
+            case 0: history.push('/s/dashboard');
         }
 
 
     } catch (e) {
-	console.log(e.response);
         switch (e.response.status) {
             case 401:
-                dispatch({ type: 'LOGIN_FAILED', payload: 'نام کاربری یا رمز عبور اشتباه است' });
+                dispatch(alert.error("نام کاربری یا رمز عبور اشتباه است"))
                 break;
 
             case 423:
@@ -42,15 +45,18 @@ export const register = formValues => async dispatch => {
 
     try {
 
+        console.log(formValues)
         dispatch({ type: 'REGISTER_LOADING' });
         const response = await lms.put('/api/Users/RegisterNewUser', formValues)
 
         dispatch({ type: 'REGISTER', payload: response.data });
         dispatch({ type: 'FADE_LOADING' });
         history.push("/");
+        dispatch(alert.success("ثبت نام انجام شد"))
 
     } catch (e) {
-        dispatch({ type: 'REGISTER_FAILED', payload: 'ارور در ثبت نام' });
+        console.log(e.response)
+        dispatch(alert.error("خطا در ثبت نام"))
         dispatch({ type: 'FADE_LOADING' });
     }
 }
@@ -250,10 +256,12 @@ export const addNewCategory = (token, formValues) => async dispatch => {
             }
         });
 
+        dispatch(alert.success("مقطع جدید افزوده شد"))
         dispatch({ type: 'ADD_NEW_CATEGORY', payload: response.data });
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
+        dispatch(alert.error("خطا در افزودن مقطع"))
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ERROR_ADDING_NEW_CATEGORY', payload: 'add new category error' });
     }
@@ -270,10 +278,14 @@ export const addNewTeacher = (token, formValues) => async dispatch => {
             }
         });
 
+        history.push("/a/dashboard");
+        dispatch(alert.success("معلم با موفقیت اضافه شد"))
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ADD_NEW_TEACHER', payload: response.data });
 
     } catch (e) {
+        console.log(e.response)
+        dispatch(alert.error("خطا در افرودن معلم"))
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ERROR_ADDING_NEW_TEACHER', payload: 'add new teacher error' });
     }
@@ -346,11 +358,13 @@ export const deleteCategory = (token, values) => async dispatch => {
             }
         });
 
+        history.push("/a/dashboard");
+        dispatch(alert.success("مقطع با موفقیت حذف گردید"))
         dispatch({ type: 'DELETE_CATEGORY', payload: values.id})
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
-        console.log(e.response)
+        dispatch(alert.error("خطا در حذف مقطع"))
         dispatch({ type: 'FADE_LOADING' });
     }
 
@@ -371,11 +385,12 @@ export const addNewCourse = (token, formValues) => async dispatch => {
             }
         });
 
+        dispatch(alert.success("درس با موفقیت ایجاد شد"))
         dispatch({ type: 'ADD_NEW_COURSE', payload: response.data });
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
-        console.log(e.response)
+        dispatch(alert.error("خطا در افزودن درس"))
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ERROR_ADDING_NEW_COURSE', payload: 'add new course error' });
     }
@@ -393,11 +408,12 @@ export const addCoursesToCat = (token, courses, catId) => async dispatch => {
             }
         });
 
+        dispatch(alert.success("دروس با موفقیت افزوده شدند"))
         dispatch({ type: 'ADD_COURSES_TO_CAT', payload: response.data });
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
-        console.log(e.response)
+        dispatch(alert.error("خطا در افزودن درس"))
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ERROR_ADDING_COURSES', payload: 'add courses error' });
     }
@@ -415,11 +431,14 @@ export const deleteCourse = (token, id) => async dispatch => {
             }
         });
 
+        history.push("/a/dashboard");
+        dispatch(alert.success("درس حذف گردید"))
         dispatch({ type: 'DELETE_COURSE', payload: id})
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
         console.log(e.response)
+        dispatch(alert.error("خطا در حذف درس"))
         dispatch({ type: 'FADE_LOADING' });
     }
 
@@ -429,17 +448,18 @@ export const deleteCourseFromCat = (token, courseId, catId) => async dispatch =>
 
     try {
         dispatch({ type: 'DELETE_COURSE_FROM_CAT_LOADING', payload: catId });
-        console.log(token);
         const response = await lms.post(`/api/Admin/RemoveCourseFromCategory?courseId=${courseId}`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch(alert.success("درس با موفقیت از این مقطع حذف شد"))
         dispatch({ type: 'DELETE_COURSE', payload: catId})
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
+        dispatch(alert.error("خطا در حذف درس"))
         dispatch({ type: 'FADE_LOADING' });
     }
 
@@ -457,9 +477,12 @@ export const deleteTeacher = (token, id) => async dispatch => {
 
         dispatch({ type: 'DELETE_TEACHER', payload: id})
         dispatch({ type: 'FADE_LOADING' });
+        history.push("/a/dashboard")
+        dispatch(alert.success("معلم ویرایش شد"))
 
     } catch (e) {
         console.log(e.response)
+        dispatch(alert.error("خطا در حذف معلم"))
         dispatch({ type: 'FADE_LOADING' });
     }
 
@@ -478,8 +501,10 @@ export const editCategory = (token, values) => async dispatch => {
         dispatch({ type: 'EDIT_CATEGORY', payload: response.data})
         dispatch({ type: 'FADE_LOADING' });
         history.push("/a/dashboard");
+        dispatch(alert.success("مقطع با موفقیت ویرایش گردید"))
 
     } catch (e) {
+        dispatch(alert.error("خطا در ویرایش مقطع"))
         dispatch({ type: 'FADE_LOADING' });
     }
 
@@ -495,13 +520,13 @@ export const editCourse = (token, values) => async dispatch => {
             }
         });
 
-        console.log(response.data)
-
         dispatch({ type: 'EDIT_COURSE', payload: response.data})
         dispatch({ type: 'FADE_LOADING' });
+        history.push("/a/dashboard");
+        dispatch(alert.success("درس ویرایش شد"))
 
     } catch (e) {
-        console.log(e.response)
+        dispatch(alert.error("خطا در ویرایش درس"))
         dispatch({ type: 'FADE_LOADING' });
     }
 
@@ -517,11 +542,13 @@ export const editTeacher = (token, values) => async dispatch => {
             }
         });
 
+        history.push("/a/dashboard");
+        dispatch(alert.success("معلم ویرایش گردید"))
         dispatch({ type: 'EDIT_TEACHER', payload: response.data})
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
-        console.log(e.response)
+        dispatch(alert.error("خطا در ویرایش معلم"))
         dispatch({ type: 'FADE_LOADING' });
     }
 

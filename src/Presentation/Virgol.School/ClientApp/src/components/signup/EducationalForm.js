@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form'
 import {school} from "../../assets/icons";
 import Select from "react-select";
@@ -22,20 +23,10 @@ const renderTextBoxes = ({ input, meta, placeholder, icon, dir }) => {
 const EducationalForm = props => {
 
     const renderSelectableCategories = () => {
-        return [
-            { value: '1', label: 'اول دبستان' },
-            { value: '2', label: 'دوم دبستان' },
-            { value: '3', label: 'سوم دبستان' },
-            { value: '4', label: 'چهارم دبستان' },
-            { value: '5', label: 'پنجم دبستان' },
-            { value: '6', label: 'ششم دبستان' },
-            { value: '7', label: 'هفتم' },
-            { value: '8', label: 'هشتم' },
-            { value: '9', label: 'نهم' },
-            { value: '10', label: 'دهم' },
-            { value: '11', label: 'یازدهم' },
-            { value: '12', label: 'دوازدهم' },
-        ]
+        if (!props.cats) return
+        return props.cats.map(cat => {
+            return { value: cat.id, label: cat.name }
+        })
     }
 
     const handleSelectedCategory = selectedCategory => {
@@ -55,8 +46,6 @@ const EducationalForm = props => {
                 />
                 <Select
                     className="w-5/6 max-w-300o mx-3"
-                    value={props.selectedCategory}
-                    defaultValue={{ value: '1', label: 'اول دبستان' }}
                     onChange={handleSelectedCategory}
                     options={renderSelectableCategories()}
                     isSearchable
@@ -76,7 +65,7 @@ const EducationalForm = props => {
 }
 
 const checkPersian = (value) => {
-    return /^[پچجحخهعغآ؟.،آفقثصضشسیبلاتنمکگوئدذرزطظژ!!ؤإأءًٌٍَُِّ\s]+$/u.test(value)
+    return /^[)(پچجحخهعغآ؟.،آفقثصضشسیبلاتنمکگوئدذرزطظژ!!ؤإأءًٌٍَُِّ\s]+$/u.test(value)
 }
 
 const validate = (formValues) => {
@@ -87,9 +76,15 @@ const validate = (formValues) => {
     return errors;
 }
 
-export default reduxForm({
+const formWrapped = reduxForm({
     form: 'signup',
     destroyOnUnmount: false,
     forceUnregisterOnUnmount: true,
     validate
-})(EducationalForm)
+})(EducationalForm);
+
+const mapStateToProps = state => {
+    return {}
+}
+
+export default connect(mapStateToProps)(formWrapped);

@@ -1,13 +1,28 @@
 import React from "react";
 import {connect} from "react-redux";
+import { getCatsForSignUp } from "../../actions/userActions";
 import {fadeError, register} from "../../actions";
-import { circle, upload, uploadDone } from "../../assets/icons";
+import { circle} from "../../assets/icons";
 import PersonalForm from "./PersonalForm";
 import EducationalForm from "./EducationalForm";
 import AccountalForm from "./AccountalForm";
 import {Link} from "react-router-dom";
+import lms from "../../apis/lms";
+import {alert} from "../../actions/alerts";
 
 class SignUp extends React.Component {
+
+    state = { cats: [] }
+
+    async componentDidMount() {
+        try {
+            const response = await lms.get(`/api/Users/GetAllCategory`);
+            this.setState({ cats: response.data })
+
+        } catch (e) {
+            this.props.dispatch(alert.error("خطا در برقراری اتصال"))
+        }
+    }
 
     state = {
         page: 1,
@@ -24,9 +39,9 @@ class SignUp extends React.Component {
         }
     }
 
-    onSubmit = (formValues) => {
-        formValues.categoryId = this.state.selectedCategory.value;
-        this.props.register(formValues);
+    onSubmit = async (formValues) => {
+        formValues.baseId = this.state.selectedCategory.value;
+        await this.props.register(formValues);
     }
 
     handleSelectedCategory = selectedCategory => {
@@ -47,6 +62,7 @@ class SignUp extends React.Component {
                     selected={this.state.selectedCategory}
                     previousPage={this.previousPage}
                     onSubmit = {this.nextPage}
+                    cats={this.state.cats}
                 />
             );
         } else {
@@ -101,4 +117,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {register, fadeError})(SignUp);
+export default connect(mapStateToProps, {register, fadeError, getCatsForSignUp})(SignUp);

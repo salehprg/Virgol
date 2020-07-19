@@ -43,7 +43,7 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, courses: [...state.courses, action.payload]};
 
     if (action.type === 'ADD_COURSES_TO_CAT')
-        return { ...state, catInfo: [...state.catInfo, action.payload]};
+        return { ...state, catInfo: state.catInfo.concat(action.payload)};
 
     if (action.type === 'ADD_NEW_COURSE')
         return { ...state, catInfo: [...state.catInfo, action.payload]};
