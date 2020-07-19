@@ -7,8 +7,6 @@ namespace Models.MoodleApiResponse
     {
         public int id { get; set; }
         public string name { get; set; }
-
-        [JsonIgnore]
         public string parent { get; set; }
     }
 }

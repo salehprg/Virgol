@@ -516,17 +516,26 @@ namespace lms_with_moodle.Helper
             string FunctionName = "core_course_get_categories";
             string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&criteria[0][key]=id&criteria[0][value]=" + CategoryId;
 
-            HttpResponseModel response = await sendData(data);
-            CategoryDetail_moodle category = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (response.Message)[0]; 
+            try
+            {
+                HttpResponseModel response = await sendData(data);
+                CategoryDetail_moodle category = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (response.Message)[0]; 
 
-            //Convert Moodle API response to our Model
-            CategoryDetail resultCategory = new CategoryDetail(); 
-            resultCategory.Id = category.id;
-            resultCategory.ParentCategory = int.Parse(category.parent);
-            resultCategory.Name = category.name;
+                //Convert Moodle API response to our Model
+                CategoryDetail resultCategory = new CategoryDetail(); 
+                resultCategory.Id = category.id;
+                resultCategory.ParentCategory = int.Parse(category.parent);
+                resultCategory.Name = category.name;
 
 
-            return resultCategory;
+                return resultCategory;
+            }
+            catch (System.Exception ex)
+            {
+                return null;
+                throw;
+            }
+            
         }
         
         #endregion
