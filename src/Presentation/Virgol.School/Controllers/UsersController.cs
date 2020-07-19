@@ -65,7 +65,6 @@ namespace lms_with_moodle.Controllers
         public async Task<IActionResult> GetCetegoryNames()
         {
             
-            
             //userManager getuserid get MelliCode field of user beacause we set in token
             int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
 
@@ -191,10 +190,19 @@ namespace lms_with_moodle.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     ) ;
 
-                
+                int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
+                int baseId = -1;
+
+                if(UserId != -1)
+                {
+                    CourseDetail userCourses = (await moodleApi.getUserCourses(UserId))[0];
+                    baseId = userCourses.categoryId; //لیستی برای بدست اوردن ایدی دسته بندی ها
+                }
+
                 return Ok(new
                 {
                     UserType = UserType,
+                    BaseId = baseId,
                     userInformation,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo

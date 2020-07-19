@@ -488,7 +488,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveCourseFromCategory(int courseId )
+        public async Task<IActionResult> RemoveCourseFromCategory([FromBody]int courseId )
         {
             string error = await moodleApi.RemoveCourseFromCategory(courseId);
             
