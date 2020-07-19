@@ -7930,6 +7930,10 @@ video {
   max-width: 200px;
 }
 
+.max-w-500 {
+  max-width: 500px;
+}
+
 .max-w-600 {
   max-width: 600px;
 }
@@ -8006,6 +8010,10 @@ video {
   max-width: 300px;
 }
 
+.max-w-alert {
+  max-width: 80%;
+}
+
 .min-h-0 {
   min-height: 0;
 }
@@ -8044,6 +8052,10 @@ video {
 
 .min-w-400 {
   min-width: 400px;
+}
+
+.min-w-500 {
+  min-width: 500px;
 }
 
 .min-w-full {
@@ -22324,6 +22336,10 @@ video {
     max-width: 200px;
   }
 
+  .sm\:max-w-500 {
+    max-width: 500px;
+  }
+
   .sm\:max-w-600 {
     max-width: 600px;
   }
@@ -22400,6 +22416,10 @@ video {
     max-width: 300px;
   }
 
+  .sm\:max-w-alert {
+    max-width: 80%;
+  }
+
   .sm\:min-h-0 {
     min-height: 0;
   }
@@ -22438,6 +22458,10 @@ video {
 
   .sm\:min-w-400 {
     min-width: 400px;
+  }
+
+  .sm\:min-w-500 {
+    min-width: 500px;
   }
 
   .sm\:min-w-full {
@@ -36719,6 +36743,10 @@ video {
     max-width: 200px;
   }
 
+  .md\:max-w-500 {
+    max-width: 500px;
+  }
+
   .md\:max-w-600 {
     max-width: 600px;
   }
@@ -36795,6 +36823,10 @@ video {
     max-width: 300px;
   }
 
+  .md\:max-w-alert {
+    max-width: 80%;
+  }
+
   .md\:min-h-0 {
     min-height: 0;
   }
@@ -36833,6 +36865,10 @@ video {
 
   .md\:min-w-400 {
     min-width: 400px;
+  }
+
+  .md\:min-w-500 {
+    min-width: 500px;
   }
 
   .md\:min-w-full {
@@ -51114,6 +51150,10 @@ video {
     max-width: 200px;
   }
 
+  .lg\:max-w-500 {
+    max-width: 500px;
+  }
+
   .lg\:max-w-600 {
     max-width: 600px;
   }
@@ -51190,6 +51230,10 @@ video {
     max-width: 300px;
   }
 
+  .lg\:max-w-alert {
+    max-width: 80%;
+  }
+
   .lg\:min-h-0 {
     min-height: 0;
   }
@@ -51228,6 +51272,10 @@ video {
 
   .lg\:min-w-400 {
     min-width: 400px;
+  }
+
+  .lg\:min-w-500 {
+    min-width: 500px;
   }
 
   .lg\:min-w-full {
@@ -65509,6 +65557,10 @@ video {
     max-width: 200px;
   }
 
+  .xl\:max-w-500 {
+    max-width: 500px;
+  }
+
   .xl\:max-w-600 {
     max-width: 600px;
   }
@@ -65585,6 +65637,10 @@ video {
     max-width: 300px;
   }
 
+  .xl\:max-w-alert {
+    max-width: 80%;
+  }
+
   .xl\:min-h-0 {
     min-height: 0;
   }
@@ -65623,6 +65679,10 @@ video {
 
   .xl\:min-w-400 {
     min-width: 400px;
+  }
+
+  .xl\:min-w-500 {
+    min-width: 500px;
   }
 
   .xl\:min-w-full {

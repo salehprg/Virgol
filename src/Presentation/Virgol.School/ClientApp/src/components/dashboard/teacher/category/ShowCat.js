@@ -15,7 +15,9 @@ class ShowCat extends React.Component {
         renderDeleteCourseModal: false,
         deleteCourseIdHolder: null,
         selectedCourses: null,
-        delCatLoading: false
+        delCatLoading: false,
+        addCourseLoading: false,
+        delCourseLoading: false
     }
 
     componentDidMount() {
@@ -56,12 +58,13 @@ class ShowCat extends React.Component {
         this.setState({delCatLoading: true})
         const values = {id: parseInt(this.props.match.params.id)}
         await this.props.deleteCategory(this.props.auth.token, values);
-        history.push("/a/dashboard");
+        this.setState({ delCatLoading: false, renderDeleteModal: false })
     }
 
-    deleteCourse = () => {
-        this.props.deleteCourseFromCat(this.props.auth.token, this.state.deleteCourseIdHolder, this.props.match.params.id);
-        this.setState({ renderDeleteCourseModal: false, deleteCourseIdHolder: null })
+    deleteCourse = async () => {
+        this.setState({ delCourseLoading: true })
+        await this.props.deleteCourseFromCat(this.props.auth.token, this.state.deleteCourseIdHolder, this.props.match.params.id);
+        this.setState({renderDeleteCourseModal: false, deleteCourseIdHolder: null, delCourseLoading: false})
     }
 
     onCancelDelete = () => {
@@ -95,19 +98,20 @@ class ShowCat extends React.Component {
         this.setState({ selectedCourses });
     };
 
-    addSelectedCourses = () => {
+    addSelectedCourses = async () => {
 
         const adds = []
         this.state.selectedCourses.map(course => {
             adds.push(course.value)
         })
 
-        this.props.addCoursesToCat(this.props.auth.token, adds, this.props.match.params.id);
-        this.setState({ renderAddCourseModal: false })
+        this.setState({ addCourseLoading: true })
+        await this.props.addCoursesToCat(this.props.auth.token, adds, this.props.match.params.id);
+        this.setState({renderAddCourseModal: false, addCourseLoading: false, selectedCourses: null})
     }
 
-    save = () => {
-        const values = { id: parseInt(this.props.match.params.id), name: this.state.name }
+    save = async () => {
+        const values = {id: parseInt(this.props.match.params.id), name: this.state.name}
         this.props.editCategory(this.props.auth.token, values);
     }
 
@@ -160,7 +164,9 @@ class ShowCat extends React.Component {
                                 <button
                                     onClick={() => this.deleteCourse()}
                                     className="px-8 py-2 mx-2 my-2 text-white bg-red-600 rounded-lg focus:outline-none"
-                                >بله</button>
+                                >
+                                    {this.state.delCourseLoading ? loading("w-5 text-white") : 'بله'}
+                                </button>
                             </div>
                         </div>
                     </Modal>
@@ -179,7 +185,9 @@ class ShowCat extends React.Component {
                                     isSearchable
                                     placeholder="دروس"
                                 />
-                                <button onClick={this.addSelectedCourses} className="px-8 py-2 md:my-0 my-4 bg-blueish text-white">ذخیره</button>
+                                <button onClick={this.addSelectedCourses} className="px-8 py-2 md:my-0 my-4 bg-blueish text-white">
+                                    {this.state.addCourseLoading ? loading('w-6 text-white') : 'ذخیره'}
+                                </button>
                             </div>
                         </div>
                     </Modal>

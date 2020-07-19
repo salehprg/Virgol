@@ -15,7 +15,7 @@ import Loading from "./components/Loading";
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['error', 'loading', 'form', 'success']
+    blacklist: ['error', 'loading', 'form', 'success', 'alert']
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers);

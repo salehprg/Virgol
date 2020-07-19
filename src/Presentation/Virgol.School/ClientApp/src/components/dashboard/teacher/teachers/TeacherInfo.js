@@ -9,7 +9,7 @@ import history from "../../../../history";
 
 class TeacherInfo extends React.Component {
 
-    state = { showDeleteConfirm: false, delLoading: false, delEdit: false }
+    state = { showDeleteConfirm: false, delLoading: false, delEdit: false, editLoading: false }
 
     renderFormInputs = ({ input, meta, placeholder }) => {
         return (
@@ -29,7 +29,7 @@ class TeacherInfo extends React.Component {
         formValues.id = this.props.match.params.id;
         this.setState({ editLoading: true })
         await this.props.editTeacher(this.props.token, formValues);
-        history.push("/a/dashboard");
+        this.setState({ editLoading: false })
     }
 
     showConfirm = () => {
@@ -43,7 +43,7 @@ class TeacherInfo extends React.Component {
     onDeleteTeacher = async () => {
         this.setState({ delLoading: true })
         await this.props.deleteTeacher(this.props.token, this.props.match.params.id);
-        history.push("/a/dashboard");
+        this.setState({ showDeleteConfirm: false, delLoading: false })
     }
 
     render() {
@@ -69,7 +69,6 @@ class TeacherInfo extends React.Component {
                 <div className="max-w-1000 relative w-full bg-white flex md:flex-row flex-col justify-center items-stretch">
                     <div className="md:w-1/2 w-full bg-blueish flex flex-col justify-center items-center">
                         {glasses("w-48 h-48 text-white")}
-
                     </div>
                     <div className="md:w-1/2 w-full bg-white py-16 flex flex-col justify-center items-center">
                         <form className="w-3/5 text-center" onSubmit={this.props.handleSubmit(this.onSubmit)}>
@@ -94,7 +93,9 @@ class TeacherInfo extends React.Component {
                                 placeholder="شماره همراه"
                                 component={this.renderFormInputs}
                             />
-                            <button type="submit" className="bg-golden my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg">ذخیره</button>
+                            <button type="submit" className="bg-golden flex justify-center items-center my-6 hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg">
+                                {this.state.editLoading ? loading("w-6 text-dark-green") : 'ذخیره'}
+                            </button>
                             <div className="w-full flex flex-row justify-between items-center">
                                 <button type="button" onClick={() => this.showConfirm()} className="w-2/5 py-2 text-center flex justify-center items-center rounded-lg text-white font-vb bg-red-600">
                                     {this.state.delLoading ? loading("w-6 text-white") : 'حذف معلم'}
