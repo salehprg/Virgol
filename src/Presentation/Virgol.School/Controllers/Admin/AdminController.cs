@@ -823,9 +823,10 @@ namespace lms_with_moodle.Controllers
 #endregion
     
 #region Functions
-///<param name="CategoryId">
-///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
-///</param>
+        ///<param name="CategoryId">
+        ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
+        ///</param>
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<string[]> CreateBulkUser(bool IsTeacher , string fileName , int CategoryId = -1)
         {
             //Username and password Default is MelliCode
@@ -919,6 +920,7 @@ namespace lms_with_moodle.Controllers
             return errors.ToArray();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<bool> UploadFile(IFormFile file , string FileName)
         {
             bool result = false;

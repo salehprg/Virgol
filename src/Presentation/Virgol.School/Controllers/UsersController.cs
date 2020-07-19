@@ -204,10 +204,10 @@ namespace lms_with_moodle.Controllers
             return Unauthorized("Username Or Password Not Found");
         }
 
+        //Sameple Data : Users/RegisterNewUser?Password=Saleh-1379   newUser post as json data
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
-        //Sameple Data : Users/RegisterNewUser?Password=Saleh-1379   newUser post as json data
         public async Task<IActionResult> RegisterNewUser([FromBody]UserInputModel _model)
         {
             //Check for admin Account 
@@ -312,6 +312,7 @@ namespace lms_with_moodle.Controllers
                 return false;
             }
         }
+        
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> SendVerificationCode(string IdNumer)

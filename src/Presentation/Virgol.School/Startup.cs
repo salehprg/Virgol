@@ -45,6 +45,7 @@ namespace lms_with_moodle
                     builder.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader();
+                        
                 }
             ));
             
@@ -145,15 +146,19 @@ namespace lms_with_moodle
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
+
             app.UseCors(AllowOrigin);
             // We only use kerstrel in HTTP mode
             // app.UseHttpsRedirection();s
+ 
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS API V1");
-            }); 
+            });
+
 
             if (env.IsDevelopment())
             {
