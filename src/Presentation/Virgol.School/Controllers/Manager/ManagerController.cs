@@ -558,12 +558,12 @@ namespace lms_with_moodle.Controllers
                             string TeacherName = Teacher.FirstName + " " + Teacher.LastName;
 
                             course.TeacherName = TeacherName;
-                            course.TeacherId = Teacher.id;
+                            //course.TeacherId = Teacher.id;
                         }
                         else
                         {
                             course.TeacherName = "ندارد";
-                            course.TeacherId = 0;
+                            //course.TeacherId = 0;
                         }
 
                         result.Add(course);
@@ -637,6 +637,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                //ُSelected teacher
                 TeacherCourseInfo teacherCourseInfo = appDbContext.TeacherCourse.Where(x => x.CourseId == course.id).FirstOrDefault();
 
                 CourseDetail courseDetail = await moodleApi.GetCourseDetail(course.id);

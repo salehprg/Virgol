@@ -200,8 +200,8 @@ namespace lms_with_moodle.Controllers
                 {
                     UserType = UserType,
                     BaseId = baseId,
-                    UserBaseInfo = userInformation,
-                    UserDetails = userDetail,
+                    userInformation,
+                    userDetail,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });

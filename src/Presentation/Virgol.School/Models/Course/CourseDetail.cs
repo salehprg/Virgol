@@ -11,7 +11,7 @@ namespace Models
         
         public string CourseUrl {get; set;}
 
-        //Use this just for pass data From User to backend
+        //Use this just for pass data From FrontEnd to Backend
         public int TeacherId {get; set;}
     }
 
