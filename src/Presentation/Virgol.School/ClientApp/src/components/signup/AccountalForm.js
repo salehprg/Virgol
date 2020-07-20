@@ -67,7 +67,7 @@ const PersonalForm = props => {
 }
 
 const checkEnglish = (value) => {
-    return /^[a-zA-Z]+$/.test(value);
+    return /^[a-zA-Z\s]*$/.test(value);
 }
 
 const checkPhoneNumber = (value) => {

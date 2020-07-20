@@ -6,7 +6,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
 
     if (action.type === "CONFIRM_LOADING") {
-        return { ...state, isThereLoading: true, loadingComponent: 'confirm'}
+        return { ...state, isThereLoading: true, loadingComponent: action.payload}
     }
 
     if (action.type === "REGISTER_LOADING") {

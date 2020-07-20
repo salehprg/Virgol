@@ -18,6 +18,7 @@ import StudentInfo from "./dashboard/teacher/students/StudentInfo";
 import AddStudents from "./dashboard/teacher/students/AddStudents";
 import Alert from "./Alert";
 import {alert} from "../actions/alerts";
+import Confirm from "./dashboard/teacher/home/Confirm";
 
 class App extends React.Component {
 
@@ -91,6 +92,12 @@ class App extends React.Component {
                         <AuthenticatedRoute
                             path="/addStudents"
                             component={AddStudents}
+                            conditions={this.props.authenticated && this.props.userType === 2}
+                            exact
+                        />
+                        <AuthenticatedRoute
+                            path="/confirm/:id"
+                            component={Confirm}
                             conditions={this.props.authenticated && this.props.userType === 2}
                             exact
                         />

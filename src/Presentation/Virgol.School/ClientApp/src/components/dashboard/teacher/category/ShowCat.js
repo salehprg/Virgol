@@ -63,7 +63,7 @@ class ShowCat extends React.Component {
 
     deleteCourse = async () => {
         this.setState({ delCourseLoading: true })
-        await this.props.deleteCourseFromCat(this.props.auth.token, this.state.deleteCourseIdHolder, this.props.match.params.id);
+        await this.props.deleteCourseFromCat(this.props.auth.token, this.state.deleteCourseIdHolder, parseInt(this.props.match.params.id));
         this.setState({renderDeleteCourseModal: false, deleteCourseIdHolder: null, delCourseLoading: false})
     }
 
