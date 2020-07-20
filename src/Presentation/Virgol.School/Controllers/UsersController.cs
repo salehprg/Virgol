@@ -195,10 +195,16 @@ namespace lms_with_moodle.Controllers
 
                 UserDetail userdetail = appDbContext.UserDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
                 int baseId = (userdetail != null ? userdetail.BaseId : -1);
+                CategoryDetail category = new CategoryDetail();
+                if(baseId != -1)
+                {
+                    category = await moodleApi.getCategoryDetail(baseId);
+                }
 
                 return Ok(new
                 {
                     UserType = UserType,
+                    category,
                     BaseId = baseId,
                     userInformation,
                     userDetail,
