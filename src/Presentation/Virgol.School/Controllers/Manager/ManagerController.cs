@@ -558,12 +558,12 @@ namespace lms_with_moodle.Controllers
                             string TeacherName = Teacher.FirstName + " " + Teacher.LastName;
 
                             course.TeacherName = TeacherName;
-                            //course.TeacherId = Teacher.id;
+                            course.TeacherId = Teacher.TeacherId;
                         }
                         else
                         {
                             course.TeacherName = "ندارد";
-                            //course.TeacherId = 0;
+                            course.TeacherId = 0;
                         }
 
                         result.Add(course);
