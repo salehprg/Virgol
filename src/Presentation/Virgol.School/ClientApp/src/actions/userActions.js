@@ -25,7 +25,6 @@ export const getUserCat = (token) => async dispatch => {
         dispatch({ type: GET_STUDENT_CATEGORY, payload: response.data });
         return true;
     } catch (e) {
-        console.log(e.response)
         dispatch(alert.error("خطا در برقراری ارتباط"))
         return false
     }
@@ -40,11 +39,19 @@ export const getCoursesInCat = (id, token) => async dispatch => {
                 authorization: `Bearer ${token}`
             }
         });
-        dispatch({ type: GET_COURSES_IN_CAT, payload: response.data });
+
+        if (!response.data[0]) {
+            dispatch({ type: 'ERROR_GETTING_USER_INFO' })
+        } else {
+            dispatch({ type: GET_COURSES_IN_CAT, payload: { courses: response.data, id } });
+        }
 
     } catch (e) {
         dispatch({ type: 'ERROR_GETTING_USER_INFO' })
-        dispatch(alert.error("خطا در برقراری ارتباط"))
     }
 
+}
+
+export const getCatError = () => {
+    return alert.error("خطا در برقراری اتصال")
 }

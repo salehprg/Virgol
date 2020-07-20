@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../Sidebar";
 import {clear, headline} from "../../../assets/icons";
-import Home from "./Home";
+import Home from "./home/Home";
 import Base from "./category/Base";
 import Course from "./course/Course";
 import Teachers from './teachers/Teachers';

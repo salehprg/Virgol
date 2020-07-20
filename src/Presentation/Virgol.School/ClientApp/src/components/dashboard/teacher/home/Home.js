@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from 'react-redux';
-import { getNewUsers, logout, confirmUser } from "../../../actions";
-import {check, errorOutline, loading, logoutIcon, verified} from "../../../assets/icons";
+import { getNewUsers, logout, confirmUser } from "../../../../actions";
+import {check, errorOutline, loading, logoutIcon, verified} from "../../../../assets/icons";
 import ReactTooltip from "react-tooltip";
+import history from "../../../../history";
 
 class Home extends React.Component {
 
@@ -41,8 +42,8 @@ class Home extends React.Component {
                                 <td className="py-2">{student.lastName}</td>
                                 <td className="py-2">{student.melliCode}</td>
                                 <td className="flex flex-row justify-center py-2">
-                                    <div onClick={() => this.confirm(student.id)}>
-                                        {this.props.isThereLoading && this.props.loadingComponent === 'confirm' ?
+                                    <div onClick={() => history.push(`/confirm/${student.id}`)}>
+                                        {this.props.isThereLoading && this.props.loadingComponent === student.id ?
                                             loading("w-8 h-8 mx-2 text-blueish")
                                             :
                                             check("w-8 h-8 mx-2 cursor-pointer transition-all duration-200 hover:text-blueish")

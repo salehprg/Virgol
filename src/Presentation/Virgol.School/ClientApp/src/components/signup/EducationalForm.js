@@ -46,6 +46,7 @@ const EducationalForm = props => {
                 />
                 <Select
                     className="w-5/6 max-w-300o mx-3"
+                    defaultValue={props.selected}
                     onChange={handleSelectedCategory}
                     options={renderSelectableCategories()}
                     isSearchable

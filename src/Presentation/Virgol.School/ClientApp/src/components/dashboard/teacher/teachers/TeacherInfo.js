@@ -26,7 +26,7 @@ class TeacherInfo extends React.Component {
     }
 
     onSubmit = async (formValues) => {
-        formValues.id = this.props.match.params.id;
+        formValues.id = parseInt(this.props.match.params.id);
         this.setState({ editLoading: true })
         await this.props.editTeacher(this.props.token, formValues);
         this.setState({ editLoading: false })
