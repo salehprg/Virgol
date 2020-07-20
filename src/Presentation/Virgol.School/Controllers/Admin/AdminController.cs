@@ -88,6 +88,36 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+#region Manager
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetManagers()
+        {
+            try
+            {
+                int roleId = roleManager.GetRoleIdAsync(new IdentityRole<int>{Name = "Teacher"}).Result.FirstOrDefault();
+
+                var userInRole = appDbContext.UserRoles.Where(x => x.RoleId == roleId);
+
+                List<UserModel> mangers = new List<UserModel>();
+                foreach (var user in userInRole)
+                {
+                    UserModel manager = appDbContext.Users.Where(x => x.Id == user.UserId).FirstOrDefault();
+                    mangers.Add(manager);
+                }
+
+                return Ok(mangers);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPut]
         [ProducesResponseType(typeof(SchoolModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -120,6 +150,79 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult EditManager([FromBody]ManagerData model)
+        {
+            try
+            {
+                
+                SchoolModel oldSchool = new SchoolModel();
+                oldSchool = appDbContext.Schools.Where(x => x.ManagerId == model.Id).FirstOrDefault();
+                
+                SchoolModel newSchool = new SchoolModel();
+                newSchool = appDbContext.Schools.Where(x => x.Id == model.schoolId).FirstOrDefault();
+
+                if(oldSchool != null)
+                {
+                    oldSchool.ManagerId = -1;
+                }
+
+                if(newSchool != null)
+                {
+                    newSchool.ManagerId = model.Id;
+                }
+
+                appDbContext.Schools.Update(oldSchool);
+                appDbContext.Schools.Update(newSchool);
+                appDbContext.Users.Update(model);
+                
+                appDbContext.SaveChanges();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult RemoveManager([FromBody]int managerId)
+        {
+            try
+            {
+                
+                SchoolModel oldSchool = new SchoolModel();
+                oldSchool = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+
+                if(oldSchool != null)
+                {
+                    appDbContext.Schools.Remove(oldSchool);
+                }
+
+                UserModel teacher = appDbContext.Users.Where(x => x.Id == managerId).FirstOrDefault();
+                bool removeTeacher = userManager.DeleteAsync(teacher).Result.Succeeded;
+
+                if(removeTeacher)
+                {
+                    appDbContext.SaveChanges();
+                }
+                
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion
     }
 }
         
