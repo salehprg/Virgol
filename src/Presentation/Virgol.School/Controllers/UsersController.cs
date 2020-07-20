@@ -141,6 +141,9 @@ namespace lms_with_moodle.Controllers
             if(Result.Succeeded)
             {
                 UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
+
+                UserDetail userDetail = appDbContext.UserDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+
                 int UserType = -1; // 0 = Student , 1 = Teacher , 2 = Admin
 
                 if(!userInformation.ConfirmedAcc)
@@ -197,7 +200,8 @@ namespace lms_with_moodle.Controllers
                 {
                     UserType = UserType,
                     BaseId = baseId,
-                    userInformation,
+                    UserBaseInfo = userInformation,
+                    UserDetails = userDetail,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });
