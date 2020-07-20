@@ -386,7 +386,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
         public async Task<IActionResult> AddNewTeacher([FromBody]UserDataModel teacher)
         {
             try
@@ -395,30 +395,40 @@ namespace lms_with_moodle.Controllers
                 teacher.IsTeacher = true;
                 teacher.ConfirmedAcc = true;
                 
-                await userManager.CreateAsync(teacher , teacher.MelliCode);
-                await userManager.AddToRoleAsync(teacher , "Teacher");
-                await userManager.AddToRoleAsync(teacher , "User");
-                appDbContext.SaveChanges();
-                
-                int userId = userManager.FindByNameAsync(teacher.MelliCode).Result.Id;
-                UserDetail userDetail = new UserDetail();
-                userDetail = teacher.userDetail;
+                IdentityResult resultCreate = userManager.CreateAsync(teacher , teacher.MelliCode).Result;
 
-                appDbContext.UserDetails.Add(userDetail);
+                if(resultCreate.Succeeded)
+                {
+                    bool resultAddRTeacher = userManager.AddToRoleAsync(teacher , "Teacher").Result.Succeeded;
+                    bool resultAddRUser = userManager.AddToRoleAsync(teacher , "User").Result.Succeeded;
 
-                ldap.AddUserToLDAP(teacher);
+                    int userId = userManager.FindByNameAsync(teacher.MelliCode).Result.Id;
 
-                await moodleApi.CreateUsers(new List<UserModel>() {teacher});
+                    UserDetail userDetail = new UserDetail();
+                    userDetail = teacher.userDetail;
 
+                    if(userDetail != null)
+                    {
+                        appDbContext.UserDetails.Add(userDetail);
+                    }
 
-                int userMoodle_id = await moodleApi.GetUserId(teacher.MelliCode);
-                teacher.Moodle_Id = userMoodle_id;
-                appDbContext.Users.Update(teacher);
+                    ldap.AddUserToLDAP(teacher);
 
-                appDbContext.SaveChanges();
+                    bool userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {teacher});
 
+                    if(userToMoodle)
+                    {
+                        int userMoodle_id = await moodleApi.GetUserId(teacher.MelliCode);
+                        teacher.Moodle_Id = userMoodle_id;
+                        appDbContext.Users.Update(teacher);
 
-                return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
+                        appDbContext.SaveChanges();
+                    }
+                    
+                    return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
+                }
+
+                return BadRequest(resultCreate.Errors);
             }
             catch(Exception ex)
             {

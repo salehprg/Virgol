@@ -454,6 +454,36 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> GetAllSchools()
+        {
+            try
+            {
+                List<CategoryDetail_moodle> categories = await moodleApi.GetAllCategories();
+                List<CategoryDetail> schools = new List<CategoryDetail>();
+
+                foreach (var category in categories)
+                {
+                    if(category.parent == "0")
+                    {
+                        CategoryDetail school = new CategoryDetail();
+                        school.Id = category.id;
+                        school.Name = category.name;
+
+                        schools.Add(school);
+                    }
+                }
+
+                return Ok(schools);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 #endregion
     
     }
