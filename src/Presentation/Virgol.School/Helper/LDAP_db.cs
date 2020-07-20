@@ -2,7 +2,7 @@ using System;
 using lms_with_moodle.Helper;
 using Microsoft.Extensions.Options;
 using Models.User;
-using Models.User.InputModel;
+using Models.InputModel;
 using Novell.Directory.Ldap;
 
 namespace lms_with_moodle.Helper

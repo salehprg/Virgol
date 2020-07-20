@@ -23,7 +23,7 @@ using Models;
 using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-using Models.User.InputModel;
+using Models.InputModel;
 
 namespace lms_with_moodle.Controllers
 {
@@ -229,6 +229,9 @@ namespace lms_with_moodle.Controllers
 
                     IdentityRole<int> userRole = new IdentityRole<int>{Name = "User"};
                     await roleManager.CreateAsync(userRole);
+
+                    IdentityRole<int> managerRole = new IdentityRole<int>{Name = "Manager"};
+                    await roleManager.CreateAsync(managerRole);
 
                     await userManager.AddToRoleAsync(adminUser , "Admin");
                 }

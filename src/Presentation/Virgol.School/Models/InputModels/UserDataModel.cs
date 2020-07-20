@@ -1,8 +1,9 @@
 using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Models.User;
 
-namespace Models.User.InputModel
+namespace Models.InputModel
 {
     public class UserDataModel : UserModel {
         // UserDataModel(UserModel parent)
