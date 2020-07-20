@@ -56,37 +56,6 @@ namespace lms_with_moodle.Controllers
             SMSApi = new FarazSmsApi(appSettings);
         }
 
-        [HttpPut]
-        [ProducesResponseType(typeof(SchoolModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewSchool([FromBody]SchoolModel model)
-        {
-            SchoolModel newSchool = model;
-            try
-            {
-                int schoolId = await moodleApi.CreateCategory(newSchool.SchoolName);
-                if(schoolId != -1)
-                {
-                    model.Moodle_Id = schoolId;
-
-                    appDbContext.Schools.Add(model);
-                    appDbContext.SaveChanges();
-
-                    model.Id = appDbContext.Schools.OrderBy(x => x.Id).FirstOrDefault().Id;
-
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest("در ایجاد مدرسه مشکلی پیش آمد");
-                }
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
 
 #region Manager
 
@@ -223,6 +192,120 @@ namespace lms_with_moodle.Controllers
         }
 
 #endregion
+    
+#region School
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<SchoolModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetSchools()
+        {
+            try
+            {
+                return Ok(appDbContext.Schools.ToList());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddNewSchool([FromBody]SchoolModel model)
+        {
+            SchoolModel newSchool = model;
+            try
+            {
+                int schoolId = await moodleApi.CreateCategory(newSchool.SchoolName);
+                if(schoolId != -1)
+                {
+                    model.Moodle_Id = schoolId;
+
+                    appDbContext.Schools.Add(model);
+                    appDbContext.SaveChanges();
+
+                    model.Id = appDbContext.Schools.OrderBy(x => x.Id).FirstOrDefault().Id;
+
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest("در ایجاد مدرسه مشکلی پیش آمد");
+                }
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> EditSchool([FromBody]SchoolModel model)
+        {
+            try
+            {
+                CategoryDetail school = new CategoryDetail();
+                school.Id = model.Moodle_Id;
+                school.Name = model.SchoolName;
+                school.ParentCategory = 0;
+
+                bool editMoodle = await moodleApi.EditCategory(school);
+                if(editMoodle)
+                {
+                    appDbContext.Schools.Update(model);
+
+                    appDbContext.SaveChanges();
+                    return Ok(true);
+                }
+                
+                return BadRequest("مشکلی در ویرایش مدرسه بوجود آمد");
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveSchool([FromBody]int schoolId)
+        {
+            try
+            {
+                int catId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().Moodle_Id;
+                bool removeCat = await moodleApi.DeleteCategory(catId);
+
+                if(removeCat)
+                {
+                    SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+
+                    appDbContext.Schools.Remove(school);
+                    appDbContext.SaveChanges();
+
+                    return Ok(true);
+                }
+                
+                return BadRequest("مشکلی در حذف مدرسه بوجود آمد");
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion
+    
     }
 }
         
