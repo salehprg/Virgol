@@ -80,14 +80,35 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(List<UserDataModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult GetNewUsers()
         {
             try
             {
                 List<UserModel> NewUsers = appDbContext.Users.Where(x => x.ConfirmedAcc == false).ToList();
-                return Ok(NewUsers);
+                List<UserDataModel> users = new List<UserDataModel>();
+
+                foreach (var user in NewUsers)
+                {
+                    UserDetail userDetail = new UserDetail();
+                    userDetail = appDbContext.UserDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
+
+                    UserDataModel dataModel= new UserDataModel();
+                    dataModel.Id = user.Id;
+                    dataModel.FirstName = user.FirstName;
+                    dataModel.LastName = user.LastName;
+                    dataModel.PhoneNumber = user.PhoneNumber;
+                    dataModel.MelliCode = user.MelliCode;
+                    dataModel.Moodle_Id = user.Moodle_Id;
+                    dataModel.UserName = user.UserName;
+
+                    dataModel.userDetail = userDetail;
+
+                    users.Add(dataModel);
+                }
+
+                return Ok(users);
             }
             catch(Exception ex)
             {
@@ -171,7 +192,7 @@ namespace lms_with_moodle.Controllers
                     var SelectedUser = appDbContext.Users.Where(user => user.Id == id).FirstOrDefault();
                     SelectedUser.ConfirmedAcc = true;
 
-                    UserInputModel user = new UserInputModel();
+                    UserDataModel user = new UserDataModel();
                     user.FirstName = SelectedUser.FirstName;
                     user.LastName = SelectedUser.LastName;
                     user.MelliCode = SelectedUser.MelliCode;
@@ -366,7 +387,7 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewTeacher([FromBody]UserInputModel teacher)
+        public async Task<IActionResult> AddNewTeacher([FromBody]UserDataModel teacher)
         {
             try
             {
@@ -433,15 +454,15 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult DeleteTeacher(int teacherId)
+        public async Task<IActionResult> DeleteTeacher(int teacherId)
         {
             try
             {
                 UserModel teacher = appDbContext.Users.Where(x => x.Id == teacherId).FirstOrDefault();
 
-                userManager.RemoveFromRoleAsync(teacher , "User");
-                userManager.RemoveFromRoleAsync(teacher , "Teacher");
-                userManager.DeleteAsync(teacher);
+                await userManager.RemoveFromRoleAsync(teacher , "User");
+                await userManager.RemoveFromRoleAsync(teacher , "Teacher");
+                await userManager.DeleteAsync(teacher);
             
                 appDbContext.SaveChanges();
 
@@ -837,7 +858,7 @@ namespace lms_with_moodle.Controllers
             //3.1 - don't add duplicate username 
 
 
-            List<UserInputModel> users = new List<UserInputModel>();
+            List<UserDataModel> users = new List<UserDataModel>();
             List<string> errors = new List<string>();
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -850,7 +871,7 @@ namespace lms_with_moodle.Controllers
 
                     while (excelData.Read()) //Each row of the file
                     {
-                        UserInputModel selectedUser = new UserInputModel
+                        UserDataModel selectedUser = new UserDataModel
                         {
                             FirstName = excelData.GetValue(0).ToString(),
                             LastName = excelData.GetValue(1).ToString(),

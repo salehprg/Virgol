@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Models.User.InputModel
 {
-    public class UserInputModel : UserModel {
+    public class UserDataModel : UserModel {
+        // UserDataModel(UserModel parent)
+        // {
+        //     this.FirstName
+        // }
         public UserDetail userDetail {get; set;}
     }
 }

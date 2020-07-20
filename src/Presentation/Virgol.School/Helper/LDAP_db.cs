@@ -21,7 +21,7 @@ namespace lms_with_moodle.Helper
             
         }
 
-        public bool AddUserToLDAP(UserInputModel user)
+        public bool AddUserToLDAP(UserDataModel user)
         {
             try
             {

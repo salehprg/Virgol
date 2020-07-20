@@ -190,14 +190,8 @@ namespace lms_with_moodle.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     ) ;
 
-                int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
-                int baseId = -1;
-
-                if(UserId != -1)
-                {
-                    CourseDetail userCourses = (await moodleApi.getUserCourses(UserId))[0];
-                    baseId = userCourses.categoryId; //لیستی برای بدست اوردن ایدی دسته بندی ها
-                }
+                UserDetail userdetail = appDbContext.UserDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                int baseId = (userdetail != null ? userdetail.BaseId : -1);
 
                 return Ok(new
                 {
@@ -214,9 +208,9 @@ namespace lms_with_moodle.Controllers
 
         //Sameple Data : Users/RegisterNewUser?Password=Saleh-1379   newUser post as json data
         [HttpPut]
-        [ProducesResponseType(typeof(UserModel), 200)]
+        [ProducesResponseType(typeof(UserDataModel), 200)]
         [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
-        public async Task<IActionResult> RegisterNewUser([FromBody]UserInputModel _model)
+        public async Task<IActionResult> RegisterNewUser([FromBody]UserDataModel _model)
         {
             //Check for admin Account 
             UserModel adminUser = await userManager.FindByNameAsync("Admin");
@@ -259,17 +253,20 @@ namespace lms_with_moodle.Controllers
                     int userId = userManager.FindByNameAsync(newUser.MelliCode).Result.Id;
 
                      //These file name Are set by default and its extension should be checked between jpg/png
-                    UserDetail userDetail = new UserDetail();
-                    userDetail.ShDocument = _model.MelliCode;
-                    userDetail.Document2 = _model.MelliCode + "_Doc2";
-                    userDetail.BaseId = _model.userDetail.BaseId;
-                    userDetail.BirthDate = _model.userDetail.BirthDate;
-                    userDetail.FatherMelliCode = _model.userDetail.FatherMelliCode;
-                    userDetail.MotherMelliCode = _model.userDetail.MotherMelliCode;
-                    userDetail.FatherName = _model.userDetail.FatherName;
-                    userDetail.FatherPhoneNumber = _model.userDetail.FatherPhoneNumber;
-                    userDetail.MotherName = _model.userDetail.MotherName;
-                    userDetail.UserId = userId;
+                    UserDetail userDetail = new UserDetail{
+                        ShDocument = _model.MelliCode,
+                        Document2 = _model.MelliCode + "_Doc2",
+                        BaseId = _model.userDetail.BaseId,
+                        BirthDate = _model.userDetail.BirthDate,
+                        FatherMelliCode = _model.userDetail.FatherMelliCode,
+                        MotherMelliCode = _model.userDetail.MotherMelliCode,
+                        FatherName = _model.userDetail.FatherName,
+                        FatherPhoneNumber = _model.userDetail.FatherPhoneNumber,
+                        MotherName = _model.userDetail.MotherName,
+                        LatinFirstname = _model.userDetail.LatinFirstname,
+                        LatinLastname = _model.userDetail.LatinLastname,
+                        UserId = userId
+                    };
 
                     appDbContext.UserDetails.Add(userDetail);
                     appDbContext.SaveChanges();
