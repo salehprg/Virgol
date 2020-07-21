@@ -96,6 +96,9 @@ namespace lms_with_moodle.Controllers
             {
                 UserModel manager = model;
                 manager.UserName = model.MelliCode;
+                manager.ConfirmedAcc = true;
+                manager.IsTeacher = false;
+                manager.Moodle_Id = 0;
 
                 bool result = userManager.CreateAsync(manager , manager.MelliCode).Result.Succeeded;
 

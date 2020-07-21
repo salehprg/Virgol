@@ -21,7 +21,7 @@ namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Manager,Admin")]
     public class ManagerController : ControllerBase
     {
         
@@ -29,18 +29,21 @@ namespace lms_with_moodle.Controllers
         private readonly UserManager<UserModel> userManager;
         private readonly AppDbContext appDbContext;
         private readonly SignInManager<UserModel> signInManager;
+        private readonly RoleManager<IdentityRole<int>> roleManager;
 
         MoodleApi moodleApi;
         LDAP_db ldap;
         
         public ManagerController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
+                                , RoleManager<IdentityRole<int>> _roleManager
                                 , AppDbContext dbContext
                                 , IOptions<AppSettings> _appsetting)
         {
             userManager = _userManager;
             appDbContext = dbContext;
             signInManager =_signinManager;
+            roleManager = _roleManager;
             appSettings = _appsetting.Value;
 
             moodleApi = new MoodleApi(appSettings);
@@ -57,21 +60,30 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                List<UserInfo_moodle> AllUsersMoodle = await moodleApi.getAllUser();
-                List<UserModel> AllStudent = appDbContext.Users.Where(x => !x.IsTeacher && x.ConfirmedAcc && x.Id != 1).ToList();
+                
+                string strRoleId = await roleManager.GetRoleIdAsync(new IdentityRole<int>{Name = "Manager"});
+                int roleId = int.Parse(strRoleId);
+                var userInRole = appDbContext.UserRoles.Where(x => x.RoleId == roleId);
+                List<UserModel> mangers = new List<UserModel>();
+                foreach (var user in userInRole)
+                {
+                    UserModel manager = appDbContext.Users.Where(x => x.Id == user.UserId).FirstOrDefault();
+                    mangers.Add(manager);
+                }
+
+                List<UserModel> AllStudent = appDbContext.Users.Where(x => !x.IsTeacher && x.ConfirmedAcc && x.UserName != "Admin").ToList();
 
                 List<UserModel> Result = new List<UserModel>();
 
-                //Do this just for matching Student ID with id in moodle 
-                //Because student id in our database is diffrent from moodle database
-                foreach(var Student in AllUsersMoodle)
+               //Remove Manager from result
+
+                foreach(var Student in AllStudent)
                 {
-                    UserModel user = appDbContext.Users.Where(x => x.MelliCode == Student.idnumber).FirstOrDefault();
-                    if(user != null)
-                        Result.Add(user);
+                    if(mangers.Where(x => x.Id == Student.Id) == null)
+                        Result.Add(Student);
                 }
 
-                return Ok(AllStudent);
+                return Ok(Result);
             }
             catch(Exception ex)
             {
@@ -519,7 +531,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveCourseFromCategory([FromBody]int courseId )
+        public async Task<IActionResult> RemoveCourseFromCategory(int courseId )
         {
             string error = await moodleApi.RemoveCourseFromCategory(courseId);
             
@@ -595,27 +607,31 @@ namespace lms_with_moodle.Controllers
 
                 if(CourseId != -1)
                 {
-                    //Initialize teacherCourse Info
-                    TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
-                    teacherCourseInfo.CourseId = CourseId;
-                    teacherCourseInfo.TeacherId = course.TeacherId;
+                    if(course.TeacherId != 0)
+                    {
+                        
+                        //Initialize teacherCourse Info
+                        TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
+                        teacherCourseInfo.CourseId = CourseId;
+                        teacherCourseInfo.TeacherId = course.TeacherId;
 
-                    EnrolUser CurrentTeacher = new EnrolUser();
-                    CurrentTeacher.CourseId = CourseId;
-                    CurrentTeacher.RoleId = 3;
+                        EnrolUser CurrentTeacher = new EnrolUser();
+                        CurrentTeacher.CourseId = CourseId;
+                        CurrentTeacher.RoleId = 3;
 
-                    //Get teacher id from moodle database by its MelliCode from our database
-                    int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode);
-                    CurrentTeacher.UserId = Teacher.Id;
+                        //Get teacher id from moodle database by its MelliCode from our database
+                        int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode);
+                        CurrentTeacher.UserId = Teacher.Id;
 
-                    bool result = await moodleApi.AssignUsersToCourse(new List<EnrolUser>(){CurrentTeacher});
+                        bool result = await moodleApi.AssignUsersToCourse(new List<EnrolUser>(){CurrentTeacher});
 
-                    appDbContext.TeacherCourse.Add(teacherCourseInfo);
-                    appDbContext.SaveChanges();
+                        appDbContext.TeacherCourse.Add(teacherCourseInfo);
+                        appDbContext.SaveChanges();
+                    }
 
                     CourseDetail courseDetail = course;
                     courseDetail.id = CourseId;
-
+                    
                     return Ok(courseDetail);
                 }
                 else
@@ -684,8 +700,12 @@ namespace lms_with_moodle.Controllers
                     newTeacher.RoleId = 3;
                     newTeacher.UserId = TeacherId;
 
+                    bool resultUnAssign = true;
+                    if(previousTeacher.UserId != -1)
+                    {
+                        resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {previousTeacher});
+                    }
 
-                    bool resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {previousTeacher});
                     if(resultUnAssign)
                     {
                         bool resultAssign = await moodleApi.AssignUsersToCourse(new List<EnrolUser>() {newTeacher});
@@ -699,7 +719,7 @@ namespace lms_with_moodle.Controllers
                     }
             
 
-                    return Ok(false);
+                    return BadRequest("معلم به درس اضافه نشد");
                 }
                 else
                 {
@@ -716,20 +736,23 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> DeleteCourse([FromBody]CourseDetail course)
+        public async Task<IActionResult> DeleteCourse([FromBody]CourseDetail _modelCourse)
         {
             try
             {
                 
-                string result = await moodleApi.DeleteCourse(course.id);
+                string result = await moodleApi.DeleteCourse(_modelCourse.id);
 
                 if(result == null)
                 {
-                    TeacherCourseInfo Course = appDbContext.TeacherCourse.Where(x => x.CourseId == course.id).FirstOrDefault();
-                    appDbContext.TeacherCourse.Remove(Course);
-                    appDbContext.SaveChanges();
+                    TeacherCourseInfo Course = appDbContext.TeacherCourse.Where(x => x.CourseId == _modelCourse.id).FirstOrDefault();
+                    if(Course != null)
+                    {
+                        appDbContext.TeacherCourse.Remove(Course);
+                        appDbContext.SaveChanges();
+                    }
 
-                    return Ok(true);
+                    return Ok(_modelCourse);
                 }
                 else
                 {
