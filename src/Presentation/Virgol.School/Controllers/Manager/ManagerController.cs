@@ -56,30 +56,22 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> GetAllStudent() 
+        public IActionResult GetAllStudent() 
         {
             try
             {
                 
-                string strRoleId = await roleManager.GetRoleIdAsync(new IdentityRole<int>{Name = "Manager"});
-                int roleId = int.Parse(strRoleId);
+                int roleId =  roleManager.Roles.Where(x => x.Name == "Manager").FirstOrDefault().Id;
+                
                 var userInRole = appDbContext.UserRoles.Where(x => x.RoleId == roleId);
-                List<UserModel> mangers = new List<UserModel>();
-                foreach (var user in userInRole)
-                {
-                    UserModel manager = appDbContext.Users.Where(x => x.Id == user.UserId).FirstOrDefault();
-                    mangers.Add(manager);
-                }
 
                 List<UserModel> AllStudent = appDbContext.Users.Where(x => !x.IsTeacher && x.ConfirmedAcc && x.UserName != "Admin").ToList();
-
                 List<UserModel> Result = new List<UserModel>();
 
                //Remove Manager from result
-
                 foreach(var Student in AllStudent)
                 {
-                    if(mangers.Where(x => x.Id == Student.Id) == null)
+                    if(userInRole.Where(x => x.UserId == Student.Id).FirstOrDefault() == null)
                         Result.Add(Student);
                 }
 
