@@ -6,8 +6,10 @@ import AuthenticatedRoute from "./AuthenticatedRoute";
 import Login from './Login';
 import Dashboard from "./dashboard/teacher/Dashboard";
 import StudentDashboard from "./dashboard/student/Dashboard";
+import ManagerDashboard from './dashboard/admin/Dashboard';
 import SignUp from "./signup/SignUp";
 import Status from "./Status";
+import Parsa from './Parsa';
 import NoFound from "./NoFound";
 import ShowCourse from "./dashboard/teacher/course/ShowCourse";
 import AddTeacher from "./dashboard/teacher/teachers/AddTeacher";
@@ -41,6 +43,7 @@ class App extends React.Component {
                     <Switch>
                         <Route path="/" exact component={Login} />
                         <Route path="/SignUp" exact component={SignUp} />
+                        <Route path="/parsa" exact component={Parsa} />
                         <AuthenticatedRoute
                             path="/a/dashboard"
                             component={Dashboard}
@@ -105,6 +108,12 @@ class App extends React.Component {
                             path="/s/dashboard"
                             component={StudentDashboard}
                             conditions={this.props.authenticated && this.props.userType === 0}
+                            exact
+                        />
+                        <AuthenticatedRoute
+                            path="/m/dashboard"
+                            component={ManagerDashboard}
+                            conditions={this.props.authenticated && this.props.userType === 2}
                             exact
                         />
                         <Route path="" component={NoFound} />

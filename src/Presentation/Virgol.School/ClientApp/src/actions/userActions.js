@@ -40,6 +40,7 @@ export const getCoursesInCat = (id, token) => async dispatch => {
             }
         });
 
+        console.log(response.data)
         if (!response.data[0]) {
             dispatch({ type: 'ERROR_GETTING_USER_INFO' })
         } else {

@@ -49,10 +49,10 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, catInfo: [...state.catInfo, action.payload]};
 
     if (action.type === 'DELETE_COURSE')
-        return { ...state,
-            courses: state.courses.filter(element => element.id !== action.payload),
-            catInfo: state.catInfo.filter(element => element.id !== action.payload)
-    }
+        return { ...state, courses: state.courses.filter(element => element.id !== action.payload) }
+
+    if (action.type === 'DELETE_COURSE_FROM_CAT')
+        return { ...state, catInfo: state.catInfo.filter(element => element.id !== action.payload) }
 
     if (action.type === 'DELETE_TEACHER')
         return { ...state, teachers: state.teachers.filter(element => element.id !== action.payload) }

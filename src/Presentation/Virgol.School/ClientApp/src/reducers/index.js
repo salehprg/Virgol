@@ -7,9 +7,11 @@ import adminReducer from "./adminReducer";
 import successReducer from "./successReducer";
 import alertReducer from "./alertReducer";
 import userReducer from "./userReducer";
+import managerReducer from "./managerReducer";
 
 export default combineReducers({
     auth: authReducer,
+    managerData: managerReducer,
     adminData: adminReducer,
     userInfo: userReducer,
     form: formReducer,
