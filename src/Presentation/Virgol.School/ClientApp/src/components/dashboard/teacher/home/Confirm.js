@@ -1,14 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { confirmUser } from "../../../../actions";
+import { confirmUser, getAllCategory } from "../../../../actions";
 import {check, loading} from "../../../../assets/icons";
 import AuthCard from "./AuthCard";
 import history from "../../../../history";
 import Modal from "../../../Modal";
+import Loading from "../../../Loading";
 
 class Confirm extends React.Component {
 
-    state = { confirmLoading: false, confirmModal: false }
+    state = { loading: false, confirmLoading: false, confirmModal: false, cat: null }
+
+    async componentDidMount() {
+        this.setState({loading: true})
+        await this.props.getAllCategory(this.props.token);
+        this.setState({ cat: this.props.categories.find(el => el.id === this.props.user.userDetail.baseId), loading: false });
+    }
 
     showConfirmModal = () => {
         if (!this.state.confirmLoading) this.setState({ confirmModal: true })
@@ -25,6 +32,7 @@ class Confirm extends React.Component {
     }
 
     render() {
+        if (this.state.loading) return <Loading />
         return (
             <div className="w-screen min-h-screen bg-light-white flex flex-row justify-center items-center">
                 {this.state.confirmModal ?
@@ -49,15 +57,15 @@ class Confirm extends React.Component {
                     <div className="w-11/12 flex flex-col">
                         <span className="w-full text-right border-b-2 text-grayish">اطلاعات فردی</span>
                         <div className="w-full flex flex-row-reverse flex-wrap justify-start">
-                             <AuthCard title="نام" value="محمد" />
-                             <AuthCard title="نام خانوادگی" value="موسوی" />
-                             <AuthCard title="کد ملی" value="0926578254" />
-                             <AuthCard title="نام پدر" value="حسن" />
-                             <AuthCard title="کد ملی پدر" value="030345789" />
-                             <AuthCard title="نام مادر" value="فاطمه" />
-                             <AuthCard title="کد ملی مادر" value="0567845896" />
-                             <AuthCard title="شماره همراه" value="09354567858" />
-                             <AuthCard title="شماره همراه پدر" value="09154568525" />
+                             <AuthCard title="نام" value={this.props.user.firstName} />
+                             <AuthCard title="نام خانوادگی" value={this.props.user.lastName} />
+                             <AuthCard title="کد ملی" value={this.props.user.melliCode} />
+                             <AuthCard title="نام پدر" value={this.props.user.userDetail.fatherName} />
+                             <AuthCard title="کد ملی پدر" value={this.props.user.userDetail.fatherMelliCode} />
+                             <AuthCard title="نام مادر" value={this.props.user.userDetail.motherName} />
+                             <AuthCard title="کد ملی مادر" value={this.props.user.userDetail.motherMelliCode} />
+                             <AuthCard title="شماره همراه" value={this.props.user.phoneNumber} />
+                             <AuthCard title="شماره همراه پدر" value={this.props.user.userDetail.fatherPhoneNumber} />
                         </div>
                     </div>
                     <div className="w-11/12 flex flex-col">
@@ -65,7 +73,7 @@ class Confirm extends React.Component {
                         <div className="w-full flex flex-row-reverse flex-wrap justify-start">
                              <div className="flex my-2 w-1/3 flex-col items-center">
                                  <span className="text-2xl font-vb text-blueish">مقطع</span>
-                                 <span>دهم</span>
+                                 <span>{this.state.cat ? this.state.cat.name : ''}</span>
                              </div>
                         </div>
                     </div>
@@ -83,8 +91,9 @@ class Confirm extends React.Component {
 
 }
 
-const mapStateToProps = state => {
-    return { token: state.auth.userInfo.token }
+const mapStateToProps = (state, ownProps) => {
+    const user = state.adminData.newUsers.find(el => el.id === parseInt(ownProps.match.params.id))
+    return { token: state.auth.userInfo.token, user, categories: state.adminData.categories}
 }
 
-export default connect(mapStateToProps, { confirmUser })(Confirm);
+export default connect(mapStateToProps, { confirmUser, getAllCategory })(Confirm);
