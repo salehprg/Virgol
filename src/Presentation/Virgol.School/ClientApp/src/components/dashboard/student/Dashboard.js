@@ -40,7 +40,7 @@ class Dashboard extends React.Component {
 
     render() {
         if (this.state.loading) return <Loading />;
-        if (this.state.error || !this.props.userCat) return (
+        if (this.state.error || !this.props.user.category) return (
             <div className="w-screen h-screen flex justify-center items-center">
                 <button onClick={this.getInfo}>تلاش مجدد</button>
             </div>
@@ -76,7 +76,7 @@ class Dashboard extends React.Component {
                     </div>
                     <div className="w-5/6 flex flex-col justify-center items-center max-w-300o mx-2 md:my-0 my-2 rounded-lg bg-blueish">
                         <span className="text-4xl text-white my-2">مقطع</span>
-                        <span className="text-2xl text-white my-2">{this.props.userCat ? this.props.userCat.name : 'ندارد'}</span>
+                        <span className="text-2xl text-white my-2">{this.props.user.category ? this.props.user.category.name : 'ندارد'}</span>
                         <div onClick={() => this.props.logout()} data-tip="خروج">
                             {logoutIcon("w-8 h-8 mx-1 text-white cursor-pointer transition-all duration-200 hover:text-red-900")}
                         </div>

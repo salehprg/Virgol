@@ -12,11 +12,18 @@ export const login = formValues => async dispatch => {
 
         dispatch({ type: 'LOGIN', payload: response.data })
         switch (response.data.userType) {
+            case 0: {
+                history.push('/s/dashboard');
+                break;
+            }
+            case 3: {
+                history.push('/m/dashboard');
+                break;
+            }
             case 2: {
                 history.push('/a/dashboard');
                 break;
             }
-            case 0: history.push('/s/dashboard');
         }
 
 
@@ -235,6 +242,7 @@ export const getAllStudents = token => async dispatch => {
         dispatch({ type: 'GET_ALL_STUDENTS', payload: response.data });
 
     } catch (e) {
+        console.log(e.response)
         dispatch({ type: 'FADE_LOADING' });
     }
 
@@ -285,9 +293,20 @@ export const addNewCategory = (token, formValues) => async dispatch => {
 
 export const addNewTeacher = (token, formValues) => async dispatch => {
 
+    const values = {
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        melliCode: formValues.melliCode,
+        phoneNumber: formValues.phoneNumber,
+        userDetail: {
+            latinFirstName: formValues.latinFirstName,
+            latinLastName: formValues.latinLastName
+        }
+    }
+
     try {
         dispatch({ type: 'ADD_NEW_TEACHER_LOADING' });
-        const response = await lms.put("/api/Manager/AddNewTeacher", formValues ,{
+        const response = await lms.put("/api/Manager/AddNewTeacher", values ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -405,6 +424,7 @@ export const addNewCourse = (token, formValues) => async dispatch => {
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
+        console.log(e.response)
         dispatch(alert.error("خطا در افزودن درس"))
         dispatch({ type: 'FADE_LOADING' });
         dispatch({ type: 'ERROR_ADDING_NEW_COURSE', payload: 'add new course error' });
@@ -450,11 +470,12 @@ export const deleteCourse = (token, id) => async dispatch => {
         dispatch(alert.success("درس حذف گردید"))
         dispatch({ type: 'DELETE_COURSE', payload: id})
         dispatch({ type: 'FADE_LOADING' });
+        return true;
 
     } catch (e) {
-        console.log(e.response)
         dispatch(alert.error("خطا در حذف درس"))
         dispatch({ type: 'FADE_LOADING' });
+        return false
     }
 
 }
@@ -463,14 +484,14 @@ export const deleteCourseFromCat = (token, courseId, catId) => async dispatch =>
 
     try {
         dispatch({ type: 'DELETE_COURSE_FROM_CAT_LOADING', payload: catId });
-        const response = await lms.post('/api/Manager/RemoveCourseFromCategory', { courseId }, {
+        const response = await lms.post(`/api/Manager/RemoveCourseFromCategory?courseId=${courseId}`, courseId, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
         dispatch(alert.success("درس با موفقیت از این مقطع حذف شد"))
-        dispatch({ type: 'DELETE_COURSE', payload: courseId})
+        dispatch({ type: 'DELETE_COURSE_FROM_CAT', payload: courseId})
         dispatch({ type: 'FADE_LOADING' });
 
     } catch (e) {
@@ -529,6 +550,7 @@ export const editCategory = (token, values) => async dispatch => {
 export const editCourse = (token, values) => async dispatch => {
 
     try {
+        console.log(values)
         dispatch({ type: 'EDIT_COURSE_LOADING' });
         const response = await lms.post('/api/Manager/EditCourse', values,{
             headers: {
@@ -536,12 +558,14 @@ export const editCourse = (token, values) => async dispatch => {
             }
         });
 
+        console.log(response.data)
         dispatch({ type: 'EDIT_COURSE', payload: response.data})
         dispatch({ type: 'FADE_LOADING' });
         history.push("/a/dashboard");
         dispatch(alert.success("درس ویرایش شد"))
 
     } catch (e) {
+        console.log(e.response)
         dispatch(alert.error("خطا در ویرایش درس"))
         dispatch({ type: 'FADE_LOADING' });
     }

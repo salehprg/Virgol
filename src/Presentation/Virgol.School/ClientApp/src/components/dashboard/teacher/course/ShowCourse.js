@@ -60,8 +60,8 @@ class ShowCourse extends React.Component {
 
     deleteCourse = async () => {
         this.setState({ delCourseLoading: true })
-        await this.props.deleteCourse(this.props.auth.token, this.props.course.id);
-        this.setState({ delCourseLoading: false, showDeleteConfirm: false })
+        const status = await this.props.deleteCourse(this.props.auth.token, this.props.course.id);
+        if (!status) this.setState({ delCourseLoading: false, showDeleteConfirm: false })
     }
 
     showConfirm = () => {
@@ -80,8 +80,10 @@ class ShowCourse extends React.Component {
             values.teacherId = this.props.course.teacherId
         }
 
+        console.log(values.teacherId)
         this.setState({ editLoading: true })
         await this.props.editCourse(this.props.auth.token, values);
+        this.setState({ editLoading: false })
     }
 
     render() {

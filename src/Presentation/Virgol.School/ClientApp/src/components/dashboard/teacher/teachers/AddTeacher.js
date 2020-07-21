@@ -58,6 +58,16 @@ class AddTeacher extends React.Component {
                             placeholder="شماره همراه"
                             component={this.renderFormInputs}
                         />
+                        <Field
+                            name="latinFirstName"
+                            placeholder="نام لاتین"
+                            component={this.renderFormInputs}
+                        />
+                        <Field
+                            name="latinLastName"
+                            placeholder="نام خانوادگی لاتین"
+                            component={this.renderFormInputs}
+                        />
                         <button className="bg-golden my-6 flex justify-center items-center hover:bg-darker-golden transition-all duration-200 font-vb text-xl text-dark-green w-full py-2 rounded-lg">
                             {this.state.loading ? loading("w-8 text-dark-green") : 'افزودن'}
                         </button>
@@ -76,6 +86,8 @@ const validate = (formValues) => {
     if (!formValues.lastName) errors.lastName = true
     if (!formValues.melliCode) errors.melliCode = true
     if (!formValues.phoneNumber) errors.phoneNumber = true
+    if (!formValues.latinFirstName) errors.latinFirstName = true
+    if (!formValues.latinLastName) errors.latinLastName = true
 
     return errors;
 }
