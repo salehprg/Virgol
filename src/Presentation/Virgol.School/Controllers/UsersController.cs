@@ -36,6 +36,7 @@ namespace lms_with_moodle.Controllers
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
+        private readonly LDAP_db ldap;
 
         MoodleApi moodleApi;
         FarazSmsApi SMSApi;
@@ -51,6 +52,8 @@ namespace lms_with_moodle.Controllers
             appSettings = _appsetting.Value;
             appDbContext = _appdbContext;
 
+
+            ldap = new LDAP_db(appSettings);
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
         }
@@ -138,13 +141,23 @@ namespace lms_with_moodle.Controllers
         {
             var Result = signInManager.PasswordSignInAsync(inpuLogin.Username , inpuLogin.Password , false , false).Result;
 
-            if(Result.Succeeded)
+            bool authResult = Result.Succeeded;
+
+            if(!authResult)
+            {
+                string IdNumber = ldap.Authenticate(inpuLogin.Username , inpuLogin.Password);
+                authResult = (IdNumber != null ? true : false);
+
+                inpuLogin.Username = IdNumber;
+            }
+            
+            if(authResult)
             {
                 UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
 
                 UserDetail userDetail = appDbContext.UserDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
 
-                int UserType = -1; // 0 = Student , 1 = Teacher , 2 = Admin
+                int UserType = -1; // 0 = Student , 1 = Teacher , 2 = Admin , 3 = Manager
 
                 if(!userInformation.ConfirmedAcc)
                 {
@@ -168,6 +181,10 @@ namespace lms_with_moodle.Controllers
                     {
                         switch(item)
                         {
+                            case "Manager":
+                                UserType = 3;
+                                break;
+
                             case "Admin":
                                 UserType = 2;
                                 break;
@@ -231,6 +248,7 @@ namespace lms_with_moodle.Controllers
                 {
                     adminUser = new UserModel{ConfirmedAcc = true , Email = "Admin@info.com" , FirstName = "Admin" , LastName = "Admin" , UserName = "Admin"};
                     await userManager.CreateAsync(adminUser , "Admin-1379");
+                    
                     IdentityRole<int> adminRole = new IdentityRole<int>{Name = "Admin"};
                     await roleManager.CreateAsync(adminRole);
                     
