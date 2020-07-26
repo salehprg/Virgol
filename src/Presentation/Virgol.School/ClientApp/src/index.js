@@ -1,16 +1,16 @@
+import './assets/main.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
 import storage from 'redux-persist/lib/storage';
-import './assets/main.css';
-import App from './components/App';
-import * as serviceWorker from './serviceWorker';
-import {persistReducer, persistStore} from "redux-persist";
-import {applyMiddleware, compose, createStore} from "redux";
+import { persistReducer, persistStore } from "redux-persist";
+import { applyMiddleware, compose, createStore } from "redux";
 import thunk from "redux-thunk";
-import reducers from "./reducers";
+import App from './components/App';
+import reducers from "./_reducers";
 import Loading from "./components/Loading";
+import * as serviceWorker from './serviceWorker';
 
 const persistConfig = {
     key: 'root',

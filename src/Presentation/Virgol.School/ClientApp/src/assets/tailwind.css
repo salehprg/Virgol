@@ -21,6 +21,17 @@
     right: 25px;
 }
 
+.show-sidebar-pos {
+    left: -40px;
+    top: 10px;
+}
+
+.grid-courses {
+    grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
+    justify-content: right;
+    direction: rtl;
+}
+
 .transition-height {
     transition: max-height 1s ease-out;
 }

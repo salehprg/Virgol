@@ -1,89 +1,96 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getCoursesInCat, getUserCat } from "../../../actions/userActions";
-import { logout } from "../../../actions";
-import Loading from "../../Loading";
-import {Link} from "react-router-dom";
-import {logoutIcon} from "../../../assets/icons";
+import { Route } from 'react-router-dom';
+import Sidebar from "../sidebar/Sidebar";
+import history from "../../../history";
+import Home from "./home/Home";
+import SidebarOption from "../sidebar/SidebarOption";
+import {bell, calendar, chart, classPlan, courses, dashboard, quizPlan} from "../../../assets/icons";
+import Courses from "./courses/Courses";
+import protectedStudent from "../../protectedRoutes/protectedStudent";
+import Header from "../Header";
 
 class Dashboard extends React.Component {
 
-    state = { loading: true, error: false }
+    state = { showSidebar: false, active: 'dashboard' }
 
     componentDidMount() {
-        this.getInfo();
+        if (window.innerWidth > 1280) this.setState({ showSidebar: true })
+        this.setState({ active: this.props.location.pathname.split('/')[2] })
     }
 
-    getInfo = async () => {
-        this.setState({loading: true})
-        if (this.props.user.baseId) {
-            await this.props.getCoursesInCat(this.props.user.baseId, this.props.user.token)
-        } else {
-            this.setState({ error: true })
-        }
-        this.setState({loading: false})
+    toggle = () => {
+        this.setState({ showSidebar: !this.state.showSidebar})
     }
 
-    renderCourses = () => {
-        if (this.props.courses) {
-            return this.props.courses.map(course => {
-                return(
-                    <div key={course.name} className="w-5/6 px-2 max-w-300 sm:ml-12 ml-0 mb-12 py-4 bg-white flex flex-col justify-between items-center">
-                        <span className="text-2xl text-blueish font-vb text-center">{course.shortname}</span>
-                        <span className="my-4 text-center" dir="rtl">{course.teacherName}</span>
-                        <a href={course.courseUrl} className="w-5/6 py-2 bg-golden text-center font-vb text-dark-green rounded-full">لینک درس</a>
-                    </div>
-                );
-            })
-        }
+    changePanel = panel => {
+        history.push(this.props.match.url + '/' + panel)
     }
 
     render() {
-        if (this.state.loading) return <Loading />;
-        if (this.state.error || !this.props.user.category) return (
-            <div className="w-screen h-screen flex justify-center items-center">
-                <button onClick={this.getInfo}>تلاش مجدد</button>
-            </div>
-        )
+        const { userInformation } = this.props.user
         return (
-            <div className="w-screen min-h-screen bg-light-white flex flex-col justify-center items-center">
-                <div className="w-full my-2 flex md:flex-row flex-col justify-center md:items-stretch items-center">
-                    <div className="w-5/6 p-8 flex flex-row flex-wrap justify-evenly items-center max-w-600 mx-2 md:my-0 my-2 rounded-lg bg-white">
-                        <div className="w-1/2 my-4 min-w-90">
-                            <div className="flex flex-col justify-center items-center">
-                                <span className="text-xl text-center text-blueish font-vb">نام</span>
-                                <span className="text-center">{this.props.user.userInformation.firstName}</span>
-                            </div>
-                        </div>
-                        <div className="w-1/2 my-4 min-w-90">
-                            <div className="flex flex-col justify-center items-center">
-                                <span className="text-xl text-center text-blueish font-vb">نام خانوادگی</span>
-                                <span className="text-center">{this.props.user.userInformation.lastName}</span>
-                            </div>
-                        </div>
-                        <div className="w-1/2 my-4 min-w-90">
-                            <div className="flex flex-col justify-center items-center">
-                                <span className="text-xl text-center text-blueish font-vb">کد ملی</span>
-                                <span className="text-center">{this.props.user.userInformation.melliCode}</span>
-                            </div>
-                        </div>
-                        <div className="w-1/2 my-4 min-w-90">
-                            <div className="flex flex-col justify-center items-center">
-                                <span className="text-xl text-center text-blueish font-vb">شماره همراه</span>
-                                <span className="text-center">{this.props.user.userInformation.phoneNumber}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="w-5/6 flex flex-col justify-center items-center max-w-300o mx-2 md:my-0 my-2 rounded-lg bg-blueish">
-                        <span className="text-4xl text-white my-2">مقطع</span>
-                        <span className="text-2xl text-white my-2">{this.props.user.category ? this.props.user.category.name : 'ندارد'}</span>
-                        <div onClick={() => this.props.logout()} data-tip="خروج">
-                            {logoutIcon("w-8 h-8 mx-1 text-white cursor-pointer transition-all duration-200 hover:text-red-900")}
-                        </div>
-                    </div>
-                </div>
-                <div className="w-5/6 my-2 p-4 flex flex-row flex-wrap justify-center">
-                    {this.renderCourses()}
+            <div className="w-screen min-h-screen bg-light-white">
+                <Sidebar
+                    showSidebar={this.state.showSidebar}
+                    toggle={this.toggle}
+                    changePanel={this.changePanel}
+                    active={this.state.active}
+                >
+                    <SidebarOption
+                        title="داشبورد"
+                        icon={dashboard}
+                        changePanel={this.changePanel}
+                        term="dashboard"
+                        active={this.state.active}
+                    />
+
+                    <SidebarOption
+                        title="دروس"
+                        icon={courses}
+                        changePanel={this.changePanel}
+                        term="courses"
+                        active={this.state.active}
+                    />
+
+                    <SidebarOption
+                        title="گزارش"
+                        icon={chart}
+                        changePanel={this.changePanel}
+                        term="report"
+                        active={this.state.active}
+                    />
+
+                    <SidebarOption
+                        title="برنامه کلاسی"
+                        icon={classPlan}
+                        changePanel={this.changePanel}
+                        term="courseSchedule"
+                        active={this.state.active}
+                    />
+
+                    <SidebarOption
+                        title="برنامه امتحانی"
+                        icon={quizPlan}
+                        changePanel={this.changePanel}
+                        term="examSchedule"
+                        active={this.state.active}
+                    />
+
+                    <SidebarOption
+                        title="تقویم"
+                        icon={calendar}
+                        changePanel={this.changePanel}
+                        term="calendar"
+                        active={this.state.active}
+                    />
+                </Sidebar>
+
+                <div className="xl:w-5/6 w-full xl:px-8 px-4">
+                    <Header user={this.props.user.userInformation} />
+
+                    <Route path={this.props.match.url  + '/dashboard'} component={protectedStudent(Home)} />
+                    <Route path={this.props.match.url  + '/courses'} component={protectedStudent(Courses)} />
                 </div>
             </div>
         );
@@ -93,11 +100,8 @@ class Dashboard extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.auth.userInfo,
-        userCat: state.userInfo.userCat,
-        courses: state.userInfo.courses,
-        error: state.userInfo.error
+        user: state.auth.userInfo
     }
 }
 
-export default connect(mapStateToProps, { getCoursesInCat, getUserCat, logout })(Dashboard);
+export default connect(mapStateToProps)(Dashboard);

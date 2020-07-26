@@ -4,13 +4,19 @@ export const loading = (styles) => {
     return (
         <svg
             className={`${styles} fill-current`}
-            xmlns="http://www.w3.org/2000/svg"
-            version="1.0" viewBox="0 0 128 128">
-            <circle cx="64" cy="64" r="12"/>
-            <g><circle cx="108.5" cy="89.75" r="12.5" />
-            <circle cx="108.5" cy="89.75" r="12.5" transform="rotate(180 64 64)"/>
-            <animateTransform attributeName="transform" type="rotate" from="0 64 64" to="180 64 64" dur="1080ms" repeatCount="indefinite">
-            </animateTransform></g>
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+            <rect x="17.5" y="27" width="15" height="46">
+                <animate attributeName="y" repeatCount="indefinite" dur="0.9345794392523364s" calcMode="spline" keyTimes="0;0.5;1" values="15.5;27;27" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" begin="-0.18691588785046728s"/>
+                <animate attributeName="height" repeatCount="indefinite" dur="0.9345794392523364s" calcMode="spline" keyTimes="0;0.5;1" values="69;46;46" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" begin="-0.18691588785046728s"/>
+            </rect>
+            <rect x="42.5" y="27" width="15" height="46">
+                <animate attributeName="y" repeatCount="indefinite" dur="0.9345794392523364s" calcMode="spline" keyTimes="0;0.5;1" values="18.375;27;27" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" begin="-0.09345794392523364s"/>
+                <animate attributeName="height" repeatCount="indefinite" dur="0.9345794392523364s" calcMode="spline" keyTimes="0;0.5;1" values="63.25;46;46" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" begin="-0.09345794392523364s"/>
+            </rect>
+            <rect x="67.5" y="27" width="15" height="46">
+                <animate attributeName="y" repeatCount="indefinite" dur="0.9345794392523364s" calcMode="spline" keyTimes="0;0.5;1" values="18.375;27;27" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"/>
+                <animate attributeName="height" repeatCount="indefinite" dur="0.9345794392523364s" calcMode="spline" keyTimes="0;0.5;1" values="63.25;46;46" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"/>
+            </rect>
         </svg>
     );
 }
@@ -430,6 +436,135 @@ export const error_outline = (styles) => {
             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M0 0h24v24H0V0z" fill="none"/>
             <path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+        </svg>
+    );
+}
+
+export const settings = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g><
+                path d="M0,0h24v24H0V0z" fill="none"/>
+                <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+            </g>
+        </svg>
+    );
+}
+
+export const dashboard = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">
+            <path id="Icon_material-dashboard" data-name="Icon material-dashboard" d="M4.5,24.5h16V4.5H4.5Zm0,16h16v-12H4.5Zm20,0h16v-20h-16Zm0-36v12h16V4.5Z" transform="translate(-4.5 -4.5)"/>
+        </svg>
+
+    );
+}
+
+export const courses = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 25.147">
+            <path id="Icon_metro-books" data-name="Icon metro-books" d="M9.906,8.571H3.619A1.051,1.051,0,0,0,2.571,9.619V32.671a1.051,1.051,0,0,0,1.048,1.048H9.906a1.051,1.051,0,0,0,1.048-1.048V9.619A1.051,1.051,0,0,0,9.906,8.571ZM8.858,14.858H4.667v-2.1H8.858v2.1ZM20.384,8.571H14.1a1.051,1.051,0,0,0-1.048,1.048V32.671A1.051,1.051,0,0,0,14.1,33.719h6.287a1.051,1.051,0,0,0,1.048-1.048V9.619a1.051,1.051,0,0,0-1.048-1.048Zm-1.048,6.287H15.145v-2.1h4.191Zm8.287-4.667L22.009,13.02a1.051,1.051,0,0,0-.464,1.407l9.429,18.715a1.051,1.051,0,0,0,1.407.464L38,30.778a1.051,1.051,0,0,0,.464-1.407L29.031,10.656a1.051,1.051,0,0,0-1.407-.464Zm5.334,22.479a1.048,1.048,0,1,1-1.048-1.048A1.048,1.048,0,0,1,32.958,32.671Z" transform="translate(-2.571 -8.571)" />
+        </svg>
+    );
+}
+
+export const chart = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 23.364">
+            <path id="Icon_material-show-chart" data-name="Icon material-show-chart" d="M5.7,31.629,16.5,20.811l7.2,7.2L39,10.8,36.462,8.265,23.7,22.611l-7.2-7.2L3,28.929Z" transform="translate(-3 -8.265)" />
+        </svg>
+    );
+}
+
+export const classPlan = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 34.286">
+            <path id="Icon_awesome-calendar-alt" data-name="Icon awesome-calendar-alt" d="M0,31.071a3.215,3.215,0,0,0,3.214,3.214H26.786A3.215,3.215,0,0,0,30,31.071V12.857H0ZM21.429,17.946a.806.806,0,0,1,.8-.8h2.679a.806.806,0,0,1,.8.8v2.679a.806.806,0,0,1-.8.8H22.232a.806.806,0,0,1-.8-.8Zm0,8.571a.806.806,0,0,1,.8-.8h2.679a.806.806,0,0,1,.8.8V29.2a.806.806,0,0,1-.8.8H22.232a.806.806,0,0,1-.8-.8Zm-8.571-8.571a.806.806,0,0,1,.8-.8h2.679a.806.806,0,0,1,.8.8v2.679a.806.806,0,0,1-.8.8H13.661a.806.806,0,0,1-.8-.8Zm0,8.571a.806.806,0,0,1,.8-.8h2.679a.806.806,0,0,1,.8.8V29.2a.806.806,0,0,1-.8.8H13.661a.806.806,0,0,1-.8-.8ZM4.286,17.946a.806.806,0,0,1,.8-.8H7.768a.806.806,0,0,1,.8.8v2.679a.806.806,0,0,1-.8.8H5.089a.806.806,0,0,1-.8-.8Zm0,8.571a.806.806,0,0,1,.8-.8H7.768a.806.806,0,0,1,.8.8V29.2a.806.806,0,0,1-.8.8H5.089a.806.806,0,0,1-.8-.8Zm22.5-22.232H23.571V1.071A1.075,1.075,0,0,0,22.5,0H20.357a1.075,1.075,0,0,0-1.071,1.071V4.286H10.714V1.071A1.075,1.075,0,0,0,9.643,0H7.5A1.075,1.075,0,0,0,6.429,1.071V4.286H3.214A3.215,3.215,0,0,0,0,7.5v3.214H30V7.5A3.215,3.215,0,0,0,26.786,4.286Z" />
+        </svg>
+    );
+}
+
+export const quizPlan = (styles) => {
+    return (
+    <svg
+        className={`${styles} fill-current`}
+        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33.6 33">
+        <g id="Icon_feather-check-circle" transform="translate(-1.497 -1.473)">
+        <g id="Path_8">
+        <path d="M18,34.5C18,34.5,18,34.5,18,34.5c-4.4,0-8.6-1.7-11.7-4.8S1.5,22.4,1.5,18S3.2,9.4,6.3,6.3
+        C9.5,3.2,13.6,1.5,18,1.5c0,0,0,0,0,0c2.3,0,4.6,0.5,6.7,1.4c0.8,0.3,1.1,1.2,0.8,2c-0.3,0.8-1.2,1.1-2,0.8
+        c-1.7-0.8-3.6-1.2-5.5-1.2c0,0,0,0,0,0C10.6,4.5,4.5,10.5,4.5,18c0,3.6,1.4,7,3.9,9.5c2.5,2.6,5.9,4,9.5,4c0,0,0,0,0,0
+        c3.6,0,7-1.4,9.5-3.9c2.6-2.5,4-5.9,4-9.5v-1.4c0-0.8,0.7-1.5,1.5-1.5s1.5,0.7,1.5,1.5V18c0,4.4-1.7,8.6-4.8,11.7
+        C26.5,32.8,22.4,34.5,18,34.5z"/>
+        </g>
+        <g id="Path_9">
+        <path d="M18,22.5c-0.4,0-0.8-0.2-1.1-0.4l-4.5-4.5c-0.6-0.6-0.6-1.5,0-2.1c0.6-0.6,1.5-0.6,2.1,0l3.4,3.4l13.9-14
+        c0.6-0.6,1.5-0.6,2.1,0c0.6,0.6,0.6,1.5,0,2.1l-15,15C18.8,22.4,18.4,22.5,18,22.5L18,22.5z"/>
+        </g>
+        </g>
+    </svg>
+);
+}
+
+export const calendar = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/>
+        </svg>
+    );
+}
+
+export const group = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM8 17.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM9.5 8c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5S9.5 9.38 9.5 8zm6.5 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+    );
+}
+
+export const teach = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 36">
+            <path id="Icon_awesome-chalkboard-teacher" data-name="Icon awesome-chalkboard-teacher" d="M14.625,24.75a1.609,1.609,0,0,0-.5.077,9.275,9.275,0,0,1-2.879.486,9.283,9.283,0,0,1-2.879-.486,1.6,1.6,0,0,0-.5-.077A7.876,7.876,0,0,0,0,32.669,3.366,3.366,0,0,0,3.375,36h15.75A3.366,3.366,0,0,0,22.5,32.669,7.876,7.876,0,0,0,14.625,24.75ZM11.25,22.5A6.75,6.75,0,1,0,4.5,15.75,6.75,6.75,0,0,0,11.25,22.5ZM41.625,0h-27A3.436,3.436,0,0,0,11.25,3.487V6.75A8.9,8.9,0,0,1,15.75,8V4.5H40.5V24.75H36v-4.5H27v4.5H21.639a8.961,8.961,0,0,1,2.791,4.5H41.625A3.436,3.436,0,0,0,45,25.763V3.487A3.436,3.436,0,0,0,41.625,0Z" transform="translate(0)"/>
+        </svg>
+    );
+}
+
+export const bell = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+        </svg>
+    );
+}
+
+export const assignment = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
         </svg>
     );
 }

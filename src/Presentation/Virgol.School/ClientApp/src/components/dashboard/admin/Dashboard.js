@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getManagers } from "../../../actions/managerActions";
 import TopCard from "./TopCard";
 import {edit, remove, school, students, teachers} from "../../../assets/icons";
 import ReactTooltip from "react-tooltip";
@@ -9,12 +8,6 @@ import Loading from "../../Loading";
 class Dashboard extends React.Component {
 
     state = { query: '', loading: false }
-
-    async componentDidMount() {
-        this.setState({loading: true})
-        await this.props.getManagers(this.props.auth.token)
-        this.setState({loading: false})
-    }
 
     handleSearch = (query) => {
         this.setState({ query })
@@ -112,4 +105,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, { getManagers })(Dashboard);
+export default connect(mapStateToProps)(Dashboard);

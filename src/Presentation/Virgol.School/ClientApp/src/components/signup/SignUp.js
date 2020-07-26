@@ -1,7 +1,8 @@
 import React from "react";
 import {connect} from "react-redux";
-import { getCatsForSignUp, getCatError } from "../../actions/userActions";
-import {fadeError, register} from "../../actions";
+import { register } from "../../_actions/authActions";
+import { getCatsForSignUp, getCatError } from "../../_actions/userActions";
+import {fadeError} from "../../_actions/managerActions";
 import { circle} from "../../assets/icons";
 import PersonalForm from "./PersonalForm";
 import EducationalForm from "./EducationalForm";
@@ -11,20 +12,20 @@ import lms from "../../apis/lms";
 
 class SignUp extends React.Component {
 
-    state = { cats: [], working: false }
+    state = {
+        page: 1,
+        selectedCategory: null,
+        cats: [],
+        working: false
+    }
 
     async componentDidMount() {
         try {
-            const response = await lms.get(`/api/Users/GetAllCategory`);
+            const response = await lms.get(`/Users/GetAllCategory`);
             this.setState({ cats: response.data })
         } catch (e) {
             this.props.getCatError()
         }
-    }
-
-    state = {
-        page: 1,
-        selectedCategory: null
     }
 
     nextPage = () => {
@@ -32,7 +33,7 @@ class SignUp extends React.Component {
     }
 
     previousPage = () => {
-        if (!(this.props.isThereLoading && this.props.loadingComponent === 'register')) {
+        if (!this.state.working) {
             this.setState({ page: this.state.page - 1 })
         }
     }
@@ -86,7 +87,7 @@ class SignUp extends React.Component {
                 >
                             Error message
                 </span>
-                <div className="md:w-650 w-screen md:h-800 md:min-h-0 min-h-screen bg-white md:rounded-lg rounded-none flex flex-col justify-start">
+                <div className="md:w-900 w-screen md:h-500 md:min-h-0 min-h-screen bg-white md:rounded-lg rounded-none flex flex-col justify-start">
                    <div className="w-full py-4 flex flex-row-reverse justify-evenly">
                         <div className="flex md:flex-row-reverse flex-col justify-center items-center">
                             {circle(`w-6 h-6 ${this.state.page === 1 ? 'text-blueish' : 'text-grayish'}`)}
@@ -110,13 +111,4 @@ class SignUp extends React.Component {
 
 }
 
-const mapStateToProps = (state) => {
-    return {
-        isThereLoading: state.loading.isThereLoading,
-        loadingComponent: state.loading.loadingComponent,
-        isThereError: state.error.isThereError,
-        errorMessage: state.error.errorMessage
-    }
-}
-
-export default connect(mapStateToProps, {register, fadeError, getCatsForSignUp, getCatError})(SignUp);
+export default connect(null, {register, fadeError, getCatsForSignUp, getCatError})(SignUp);

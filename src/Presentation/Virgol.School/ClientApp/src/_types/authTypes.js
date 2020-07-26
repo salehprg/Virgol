@@ -1,0 +1,9 @@
+export const LOGIN = 'LOGIN';
+export const REGISTER = 'REGISTER';
+export const LOGOUT = 'LOGOUT';
+export const USER_STATUS = 'USER_STATUS';
+export const REMOVE_STATUS = 'REMOVE_STATUS';
+export const SEND_CODE = 'SEND_CODE';
+export const FADE_SEND_CODE = 'FADE_SEND_CODE';
+export const FORGOT_PASS_OK = 'FORGOT_PASS_OK';
+export const FORGOT_PASS_OK_FADE = 'FORGOT_PASS_OK_FADE';

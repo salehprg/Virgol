@@ -5,7 +5,7 @@ import {face, loading, person, phone} from "../../assets/icons";
 
 const renderTextBoxes = ({ input, meta, placeholder, icon, dir }) => {
     return (
-        <div className={`w-5/6 mx-2 max-w-300o flex px-1 flex-row py-3 my-3 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
+        <div className={`w-5/6 mx-2 max-w-300 flex px-1 flex-row py-3 my-3 items-center border ${meta.error && meta.touched ? 'border-red-600' : 'border-golden'}`}>
             <span className={`bg-red-600 text-white text-sm px-3 py-1 ${meta.touched && meta.error ? 'block' : 'hidden'}`}>نامعتبر</span>
             <input
                 {...input}

@@ -55,7 +55,7 @@
 - Renamed `App/App.jsx` to `Dashboard/Dashboard.jsx`
 - Renamed `src/routes/app.jsx` to `src/routes/dashboard.jsx`
 - Renamed `appRoutes` to `dashboardRoutes`
-- Added `src/routes/index.jsx` and made the routes in `src/index.js` dynamically based on `indexRoutes` from `src/routes/index.jsx` (users can now make new layouts and routes for them easier)
+- Added `src/routes/index.jsx` and made the routes in `src/managerActions.js` dynamically based on `indexRoutes` from `src/routes/index.jsx` (users can now make new layouts and routes for them easier)
 ### Removed dependencies/components
 - `google-maps-react@1.1.0`
 - `react-router@4.1.2`
