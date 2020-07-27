@@ -2,6 +2,7 @@ import history from "../history";
 import lms from "../apis/lms";
 import { alert } from "./alerts";
 import * as Type from '../_types/managerTypes'
+import {START_WORKING, STOP_WORKING} from "../_types/workingTypes";
 
 export const confirmUser = (token, id) => async dispatch => {
 
@@ -121,15 +122,19 @@ export const getCatCourses = (token, id) => async dispatch => {
 export const addNewCategory = (token, formValues) => async dispatch => {
 
     try {
+        dispatch({ type: START_WORKING })
         const response = await lms.put("/Manager/AddNewCategory", formValues ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.success("مقطع جدید افزوده شد"))
         dispatch({ type: Type.ADD_NEW_CATEGORY, payload: response.data });
     } catch (e) {
+        console.log(e.response)
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا در افزودن مقطع"))
     }
 

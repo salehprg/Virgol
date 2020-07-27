@@ -14,6 +14,7 @@ module.exports = {
         'grayish' : '#707070',
         'green': '#5E945A',
         'green-light': '#B0D4AE',
+        'green-light2': '#82AD7F',
         'purple': '#7536C0',
         'light-purple': '#8E5DCA',
         'sky': '#0ABDE3',
@@ -52,10 +53,12 @@ module.exports = {
       minWidth: {
         '90' : '90px',
         '120' : '120px',
+        '200' : '200px',
         '250' : '250px',
         '300' : '300px',
         '400' : '400px',
         '500' : '500px',
+        '700' : '700px',
       },
       minHeight: {
         '90' : '90px',

@@ -16,7 +16,12 @@ class Dashboard extends React.Component {
 
     componentDidMount() {
         if (window.innerWidth > 1280) this.setState({ showSidebar: true })
-        this.setState({ active: this.props.location.pathname.split('/')[2] })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.active !== this.props.location.pathname.split('/')[2]) {
+            this.setState({ active: this.props.location.pathname.split('/')[2] })
+        }
     }
 
     toggle = () => {
@@ -104,4 +109,5 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(Dashboard);
+const authWrapped = protectedStudent(Dashboard)
+export default connect(mapStateToProps)(authWrapped);

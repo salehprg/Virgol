@@ -3,27 +3,15 @@ import { Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import history from "../history";
 import {alert} from "../_actions/alerts";
-import protectedManager from "./protectedRoutes/protectedManager";
-import protectedStatus from "./protectedRoutes/protectedStatus";
-import protectedStudent from "./protectedRoutes/protectedStudent";
-import protectedAdmin from "./protectedRoutes/protectedAdmin";
 import Alert from "./Alert";
 import Login from './login/Login';
 import SignUp from "./signup/SignUp";
 import Status from "./status/Status";
 import NoFound from "./NoFound";
 import ManagerDashboard from "./dashboard/manager/Dashboard";
-import ShowCourse from "./dashboard/manager/course/ShowCourse";
-import AddTeacher from "./dashboard/manager/teachers/AddTeacher";
-import AddTeacherByExcel from "./dashboard/manager/teachers/AddTeacherByExcel";
-import TeacherInfo from "./dashboard/manager/teachers/TeacherInfo";
-import ShowCat from "./dashboard/manager/category/ShowCat";
-import StudentInfo from "./dashboard/manager/students/StudentInfo";
-import AddStudents from "./dashboard/manager/students/AddStudents";
-import Confirm from "./dashboard/manager/home/Confirm";
 import StudentDashboard from "./dashboard/student/Dashboard";
-import AdminDashboard from './dashboard/admin/Dashboard';
-import Loading from "./Loading";
+import Working from "./Working";
+import CategoryInfo from "./dashboard/manager/category/CategoryInfo";
 
 class App extends React.Component {
 
@@ -42,38 +30,19 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="font-vr">
+            <div className="font-vr overflow-x-hidden">
                 {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
+                {this.props.working ? <Working /> : null}
                 <Router history={history}>
                     <Switch>
                         <Route path="/" exact component={Login} />
                         <Route path="/SignUp" exact component={SignUp} />
-                        <Route path="/status" exact component={protectedStatus(Status)} />
-                        <Route path="/m" component={protectedManager(ManagerDashboard)} />
-                        <Route path="/s" component={protectedStudent(StudentDashboard)} />
+                        <Route path="/status" exact component={Status} />
+                        <Route path="/m" component={ManagerDashboard} />
+                        <Route path="/category/:id" component={CategoryInfo} />
+                        <Route path="/s" component={StudentDashboard} />
                         <Route path="" component={NoFound} />
                     </Switch>
-                    {/*<Switch>*/}
-                    {/*    <Route path="/" exact component={Login} />*/}
-                    {/*    <Route path="/SignUp" exact component={SignUp} />*/}
-                    {/*    <Route path="/status" exact component={protectedStatus(Status)} />*/}
-
-                    {/*    <Route path="/m/dashboard" exact component={protectedManager(ManagerDashboard)} />*/}
-                    {/*    <Route path="/m/cat/:id" exact component={protectedManager(ShowCat)} />*/}
-                    {/*    <Route path="/m/course/:id" exact component={protectedManager(ShowCourse)} />*/}
-                    {/*    <Route path="/m/teacher/:id" exact component={protectedManager(TeacherInfo)} />*/}
-                    {/*    <Route path="/m/addTeacher" exact component={protectedManager(AddTeacher)} />*/}
-                    {/*    <Route path="/m/addTeacherByExcel" exact component={protectedManager(AddTeacherByExcel)} />*/}
-                    {/*    <Route path="/m/student/:id" exact component={protectedManager(StudentInfo)} />*/}
-                    {/*    <Route path="/m/addStudents" exact component={protectedManager(AddStudents)} />*/}
-                    {/*    <Route path="/m/confirm/:id" exact component={protectedManager(Confirm)} />*/}
-
-                    {/*    <Route path="/s/dashboard" exact component={protectedStudent(StudentDashboard)} />*/}
-
-                    {/*    <Route path="/a/dashboard" exact component={protectedAdmin(AdminDashboard)} />*/}
-
-                    {/*    <Route path="" component={NoFound} />*/}
-                    {/*</Switch>*/}
                 </Router>
             </div>
         );
@@ -83,7 +52,8 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        alert: state.alert
+        alert: state.alert,
+        working: state.worker.working
     };
 }
 

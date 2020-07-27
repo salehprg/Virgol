@@ -8,6 +8,9 @@ import protectedManager from "../../protectedRoutes/protectedManager";
 import SidebarOption from "../sidebar/SidebarOption";
 import history from "../../../history";
 import Header from "../Header";
+import Categories from "./category/Categories";
+import Teachers from "./teachers/Teachers";
+import Students from "./students/Students";
 
 class Dashboard extends React.Component {
 
@@ -15,7 +18,12 @@ class Dashboard extends React.Component {
 
     componentDidMount() {
         if (window.innerWidth > 1280) this.setState({ showSidebar: true })
-        this.setState({ active: this.props.location.pathname.split('/')[2] })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.active !== this.props.location.pathname.split('/')[2]) {
+            this.setState({ active: this.props.location.pathname.split('/')[2] })
+        }
     }
 
     toggle = () => {
@@ -76,10 +84,13 @@ class Dashboard extends React.Component {
                     />
                 </Sidebar>
 
-                <div className="xl:w-5/6 w-full xl:px-8 px-4">
+                <div className="xl:w-5/6 w-full pb-16 xl:px-8 px-4">
                     <Header user={this.props.user.userInformation} />
 
-                    <Route path={this.props.match.url + "/dashboard"} component={protectedManager(Home)} />
+                    <Route path={this.props.match.url + "/dashboard"} component={Home} />
+                    <Route path={this.props.match.url + "/categories"} component={Categories} />
+                    <Route path={this.props.match.url + "/teachers"} component={Teachers} />
+                    <Route path={this.props.match.url + "/students"} component={Students} />
                 </div>
             </div>
         );
@@ -91,4 +102,5 @@ const mapStateToProps = state => {
     return { user: state.auth.userInfo }
 }
 
-export default connect(mapStateToProps)(Dashboard);
+const authWrapped = protectedManager(Dashboard)
+export default connect(mapStateToProps)(authWrapped);

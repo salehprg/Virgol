@@ -9,7 +9,7 @@ class Sidebar extends React.Component {
 
     render() {
         return (
-            <div className={`xl:w-1/6 ${this.props.showSidebar ? 'w-5/6' : 'w-0'} xl:max-w-full max-w-250 h-screen fixed top-0 right-0 transition-all duration-700 ease-in-out bg-white`}>
+            <div className={`xl:w-1/6 z-40 ${this.props.showSidebar ? 'w-5/6' : 'w-0'} xl:max-w-full max-w-250 h-screen fixed top-0 right-0 transition-all duration-700 ease-in-out bg-white`}>
                 <div onClick={this.props.toggle} className="xl:hidden block absolute show-sidebar-pos cursor-pointer">
                     {this.props.showSidebar ? clear('w-8') : headline("w-8")}
                 </div>

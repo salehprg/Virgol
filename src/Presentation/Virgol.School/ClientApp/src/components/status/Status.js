@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux';
 import {Link} from "react-router-dom";
 import { removeStatus } from "../../_actions/authActions";
+import protectedStatus from "../protectedRoutes/protectedStatus";
 
 class Status extends React.Component {
 
@@ -37,4 +38,5 @@ const mapStateToProp = state => {
     return { user: state.auth.status }
 }
 
-export default connect(mapStateToProp, { removeStatus })(Status);
+const authWrapped = protectedStatus(Status)
+export default connect(mapStateToProp, { removeStatus })(authWrapped);

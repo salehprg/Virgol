@@ -6,7 +6,7 @@ import {add, loading, person} from "../../../../assets/icons";
 import history from "../../../../history";
 import Modal from "../../../modal/Modal";
 
-class ShowCat extends React.Component {
+class CategoryInfo extends React.Component {
 
     state = {
         name: '',
@@ -253,4 +253,4 @@ const mapStateToProps = (state, myProps) => {
     }
 }
 
-export default connect(mapStateToProps, { getCatCourses, editCategory, addCoursesToCat,wipeCatInfo, deleteCategory, getAllCourses, editCourse, deleteCourseFromCat })(ShowCat);
+export default connect(mapStateToProps, { getCatCourses, editCategory, addCoursesToCat,wipeCatInfo, deleteCategory, getAllCourses, editCourse, deleteCourseFromCat })(CategoryInfo);

@@ -1,4 +1,5 @@
 import React from "react";
+import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class Home extends React.Component {
 
@@ -12,4 +13,4 @@ class Home extends React.Component {
 
 }
 
-export default Home;
+export default protectedManager(Home);

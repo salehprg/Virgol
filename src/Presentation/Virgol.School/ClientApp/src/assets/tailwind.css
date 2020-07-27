@@ -28,7 +28,14 @@
 
 .grid-courses {
     grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
-    justify-content: right;
+    justify-content: center;
+    direction: rtl;
+}
+
+.grid-categories {
+    grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
+    grid-gap: 20px;
+    justify-content: center;
     direction: rtl;
 }
 
@@ -36,8 +43,15 @@
     transition: max-height 1s ease-out;
 }
 
+.category:hover > .category-reveal {
+    height: 0;
+    transition: height 0.5s ease;
+}
+
 .addCat {
-    background-image: url("/yellow.jpg");
+    background-image: url("/Sun-Tornado.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .addCourse {

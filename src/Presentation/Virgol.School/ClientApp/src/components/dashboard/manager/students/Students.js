@@ -1,138 +1,125 @@
-import React from "react";
-import { getAllStudents, addNewTeacher, fadeError, deleteTeacher } from "../../../../_actions/managerActions";
-import {
-    addPerson,
-    clear, edit,
-    errorOutline, excel,
-    loading
-} from "../../../../assets/icons";
-import {reduxForm} from "redux-form";
-import {connect} from "react-redux";
-import Modal from "../../../modal/Modal";
+import React from 'react';
+import { connect } from 'react-redux';
+import { getAllStudents } from "../../../../_actions/managerActions";
+import SearchBar from "../../SearchBar";
+import {loading} from "../../../../assets/icons";
+import protectedManager from "../../../protectedRoutes/protectedManager";
+import Table from "../../table/Table";
+import Checkbox from "../../table/Checkbox";
 import history from "../../../../history";
-import ReactTooltip from "react-tooltip";
 
 class Students extends React.Component {
 
-    state = {
-        query: '',
-        addTeacherState: null,
-        showTeacherCourses: false,
-        excel: null,
-        renderAddTeacherModal: false
+    state = { loading: false, searchQuery: '', selectedItems: [] }
+
+    async componentDidMount() {
+        if (this.props.history.action === 'POP') {
+            this.setState({loading: true})
+            await this.props.getAllStudents(this.props.user.token);
+            this.setState({loading: false})
+        }
     }
 
-    componentDidMount() {
-        this.props.getAllStudents(this.props.auth.token);
+    search = (query) => {
+        this.setState({ searchQuery: query })
+    }
+
+    renderContent = () => {
+        if (!this.props.students) return null;
+        if (this.props.students.length === 0) return (
+            <span className="text-2xl text-grayish block text-center">هیچ مقطعی وجود ندارد</span>
+        );
+        return (
+            <div className="w-full mt-12">
+                <Table
+                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'شماره همراه', 'تاریخ ایجاد', 'آخرین ویرایش']}
+                    selected={this.state.selectedItems}
+                    checkAll={this.checkAll}
+                    clearItems={this.clearItems}
+                >
+                    {this.renderStudents()}
+                </Table>
+            </div>
+        );
+    }
+
+    filterStudent = (student) => {
+        if (student.firstName) {
+            if (student.firstName.includes(this.state.searchQuery)) return true
+        }
+        if (student.lastName) {
+            if (student.lastName.includes(this.state.searchQuery)) return true
+        }
+        if (student.melliCode) {
+            if (student.melliCode.includes(this.state.searchQuery)) return true
+        }
+        if (student.phoneNumber) {
+            if (student.phoneNumber.includes(this.state.searchQuery)) return true
+        }
+
+        return false
     }
 
     renderStudents = () => {
-
-        const { students } = this.props;
-
-        if (students !== null) {
-            if (students.length === 0) {
+        return this.props.students.map(student => {
+            if (this.filterStudent(student)) {
                 return (
-                    <div className="w-full flex-grow flex flex-col justify-center items-center">
-                        {errorOutline("w-24 h-24 text-blueish")}
-                        <span className="text-xl mt-4 text-dark-blue">هیچ دانش آموزی وجود ندارد</span>
-                    </div>
-                );
-            } else {
-                const studentCards = students.map((student) => {
-                    if (student.firstName.includes(this.state.query) || student.lastName.includes(this.state.query)) {
-                        return (
-                            <tr key={student.id}>
-                                <td className="py-2">{student.firstName}</td>
-                                <td className="py-2">{student.lastName}</td>
-                                <td className="py-2">{student.melliCode}</td>
-                                <td className="py-2">{student.phoneNumber}</td>
-                            </tr>
-                        );
-                    }
-                })
-
-                return (
-                    <table dir="rtl" className="table-auto w-5/6 text-center">
-                        <thead>
-                        <tr className="border-b-2 border-blueish">
-                            <th className="px-8 py-2">نام</th>
-                            <th className="px-8 py-2">نام خانوادگی</th>
-                            <th className="px-8">کد ملی</th>
-                            <th className="px-8">شماره همراه</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {studentCards}
-                        </tbody>
-                    </table>
+                    <tr key={student.id} className="text-center">
+                        <td className="py-4">
+                            <div className="flex justify-center items-center">
+                                <Checkbox checked={this.state.selectedItems.includes(student.id)} itemId={student.id} check={this.checkItem} uncheck={this.uncheckItem} />
+                            </div>
+                        </td>
+                        <td>{student.firstName}</td>
+                        <td>{student.lastName}</td>
+                        <td>{student.melliCode}</td>
+                        <td>{student.phoneNumber}</td>
+                        <td>1399/5/5</td>
+                        <td>1399/4/6</td>
+                    </tr>
                 );
             }
-        }
-
-        return loading("w-16 h-16 text-blueish")
-
+        })
     }
 
-    handleSearch = query => {
-        this.setState({ query })
+    checkItem = (id) => {
+        this.setState({ selectedItems: [...this.state.selectedItems, id] })
+    }
+
+    uncheckItem = (id) => {
+        this.setState({ selectedItems: this.state.selectedItems.filter(el => el !== id)})
+    }
+
+    checkAll = () => {
+        this.setState({ selectedItems: this.props.students.map(student => student.id) })
+    }
+
+    clearItems = () => {
+        this.setState({ selectedItems: [] })
     }
 
     render() {
+        if (this.state.loading) return <div className="flex justify-center items-center">{loading("w-16 text-grayish")}</div>
         return (
-            <div className="w-full h-full pt-12 flex md:flex-row flex-col md:items-start items-center justify-end">
-                <ReactTooltip />
-                <div className="w-11/12 max-h-screen md:mb-12 mb-0 md:order-12 order-1 flex flex-col items-end">
-                    <div className="w-full mb-2 flex flex-row-reverse justify-start items-center">
-                        <input
-                            className="md:w-1/3 w-1/2 mb-2 px-4 py-1 rounded-lg text-right text-grayish focus:outline-none focus:shadow-outline"
-                            type="text"
-                            placeholder="جست و جو"
-                            value={this.state.query}
-                            onChange={(e) => this.handleSearch(e.target.value)}
-                        />
-                        <button
-                            onClick={() => history.push('/m/addStudents')}
-                            className="mx-8 px-8 py-2 rounded-lg border-2 border-blueish font-vb text-blueish focus:outline-none focus:shadow-outline hover:bg-blueish hover:text-white">
-                            افزودن دانش آموز
-                        </button>
-                    </div>
-                    <div className="bg-white w-full min-h-75 flex flex-col py-2 justify-start items-center overflow-auto">
-                        <span className="font-vb text-blueish text-2xl mb-8">دانش آموزان</span>
-                        {this.renderStudents()}
-                    </div>
+            <div className="w-full">
+                <div className="w-full flex xl:flex-row-reverse flex-col justify-start items-center">
+                    <SearchBar
+                        value={this.state.searchQuery}
+                        search={this.search}
+                    />
+                    <button onClick={() => history.push('/addStudents')} className="py-1 px-8 xl:my-0 my-4 mx-4 bg-magneta rounded-full text-white focus:outline-none focus:shadow-outline">دانش آموزان جدید</button>
                 </div>
+
+                {this.renderContent()}
             </div>
         );
     }
 
 }
 
-const validate = (formValues) => {
-    const errors = {}
-
-    if (!formValues.firstName) errors.firstName = true;
-    if (!formValues.lastName) errors.lastName = true;
-    if (!formValues.melliCode) errors.melliCode = true;
-    if (!formValues.phoneNumber) errors.phoneNumber = true;
-
-    return errors;
+const mapStateToProps = state => {
+    return { user: state.auth.userInfo, students: state.managerData.students }
 }
 
-const formWrapped = reduxForm({
-    form: 'addTeacher',
-    validate
-})(Students);
-
-const mapStateToProps = (state) => {
-    return {
-        auth: state.auth.userInfo,
-        students: state.managerData.students,
-        isThereError: state.error.isThereError,
-        errorMessage: state.error.errorMessage,
-        isThereLoading: state.loading.isThereLoading,
-        loadingComponent: state.loading.loadingComponent
-    }
-}
-
-export default connect(mapStateToProps, { getAllStudents, addNewTeacher, fadeError, deleteTeacher })(formWrapped);
+const authWrapped = protectedManager(Students)
+export default connect(mapStateToProps, { getAllStudents })(authWrapped);
