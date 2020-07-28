@@ -135,7 +135,7 @@ class Login extends React.Component {
                 </div>
 
                 <div className="md:w-1/4 w-5/6 md:min-w-400 h-500 order-1 md:order-2 rounded-lg bg-white flex flex-col mt-8 md:mt-0 md:ml-24 justify-between py-8 items-center">
-                    <img className="w-1/4 mb-12" alt="placeholder logo" src="/logo192.png" />
+                    <img className="w-1/2 mb-12" alt="placeholder logo" src="/logov.jpg" />
                     {this.renderContent()}
                 </div>
                 <span
