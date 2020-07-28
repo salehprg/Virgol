@@ -140,7 +140,7 @@ namespace lms_with_moodle.Helper
             }
         }
 
-        public bool DeleteEntry(int IdNumber)
+        public bool DeleteEntry(string IdNumber)
         {
             try
             {

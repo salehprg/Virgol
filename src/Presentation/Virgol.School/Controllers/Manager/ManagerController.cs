@@ -152,6 +152,32 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> DeleteStudents([FromBody]List<int> studentIds)
+        {
+            try
+            {
+                MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
+
+                foreach (int studentId in studentIds)
+                {
+                    UserModel student = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
+
+                    await myUserManager.DeleteUser(student);
+                    
+                }
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost]
         [ProducesResponseType(typeof(List<string>), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -468,17 +494,22 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> DeleteTeacher(int teacherId)
+        public async Task<IActionResult> DeleteTeacher([FromBody]List<int> teacherIds)
         {
             try
             {
-                UserModel teacher = appDbContext.Users.Where(x => x.Id == teacherId).FirstOrDefault();
+                MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
 
-                await userManager.RemoveFromRoleAsync(teacher , "User");
-                await userManager.RemoveFromRoleAsync(teacher , "Teacher");
-                await userManager.DeleteAsync(teacher);
-            
-                appDbContext.SaveChanges();
+                foreach (int teacherId in teacherIds)
+                {
+                    UserModel teacher = appDbContext.Users.Where(x => x.Id == teacherId).FirstOrDefault();
+
+                    await myUserManager.DeleteUser(teacher);
+
+                    appDbContext.TeacherCourse.RemoveRange(appDbContext.TeacherCourse.Where(x => x.TeacherId == teacher.Id));
+                    appDbContext.SaveChanges();
+                    
+                }
 
                 return Ok(true);
             }
@@ -800,6 +831,7 @@ namespace lms_with_moodle.Controllers
                     CategoryDetail cateDetail = new CategoryDetail();
                     cateDetail.Id = cat.id;
                     cateDetail.Name = cat.name;
+                    cateDetail.CourseCount = cat.coursecount;
 
                     Categories.Add(cateDetail);
                 }

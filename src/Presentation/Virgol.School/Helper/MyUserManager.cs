@@ -1,7 +1,22 @@
+using System.Threading.Tasks;
+using lms_with_moodle.Helper;
+using Microsoft.AspNetCore.Identity;
+using Models.User;
 ///<summary>
 ///use this to Operate User in all Database in moodle , LDAP , SQL
 ///</summary>
 public class MyUserManager {
+    UserManager<UserModel> userManager;
+    MoodleApi moodleApi;
+    LDAP_db ldap;
+
+    public MyUserManager(UserManager<UserModel> _userManager , AppSettings appSettings)
+    {
+        userManager = _userManager;
+
+        moodleApi = new MoodleApi(appSettings);
+        ldap = new LDAP_db(appSettings);
+    }
     public bool CreateUser()
     {
         bool result = false;
@@ -14,10 +29,28 @@ public class MyUserManager {
 
         return result;
     }
-    public bool DeleteUser()
+    public async Task<bool> DeleteUser(UserModel user)
     {
-        bool result = false;
+        try
+        {
+            if(ldap.DeleteEntry(user.MelliCode))
+            {
+                await moodleApi.DeleteUser(user.Moodle_Id);
 
-        return result;
+                await userManager.RemoveFromRoleAsync(user , "User");
+                await userManager.RemoveFromRoleAsync(user , "Teacher");
+                await userManager.RemoveFromRoleAsync(user , "Admin");
+                await userManager.RemoveFromRoleAsync(user , "Manager");
+                await userManager.DeleteAsync(user);
+
+                return true;
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

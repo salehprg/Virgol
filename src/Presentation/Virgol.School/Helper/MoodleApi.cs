@@ -99,6 +99,30 @@ namespace lms_with_moodle.Helper
 
         }
 
+        public async Task<bool> DeleteUser(int userMoodleId)
+        {
+            try
+            {
+                string FunctionName = "core_user_delete_users";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+                string information = "&userids[0]=" + userMoodleId;
+                
+                data += information;
+
+                HttpResponseModel _response = await sendData(data);
+
+                return (_response.Code == HttpStatusCode.OK);
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+
+        }
+
 
         public async Task<int> GetUserId(string idNumber)
         {
