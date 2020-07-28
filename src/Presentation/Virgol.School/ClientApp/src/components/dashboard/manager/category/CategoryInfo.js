@@ -15,10 +15,10 @@ class CategoryInfo extends React.Component {
     state = { loading: false, confirm: null, showAddCourseModal: false, newName: '', changeName: false, showDeleteCat: false }
 
     async componentDidMount() {
-            // this.setState({loading: true})
-            // await this.props.getCatCourses(this.props.token, parseInt(this.props.match.params.id));
-            // await this.props.getAllCourses(this.props.token);
-            // this.setState({loading: false})
+            this.setState({loading: true})
+            await this.props.getCatCourses(this.props.token, parseInt(this.props.match.params.id));
+            await this.props.getAllCourses(this.props.token);
+            this.setState({loading: false})
     }
 
 
