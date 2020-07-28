@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Sidebar from "../sidebar/Sidebar";
 import history from "../../../history";
 import Home from "./home/Home";
@@ -8,7 +8,8 @@ import SidebarOption from "../sidebar/SidebarOption";
 import {bell, calendar, chart, classPlan, courses, dashboard, quizPlan} from "../../../assets/icons";
 import Courses from "./courses/Courses";
 import protectedStudent from "../../protectedRoutes/protectedStudent";
-import Header from "../Header";
+import Header from "../header/Header";
+import Pending from "../Pending";
 
 class Dashboard extends React.Component {
 
@@ -94,8 +95,11 @@ class Dashboard extends React.Component {
                 <div className="xl:w-5/6 w-full xl:px-8 px-4">
                     <Header user={this.props.user.userInformation} />
 
-                    <Route path={this.props.match.url  + '/dashboard'} component={protectedStudent(Home)} />
-                    <Route path={this.props.match.url  + '/courses'} component={protectedStudent(Courses)} />
+                    <Switch>
+                        <Route path={this.props.match.url  + '/dashboard'} component={protectedStudent(Home)} />
+                        <Route path={this.props.match.url  + '/courses'} component={protectedStudent(Courses)} />
+                        <Route path={this.props.match.url} component={protectedStudent(Pending)} />
+                    </Switch>
                 </div>
             </div>
         );

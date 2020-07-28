@@ -55,11 +55,15 @@
 }
 
 .addCourse {
-    background-image: url("/pencils.jpg");
+    background-image: url("/Rainbow-Vortex.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
-.addCourseInCourses {
-    background-image: url("/book.jpg");
+.addCourseToCat {
+    background-image: url("/Liquid-Cheese.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .teacherInfoBg {

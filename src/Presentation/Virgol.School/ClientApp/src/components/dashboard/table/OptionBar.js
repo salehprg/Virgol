@@ -1,5 +1,5 @@
 import React from 'react';
-import {clear, edit, remove} from "../../../assets/icons";
+import {clear} from "../../../assets/icons";
 
 const OptionBar = (props) => {
 
@@ -12,18 +12,7 @@ const OptionBar = (props) => {
                     <div onClick={props.clear} className="mx-2 cursor-pointer">
                         {clear("w-6 text-grayish")}
                     </div>
-                    <div className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
-                        {remove("w-6 mx-1 text-white")}
-                        <span className="font-vb mx-1 text-white">حذف</span>
-                    </div>
-                    {props.selectedItems.length === 1 ?
-                        <div className="flex justify-between items-center mx-1 cursor-pointer bg-grayish rounded-full md:px-6 px-3 py-1">
-                            {edit("w-6 mx-1 text-white")}
-                            <span className="font-vb mx-1 text-white">ویرایش</span>
-                        </div>
-                        :
-                        null
-                    }
+                    {props.options()}
                 </div>
             </div>
         </div>

@@ -19,12 +19,13 @@ class Courses extends React.Component {
         if (this.props.courses.length === 0) return (
             <span className="text-2xl text-grayish block text-center">شما هیچ درس فعالی ندارید</span>
         );
-        return this.props.courses.map(course => {
+        return this.props.courses.map((course, i) => {
             return (
                 <CourseCard
-                    name={course.name}
-                    teacher={course.teacherName}
-                    code={course.id}
+                    name={course.shortname}
+                    teacher={course.teacherName ? course.teacherName : 'نامشخص'}
+                    url={course.courseUrl}
+                    code={i}
                 />
             );
         })

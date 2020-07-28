@@ -7,17 +7,19 @@ import {START_WORKING, STOP_WORKING} from "../_types/workingTypes";
 export const confirmUser = (token, id) => async dispatch => {
 
     try {
+        dispatch({ type: START_WORKING })
         const response = await lms.post("/Manager/ConfirmUsers", [parseInt(id)],{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
+        dispatch({ type: STOP_WORKING })
         dispatch({ type: Type.CONFIRM, payload: id });
-        history.push("/m/dashboard")
         alert.success("دانش اموز تایید شد")
 
     } catch (e) {
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا در اتصال"))
     }
 }
@@ -25,14 +27,17 @@ export const confirmUser = (token, id) => async dispatch => {
 export const getNewUsers = token => async dispatch => {
 
     try {
+        dispatch({ type: START_WORKING })
         const response = await lms.get("/Manager/GetNewUsers", {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP_WORKING })
         dispatch({ type: Type.GET_NEW_USERS, payload: response.data });
     } catch (e) {
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا دربرقراری اتصال"))
     }
 
@@ -133,7 +138,6 @@ export const addNewCategory = (token, formValues) => async dispatch => {
         dispatch(alert.success("مقطع جدید افزوده شد"))
         dispatch({ type: Type.ADD_NEW_CATEGORY, payload: response.data });
     } catch (e) {
-        console.log(e.response)
         dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا در افزودن مقطع"))
     }
@@ -233,16 +237,19 @@ export const deleteCategory = (token, values) => async dispatch => {
 export const addNewCourse = (token, formValues) => async dispatch => {
 
     try {
+        dispatch({ type: START_WORKING })
         const response = await lms.put("/Manager/AddNewCourse", formValues ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.success("درس با موفقیت ایجاد شد"))
         dispatch({ type: Type.ADD_NEW_COURSE, payload: response.data });
 
     } catch (e) {
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا در افزودن درس"))
     }
 
@@ -252,16 +259,20 @@ export const addCoursesToCat = (token, courses, catId) => async dispatch => {
 
     try {
 
+        dispatch({ type: START_WORKING })
         const response = await lms.put(`/Manager/AddCoursesToCategory?CategoryId=${catId}`, courses ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.success("دروس با موفقیت افزوده شدند"))
         dispatch({ type: Type.ADD_COURSES_TO_CAT, payload: response.data });
 
     } catch (e) {
+        console.log(e.response)
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا در افزودن درس"))
     }
 
@@ -292,15 +303,18 @@ export const deleteCourse = (token, id) => async dispatch => {
 export const deleteCourseFromCat = (token, courseId, catId) => async dispatch => {
 
     try {
+        dispatch({ type: START_WORKING })
         const response = await lms.post(`/Manager/RemoveCourseFromCategory?courseId=${courseId}`, courseId, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.success("درس با موفقیت از این مقطع حذف شد"))
         dispatch({ type: Type.DELETE_COURSE_FROM_CAT, payload: courseId})
     } catch (e) {
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا در حذف درس"))
     }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import { connect } from 'react-redux';
-import { login, sendVerificationCode, forgotPassFade, sendCodeFade } from "../../_actions/authActions";
+import { login, logout, sendVerificationCode, forgotPassFade, sendCodeFade } from "../../_actions/authActions";
 import {Field, reduxForm} from "redux-form";
 import {fingerprint, lock, loading, heart, eye} from "../../assets/icons";
 import ForgotPassCode from "./ForgotPassCode";
@@ -9,6 +9,10 @@ import ForgotPassCode from "./ForgotPassCode";
 class Login extends React.Component {
 
     state = { loginLoading: false, sendCodeLoading: false, renderContent: "loginForm", passVisible: false }
+
+    componentDidMount() {
+        this.props.logout()
+    }
 
     goHome = () => {
         this.setState({ renderContent: 'loginForm' })
@@ -173,4 +177,4 @@ const formWrapped = reduxForm({
     validate
 })(Login);
 
-export default connect(mapStateToProps, {login, sendVerificationCode, sendCodeFade, forgotPassFade})(formWrapped);
+export default connect(mapStateToProps, {login, logout, sendVerificationCode, sendCodeFade, forgotPassFade})(formWrapped);

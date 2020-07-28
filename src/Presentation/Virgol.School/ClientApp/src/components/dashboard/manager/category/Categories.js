@@ -12,7 +12,7 @@ class Categories extends React.Component {
     state = { loading: false, showAddCategory: false, searchQuery: '' }
 
     async componentDidMount() {
-        if (this.props.history.action === 'POP') {
+        if (this.props.history.action === 'POP' || !this.props.categories) {
             this.setState({loading: true})
             await this.props.getAllCategory(this.props.user.token);
             this.setState({loading: false})

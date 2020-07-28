@@ -31,7 +31,7 @@ export const getUserCat = (token) => async dispatch => {
 
 }
 
-export const getCoursesInCat = (id, token) => async dispatch => {
+export const getCoursesInCat = (token, id) => async dispatch => {
 
     try {
         const response = await lms.get(`/Users/GetCoursesInCategory?CategoryId=${id}`, {

@@ -13,7 +13,7 @@ class Table extends React.Component {
     render() {
         return (
             <div className="w-full py-4 bg-white overflow-auto">
-                {this.props.selected.length !== 0 ? <OptionBar clear={this.props.clearItems} selectedItems={this.props.selected} /> : null}
+                {this.props.selected.length !== 0 ? <OptionBar options={this.props.options} clear={this.props.clearItems} selectedItems={this.props.selected} /> : null}
                 <table dir="rtl" className="table-auto w-full min-w-700">
                     <thead>
                         <tr>

@@ -2,18 +2,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getAllTeachers } from "../../../../_actions/managerActions";
 import SearchBar from "../../SearchBar";
-import {loading} from "../../../../assets/icons";
+import {edit, loading, remove} from "../../../../assets/icons";
 import protectedManager from "../../../protectedRoutes/protectedManager";
 import AddTeacherModal from "./AddTeacherModal";
 import Table from "../../table/Table";
 import Checkbox from "../../table/Checkbox";
+import history from "../../../../history";
 
 class Teachers extends React.Component {
 
     state = { loading: false, showAddTeacher: false, searchQuery: '', selectedItems: [] }
 
     async componentDidMount() {
-        if (this.props.history.action === 'POP') {
+        if (this.props.history.action === 'POP' || !this.props.teachers) {
             this.setState({loading: true})
             await this.props.getAllTeachers(this.props.user.token);
             this.setState({loading: false})
@@ -36,6 +37,25 @@ class Teachers extends React.Component {
                     selected={this.state.selectedItems}
                     checkAll={this.checkAll}
                     clearItems={this.clearItems}
+                    edit={(id) => history.push(`/teacher/${id}`)}
+                    options={() => {
+                        return (
+                            <React.Fragment>
+                                <div className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
+                                    {remove("w-6 mx-1 text-white")}
+                                    <span className="font-vb mx-1 text-white">حذف</span>
+                                </div>
+                                {this.state.selectedItems.length === 1 ?
+                                    <div onClick={() => history.push(`/teacher/${this.state.selectedItems[0]}`)} className="flex justify-between items-center mx-1 cursor-pointer bg-grayish rounded-full md:px-6 px-3 py-1">
+                                        {edit("w-6 mx-1 text-white")}
+                                        <span className="font-vb mx-1 text-white">ویرایش</span>
+                                    </div>
+                                    :
+                                    null
+                                }
+                            </React.Fragment>
+                        );
+                    }}
                 >
                     {this.renderTeachers()}
                 </Table>

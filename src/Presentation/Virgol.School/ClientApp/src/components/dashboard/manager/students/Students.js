@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getAllStudents } from "../../../../_actions/managerActions";
+import { getAllStudents, confirmUser } from "../../../../_actions/managerActions";
 import SearchBar from "../../SearchBar";
-import {loading} from "../../../../assets/icons";
+import {check, edit, loading, minus, remove, verified} from "../../../../assets/icons";
 import protectedManager from "../../../protectedRoutes/protectedManager";
 import Table from "../../table/Table";
 import Checkbox from "../../table/Checkbox";
@@ -10,10 +10,10 @@ import history from "../../../../history";
 
 class Students extends React.Component {
 
-    state = { loading: false, searchQuery: '', selectedItems: [] }
+    state = { loading: false, searchQuery: '', selectedItems: [], confirmItems: [], tab: 'verified' }
 
     async componentDidMount() {
-        if (this.props.history.action === 'POP') {
+        if (this.props.history.action === 'POP' || !this.props.students) {
             this.setState({loading: true})
             await this.props.getAllStudents(this.props.user.token);
             this.setState({loading: false})
@@ -30,15 +30,65 @@ class Students extends React.Component {
             <span className="text-2xl text-grayish block text-center">هیچ مقطعی وجود ندارد</span>
         );
         return (
-            <div className="w-full mt-12">
-                <Table
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'شماره همراه', 'تاریخ ایجاد', 'آخرین ویرایش']}
-                    selected={this.state.selectedItems}
-                    checkAll={this.checkAll}
-                    clearItems={this.clearItems}
-                >
-                    {this.renderStudents()}
-                </Table>
+            <div className="w-11/12 mx-auto mt-12">
+                <div className="w-full flex flex-row justify-end items-center">
+                    <button onClick={() => this.setState({ tab: 'pending' })} className={`${this.state.tab === 'pending' ? 'bg-magneta text-white' : 'bg-white'} shadow-2xl flex flex-row items-center py-1 px-4 rounded-t-xl focus:outline-none`}>
+                        <span className={`${this.props.newUsers.length === 0 ? 'hidden' : 'block'} w-6 h-6 mx-2 rounded-full flex justify-center items-center ${this.state.tab === 'pending' ? 'bg-white text-red-600' : 'bg-red-600 text-white'}`}>{this.props.newUsers.length}</span>
+                        دانش آموزان در انتظار تایید
+                    </button>
+                    <button onClick={() => this.setState({ tab: 'verified' })} className={`${this.state.tab === 'verified' ? 'bg-magneta text-white' : 'bg-white'} shadow-2xl py-1 px-4 ml-2 rounded-t-xl focus:outline-none`}>دانش آموزان تاییده شده</button>
+                </div>
+                {this.state.tab === 'verified' ?
+                    <Table
+                        headers={['نام', 'نام خانوادگی', 'کد ملی', 'شماره همراه']}
+                        selected={this.state.selectedItems}
+                        checkAll={this.checkAll}
+                        clearItems={this.clearItems}
+                        options={() => {
+                            return (
+                                <React.Fragment>
+                                    <div className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
+                                        {remove("w-6 mx-1 text-white")}
+                                        <span className="font-vb mx-1 text-white">حذف</span>
+                                    </div>
+                                    {this.state.selectedItems.length === 1 ?
+                                        <div onClick={() => history.push(`/student/${this.state.selectedItems[0]}`)} className="flex justify-between items-center mx-1 cursor-pointer bg-grayish rounded-full md:px-6 px-3 py-1">
+                                            {edit("w-6 mx-1 text-white")}
+                                            <span className="font-vb mx-1 text-white">ویرایش</span>
+                                        </div>
+                                        :
+                                        null
+                                    }
+                                </React.Fragment>
+                            );
+                        }}
+                    >
+                        {this.renderStudents()}
+                    </Table>
+                    :
+                    <Table
+                        headers={['نام', 'نام خانوادگی', 'کد ملی', 'شماره همراه', '']}
+                        selected={this.state.confirmItems}
+                        checkAll={this.confirmCheckAll}
+                        clearItems={this.confirmClearItems}
+                        options={() => {
+                            return (
+                                <React.Fragment>
+                                    <div className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
+                                        {minus("w-6 mx-1 text-white")}
+                                        <span className="font-vb mx-1 text-white">رد</span>
+                                    </div>
+                                    <div className="flex justify-between mx-1 cursor-pointer items-center bg-green rounded-full md:px-6 px-3 py-1">
+                                        {verified("w-6 mx-1 text-white")}
+                                        <span className="font-vb mx-1 text-white">تایید</span>
+                                    </div>
+                                </React.Fragment>
+                            );
+                        }}
+                    >
+                        {this.renderNewStudents()}
+                    </Table>
+                }
             </div>
         );
     }
@@ -64,7 +114,7 @@ class Students extends React.Component {
         return this.props.students.map(student => {
             if (this.filterStudent(student)) {
                 return (
-                    <tr key={student.id} className="text-center">
+                    <tr key={student.id} className={`text-center ${this.state.selectedItems.includes(student.id) ? 'bg-gray-200' : ''} hover:bg-gray-200`}>
                         <td className="py-4">
                             <div className="flex justify-center items-center">
                                 <Checkbox checked={this.state.selectedItems.includes(student.id)} itemId={student.id} check={this.checkItem} uncheck={this.uncheckItem} />
@@ -74,8 +124,31 @@ class Students extends React.Component {
                         <td>{student.lastName}</td>
                         <td>{student.melliCode}</td>
                         <td>{student.phoneNumber}</td>
-                        <td>1399/5/5</td>
-                        <td>1399/4/6</td>
+                    </tr>
+                );
+            }
+        })
+    }
+
+    renderNewStudents = () => {
+        return this.props.newUsers.map(user => {
+            if (this.filterStudent(user)) {
+                return (
+                    <tr key={user.id} className={`text-center ${this.state.confirmItems.includes(user.id) ? 'bg-gray-200' : ''} hover:bg-gray-200`}>
+                        <td className="py-4">
+                            <div className="flex justify-center items-center">
+                                <Checkbox checked={this.state.confirmItems.includes(user.id)} itemId={user.id} check={this.confirmCheckItem} uncheck={this.confirmUncheckItem} />
+                            </div>
+                        </td>
+                        <td>{user.firstName}</td>
+                        <td>{user.lastName}</td>
+                        <td>{user.melliCode}</td>
+                        <td>{user.phoneNumber}</td>
+                        <td>
+                            <div onClick={() => this.props.confirmUser(this.props.user.token, user.id)} className="flex justify-center items-center cursor-pointer">
+                                {check("w-8 text-grayish transition-all duration-300 hover:text-magneta")}
+                            </div>
+                        </td>
                     </tr>
                 );
             }
@@ -86,16 +159,32 @@ class Students extends React.Component {
         this.setState({ selectedItems: [...this.state.selectedItems, id] })
     }
 
+    confirmCheckItem = (id) => {
+        this.setState({ confirmItems: [...this.state.confirmItems, id] })
+    }
+
     uncheckItem = (id) => {
         this.setState({ selectedItems: this.state.selectedItems.filter(el => el !== id)})
+    }
+
+    confirmUncheckItem = (id) => {
+        this.setState({ confirmItems: this.state.confirmItems.filter(el => el !== id)})
     }
 
     checkAll = () => {
         this.setState({ selectedItems: this.props.students.map(student => student.id) })
     }
 
+    confirmCheckAll = () => {
+        this.setState({ confirmItems: this.props.newUsers.map(user => user.id) })
+    }
+
     clearItems = () => {
         this.setState({ selectedItems: [] })
+    }
+
+    confirmClearItems = () => {
+        this.setState({ confirmItems: [] })
     }
 
     render() {
@@ -118,8 +207,8 @@ class Students extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return { user: state.auth.userInfo, students: state.managerData.students }
+    return { user: state.auth.userInfo, students: state.managerData.students, newUsers: state.managerData.newUsers }
 }
 
 const authWrapped = protectedManager(Students)
-export default connect(mapStateToProps, { getAllStudents })(authWrapped);
+export default connect(mapStateToProps, { getAllStudents, confirmUser })(authWrapped);

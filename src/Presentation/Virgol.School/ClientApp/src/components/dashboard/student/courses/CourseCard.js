@@ -13,7 +13,7 @@ const CourseCard = (props) => {
     }
 
     const renderThumbnail = () => {
-        switch (props.code) {
+        switch (props.code % 4) {
             case 0: return <div className="w-16 h-16 flex justify-center items-center py-2 font-vb text-2xl rounded-xl text-white bg-green-light">{props.name[0]}</div>
             case 1: return <div className="w-16 h-16 flex justify-center items-center py-2 font-vb text-2xl rounded-xl text-white bg-light-purple">{props.name[0]}</div>
             case 2: return <div className="w-16 h-16 flex justify-center items-center py-2 font-vb text-2xl rounded-xl text-white bg-light-sky">{props.name[0]}</div>

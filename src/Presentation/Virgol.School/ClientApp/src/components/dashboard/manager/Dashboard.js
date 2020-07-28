@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
+import { getNewUsers } from "../../../_actions/managerActions";
 import Sidebar from "../sidebar/Sidebar";
 import { Route } from 'react-router-dom';
 import { courses, dashboard, group, teach, teachers } from "../../../assets/icons";
@@ -7,10 +8,11 @@ import Home from "./home/Home";
 import protectedManager from "../../protectedRoutes/protectedManager";
 import SidebarOption from "../sidebar/SidebarOption";
 import history from "../../../history";
-import Header from "../Header";
+import Header from "../header/Header";
 import Categories from "./category/Categories";
 import Teachers from "./teachers/Teachers";
 import Students from "./students/Students";
+import Courses from "./course/Courses";
 
 class Dashboard extends React.Component {
 
@@ -18,6 +20,9 @@ class Dashboard extends React.Component {
 
     componentDidMount() {
         if (window.innerWidth > 1280) this.setState({ showSidebar: true })
+        if (this.props.history.action === 'POP' || !this.props.newUsers) {
+            this.props.getNewUsers(this.props.user.token)
+        }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -84,11 +89,12 @@ class Dashboard extends React.Component {
                     />
                 </Sidebar>
 
-                <div className="xl:w-5/6 w-full pb-16 xl:px-8 px-4">
+                <div onClick={() => this.setState({ showNotif: false })} className="xl:w-5/6 w-full pb-16 xl:px-8 px-4">
                     <Header user={this.props.user.userInformation} />
 
                     <Route path={this.props.match.url + "/dashboard"} component={Home} />
                     <Route path={this.props.match.url + "/categories"} component={Categories} />
+                    <Route path={this.props.match.url + "/courses"} component={Courses} />
                     <Route path={this.props.match.url + "/teachers"} component={Teachers} />
                     <Route path={this.props.match.url + "/students"} component={Students} />
                 </div>
@@ -99,8 +105,8 @@ class Dashboard extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return { user: state.auth.userInfo }
+    return { user: state.auth.userInfo, newUsers: state.managerData.newUsers }
 }
 
 const authWrapped = protectedManager(Dashboard)
-export default connect(mapStateToProps)(authWrapped);
+export default connect(mapStateToProps, { getNewUsers })(authWrapped);

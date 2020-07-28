@@ -1,4 +1,5 @@
 import * as Type from '../_types/managerTypes'
+import { LOGOUT } from "../_types/authTypes";
 
 const INITIAL_STATE = {
     'newUsers' : null,
@@ -67,6 +68,9 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === Type.WIPE_CAT_INFO)
         return { ...state, catInfo: null }
+
+    if (action.type === LOGOUT)
+        return INITIAL_STATE
 
     return state;
 
