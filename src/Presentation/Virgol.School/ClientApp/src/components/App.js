@@ -16,6 +16,8 @@ import ShowCourse from "./dashboard/manager/course/ShowCourse";
 import TeacherInfo from "./dashboard/manager/teachers/TeacherInfo";
 import StudentInfo from "./dashboard/manager/students/StudentInfo";
 import Confirm from "./dashboard/manager/home/Confirm";
+import AddTeacher from "./dashboard/manager/teachers/AddTeacher";
+import AddTeacherByExcel from "./dashboard/manager/teachers/AddTeacherByExcel";
 
 class App extends React.Component {
 
@@ -48,6 +50,8 @@ class App extends React.Component {
                         <Route path="/teacher/:id" component={TeacherInfo} />
                         <Route path="/student/:id" component={StudentInfo} />
                         <Route path="/confirm/:id" component={Confirm} />
+                        <Route path="/addTeacher" component={AddTeacher} />
+                        <Route path="/addTeacherByExcel" component={AddTeacherByExcel} />
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="" component={NoFound} />
                     </Switch>

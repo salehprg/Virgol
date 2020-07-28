@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getAllTeachers } from "../../../../_actions/managerActions";
+import { getAllTeachers, deleteTeacher } from "../../../../_actions/managerActions";
 import SearchBar from "../../SearchBar";
 import {edit, loading, remove} from "../../../../assets/icons";
 import protectedManager from "../../../protectedRoutes/protectedManager";
@@ -8,10 +8,11 @@ import AddTeacherModal from "./AddTeacherModal";
 import Table from "../../table/Table";
 import Checkbox from "../../table/Checkbox";
 import history from "../../../../history";
+import ConfirmDelete from "../../../modal/ConfirmDelete";
 
 class Teachers extends React.Component {
 
-    state = { loading: false, showAddTeacher: false, searchQuery: '', selectedItems: [] }
+    state = { loading: false, showAddTeacher: false, showDeleteTeachers: false, searchQuery: '', selectedItems: [] }
 
     async componentDidMount() {
         if (this.props.history.action === 'POP' || !this.props.teachers) {
@@ -41,7 +42,7 @@ class Teachers extends React.Component {
                     options={() => {
                         return (
                             <React.Fragment>
-                                <div className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
+                                <div onClick={() => this.setState({ showDeleteTeachers: true })} className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
                                     {remove("w-6 mx-1 text-white")}
                                     <span className="font-vb mx-1 text-white">حذف</span>
                                 </div>
@@ -122,11 +123,17 @@ class Teachers extends React.Component {
         this.setState({ showAddTeacher: false })
     }
 
+    deleteTeachers = () => {
+        this.setState({showDeleteTeachers: false, selectedItems: [] })
+        this.props.deleteTeacher(this.props.user.token, this.state.selectedItems)
+    }
+
     render() {
         if (this.state.loading) return <div className="flex justify-center items-center">{loading("w-16 text-grayish")}</div>
         return (
             <div className="w-full">
                 {this.state.showAddTeacher ? <AddTeacherModal onAddCancel={this.cancelAdd} /> : null}
+                {this.state.showDeleteTeachers ? <ConfirmDelete onConfirm={this.deleteTeachers} onCancel={() => this.setState({ showDeleteTeachers: false })} text="آیا از حذف اطمینان دارید؟" /> : null}
                 <div className="w-full flex xl:flex-row-reverse flex-col justify-start items-center">
                     <SearchBar
                         value={this.state.searchQuery}
@@ -147,4 +154,4 @@ const mapStateToProps = state => {
 }
 
 const authWrapped = protectedManager(Teachers)
-export default connect(mapStateToProps, { getAllTeachers })(authWrapped);
+export default connect(mapStateToProps, { getAllTeachers, deleteTeacher })(authWrapped);

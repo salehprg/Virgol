@@ -55,7 +55,7 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, catInfo: state.catInfo.filter(element => element.id !== action.payload) }
 
     if (action.type === Type.DELETE_TEACHER)
-        return { ...state, teachers: state.teachers.filter(element => element.id !== action.payload) }
+        return { ...state, teachers: state.teachers.filter(element => !action.payload.includes(element.id)) }
 
     if (action.type === Type.EDIT_CATEGORY)
         return { ...state, categories: state.categories.map(el => el.id === action.payload.id ? action.payload : el) }

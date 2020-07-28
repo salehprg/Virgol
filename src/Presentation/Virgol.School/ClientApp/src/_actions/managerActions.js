@@ -171,6 +171,7 @@ export const addNewTeacher = (token, formValues) => async dispatch => {
         dispatch({ type: Type.ADD_NEW_TEACHER, payload: response.data });
 
     } catch (e) {
+        console.log(e.response)
         dispatch(alert.error("خطا در افرودن معلم"))
     }
 
@@ -324,20 +325,24 @@ export const deleteCourseFromCat = (token, courseId, catId) => async dispatch =>
 
 }
 
-export const deleteTeacher = (token, id) => async dispatch => {
+export const deleteTeacher = (token, ids) => async dispatch => {
 
     try {
-        const response = await lms.delete(`/Manager/DeleteTeacher?teacherId=${id}` ,{
+        console.log(token)
+        dispatch({ type: START_WORKING })
+        const response = await lms.post(`/Manager/DeleteTeacher`, ids ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: Type.DELETE_TEACHER, payload: id})
-        history.push("/m/dashboard")
+        dispatch({type: STOP_WORKING})
+        dispatch({ type: Type.DELETE_TEACHER, payload: ids})
         dispatch(alert.success("معلم حذف شد"))
 
     } catch (e) {
+        console.log(e.response)
+        dispatch({type: STOP_WORKING})
         dispatch(alert.error("خطا در حذف معلم"))
     }
 

@@ -40,10 +40,9 @@ class TeacherInfo extends React.Component {
         this.setState({ showDeleteConfirm: false })
     }
 
-    onDeleteTeacher = async () => {
-        this.setState({ delLoading: true })
-        await this.props.deleteTeacher(this.props.token, this.props.match.params.id);
-        this.setState({ showDeleteConfirm: false, delLoading: false })
+    onDeleteTeacher = () => {
+        history.push('/m/teachers')
+        this.props.deleteTeacher(this.props.token, [parseInt(this.props.match.params.id)]);
     }
 
     render() {

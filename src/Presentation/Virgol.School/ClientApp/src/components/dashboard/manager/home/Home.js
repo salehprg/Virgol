@@ -31,7 +31,7 @@ class Home extends React.Component {
                                 {ruler("w-16 text-green")}
                             </div>
                             <span className="text-grayish my-4">تعداد معلمان</span>
-                            <span className="text-2xl font-vb">{this.props.students.length}</span>
+                            <span className="text-2xl font-vb">{this.props.teachers.length}</span>
                         </div>
                     </div>
                     <div className="w-full ">
