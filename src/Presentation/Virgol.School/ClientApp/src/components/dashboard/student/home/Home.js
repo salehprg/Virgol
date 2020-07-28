@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Feed from "./Feed";
-import InfoBoard from "./InfoBoard";
+import Feed from "../../feed/Feed";
+import InfoBoard from "../../infoboard/InfoBoard";
 import Reminders from "./Reminders";
 
 class Home extends React.Component {

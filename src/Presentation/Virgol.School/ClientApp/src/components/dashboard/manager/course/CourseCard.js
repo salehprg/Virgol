@@ -24,7 +24,7 @@ const CourseCard = (props) => {
     }
 
     return (
-        <div className={`relative min-w-200 h-32 cursor-pointer flex flex-col justify-evenly items-center bg-${mainColor()}`}>
+        <div className={`relative min-w-200 h-32 px-2 cursor-pointer flex flex-col justify-evenly items-center bg-${mainColor()}`}>
             <span className={`text-xl text-center font-vb text-white`}>{props.course.shortname}</span>
             <div className="flex flex-row justify-center items-center">
                 {teach("w-6 text-white mx-2")}

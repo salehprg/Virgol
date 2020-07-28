@@ -16,7 +16,9 @@ export const confirmUser = (token, id) => async dispatch => {
 
         dispatch({ type: STOP_WORKING })
         dispatch({ type: Type.CONFIRM, payload: id });
-        alert.success("دانش اموز تایید شد")
+        history.push('/m/students')
+        window.location.reload();
+        dispatch(alert.success("دانش اموز تایید شد"))
 
     } catch (e) {
         dispatch({ type: STOP_WORKING })
@@ -215,20 +217,22 @@ export const addBulkTeacher = (token, excel) => async dispatch => {
 
 }
 
-export const deleteCategory = (token, values) => async dispatch => {
+export const deleteCategory = (token, id) => async dispatch => {
 
     try {
-        const response = await lms.post("/Manager/DeleteCategory", values ,{
+        dispatch({ type: START_WORKING })
+        const response = await lms.post("/Manager/DeleteCategory", { id } ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        history.push("/m/dashboard");
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.success("مقطع با موفقیت حذف گردید"))
-        dispatch({ type: Type.DELETE_CATEGORY, payload: values.id})
+        dispatch({ type: Type.DELETE_CATEGORY, payload: id})
 
     } catch (e) {
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا در حذف مقطع"))
     }
 
@@ -342,17 +346,19 @@ export const deleteTeacher = (token, id) => async dispatch => {
 export const editCategory = (token, values) => async dispatch => {
 
     try {
+        dispatch({ type: START_WORKING })
         const response = await lms.post('/Manager/EditCategory', values,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP_WORKING })
         dispatch({ type: Type.EDIT_CATEGORY, payload: response.data})
-        history.push("/m/dashboard");
         dispatch(alert.success("مقطع با موفقیت ویرایش گردید"))
 
     } catch (e) {
+        dispatch({ type: STOP_WORKING })
         dispatch(alert.error("خطا در ویرایش مقطع"))
     }
 

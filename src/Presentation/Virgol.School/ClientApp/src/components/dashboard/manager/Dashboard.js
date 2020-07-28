@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
-import { getNewUsers } from "../../../_actions/managerActions";
+import { getNewUsers, getAllStudents, getAllTeachers } from "../../../_actions/managerActions";
 import Sidebar from "../sidebar/Sidebar";
 import { Route } from 'react-router-dom';
 import { courses, dashboard, group, teach, teachers } from "../../../assets/icons";
@@ -22,6 +22,8 @@ class Dashboard extends React.Component {
         if (window.innerWidth > 1280) this.setState({ showSidebar: true })
         if (this.props.history.action === 'POP' || !this.props.newUsers) {
             this.props.getNewUsers(this.props.user.token)
+            this.props.getAllTeachers(this.props.user.token)
+            this.props.getAllStudents(this.props.user.token)
         }
     }
 
@@ -109,4 +111,4 @@ const mapStateToProps = state => {
 }
 
 const authWrapped = protectedManager(Dashboard)
-export default connect(mapStateToProps, { getNewUsers })(authWrapped);
+export default connect(mapStateToProps, { getNewUsers, getAllStudents, getAllTeachers })(authWrapped);

@@ -2,6 +2,7 @@ import lms from "../apis/lms";
 import history from "../history";
 import { alert } from "./alerts";
 import * as Type from "../_types/authTypes";
+import {START_WORKING, STOP_WORKING} from "../_types/workingTypes";
 
 export const login = formValues => async dispatch => {
 
@@ -48,6 +49,7 @@ export const register = formValues => async dispatch => {
 
     try {
 
+        dispatch({ type: START_WORKING })
         const form = {
             userDetail: {
                 fatherName: formValues.fatherName,
@@ -64,14 +66,15 @@ export const register = formValues => async dispatch => {
             melliCode: formValues.melliCode,
             phoneNumber: formValues.phoneNumber
         }
-
         const response = await lms.put('/Users/RegisterNewUser', form)
 
+        dispatch({ type:STOP_WORKING })
         dispatch({ type: Type.REGISTER, payload: response.data });
         history.push("/");
         dispatch(alert.success("ثبت نام انجام شد"))
 
     } catch (e) {
+        dispatch({ type:STOP_WORKING })
         dispatch(alert.error("خطا در ثبت نام"))
     }
 }
@@ -99,7 +102,7 @@ export const sendCodeFade = () => {
 export const forgotPassword = (melliCode, verificationCode) => async dispatch => {
 
     try {
-        const response = await lms.post(`/Users/SendVerificationCode`, { melliCode, verificationCode });
+        const response = await lms.post(`/Users/ForgotPassword`, { melliCode, verificationCode });
 
         if (response.data) {
             dispatch({ type: Type.FORGOT_PASS_OK });

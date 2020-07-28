@@ -25,10 +25,9 @@ class Confirm extends React.Component {
         this.setState({ confirmModal: false })
     }
 
-    confirm = async () => {
-        this.setState({ confirmModal: false, confirmLoading: true })
-        await this.props.confirmUser(this.props.token, this.props.match.params.id)
-        this.setState({ confirmLoading: false })
+    confirm = () => {
+        history.push('/m/students')
+        this.props.confirmUser(this.props.token, this.props.match.params.id)
     }
 
     render() {
@@ -42,11 +41,11 @@ class Confirm extends React.Component {
                             <div className="flex md:flex-row flex-col">
                                 <button
                                     onClick={this.onConfirmCancel}
-                                    className="px-8 py-2 mx-2 my-2 text-green-600 border-2 border-green-600 rounded-lg focus:outline-none"
+                                    className="px-8 py-2 mx-2 my-2 text-green border-2 border-green rounded-lg focus:outline-none"
                                 >خیر</button>
                                 <button
                                     onClick={() => this.confirm()}
-                                    className="px-8 py-2 mx-2 my-2 text-white bg-green-600 rounded-lg focus:outline-none"
+                                    className="px-8 py-2 mx-2 my-2 text-white bg-green rounded-lg focus:outline-none"
                                 >بله</button>
                             </div>
                         </div>
@@ -78,7 +77,7 @@ class Confirm extends React.Component {
                         </div>
                     </div>
                     <div className="w-full flex flex-row justify-center flex-wrap">
-                        <button onClick={() => this.showConfirmModal()} className="mx-2 px-4 py-1 text-xl rounded-lg text-white font-vb bg-green-500">
+                        <button onClick={() => this.showConfirmModal()} className="mx-2 px-4 py-1 text-xl rounded-lg text-white font-vb bg-green">
                             {this.state.confirmLoading ? loading("w-6 text-white") : 'تایید'}
                         </button>
                         {/*<button className="mx-2 px-4 py-1 text-xl rounded-lg text-white font-vb bg-red-500">عدم تایید</button>*/}

@@ -13,7 +13,7 @@ class Students extends React.Component {
     state = { loading: false, searchQuery: '', selectedItems: [], confirmItems: [], tab: 'verified' }
 
     async componentDidMount() {
-        if (this.props.history.action === 'POP' || !this.props.students) {
+        if (this.props.history.action === 'POP' ||this.props.location.type === 'confirmed' || !this.props.students) {
             this.setState({loading: true})
             await this.props.getAllStudents(this.props.user.token);
             this.setState({loading: false})
@@ -145,7 +145,7 @@ class Students extends React.Component {
                         <td>{user.melliCode}</td>
                         <td>{user.phoneNumber}</td>
                         <td>
-                            <div onClick={() => this.props.confirmUser(this.props.user.token, user.id)} className="flex justify-center items-center cursor-pointer">
+                            <div onClick={() => history.push(`/confirm/${user.id}`)} className="flex justify-center items-center cursor-pointer">
                                 {check("w-8 text-grayish transition-all duration-300 hover:text-magneta")}
                             </div>
                         </td>
