@@ -218,22 +218,81 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(SchoolModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewSchool([FromBody]SchoolModel model)
+        public async Task<IActionResult> AddNewSchool([FromBody]SchoolData inputData)
         {
-            SchoolModel newSchool = model;
+            SchoolModel newSchool = inputData.schoolModel;
             try
             {
-                int schoolId = await moodleApi.CreateCategory(newSchool.SchoolName);
-                if(schoolId != -1)
-                {
-                    model.Moodle_Id = schoolId;
+                int schoolMoodleId = await moodleApi.CreateCategory(newSchool.SchoolName , 0);
 
-                    appDbContext.Schools.Add(model);
+                if(schoolMoodleId != -1)
+                {
+                    newSchool.Moodle_Id = schoolMoodleId;
+
+                    string baseIdsStr = "";
+                    foreach (var id in inputData.BaseIds)
+                    {
+                        baseIdsStr += id + ",";
+
+                        BaseModel baseModel = appDbContext.Bases.Where(x => x.Id == id).FirstOrDefault();
+                        int baseMoodleId = await moodleApi.CreateCategory(baseModel.BaseName , schoolMoodleId , schoolMoodleId);
+
+                        List<StudyFieldModel> studyFields = appDbContext.StudyFields.Where(x => x.Base_Id == id).ToList();
+                        if(studyFields != null)
+                        {
+                            foreach (var studyField in studyFields)
+                            {
+                                if(inputData.StudyFieldIds.Find(x => x == studyField.Id) != -1)
+                                {
+                                    List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.StudyField_Id == studyField.Id).ToList();
+                                    foreach (var grade in gradeModels)
+                                    {
+                                        if(inputData.GradeIds.Find(x => x == grade.Id) != -1)
+                                        {
+                                            await moodleApi.CreateCategory(grade.GradeName , schoolMoodleId , baseMoodleId);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.Base_Id == id).ToList();
+                            foreach (var grade in gradeModels)
+                            {
+                                if(inputData.GradeIds.Find(x => x == grade.Id) != -1)
+                                {
+                                    await moodleApi.CreateCategory(grade.GradeName , schoolMoodleId , baseMoodleId);
+                                }
+                            }
+                        }
+
+                    }
+
+                    string studyFieldIdsStr = "";
+                    foreach (var id in inputData.StudyFieldIds)
+                    {
+                        studyFieldIdsStr += id + ",";
+                    }
+
+                    string gadeIdsStr = "";
+                    foreach (var id in inputData.GradeIds)
+                    {
+                        gadeIdsStr += id + ",";
+                    }
+
+                    newSchool.StudyFields = studyFieldIdsStr;
+                    newSchool.Bases = baseIdsStr;
+                    newSchool.Grade = gadeIdsStr;
+
+                    appDbContext.Schools.Add(newSchool);
                     appDbContext.SaveChanges();
 
-                    model.Id = appDbContext.Schools.OrderBy(x => x.Id).FirstOrDefault().Id;
+                    newSchool.Id = appDbContext.Schools.OrderBy(x => x.Id).FirstOrDefault().Id;
 
-                    return Ok(model);
+
+
+                    return Ok(newSchool);
                 }
                 else
                 {
@@ -308,6 +367,354 @@ namespace lms_with_moodle.Controllers
         }
 
 #endregion
+    
+#region Bases
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<BaseModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetBases()
+        {
+            try
+            {
+                return Ok(appDbContext.Bases.ToList());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddNewBase([FromBody]BaseModel model)
+        {
+            BaseModel newBase = model;
+            try
+            {
+                appDbContext.Bases.Add(newBase);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(appDbContext.Bases.OrderByDescending(x => x.Id).FirstOrDefault());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> EditBase([FromBody]BaseModel model)
+        {
+            try
+            {
+                if(model.Id != 0)
+                {
+                    appDbContext.Bases.Update(model);
+                    await appDbContext.SaveChangesAsync();
+
+                    return Ok(true);
+                }
+
+                return BadRequest("مقطعی انتخاب نشده است");
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveBase([FromBody]int baseId)
+        {
+            try
+            {
+                BaseModel baseModel = appDbContext.Bases.Where(x => x.Id == baseId).FirstOrDefault();
+
+                appDbContext.Bases.Remove(baseModel);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion
+    
+#region StudyFields
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetStudyFields([FromBody] int BaseId = -1)
+        {
+            try
+            {
+                if(BaseId != -1)
+                {
+                    return Ok(appDbContext.StudyFields.Where(x => x.Base_Id == BaseId).ToList());
+                }
+                return Ok(appDbContext.StudyFields.ToList());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [ProducesResponseType(typeof(StudyFieldModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddNewStudyFields([FromBody]StudyFieldModel model)
+        {
+            StudyFieldModel newStudyF = model;
+            try
+            {
+                appDbContext.StudyFields.Add(newStudyF);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(appDbContext.StudyFields.OrderByDescending(x => x.Id).FirstOrDefault());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult EditStudyFields([FromBody]StudyFieldModel model)
+        {
+            try
+            {
+                StudyFieldModel study = appDbContext.StudyFields.Where(x => x.Id == model.Id).FirstOrDefault();
+
+                if(study != null)
+                {
+                    model.Base_Id = (model.Base_Id != 0 ? model.Base_Id : study.Base_Id);
+                    model.StudyFieldName = (model.StudyFieldName != "" ? model.StudyFieldName : study.StudyFieldName);
+
+                    appDbContext.StudyFields.Update(model);
+                    appDbContext.SaveChanges();
+
+                    return Ok(true);
+                }
+
+                return BadRequest("رشته ای انتخاب نشده است");
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveStudyFields([FromBody]int studyFId)
+        {
+            try
+            {
+                StudyFieldModel studyFModel = appDbContext.StudyFields.Where(x => x.Id == studyFId).FirstOrDefault();
+
+                appDbContext.StudyFields.Remove(studyFModel);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion
+   
+#region Grade
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetGrade()
+        {
+            try
+            {
+                return Ok(appDbContext.Grades.ToList());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [ProducesResponseType(typeof(GradeModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddNewGrades([FromBody]GradeModel model)
+        {
+            GradeModel newStudyF = model;
+            try
+            {
+                appDbContext.Grades.Add(newStudyF);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(appDbContext.Grades.OrderBy(x => x.Id).FirstOrDefault());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> EditGrades([FromBody]GradeModel model)
+        {
+            try
+            {
+                appDbContext.Grades.Update(model);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveGrades([FromBody]int studyFId)
+        {
+            try
+            {
+                GradeModel studyFModel = appDbContext.Grades.Where(x => x.Id == studyFId).FirstOrDefault();
+
+                appDbContext.Grades.Remove(studyFModel);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion
+   
+#region Lessons
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<LessonModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetLessons()
+        {
+            try
+            {
+                return Ok(appDbContext.Lessons.ToList());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [ProducesResponseType(typeof(LessonModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddNewLessons([FromBody]LessonModel model)
+        {
+            LessonModel newStudyF = model;
+            try
+            {
+                appDbContext.Lessons.Add(newStudyF);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(appDbContext.Lessons.OrderBy(x => x.Id).FirstOrDefault());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> EditLessons([FromBody]LessonModel model)
+        {
+            try
+            {
+                appDbContext.Lessons.Update(model);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveLessons([FromBody]int studyFId)
+        {
+            try
+            {
+                LessonModel studyFModel = appDbContext.Lessons.Where(x => x.Id == studyFId).FirstOrDefault();
+
+                appDbContext.Lessons.Remove(studyFModel);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion
+     
     
     }
 }

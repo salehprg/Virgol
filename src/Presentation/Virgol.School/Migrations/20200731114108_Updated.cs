@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace lms_with_moodle.Migrations
 {
-    public partial class InitialDb : Migration
+    public partial class Updated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -56,6 +56,19 @@ namespace lms_with_moodle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bases",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BaseName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bases", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CourseNotifies",
                 columns: table => new
                 {
@@ -69,6 +82,37 @@ namespace lms_with_moodle.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CourseNotifies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Grades",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    StudyField_Id = table.Column<int>(nullable: false),
+                    Base_Id = table.Column<int>(nullable: false),
+                    GradeName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Grades", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Lessons",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Grade_Id = table.Column<int>(nullable: false),
+                    Vahed = table.Column<float>(nullable: false),
+                    LessonName = table.Column<string>(nullable: true),
+                    BookCode = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lessons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,6 +137,22 @@ namespace lms_with_moodle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "News",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AutherId = table.Column<int>(nullable: false),
+                    CreateTime = table.Column<DateTime>(nullable: false),
+                    Message = table.Column<string>(nullable: true),
+                    Tags = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_News", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ParticipantInfos",
                 columns: table => new
                 {
@@ -105,6 +165,55 @@ namespace lms_with_moodle.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ParticipantInfos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SchoolClasses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Moodle_Id = table.Column<int>(nullable: false),
+                    Grade_Id = table.Column<int>(nullable: false),
+                    ClassName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SchoolClasses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Schools",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Moodle_Id = table.Column<int>(nullable: false),
+                    ManagerId = table.Column<int>(nullable: false),
+                    SchoolName = table.Column<string>(nullable: true),
+                    SchoolIdNumber = table.Column<int>(nullable: false),
+                    SelfSign = table.Column<bool>(nullable: false),
+                    Bases = table.Column<string>(nullable: true),
+                    StudyFields = table.Column<string>(nullable: true),
+                    Grade = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schools", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudyFields",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Base_Id = table.Column<int>(nullable: false),
+                    StudyFieldName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudyFields", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,8 +253,9 @@ namespace lms_with_moodle.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(nullable: false),
-                    LatinFirstname = table.Column<string>(nullable: true),
-                    LatinLastname = table.Column<string>(nullable: true),
+                    SchoolId = table.Column<int>(nullable: false),
+                    LatinFirstname = table.Column<string>(nullable: false),
+                    LatinLastname = table.Column<string>(nullable: false),
                     ShDocument = table.Column<string>(nullable: true),
                     Document2 = table.Column<string>(nullable: true),
                     FatherName = table.Column<string>(nullable: true),
@@ -338,13 +448,34 @@ namespace lms_with_moodle.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Bases");
+
+            migrationBuilder.DropTable(
                 name: "CourseNotifies");
+
+            migrationBuilder.DropTable(
+                name: "Grades");
+
+            migrationBuilder.DropTable(
+                name: "Lessons");
 
             migrationBuilder.DropTable(
                 name: "Meetings");
 
             migrationBuilder.DropTable(
+                name: "News");
+
+            migrationBuilder.DropTable(
                 name: "ParticipantInfos");
+
+            migrationBuilder.DropTable(
+                name: "SchoolClasses");
+
+            migrationBuilder.DropTable(
+                name: "Schools");
+
+            migrationBuilder.DropTable(
+                name: "StudyFields");
 
             migrationBuilder.DropTable(
                 name: "TeacherCourse");

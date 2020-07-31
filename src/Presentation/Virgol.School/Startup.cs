@@ -54,8 +54,10 @@ namespace lms_with_moodle
                 // services.AddDbContext<AppDbContext>(options =>
                 //     options.UseSqlServer(Configuration.GetConnectionString("PublishConnection")));
 
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseNpgsql(Configuration.GetConnectionString("DevConnection_PS")));
+                services.AddDbContext<AppDbContext>(options =>{
+                    options.UseNpgsql(Configuration.GetConnectionString("DevConnection_PS"));
+                    options.EnableSensitiveDataLogging(true);
+                });
             }
             else
             {

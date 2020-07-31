@@ -272,12 +272,16 @@ namespace lms_with_moodle.Helper
         //-------Courses---------
         #region Courses
 
-        public async Task<int> CreateCourse(string CourseName , int CategoryId = 1)
+        public async Task<int> CreateCourse(string CourseName , int schoolMoodleId , int CategoryId = 1)
         {
             try
             {
                 string FunctionName = "core_course_create_courses";
-                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&courses[0][fullname]=" + CourseName + "&courses[0][shortname]=" + CourseName + "&courses[0][categoryid]=" + CategoryId;
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
+                "&courses[0][fullname]=" + CourseName + 
+                "&courses[0][shortname]=" + CourseName + 
+                "&courses[0][categoryid]=" + CategoryId +
+                "&courses[0][idnumber]=" + schoolMoodleId ;
 
                 HttpResponseModel Response = await sendData(data);
                 string result = JsonConvert.DeserializeObject <List<CourseDetail_moodle>> (Response.Message)[0].id; 
@@ -467,12 +471,15 @@ namespace lms_with_moodle.Helper
         //-------Categories------
         #region Categories
         
-        public async Task<int> CreateCategory(string Name , int ParentId = 0)
+        public async Task<int> CreateCategory(string Name , int schoolMoodleId , int ParentId = 0)
         {
             try
             {
                 string FunctionName = "core_course_create_categories";
-                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&categories[0][name]=" + Name + "&categories[0][parent]=" + ParentId;
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
+                "&categories[0][name]=" + Name + 
+                "&categories[0][parent]=" + ParentId +
+                "&categories[0][idnumber]=" + schoolMoodleId ;
 
                 HttpResponseModel Response = await sendData(data);
                 int categoryId = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (Response.Message)[0].id; 
@@ -525,10 +532,10 @@ namespace lms_with_moodle.Helper
             }
         } 
         
-        public async Task<List<CategoryDetail_moodle>> GetAllCategories()
+        public async Task<List<CategoryDetail_moodle>> GetAllCategories(int schoolId)
         {
             string FunctionName = "core_course_get_categories";
-            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&&criteria[0][key]=visible&criteria[0][value]=1";
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&&criteria[0][key]=idnumber&criteria[0][value]="+ schoolId;
 
             HttpResponseModel response = await sendData(data);
             List<CategoryDetail_moodle> category = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (response.Message); 

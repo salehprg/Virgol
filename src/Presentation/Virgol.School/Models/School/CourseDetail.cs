@@ -6,7 +6,7 @@ namespace Models
         public string shortname { get; set; }
         public string TeacherName { get; set; }
         public string displayname { get; set; }
-        public float Grade {get; set;}
+        public float Score {get; set;}
         public int categoryId { get; set; } 
         
         public string CourseUrl {get; set;}

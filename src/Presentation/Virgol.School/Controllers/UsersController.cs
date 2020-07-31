@@ -80,7 +80,7 @@ namespace lms_with_moodle.Controllers
 
                 foreach(var id in groupedCategory)
                 {
-                    List<float> grades = id.Select(x => x.Grade).ToList(); //نمرات موجود در دستبه بندی 
+                    List<float> grades = id.Select(x => x.Score).ToList(); //نمرات موجود در دستبه بندی 
 
                     float sum = 0;
                     foreach(var grade in grades)
@@ -459,7 +459,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 
-                List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories();
+                List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories(-1);
                 List<CategoryDetail> Categories = new List<CategoryDetail>();
 
                 foreach(var cat in result)
@@ -485,26 +485,11 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> GetAllSchools()
+        public IActionResult GetAllSchools()
         {
             try
             {
-                List<CategoryDetail_moodle> categories = await moodleApi.GetAllCategories();
-                List<CategoryDetail> schools = new List<CategoryDetail>();
-
-                foreach (var category in categories)
-                {
-                    if(category.parent == "0")
-                    {
-                        CategoryDetail school = new CategoryDetail();
-                        school.Id = category.id;
-                        school.Name = category.name;
-
-                        schools.Add(school);
-                    }
-                }
-
-                return Ok(schools);
+                return Ok(appDbContext.Schools.Where(x => x.SelfSign).ToList());
             }
             catch(Exception ex)
             {

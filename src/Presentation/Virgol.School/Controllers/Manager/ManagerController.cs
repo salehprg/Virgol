@@ -49,7 +49,103 @@ namespace lms_with_moodle.Controllers
             moodleApi = new MoodleApi(appSettings);
             ldap = new LDAP_db(appSettings);
         }
+
+
+
+#region Classes
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<CategoryDetail_moodle>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GradesList()
+        {
+            try
+            {
+                int schoolMoodleId = appDbContext.Schools.Where(x => x.ManagerId == int.Parse(userManager.GetUserId(User))).FirstOrDefault().Moodle_Id;
+                List<CategoryDetail_moodle> categories = moodleApi.GetAllCategories(schoolMoodleId).Result;
+
+                //Remove base from Result and just return grades
+                categories = categories.Where(x => int.Parse(x.parent) != schoolMoodleId).ToList();
+
+                return Ok(categories);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddNewClass([FromBody]ClassData classModel)
+        {
+            try
+            {
+                int schoolMoodleId = appDbContext.Schools.Where(x => x.ManagerId == int.Parse(userManager.GetUserId(User))).FirstOrDefault().Moodle_Id;
+
+                int classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , schoolMoodleId , classModel.grade_MoodleId);
+                if(classMoodleId != -1)
+                {
+                    string gradeName = moodleApi.getCategoryDetail(classModel.grade_MoodleId).Result.Name;
+                    int gradeId = appDbContext.Grades.Where(x => x.GradeName == gradeName).FirstOrDefault().Id;
+
+                    List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList();
+                    foreach (var lesson in lessons)
+                    {
+                        await moodleApi.CreateCourse(lesson.LessonName , schoolMoodleId , classMoodleId);
+                    }
+                }
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     
+        [HttpPost]
+        [ProducesResponseType(typeof(CategoryDetail), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> EditClass([FromBody]ClassData classData)
+        {
+            try
+            {
+                CategoryDetail category = new CategoryDetail();
+                category.Id = classData.moodleid;
+                category.Name = classData.ClassName;
+                category.ParentCategory = classData.grade_MoodleId;
+
+                await moodleApi.EditCategory(category);
+
+                return Ok(category);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> DeleteClass([FromBody]ClassData classData)
+        {
+            try
+            {
+                await moodleApi.DeleteCategory(classData.moodleid);
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion    
+
 #region UserAction
 
 
@@ -491,7 +587,7 @@ namespace lms_with_moodle.Controllers
             }
         }
     
-        [HttpPost]
+        [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> DeleteTeacher([FromBody]List<int> teacherIds)
@@ -524,401 +620,401 @@ namespace lms_with_moodle.Controllers
 #region Courses
 
 
-        [HttpPut]
-        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddCoursesToCategory([FromBody]List<int> CourseIds , int CategoryId)
-        {
-            string error = await moodleApi.AddCoursesToCategory(CourseIds , CategoryId);
-            List<CourseDetail> AllcourseDetails = await moodleApi.GetAllCourseInCat(CategoryId);
-            List<CourseDetail> newcourseDetails = new List<CourseDetail>();
+        // [HttpPut]
+        // [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> AddCoursesToCategory([FromBody]List<int> CourseIds , int CategoryId)
+        // {
+        //     string error = await moodleApi.AddCoursesToCategory(CourseIds , CategoryId);
+        //     List<CourseDetail> AllcourseDetails = await moodleApi.GetAllCourseInCat(CategoryId);
+        //     List<CourseDetail> newcourseDetails = new List<CourseDetail>();
 
-            foreach (var course in AllcourseDetails)
-            {
-                if(CourseIds.Where(x => x == course.id).FirstOrDefault() != 0)
-                {
-                    newcourseDetails.Add(course);
-                }
-            }
-            if(error == null)
-            {
-                return Ok(newcourseDetails);
-            }
-            else
-            {
-                return BadRequest(error);
-            }
+        //     foreach (var course in AllcourseDetails)
+        //     {
+        //         if(CourseIds.Where(x => x == course.id).FirstOrDefault() != 0)
+        //         {
+        //             newcourseDetails.Add(course);
+        //         }
+        //     }
+        //     if(error == null)
+        //     {
+        //         return Ok(newcourseDetails);
+        //     }
+        //     else
+        //     {
+        //         return BadRequest(error);
+        //     }
             
-        }
+        // }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveCourseFromCategory(int courseId )
-        {
-            string error = await moodleApi.RemoveCourseFromCategory(courseId);
+        // [HttpPost]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> RemoveCourseFromCategory(int courseId )
+        // {
+        //     string error = await moodleApi.RemoveCourseFromCategory(courseId);
             
-            if(error == null)
-            {
-                return Ok(true);
-            }
-            else
-            {
-                return BadRequest(error);
-            }
+        //     if(error == null)
+        //     {
+        //         return Ok(true);
+        //     }
+        //     else
+        //     {
+        //         return BadRequest(error);
+        //     }
             
-        }
+        // }
 
    
-        [HttpGet]
-        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> GetAllCourseInCat(int CategoryId)
-        {
-            try
-            {
-                if(CategoryId != 0)
-                {
-                    List<CourseDetail> response = await moodleApi.GetAllCourseInCat(CategoryId);
+        // [HttpGet]
+        // [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> GetAllCourseInCat(int CategoryId)
+        // {
+        //     try
+        //     {
+        //         if(CategoryId != 0)
+        //         {
+        //             List<CourseDetail> response = await moodleApi.GetAllCourseInCat(CategoryId);
 
-                    List<CourseDetail> result = new List<CourseDetail>();
+        //             List<CourseDetail> result = new List<CourseDetail>();
 
-                    foreach(var course in response)
-                    {
-                        TeacherModel_View Teacher = new TeacherModel_View();
-                        Teacher = appDbContext.TeacherView.Where(x => x.CourseId == course.id).FirstOrDefault();
+        //             foreach(var course in response)
+        //             {
+        //                 TeacherModel_View Teacher = new TeacherModel_View();
+        //                 Teacher = appDbContext.TeacherView.Where(x => x.CourseId == course.id).FirstOrDefault();
 
-                        if(Teacher != null)
-                        {
-                            string TeacherName = Teacher.FirstName + " " + Teacher.LastName;
+        //                 if(Teacher != null)
+        //                 {
+        //                     string TeacherName = Teacher.FirstName + " " + Teacher.LastName;
 
-                            course.TeacherName = TeacherName;
-                            course.TeacherId = Teacher.TeacherId;
-                        }
-                        else
-                        {
-                            course.TeacherName = "ندارد";
-                            course.TeacherId = 0;
-                        }
+        //                     course.TeacherName = TeacherName;
+        //                     course.TeacherId = Teacher.TeacherId;
+        //                 }
+        //                 else
+        //                 {
+        //                     course.TeacherName = "ندارد";
+        //                     course.TeacherId = 0;
+        //                 }
 
-                        result.Add(course);
-                    }
+        //                 result.Add(course);
+        //             }
 
-                    return Ok(result);
-                }
-                else
-                {
-                    return BadRequest("Category ID shouldn't be 0");
-                }
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //             return Ok(result);
+        //         }
+        //         else
+        //         {
+        //             return BadRequest("Category ID shouldn't be 0");
+        //         }
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
         
-        [HttpPut]
-        [ProducesResponseType(typeof(CourseDetail), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewCourse([FromBody]CourseDetail course)
-        {
-            try
-            {
+        // [HttpPut]
+        // [ProducesResponseType(typeof(CourseDetail), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> AddNewCourse([FromBody]CourseDetail course)
+        // {
+        //     try
+        //     {
                 
-                int CourseId = await moodleApi.CreateCourse(course.shortname , (course.categoryId != 0 ? course.categoryId : 1));
-                UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
+        //         int CourseId = await moodleApi.CreateCourse(course.shortname , (course.categoryId != 0 ? course.categoryId : 1));
+        //         UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
 
-                if(CourseId != -1)
-                {
-                    if(course.TeacherId != 0)
-                    {
+        //         if(CourseId != -1)
+        //         {
+        //             if(course.TeacherId != 0)
+        //             {
                         
-                        //Initialize teacherCourse Info
-                        TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
-                        teacherCourseInfo.CourseId = CourseId;
-                        teacherCourseInfo.TeacherId = course.TeacherId;
+        //                 //Initialize teacherCourse Info
+        //                 TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
+        //                 teacherCourseInfo.CourseId = CourseId;
+        //                 teacherCourseInfo.TeacherId = course.TeacherId;
 
-                        EnrolUser CurrentTeacher = new EnrolUser();
-                        CurrentTeacher.CourseId = CourseId;
-                        CurrentTeacher.RoleId = 3;
+        //                 EnrolUser CurrentTeacher = new EnrolUser();
+        //                 CurrentTeacher.CourseId = CourseId;
+        //                 CurrentTeacher.RoleId = 3;
 
-                        //Get teacher id from moodle database by its MelliCode from our database
-                        int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode);
-                        CurrentTeacher.UserId = Teacher.Id;
+        //                 //Get teacher id from moodle database by its MelliCode from our database
+        //                 int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode);
+        //                 CurrentTeacher.UserId = Teacher.Id;
 
-                        bool result = await moodleApi.AssignUsersToCourse(new List<EnrolUser>(){CurrentTeacher});
+        //                 bool result = await moodleApi.AssignUsersToCourse(new List<EnrolUser>(){CurrentTeacher});
 
-                        appDbContext.TeacherCourse.Add(teacherCourseInfo);
-                        appDbContext.SaveChanges();
-                    }
+        //                 appDbContext.TeacherCourse.Add(teacherCourseInfo);
+        //                 appDbContext.SaveChanges();
+        //             }
 
-                    CourseDetail courseDetail = course;
-                    courseDetail.id = CourseId;
+        //             CourseDetail courseDetail = course;
+        //             courseDetail.id = CourseId;
                     
-                    return Ok(courseDetail);
-                }
-                else
-                {
-                    return BadRequest("مشکلی در ثبت درس در مودل بوجود آمده است");
-                }
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //             return Ok(courseDetail);
+        //         }
+        //         else
+        //         {
+        //             return BadRequest("مشکلی در ثبت درس در مودل بوجود آمده است");
+        //         }
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
-        //For add course to category just set category id other wise category id not set
-        [HttpPost]
-        [ProducesResponseType(typeof(CourseDetail), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> EditCourse([FromBody]CourseDetail course)
-        {
-            try
-            {
-                //Previous teacher
-                TeacherCourseInfo teacherCourseInfo = appDbContext.TeacherCourse.Where(x => x.CourseId == course.id).FirstOrDefault();
+        // //For add course to category just set category id other wise category id not set
+        // [HttpPost]
+        // [ProducesResponseType(typeof(CourseDetail), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> EditCourse([FromBody]CourseDetail course)
+        // {
+        //     try
+        //     {
+        //         //Previous teacher
+        //         TeacherCourseInfo teacherCourseInfo = appDbContext.TeacherCourse.Where(x => x.CourseId == course.id).FirstOrDefault();
 
-                CourseDetail courseDetail = await moodleApi.GetCourseDetail(course.id);
-                course.categoryId = (course.categoryId == 0 ? courseDetail.categoryId : course.categoryId);
-                course.shortname = (string.IsNullOrWhiteSpace(course.shortname) ? courseDetail.shortname : course.shortname);
+        //         CourseDetail courseDetail = await moodleApi.GetCourseDetail(course.id);
+        //         course.categoryId = (course.categoryId == 0 ? courseDetail.categoryId : course.categoryId);
+        //         course.shortname = (string.IsNullOrWhiteSpace(course.shortname) ? courseDetail.shortname : course.shortname);
 
-                if(teacherCourseInfo != null)
-                    course.TeacherId = (course.TeacherId == 0 ? teacherCourseInfo.TeacherId : course.TeacherId);
+        //         if(teacherCourseInfo != null)
+        //             course.TeacherId = (course.TeacherId == 0 ? teacherCourseInfo.TeacherId : course.TeacherId);
                 
-                string response = await moodleApi.EditCourse(course);
+        //         string response = await moodleApi.EditCourse(course);
 
 
-                UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
+        //         UserModel Teacher = appDbContext.Users.Where(x => x.Id == course.TeacherId).FirstOrDefault();
 
-                if(string.IsNullOrEmpty(response))
-                {
-                    //Initialize teacherCourse Info
+        //         if(string.IsNullOrEmpty(response))
+        //         {
+        //             //Initialize teacherCourse Info
 
-                    UserModel previousTeacherInfo = null;
+        //             UserModel previousTeacherInfo = null;
 
-                    if(teacherCourseInfo == null && Teacher != null)
-                    {
-                        teacherCourseInfo = new TeacherCourseInfo();
-                        teacherCourseInfo.CourseId = course.id;
-                        teacherCourseInfo.TeacherId = Teacher.Id;
+        //             if(teacherCourseInfo == null && Teacher != null)
+        //             {
+        //                 teacherCourseInfo = new TeacherCourseInfo();
+        //                 teacherCourseInfo.CourseId = course.id;
+        //                 teacherCourseInfo.TeacherId = Teacher.Id;
 
-                        appDbContext.TeacherCourse.Add(teacherCourseInfo);
-                        appDbContext.SaveChanges();
+        //                 appDbContext.TeacherCourse.Add(teacherCourseInfo);
+        //                 appDbContext.SaveChanges();
 
                         
-                    }
+        //             }
 
-                    if(teacherCourseInfo != null)
-                    {
-                        previousTeacherInfo = appDbContext.Users.Where(x => x.Id == teacherCourseInfo.TeacherId).FirstOrDefault();
-                    }
+        //             if(teacherCourseInfo != null)
+        //             {
+        //                 previousTeacherInfo = appDbContext.Users.Where(x => x.Id == teacherCourseInfo.TeacherId).FirstOrDefault();
+        //             }
 
-                    EnrolUser previousTeacher = null;
-                    //Get teacher id from moodle database by its MelliCode from our database
+        //             EnrolUser previousTeacher = null;
+        //             //Get teacher id from moodle database by its MelliCode from our database
 
-                    if(previousTeacherInfo != null)
-                    {
-                        previousTeacher = new EnrolUser();
+        //             if(previousTeacherInfo != null)
+        //             {
+        //                 previousTeacher = new EnrolUser();
 
-                        int previousTeacherId = await moodleApi.GetUserId(previousTeacherInfo.MelliCode); //Teacher id in moodle
-                        previousTeacher.UserId = previousTeacherId;
-                        previousTeacher.CourseId = course.id;
-                        previousTeacher.RoleId = 3;
-                    }
+        //                 int previousTeacherId = await moodleApi.GetUserId(previousTeacherInfo.MelliCode); //Teacher id in moodle
+        //                 previousTeacher.UserId = previousTeacherId;
+        //                 previousTeacher.CourseId = course.id;
+        //                 previousTeacher.RoleId = 3;
+        //             }
 
                     
-                    EnrolUser newTeacher = null;
+        //             EnrolUser newTeacher = null;
 
-                    if(Teacher != null)
-                    {
-                        newTeacher = new EnrolUser();
-                        //Get teacher id from moodle database by its MelliCode from our database
-                        int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode); //Teacher id in moodle
+        //             if(Teacher != null)
+        //             {
+        //                 newTeacher = new EnrolUser();
+        //                 //Get teacher id from moodle database by its MelliCode from our database
+        //                 int TeacherId = await moodleApi.GetUserId(Teacher.MelliCode); //Teacher id in moodle
 
-                        newTeacher.CourseId = course.id;
-                        newTeacher.RoleId = 3;
-                        newTeacher.UserId = TeacherId;
-                    }
+        //                 newTeacher.CourseId = course.id;
+        //                 newTeacher.RoleId = 3;
+        //                 newTeacher.UserId = TeacherId;
+        //             }
 
-                    bool resultUnAssign = true;
-                    if(previousTeacher != null)
-                    {
-                        resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {previousTeacher});
-                    }
+        //             bool resultUnAssign = true;
+        //             if(previousTeacher != null)
+        //             {
+        //                 resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {previousTeacher});
+        //             }
 
-                    if(newTeacher != null)
-                    {
-                        if(resultUnAssign)
-                        {
-                            bool resultAssign = await moodleApi.AssignUsersToCourse(new List<EnrolUser>() {newTeacher});
-                            if(resultAssign)
-                            {
-                                teacherCourseInfo.TeacherId = course.TeacherId;
-                                appDbContext.TeacherCourse.Update(teacherCourseInfo);
-                                appDbContext.SaveChanges();
+        //             if(newTeacher != null)
+        //             {
+        //                 if(resultUnAssign)
+        //                 {
+        //                     bool resultAssign = await moodleApi.AssignUsersToCourse(new List<EnrolUser>() {newTeacher});
+        //                     if(resultAssign)
+        //                     {
+        //                         teacherCourseInfo.TeacherId = course.TeacherId;
+        //                         appDbContext.TeacherCourse.Update(teacherCourseInfo);
+        //                         appDbContext.SaveChanges();
                                 
-                            }
-                        }
-                    }
+        //                     }
+        //                 }
+        //             }
             
 
-                    return Ok(course);
-                }
-                else
-                {
-                    return BadRequest("در ویرایش درس در سرور مودل مشکلی پیش آمد");
-                }
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //             return Ok(course);
+        //         }
+        //         else
+        //         {
+        //             return BadRequest("در ویرایش درس در سرور مودل مشکلی پیش آمد");
+        //         }
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> DeleteCourse([FromBody]CourseDetail _modelCourse)
-        {
-            try
-            {
+        // [HttpPost]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> DeleteCourse([FromBody]CourseDetail _modelCourse)
+        // {
+        //     try
+        //     {
                 
-                string result = await moodleApi.DeleteCourse(_modelCourse.id);
+        //         string result = await moodleApi.DeleteCourse(_modelCourse.id);
 
-                if(result == null)
-                {
-                    TeacherCourseInfo Course = appDbContext.TeacherCourse.Where(x => x.CourseId == _modelCourse.id).FirstOrDefault();
-                    if(Course != null)
-                    {
-                        appDbContext.TeacherCourse.Remove(Course);
-                        appDbContext.SaveChanges();
-                    }
+        //         if(result == null)
+        //         {
+        //             TeacherCourseInfo Course = appDbContext.TeacherCourse.Where(x => x.CourseId == _modelCourse.id).FirstOrDefault();
+        //             if(Course != null)
+        //             {
+        //                 appDbContext.TeacherCourse.Remove(Course);
+        //                 appDbContext.SaveChanges();
+        //             }
 
-                    return Ok(_modelCourse);
-                }
-                else
-                {
-                    return BadRequest(result);
-                }
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //             return Ok(_modelCourse);
+        //         }
+        //         else
+        //         {
+        //             return BadRequest(result);
+        //         }
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 #endregion
     
 #region Categories
 
-    [HttpGet]
-    [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
-    [ProducesResponseType(typeof(string), 400)]
-    public async Task<IActionResult> GetAllCategory()
-    {
-        try
-        {
+    // [HttpGet]
+    // [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
+    // [ProducesResponseType(typeof(string), 400)]
+    // public async Task<IActionResult> GetAllCategory()
+    // {
+    //     try
+    //     {
             
-            List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories();
-            List<CategoryDetail> Categories = new List<CategoryDetail>();
+    //         List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories();
+    //         List<CategoryDetail> Categories = new List<CategoryDetail>();
 
-            foreach(var cat in result)
-            {
-                if(cat.id != 1)  // Miscellaneous Category
-                {
-                    CategoryDetail cateDetail = new CategoryDetail();
-                    cateDetail.Id = cat.id;
-                    cateDetail.Name = cat.name;
-                    cateDetail.CourseCount = cat.coursecount;
+    //         foreach(var cat in result)
+    //         {
+    //             if(cat.id != 1)  // Miscellaneous Category
+    //             {
+    //                 CategoryDetail cateDetail = new CategoryDetail();
+    //                 cateDetail.Id = cat.id;
+    //                 cateDetail.Name = cat.name;
+    //                 cateDetail.CourseCount = cat.coursecount;
 
-                    Categories.Add(cateDetail);
-                }
-            }
+    //                 Categories.Add(cateDetail);
+    //             }
+    //         }
 
-            return Ok(Categories);
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+    //         return Ok(Categories);
+    //     }
+    //     catch(Exception ex)
+    //     {
+    //         return BadRequest(ex.Message);
+    //     }
+    // }
 
-    [HttpPut]
-    [ProducesResponseType(typeof(CategoryDetail), 200)]
-    [ProducesResponseType(typeof(bool), 400)]
-    public async Task<IActionResult> AddNewCategory([FromBody]CategoryDetail Category)
-    {
-        try
-        {
-            int categoryId = await moodleApi.CreateCategory(Category.Name , Category.ParentCategory);
+    // [HttpPut]
+    // [ProducesResponseType(typeof(CategoryDetail), 200)]
+    // [ProducesResponseType(typeof(bool), 400)]
+    // public async Task<IActionResult> AddNewCategory([FromBody]CategoryDetail Category)
+    // {
+    //     try
+    //     {
+    //         int categoryId = await moodleApi.CreateCategory(Category.Name , Category.ParentCategory);
 
-            if(categoryId != -1)
-            {
-                Category.Id = categoryId;
+    //         if(categoryId != -1)
+    //         {
+    //             Category.Id = categoryId;
 
-                return Ok(Category);
-            }
-            else
-            {
-                return BadRequest(false);
-            }
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+    //             return Ok(Category);
+    //         }
+    //         else
+    //         {
+    //             return BadRequest(false);
+    //         }
+    //     }
+    //     catch(Exception ex)
+    //     {
+    //         return BadRequest(ex.Message);
+    //     }
+    // }
 
-    [HttpPost]
-    [ProducesResponseType(typeof(CategoryDetail), 200)]
-    [ProducesResponseType(typeof(bool), 400)]
-    public async Task<IActionResult> EditCategory([FromBody]CategoryDetail Category)
-    {
-        try
-        {
-            bool result = await moodleApi.EditCategory(Category);
+    // [HttpPost]
+    // [ProducesResponseType(typeof(CategoryDetail), 200)]
+    // [ProducesResponseType(typeof(bool), 400)]
+    // public async Task<IActionResult> EditCategory([FromBody]CategoryDetail Category)
+    // {
+    //     try
+    //     {
+    //         bool result = await moodleApi.EditCategory(Category);
 
-            if(result)
-            {
-                return Ok(Category);
-            }
-            else
-            {
-                return BadRequest(false);
-            }
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+    //         if(result)
+    //         {
+    //             return Ok(Category);
+    //         }
+    //         else
+    //         {
+    //             return BadRequest(false);
+    //         }
+    //     }
+    //     catch(Exception ex)
+    //     {
+    //         return BadRequest(ex.Message);
+    //     }
+    // }
 
-    [HttpPost]
-    [ProducesResponseType(typeof(bool), 200)]
-    [ProducesResponseType(typeof(bool), 400)]
-    public async Task<IActionResult> DeleteCategory([FromBody]CategoryDetail Category)
-    {
-        try
-        {
+    // [HttpPost]
+    // [ProducesResponseType(typeof(bool), 200)]
+    // [ProducesResponseType(typeof(bool), 400)]
+    // public async Task<IActionResult> DeleteCategory([FromBody]CategoryDetail Category)
+    // {
+    //     try
+    //     {
             
-            bool result = await moodleApi.DeleteCategory(Category.Id);
+    //         bool result = await moodleApi.DeleteCategory(Category.Id);
 
-            if(result)
-            {
-                return Ok(true);
-            }
-            else
-            {
-                return BadRequest(false);
-            }
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+    //         if(result)
+    //         {
+    //             return Ok(true);
+    //         }
+    //         else
+    //         {
+    //             return BadRequest(false);
+    //         }
+    //     }
+    //     catch(Exception ex)
+    //     {
+    //         return BadRequest(ex.Message);
+    //     }
+    // }
 
 #endregion
     
