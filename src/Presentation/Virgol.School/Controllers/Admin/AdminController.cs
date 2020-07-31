@@ -230,26 +230,39 @@ namespace lms_with_moodle.Controllers
                     newSchool.Moodle_Id = schoolMoodleId;
 
                     string baseIdsStr = "";
+                    string studyFieldIdsStr = "";
+                    string gradeIdsStr = "";
+
                     foreach (var id in inputData.BaseIds)
                     {
                         baseIdsStr += id + ",";
 
                         BaseModel baseModel = appDbContext.Bases.Where(x => x.Id == id).FirstOrDefault();
-                        int baseMoodleId = await moodleApi.CreateCategory(baseModel.BaseName , schoolMoodleId , schoolMoodleId);
+                        int baseMoodleId = await moodleApi.CreateCategory(baseModel.BaseName , schoolMoodleId);
 
                         List<StudyFieldModel> studyFields = appDbContext.StudyFields.Where(x => x.Base_Id == id).ToList();
                         if(studyFields != null)
                         {
-                            foreach (var studyField in studyFields)
+                            foreach (var studyFieldId in inputData.StudyFieldIds)
                             {
-                                if(inputData.StudyFieldIds.Find(x => x == studyField.Id) != -1)
+                                studyFieldIdsStr += studyFieldId + ",";
+
+                                StudyFieldModel study = studyFields.Where(x => x.Id == studyFieldId).FirstOrDefault();
+                                int studyFMoodleId = await moodleApi.CreateCategory(study.StudyFieldName , baseMoodleId);
+
+                                List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.StudyField_Id == studyFieldId).ToList();
+                                foreach (var gradeModel in gradeModels)
                                 {
-                                    List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.StudyField_Id == studyField.Id).ToList();
-                                    foreach (var grade in gradeModels)
+                                    //Just add grades in selected studyField
+                                    int gradeId = inputData.GradeIds.Where(x => x == gradeModel.Id).FirstOrDefault();
+                                    if(gradeId > 0)
                                     {
-                                        if(inputData.GradeIds.Find(x => x == grade.Id) != -1)
+                                        gradeIdsStr += gradeId + ",";
+                                        int gradeIdMoodle = await moodleApi.CreateCategory(gradeModel.GradeName  , studyFMoodleId);
+                                        List<LessonModel> lessonModels = appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList();
+                                        foreach (var lesson in lessonModels)
                                         {
-                                            await moodleApi.CreateCategory(grade.GradeName , schoolMoodleId , baseMoodleId);
+                                            await moodleApi.CreateCourse(lesson.LessonName ,gradeIdMoodle );
                                         }
                                     }
                                 }
@@ -260,35 +273,24 @@ namespace lms_with_moodle.Controllers
                             List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.Base_Id == id).ToList();
                             foreach (var grade in gradeModels)
                             {
-                                if(inputData.GradeIds.Find(x => x == grade.Id) != -1)
+                                if(inputData.GradeIds.Where(x => x == grade.Id).Count() >= 0)
                                 {
-                                    await moodleApi.CreateCategory(grade.GradeName , schoolMoodleId , baseMoodleId);
+                                    await moodleApi.CreateCategory(grade.GradeName , baseMoodleId);
                                 }
                             }
                         }
 
                     }
 
-                    string studyFieldIdsStr = "";
-                    foreach (var id in inputData.StudyFieldIds)
-                    {
-                        studyFieldIdsStr += id + ",";
-                    }
-
-                    string gadeIdsStr = "";
-                    foreach (var id in inputData.GradeIds)
-                    {
-                        gadeIdsStr += id + ",";
-                    }
 
                     newSchool.StudyFields = studyFieldIdsStr;
                     newSchool.Bases = baseIdsStr;
-                    newSchool.Grade = gadeIdsStr;
+                    newSchool.Grade = gradeIdsStr;
 
                     appDbContext.Schools.Add(newSchool);
                     appDbContext.SaveChanges();
 
-                    newSchool.Id = appDbContext.Schools.OrderBy(x => x.Id).FirstOrDefault().Id;
+                    newSchool.Id = appDbContext.Schools.OrderByDescending(x => x.Id).FirstOrDefault().Id;
 
 
 
@@ -510,8 +512,8 @@ namespace lms_with_moodle.Controllers
 
                 if(study != null)
                 {
-                    model.Base_Id = (model.Base_Id != 0 ? model.Base_Id : study.Base_Id);
-                    model.StudyFieldName = (model.StudyFieldName != "" ? model.StudyFieldName : study.StudyFieldName);
+                    study.Base_Id = (model.Base_Id != 0 ? model.Base_Id : study.Base_Id);
+                    study.StudyFieldName = (model.StudyFieldName != "" ? model.StudyFieldName : study.StudyFieldName);
 
                     appDbContext.StudyFields.Update(model);
                     appDbContext.SaveChanges();
@@ -578,10 +580,14 @@ namespace lms_with_moodle.Controllers
             GradeModel newStudyF = model;
             try
             {
-                appDbContext.Grades.Add(newStudyF);
-                await appDbContext.SaveChangesAsync();
+                if(appDbContext.Grades.Where(x => x.GradeName == model.GradeName).FirstOrDefault() == null)
+                {
+                    appDbContext.Grades.Add(newStudyF);
+                    await appDbContext.SaveChangesAsync();
 
-                return Ok(appDbContext.Grades.OrderBy(x => x.Id).FirstOrDefault());
+                    return Ok(appDbContext.Grades.OrderByDescending(x => x.Id).FirstOrDefault());
+                }
+                return BadRequest("نام انتخابی برای پایه تکراری است");
             }
             catch(Exception ex)
             {
@@ -594,14 +600,25 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> EditGrades([FromBody]GradeModel model)
+        public IActionResult EditGrades([FromBody]GradeModel model)
         {
             try
             {
-                appDbContext.Grades.Update(model);
-                await appDbContext.SaveChangesAsync();
+                GradeModel grade = appDbContext.Grades.Where(x => x.Id == model.Id).FirstOrDefault();
 
-                return Ok(true);
+                if(grade != null && appDbContext.Grades.Where(x => x.GradeName == model.GradeName).FirstOrDefault() == null)
+                {
+                    grade.Base_Id = (model.Base_Id != 0 ? model.Base_Id : grade.Base_Id);
+                    grade.GradeName = (model.GradeName != "" ? model.GradeName : grade.GradeName);
+                    grade.StudyField_Id = (model.StudyField_Id != 0 ? model.StudyField_Id : grade.StudyField_Id);
+
+                    appDbContext.Grades.Update(grade);
+                    appDbContext.SaveChanges();
+
+                    return Ok(true);
+                }
+
+                 return BadRequest("پایه ای انتخاب نشده است");
             }
             catch(Exception ex)
             {
@@ -663,7 +680,7 @@ namespace lms_with_moodle.Controllers
                 appDbContext.Lessons.Add(newStudyF);
                 await appDbContext.SaveChangesAsync();
 
-                return Ok(appDbContext.Lessons.OrderBy(x => x.Id).FirstOrDefault());
+                return Ok(appDbContext.Lessons.OrderByDescending(x => x.Id).FirstOrDefault());
             }
             catch(Exception ex)
             {
@@ -676,14 +693,26 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> EditLessons([FromBody]LessonModel model)
+        public IActionResult EditLessons([FromBody]LessonModel model)
         {
             try
             {
-                appDbContext.Lessons.Update(model);
-                await appDbContext.SaveChangesAsync();
+                LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == model.Id).FirstOrDefault();
 
-                return Ok(true);
+                if(lesson != null)
+                {
+                    lesson.BookCode = (model.BookCode != "" ? model.BookCode : lesson.BookCode);
+                    lesson.Grade_Id = (model.Grade_Id != 0 ? model.Grade_Id : lesson.Grade_Id);
+                    lesson.LessonName = (model.LessonName != "" ? model.LessonName : lesson.LessonName);
+                    lesson.Vahed = (model.Vahed != 0 ? model.Vahed : lesson.Vahed);
+
+                    appDbContext.Lessons.Update(lesson);
+                    appDbContext.SaveChanges();
+
+                    return Ok(true);
+                }
+
+                return BadRequest("درسی انتخاب نشده است");
             }
             catch(Exception ex)
             {

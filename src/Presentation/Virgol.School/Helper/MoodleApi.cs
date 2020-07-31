@@ -272,7 +272,7 @@ namespace lms_with_moodle.Helper
         //-------Courses---------
         #region Courses
 
-        public async Task<int> CreateCourse(string CourseName , int schoolMoodleId , int CategoryId = 1)
+        public async Task<int> CreateCourse(string CourseName , int CategoryId = 1)
         {
             try
             {
@@ -280,8 +280,8 @@ namespace lms_with_moodle.Helper
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
                 "&courses[0][fullname]=" + CourseName + 
                 "&courses[0][shortname]=" + CourseName + 
-                "&courses[0][categoryid]=" + CategoryId +
-                "&courses[0][idnumber]=" + schoolMoodleId ;
+                "&courses[0][categoryid]=" + CategoryId;
+                //"&courses[0][idnumber]=" + schoolMoodleId ;
 
                 HttpResponseModel Response = await sendData(data);
                 string result = JsonConvert.DeserializeObject <List<CourseDetail_moodle>> (Response.Message)[0].id; 
@@ -471,15 +471,14 @@ namespace lms_with_moodle.Helper
         //-------Categories------
         #region Categories
         
-        public async Task<int> CreateCategory(string Name , int schoolMoodleId , int ParentId = 0)
+        public async Task<int> CreateCategory(string Name , int ParentId = 0)
         {
             try
             {
                 string FunctionName = "core_course_create_categories";
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
                 "&categories[0][name]=" + Name + 
-                "&categories[0][parent]=" + ParentId +
-                "&categories[0][idnumber]=" + schoolMoodleId ;
+                "&categories[0][parent]=" + ParentId;
 
                 HttpResponseModel Response = await sendData(data);
                 int categoryId = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (Response.Message)[0].id; 
@@ -512,12 +511,44 @@ namespace lms_with_moodle.Helper
                 return false;
             }
         }
+
+
+        ///<summary>
+        ///Delete all content in Category
+        ///</summary>
         public async Task<bool> DeleteCategory(int CategoryId)
         {
             try
             {
                 string FunctionName = "core_course_delete_categories";
-                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&categories[0][id]=" + CategoryId + "&categories[0][newparent]=1";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
+                "&categories[0][id]=" + CategoryId + 
+                "&categories[0][recursive]=1";
+
+                HttpResponseModel Response = await sendData(data);
+                string error = Response.Message; 
+
+                return (error == "null" ? true : false);
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        } 
+
+        ///<summary>
+        ///Delete selected Category then move its content to newParentId
+        ///</summary>
+        public async Task<bool> DeleteCategory(int CategoryId , int newParentId)
+        {
+            try
+            {
+                string FunctionName = "core_course_delete_categories";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
+                "&categories[0][id]=" + CategoryId + 
+                "&categories[0][newparent]=" + newParentId;
 
                 HttpResponseModel Response = await sendData(data);
                 string error = Response.Message; 
@@ -532,10 +563,10 @@ namespace lms_with_moodle.Helper
             }
         } 
         
-        public async Task<List<CategoryDetail_moodle>> GetAllCategories(int schoolId)
+        public async Task<List<CategoryDetail_moodle>> GetAllCategories(int schoolMoodleId)
         {
             string FunctionName = "core_course_get_categories";
-            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&&criteria[0][key]=idnumber&criteria[0][value]="+ schoolId;
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&criteria[0][key]=id&criteria[0][value]="+ schoolMoodleId;
 
             HttpResponseModel response = await sendData(data);
             List<CategoryDetail_moodle> category = JsonConvert.DeserializeObject <List<CategoryDetail_moodle>> (response.Message); 
@@ -545,7 +576,9 @@ namespace lms_with_moodle.Helper
         public async Task<CategoryDetail> getCategoryDetail(int CategoryId)
         {
             string FunctionName = "core_course_get_categories";
-            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&criteria[0][key]=id&criteria[0][value]=" + CategoryId;
+            string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
+            "&criteria[0][key]=id&criteria[0][value]=" + CategoryId +
+            "&addsubcategories=0";
 
             try
             {

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 public class GradeModel {
     public int Id {get; set;}
     public int StudyField_Id {get; set;}
@@ -7,4 +9,8 @@ public class GradeModel {
     ///</summary>
     public int Base_Id {get; set;}
     public string GradeName {get; set;}
+
+    [NotMapped]
+    public int GradeMoodleId {get; set;}
+    
 }

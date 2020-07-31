@@ -166,34 +166,34 @@ namespace lms_with_moodle.Controllers
 
 #region Grades
         [HttpGet]
-        [ProducesResponseType(typeof(List<GradeReport>), 200)]
+        [ProducesResponseType(typeof(List<ScoresReport>), 200)]
         public async Task<IActionResult> GetGradesInCourse(int CourseId) 
         {
             try
             {
                 List<AssignmentGrades_moodle> allGrades = await moodleApi.getAllGradesInCourse(CourseId);
-                List<GradeReport> gradeReports = new List<GradeReport>();
+                List<ScoresReport> gradeReports = new List<ScoresReport>();
 
                 foreach(var grade in allGrades)
                 {
-                    GradeReport gradeReport = new GradeReport();
+                    ScoresReport gradeReport = new ScoresReport();
 
-                    List<GradeDetails> gradeDetails = new List<GradeDetails>();
+                    List<ScoreDetails> scoreDetails = new List<ScoreDetails>();
                     float totalGrade = 0;
 
                     foreach(var detail in grade.gradeitems.Where(x => x.itemmodule == "quiz" || x.itemmodule == "assign"))
                     {
-                        GradeDetails gradeDetail = new GradeDetails();
+                        ScoreDetails gradeDetail = new ScoreDetails();
                         gradeDetail.ActivityGrade = detail.graderaw;
                         gradeDetail.ActivityName = detail.itemname;
 
-                        gradeDetails.Add(gradeDetail);
+                        scoreDetails.Add(gradeDetail);
 
                         totalGrade += detail.graderaw;
                     }
 
                     gradeReport.FullName = grade.userfullname;
-                    gradeReport.gradeDetails = gradeDetails;
+                    gradeReport.scoreDetails = scoreDetails;
                     gradeReport.TotalGrade = totalGrade;
 
                     gradeReports.Add(gradeReport);
