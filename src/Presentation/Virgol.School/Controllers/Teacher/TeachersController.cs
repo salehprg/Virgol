@@ -35,12 +35,15 @@ namespace lms_with_moodle.Controllers
         private readonly AppSettings appSettings;
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
+        private readonly RoleManager<IdentityRole<int>> roleManager;
 
         MoodleApi moodleApi;
         LDAP_db ldap;
+        int UserId;
         
         public TeacherController(AppDbContext dbContext
                                 , IOptions<AppSettings> _appsetting
+                                , RoleManager<IdentityRole<int>> _roleManager
                                 , UserManager<UserModel> _userManager)
         {
             appDbContext = dbContext;
@@ -49,7 +52,33 @@ namespace lms_with_moodle.Controllers
 
             moodleApi = new MoodleApi(appSettings);
             ldap = new LDAP_db(appSettings);
+
+            string IdNumber = userManager.GetUserId(User);
+            UserId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
         }
+
+#region News
+        [HttpGet]
+        [ProducesResponseType(typeof(NewsModel), 200)]
+        public IActionResult GetIncommingNews()
+        {
+            int teacherRoleId = roleManager.FindByNameAsync("Teacher").Result.Id;
+            int adminRoleId = roleManager.FindByNameAsync("Admin").Result.Id;
+
+            int schoolId = appDbContext.UserDetails.Where(x => x.UserId == UserId).FirstOrDefault().SchoolId;
+            int mangerId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().ManagerId;
+
+            //Check first Teacher has access to news
+            //Then check for authur , newsAuthur should be manager of School that teacher assign to
+            //Third check for authur , if authur admin this is allowed news
+            List<NewsModel> allowedNews = appDbContext.News.Where(x => x.AccessRoleId.Contains(teacherRoleId.ToString()) && 
+                                                                        (x.AutherId == mangerId || x.AccessRoleId.Contains(teacherRoleId.ToString())))
+                                                                        .ToList();
+
+            return Ok(allowedNews);
+        }
+
+#endregion
 
 #region Meeting
 

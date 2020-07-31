@@ -57,6 +57,112 @@ namespace lms_with_moodle.Controllers
         }
 
 
+#region News
+        [HttpGet]
+        [ProducesResponseType(typeof(List<NewsModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetNews()
+        {
+            try
+            {
+                string IdNumber = userManager.GetUserId(User);
+                int userId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
+
+                return Ok(appDbContext.News.Where(x => x.AutherId == userId).ToList());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [ProducesResponseType(typeof(NewsModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> CreateNews([FromBody]NewsModel model)
+        {
+            NewsModel newsModel = model;
+            try
+            {
+                string accessStr = "";
+                foreach (var access in model.AccessRoleIdList)
+                {
+                    accessStr += access + ",";
+                }
+
+                newsModel.AccessRoleId = accessStr;
+                string IdNumber = userManager.GetUserId(User);
+                int userId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
+
+                newsModel.AutherId = userId;
+                newsModel.CreateTime = DateTime.Now;
+
+                appDbContext.News.Add(newsModel);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(appDbContext.News.OrderByDescending(x => x.Id).FirstOrDefault());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult EditNews([FromBody]NewsModel model)
+        {
+            try
+            {
+                NewsModel newsModel = model;
+
+                string accessStr = "";
+                foreach (var access in model.AccessRoleIdList)
+                {
+                    accessStr += access + ",";
+                }
+
+                newsModel.AccessRoleId = accessStr;
+
+                appDbContext.News.Update(newsModel);
+                appDbContext.SaveChanges();
+
+                return BadRequest("رشته ای انتخاب نشده است");
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveNews([FromBody]int newsId)
+        {
+            try
+            {
+                NewsModel news = appDbContext.News.Where(x => x.Id == newsId).FirstOrDefault();
+                appDbContext.News.Remove(news);
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion
+
 #region Manager
 
         [HttpGet]
@@ -346,8 +452,8 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                int catId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().Moodle_Id;
-                bool removeCat = await moodleApi.DeleteCategory(catId);
+                int schoolMoodleId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().Moodle_Id;
+                bool removeCat = await moodleApi.DeleteCategory(schoolMoodleId);
 
                 if(removeCat)
                 {
