@@ -312,7 +312,11 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Schools.ToList());
+                string userIdnumber = userManager.GetUserId(User);
+                int userId = appDbContext.Users.Where(x => x.MelliCode == userIdnumber).FirstOrDefault().Id;
+                AdminModel adminModel = appDbContext.AdminModels.Where(x => x.UserId == userId).FirstOrDefault();
+
+                return Ok(appDbContext.Schools.Where(x => x.SchoolType == adminModel.SchoolsType).ToList());
             }
             catch(Exception ex)
             {

@@ -4,6 +4,11 @@ public class SchoolModel {
     public int ManagerId {get; set;}
     public string SchoolName {get; set;}
     public int SchoolIdNumber {get; set;}
+
+    ///<summary>
+    ///Get schoolType from SchoolType Class
+    ///</summary>
+    public int SchoolType {get; set;}
     public bool SelfSign {get; set;}
 
 }

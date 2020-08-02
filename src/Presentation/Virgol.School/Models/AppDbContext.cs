@@ -31,6 +31,7 @@ namespace Models
         public DbSet<School_Bases> School_Bases {get; set;}
         public DbSet<School_Grades> School_Grades {get; set;}
         public DbSet<School_StudyFields> School_StudyFields {get; set;}
+        public DbSet<AdminModel> AdminModels {get; set;}
 
 
         // protected override void OnModelCreating(ModelBuilder builder)
