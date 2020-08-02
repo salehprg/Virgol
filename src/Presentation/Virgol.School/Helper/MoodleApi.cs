@@ -272,13 +272,13 @@ namespace lms_with_moodle.Helper
         //-------Courses---------
         #region Courses
 
-        public async Task<int> CreateCourse(string CourseName , int CategoryId = 1)
+        public async Task<int> CreateCourse(string CourseName , string displayName , int CategoryId = 1)
         {
             try
             {
                 string FunctionName = "core_course_create_courses";
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
-                "&courses[0][fullname]=" + CourseName + 
+                "&courses[0][fullname]=" + displayName + 
                 "&courses[0][shortname]=" + CourseName + 
                 "&courses[0][categoryid]=" + CategoryId;
                 //"&courses[0][idnumber]=" + schoolMoodleId ;

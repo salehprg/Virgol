@@ -1,4 +1,4 @@
-public class SchoolClass {
+public class School_Class {
     public int Id {get; set;}
     public int School_Id {get; set;}
     public int Moodle_Id {get; set;}

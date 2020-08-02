@@ -426,7 +426,7 @@ namespace lms_with_moodle.Controllers
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
                 await schoolDataHelper.CreateSchool_Grade(inputData.BaseIds , inputData.StudyFieldIds , inputData.GradeIds , schoolInfo.Moodle_Id);
                 
-                //Remove deleted data
+                //Remove deleted data from moodle
                 foreach (var prBase in previousBases)
                 {
                     await moodleApi.DeleteCategory(prBase.Moodle_Id);
@@ -463,14 +463,19 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                int schoolMoodleId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().Moodle_Id;
-                bool removeCat = await moodleApi.DeleteCategory(schoolMoodleId);
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+
+                bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
 
                 if(removeCat)
                 {
-                    SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
-
+    
+                    appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
+                    appDbContext.School_StudyFields.RemoveRange(appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList());
+                    appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
+                    appDbContext.School_Classes.RemoveRange(appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.Schools.Remove(school);
+
                     appDbContext.SaveChanges();
 
                     return Ok(true);

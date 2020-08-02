@@ -77,11 +77,6 @@ public class SchoolDataHelper {
 
                                 school_Grades.Add(school_Grade);
 
-                                // List<LessonModel> lessonModels = appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList();
-                                // foreach (var lesson in lessonModels)
-                                // {
-                                //     await moodleApi.CreateCourse(lesson.LessonName ,gradeIdMoodle );
-                                // }
                             }
                         }
                     }

@@ -24,7 +24,7 @@ const CategoryCard = (props) => {
     return (
         <div className={`min-w-200 category relative h-48 bg-${mainColor()} rounded-xl flex flex-col justify-evenly items-center`}>
             <span className="text-xl text-white">{props.title}</span>
-            <Link className={`w-2/3 text-center py-1 text-${mainColor()} rounded-full font-vb bg-white`} to={`/category/${props.id}`}>بیشتر</Link>
+            <Link className={`w-2/3 text-center py-1 text-${mainColor()} rounded-full font-vb bg-white`} to={props.link}>بیشتر</Link>
 
             <div className={`w-full h-24 px-4 overflow-hidden category-reveal bg-${lightColor()} rounded-xl absolute bottom-0 flex flex-col justify-evenly items-center`}>
                 <div className="w-full my-1 flex flex-row justify-start items-center">

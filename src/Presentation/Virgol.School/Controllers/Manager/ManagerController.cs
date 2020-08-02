@@ -236,9 +236,9 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<SchoolClass>), 200)]
+        [ProducesResponseType(typeof(List<School_Class>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult ClassList()
+        public IActionResult ClassList(int gradeId)
         {
             try
             {   
@@ -246,7 +246,7 @@ namespace lms_with_moodle.Controllers
                 int managerId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().Id;
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
-                return Ok(appDbContext.SchoolClasses.Where(x => x.School_Id == school.Id));
+                return Ok(appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Grade_Id == gradeId));
             }
             catch(Exception ex)
             {
@@ -262,35 +262,41 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                int grade_moodleId = appDbContext.School_Grades.Where(x => x.Grade_Id == classModel.gradeId).FirstOrDefault().Moodle_Id;
+
                 string ManagerIdNumber = userManager.GetUserId(User);
                 int managerId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().Id;
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
-                int classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , classModel.grade_MoodleId);
+                int classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , grade_moodleId);
                 if(classMoodleId != -1)
                 {
-                    string gradeName = moodleApi.getCategoryDetail(classModel.grade_MoodleId).Result.Name;
+                    string gradeName = moodleApi.getCategoryDetail(grade_moodleId).Result.Name;
                     //Retreive gradeId in our database
                     int gradeId = appDbContext.Grades.Where(x => x.GradeName == gradeName).FirstOrDefault().Id;
 
                     List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList();
                     foreach (var lesson in lessons)
                     {
-                        await moodleApi.CreateCourse(lesson.LessonName , classMoodleId);
+                        await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + classMoodleId + ")", lesson.LessonName , classMoodleId);
                     }
 
-                    SchoolClass schoolClass = new SchoolClass();
+                    School_Class schoolClass = new School_Class();
                     schoolClass.ClassName = classModel.ClassName;
                     schoolClass.Grade_Id = gradeId;
-                    schoolClass.Grade_MoodleId = classModel.grade_MoodleId;
+                    schoolClass.Grade_MoodleId = grade_moodleId;
                     schoolClass.Moodle_Id = classMoodleId;
                     schoolClass.School_Id = school.Id;
 
-                    appDbContext.SchoolClasses.Add(schoolClass);
+                    appDbContext.School_Classes.Add(schoolClass);
                     appDbContext.SaveChanges();
+
+                    schoolClass.Id = appDbContext.School_Classes.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+
+                    return Ok(schoolClass);
                 }
 
-                return Ok(true);
+                return BadRequest("ایجاد کلاس با مشکل مواجه شد");
             }
             catch(Exception ex)
             {
@@ -299,36 +305,42 @@ namespace lms_with_moodle.Controllers
         }
     
         [HttpPost]
-        [ProducesResponseType(typeof(SchoolClass), 200)]
+        [ProducesResponseType(typeof(School_Class), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> EditClass([FromBody]ClassData inputClassData)
         {
             try
             {
-                SchoolClass schoolClass = appDbContext.SchoolClasses.Where(x => x.Id == inputClassData.Id).FirstOrDefault();
+                string ManagerIdNumber = userManager.GetUserId(User);
+                int managerId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().Id;
+
+                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+
+                School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == inputClassData.Id).FirstOrDefault();
+                int grade_moodleId = appDbContext.School_Grades.Where(x => x.Grade_Id == inputClassData.gradeId).FirstOrDefault().Moodle_Id;
 
                 schoolClass.ClassName = (inputClassData.ClassName != "" ? inputClassData.ClassName : schoolClass.ClassName);
                 
                 if(schoolClass != null)
                 {
-                    if(inputClassData.grade_MoodleId != 0 && inputClassData.grade_MoodleId != schoolClass.Grade_MoodleId)
+                    if(grade_moodleId != 0 && grade_moodleId != schoolClass.Grade_MoodleId)
                     {
                         await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
 
-                        int newClassMoodleId = await moodleApi.CreateCategory(schoolClass.ClassName , inputClassData.grade_MoodleId);
+                        int newClassMoodleId = await moodleApi.CreateCategory(schoolClass.ClassName , grade_moodleId);
                         if(newClassMoodleId != -1)
                         {
-                            string gradeName = moodleApi.getCategoryDetail(inputClassData.grade_MoodleId).Result.Name;
+                            string gradeName = moodleApi.getCategoryDetail(grade_moodleId).Result.Name;
                             int gradeId = appDbContext.Grades.Where(x => x.GradeName == gradeName).FirstOrDefault().Id;
 
                             List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList();
                             foreach (var lesson in lessons)
                             {
-                                await moodleApi.CreateCourse(lesson.LessonName , newClassMoodleId);
+                                await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + newClassMoodleId + ")" , lesson.LessonName , newClassMoodleId);
                             }
 
                             schoolClass.Grade_Id = gradeId;
-                            schoolClass.Grade_MoodleId = inputClassData.grade_MoodleId;
+                            schoolClass.Grade_MoodleId = grade_moodleId;
                             schoolClass.Moodle_Id = newClassMoodleId;
                         }         
                     }
@@ -342,7 +354,7 @@ namespace lms_with_moodle.Controllers
                         await moodleApi.EditCategory(oldClass);
                     }
 
-                    appDbContext.SchoolClasses.Update(schoolClass);
+                    appDbContext.School_Classes.Update(schoolClass);
                     appDbContext.SaveChanges();
                 }
 
@@ -362,10 +374,10 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                SchoolClass schoolClass = appDbContext.SchoolClasses.Where(x => x.Id == classId).FirstOrDefault();
+                School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
                 await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
 
-                appDbContext.SchoolClasses.Remove(schoolClass);
+                appDbContext.School_Classes.Remove(schoolClass);
                 appDbContext.SaveChanges();
 
                 return Ok(true);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { confirmUser, getAllCategory } from "../../../../_actions/managerActions";
+import { confirmUser } from "../../../../_actions/managerActions";
 import {check, loading} from "../../../../assets/icons";
 import AuthCard from "./AuthCard";
 import history from "../../../../history";
@@ -13,7 +13,7 @@ class Confirm extends React.Component {
 
     async componentDidMount() {
         this.setState({loading: true})
-        await this.props.getAllCategory(this.props.token);
+        //await this.props.getAllCategory(this.props.token);
         this.setState({ cat: this.props.categories.find(el => el.id === this.props.user.userDetail.baseId), loading: false });
     }
 
@@ -95,4 +95,4 @@ const mapStateToProps = (state, ownProps) => {
     return { token: state.auth.userInfo.token, user, categories: state.managerData.categories}
 }
 
-export default connect(mapStateToProps, { confirmUser, getAllCategory })(Confirm);
+export default connect(mapStateToProps, { confirmUser })(Confirm);
