@@ -28,6 +28,9 @@ namespace Models
         public DbSet<GradeModel> Grades {get; set;}
         public DbSet<LessonModel> Lessons {get; set;}
         public DbSet<SchoolClass> SchoolClasses {get; set;}
+        public DbSet<School_Bases> School_Bases {get; set;}
+        public DbSet<School_Grades> School_Grades {get; set;}
+        public DbSet<School_StudyFields> School_StudyFields {get; set;}
 
 
         // protected override void OnModelCreating(ModelBuilder builder)

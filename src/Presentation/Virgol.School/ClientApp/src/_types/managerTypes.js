@@ -1,5 +1,6 @@
 export const CONFIRM = 'CONFIRM';
 export const GET_NEW_USERS = 'GET_NEW_USERS';
+export const GET_ALL_GRADES = 'GET_ALL_GRADES';
 export const GET_ALL_CATEGORY = 'GET_ALL_CATEGORY';
 export const GET_ALL_COURSES = 'GET_ALL_COURSES';
 export const GET_ALL_TEACHERS = 'GET_ALL_TEACHERS';

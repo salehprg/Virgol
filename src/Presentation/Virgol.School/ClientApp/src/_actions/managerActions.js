@@ -45,6 +45,23 @@ export const getNewUsers = token => async dispatch => {
 
 }
 
+export const getAllGrades = token => async dispatch => {
+
+    try {
+        console.log("grades");
+        const response = await lms.get("/Manager/GradesList", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.GET_ALL_GRADES, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا دربرقراری اتصال"))
+    }
+
+}
+
 export const getAllCategory = token => async dispatch => {
 
     try {

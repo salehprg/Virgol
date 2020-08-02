@@ -39,7 +39,6 @@ namespace lms_with_moodle.Controllers
 
         MoodleApi moodleApi;
         LDAP_db ldap;
-        int UserId;
         
         public TeacherController(AppDbContext dbContext
                                 , IOptions<AppSettings> _appsetting
@@ -53,8 +52,6 @@ namespace lms_with_moodle.Controllers
             moodleApi = new MoodleApi(appSettings);
             ldap = new LDAP_db(appSettings);
 
-            string IdNumber = userManager.GetUserId(User);
-            UserId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
         }
 
 #region News
@@ -62,10 +59,12 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(NewsModel), 200)]
         public IActionResult GetIncommingNews()
         {
+            string IdNumber = userManager.GetUserId(User);
+            int schoolId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().SchoolId;
+
             int teacherRoleId = roleManager.FindByNameAsync("Teacher").Result.Id;
             int adminRoleId = roleManager.FindByNameAsync("Admin").Result.Id;
 
-            int schoolId = appDbContext.UserDetails.Where(x => x.UserId == UserId).FirstOrDefault().SchoolId;
             int mangerId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().ManagerId;
 
             //Check first Teacher has access to news

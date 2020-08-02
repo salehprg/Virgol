@@ -11,7 +11,7 @@ export const login = formValues => async dispatch => {
         dispatch({ type: Type.LOGIN, payload: response.data })
 
         switch (response.data.userType) {
-            case 0: {
+            case 1: {
                 history.push('/s/dashboard');
                 break;
             }
@@ -21,6 +21,7 @@ export const login = formValues => async dispatch => {
             }
             case 3: {
                 history.push('/m/dashboard');
+                break;
             }
         }
 

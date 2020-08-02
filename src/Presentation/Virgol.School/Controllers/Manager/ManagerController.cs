@@ -33,7 +33,6 @@ namespace lms_with_moodle.Controllers
 
         MoodleApi moodleApi;
         LDAP_db ldap;
-        int UserId;
         
         public ManagerController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -50,8 +49,7 @@ namespace lms_with_moodle.Controllers
             moodleApi = new MoodleApi(appSettings);
             ldap = new LDAP_db(appSettings);
 
-            string IdNumber = userManager.GetUserId(User);
-            UserId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
+            
         }
 
 
@@ -73,6 +71,9 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(NewsModel), 200)]
         public IActionResult GetMyNews()
         {
+            string IdNumber = userManager.GetUserId(User);
+            int UserId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
+
             List<NewsModel> myNews = appDbContext.News.Where(x => x.AutherId == UserId).ToList();
 
             return Ok(myNews);
@@ -120,6 +121,9 @@ namespace lms_with_moodle.Controllers
             NewsModel newsModel = model;
             try
             {
+                string IdNumber = userManager.GetUserId(User);
+                int UserId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
+
                 string accessStr = "";
                 foreach (var access in model.AccessRoleIdList)
                 {
@@ -210,15 +214,14 @@ namespace lms_with_moodle.Controllers
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
-                List<string> grades = school.Grade.Split(",").ToList();
-                grades.RemoveAt(grades.Count - 1);
+                List<School_Grades> grades = appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList();
 
                 List<GradeModel> gradeModels = new List<GradeModel>();
                 List<CategoryDetail_moodle> categoryDetails = await moodleApi.GetAllCategories(school.Moodle_Id);
 
-                foreach (var gradeId in grades)
+                foreach (var grade in grades)
                 {   
-                    GradeModel gradeModel = appDbContext.Grades.Where(x => x.Id == int.Parse(gradeId)).FirstOrDefault();
+                    GradeModel gradeModel = appDbContext.Grades.Where(x => x.Id == grade.Grade_Id).FirstOrDefault();
                     gradeModel.GradeMoodleId = categoryDetails.Where(x => x.name == gradeModel.GradeName).FirstOrDefault().id;
                     
                     gradeModels.Add(gradeModel);
@@ -385,22 +388,12 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                
-                int roleId =  roleManager.Roles.Where(x => x.Name == "Manager").FirstOrDefault().Id;
-                
-                var userInRole = appDbContext.UserRoles.Where(x => x.RoleId == roleId);
+                string ManagerIdNumber = userManager.GetUserId(User);
+                int schoolId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().SchoolId;
 
-                List<UserModel> AllStudent = appDbContext.Users.Where(x => !x.IsTeacher && x.ConfirmedAcc && x.UserName != "Admin").ToList();
-                List<UserModel> Result = new List<UserModel>();
+                List<UserModel> AllStudent = appDbContext.Users.Where(x => x.userTypeId == UserType.Student && x.ConfirmedAcc && x.SchoolId == schoolId).ToList();
 
-               //Remove Manager from result
-                foreach(var Student in AllStudent)
-                {
-                    if(userInRole.Where(x => x.UserId == Student.Id).FirstOrDefault() == null)
-                        Result.Add(Student);
-                }
-
-                return Ok(Result);
+                return Ok(AllStudent);
             }
             catch(Exception ex)
             {
@@ -464,7 +457,7 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    var errors = await CreateBulkUser(false , "BulkUserData.xlsx" , CategoryId);
+                    var errors = await CreateBulkUser(UserType.Student , "BulkUserData.xlsx" , CategoryId);
                     return Ok(errors);
                 }
 
@@ -514,7 +507,7 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    var errors = CreateBulkUser(true , "BulkTeacher.xlsx");
+                    var errors = CreateBulkUser(UserType.Teacher , "BulkTeacher.xlsx");
                     return Ok(errors);
                 }
                 return BadRequest("آپلود فایل با مشکل مواجه شد");
@@ -731,7 +724,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Users.Where(user => user.IsTeacher).ToList());
+                return Ok(appDbContext.Users.Where(user => user.userTypeId == UserType.Teacher).ToList());
             }
             catch(Exception ex)
             {
@@ -747,7 +740,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 teacher.UserName = teacher.MelliCode;
-                teacher.IsTeacher = true;
+                teacher.userTypeId = UserType.Teacher;
                 teacher.ConfirmedAcc = true;
                 
                 IdentityResult resultCreate = userManager.CreateAsync(teacher , teacher.MelliCode).Result;
@@ -1251,8 +1244,11 @@ namespace lms_with_moodle.Controllers
         ///<param name="CategoryId">
         ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
         ///</param>
+        ///<param name="userTypeId">
+        ///Set userTypeId from UserType class Teacher,Student,...
+        ///</param>
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<string[]> CreateBulkUser(bool IsTeacher , string fileName , int CategoryId = -1)
+        public async Task<string[]> CreateBulkUser(int userTypeId , string fileName , int CategoryId = -1)
         {
             //Username and password Default is MelliCode
 
@@ -1290,7 +1286,7 @@ namespace lms_with_moodle.Controllers
 
                         selectedUser.ConfirmedAcc = true;
                         selectedUser.UserName = selectedUser.MelliCode;
-                        selectedUser.IsTeacher = IsTeacher;
+                        selectedUser.userTypeId = userTypeId;
 
                         if(await userManager.FindByNameAsync(selectedUser.UserName) == null)//Check for duplicate Username
                         {
@@ -1309,7 +1305,7 @@ namespace lms_with_moodle.Controllers
                         bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
                         if(result)
                         {
-                            if(userManager.AddToRolesAsync(user , new string[]{"User" , (IsTeacher ? "Teacher" : null)}).Result.Succeeded)
+                            if(userManager.AddToRolesAsync(user , new string[]{"User" , (userTypeId == UserType.Teacher ? "Teacher" : null)}).Result.Succeeded)
                             {
                                 ldap.AddUserToLDAP(user);
                             }
@@ -1318,26 +1314,14 @@ namespace lms_with_moodle.Controllers
                     }
 
                     await moodleApi.CreateUsers(userModels);
-                    List<EnrolUser> enrolUsers = new List<EnrolUser>();
 
                     foreach(var user in userModels)
                     {
                         int userMoodle_id = await moodleApi.GetUserId(user.MelliCode);
                         user.Moodle_Id = userMoodle_id;
                         appDbContext.Users.Update(user);
-
-                        if(IsTeacher)
-                        {
-                            EnrolUser enrolUser = new EnrolUser();
-                            enrolUser.RoleId = 5;
-                            enrolUser.CategoryId = CategoryId;
-                            enrolUser.UserId = userMoodle_id;
-
-                            enrolUsers.Add(enrolUser);
-                        }
                     }
 
-                    await moodleApi.AssignUsersToCourse(enrolUsers);
                     appDbContext.SaveChanges();
                 }
             }

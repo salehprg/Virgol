@@ -8,7 +8,7 @@ namespace Models.User
     public class UserDetail {
         public int Id {get; set;}
         public int UserId {get; set;}
-        public int SchoolId {get; set;}
+        
         [Required]
         public string LatinFirstname {get; set;}
         [Required]

@@ -31,7 +31,7 @@ const CategoryCard = (props) => {
                     <div className={`w-10 h-10 bg-${mainColor()} flex justify-center items-center rounded-full`}>
                         <span className="text-lg text-white">0</span>
                     </div>
-                    <span className="text-white mx-4">دروس</span>
+                    <span className="text-white mx-4">کلاس ها</span>
                 </div>
 
                 <div className="w-full my-1 flex flex-row justify-start items-center">

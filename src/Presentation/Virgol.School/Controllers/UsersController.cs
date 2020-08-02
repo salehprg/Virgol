@@ -157,8 +157,6 @@ namespace lms_with_moodle.Controllers
 
                 UserDetail userDetail = appDbContext.UserDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
 
-                int UserType = -1; // 0 = Student , 1 = Teacher , 2 = Admin , 3 = Manager
-
                 if(!userInformation.ConfirmedAcc)
                 {
                     return StatusCode(423);
@@ -177,27 +175,6 @@ namespace lms_with_moodle.Controllers
                 foreach (var item in userRoleNames)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
-                    if(UserType == -1)
-                    {
-                        switch(item)
-                        {
-                            case "Manager":
-                                UserType = 3;
-                                break;
-
-                            case "Admin":
-                                UserType = 2;
-                                break;
-
-                            case "Teacher":
-                                UserType = 1;
-                                break;
-                            
-                            case "User":
-                                UserType = 0;
-                                break;
-                        }
-                    }
                 }
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWTSecret));
@@ -218,9 +195,10 @@ namespace lms_with_moodle.Controllers
                     category = await moodleApi.getCategoryDetail(baseId);
                 }
 
+                //Get userTypeId information from UserType Class
                 return Ok(new
                 {
-                    UserType = UserType,
+                    UserType = userInformation.userTypeId,
                     category,
                     BaseId = baseId,
                     userInformation,

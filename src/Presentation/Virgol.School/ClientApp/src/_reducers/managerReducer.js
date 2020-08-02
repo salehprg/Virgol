@@ -4,6 +4,7 @@ import { LOGOUT } from "../_types/authTypes";
 const INITIAL_STATE = {
     'newUsers' : null,
     'categories': null,
+    'grades': null,
     'courses': null,
     'teachers' : null,
     'students' : null,
@@ -17,6 +18,9 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === Type.GET_NEW_USERS)
         return { ...state, newUsers: action.payload };
+
+    if (action.type === Type.GET_ALL_GRADES)
+        return { ...state, grades: action.payload };
 
     if (action.type === Type.GET_ALL_CATEGORY)
         return { ...state, categories: action.payload };

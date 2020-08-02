@@ -10,6 +10,7 @@ import SidebarOption from "../sidebar/SidebarOption";
 import history from "../../../history";
 import Header from "../header/Header";
 import Categories from "./category/Categories";
+import Grades from "./grades/Grades";
 import Teachers from "./teachers/Teachers";
 import Students from "./students/Students";
 import Courses from "./course/Courses";
@@ -58,21 +59,29 @@ class Dashboard extends React.Component {
                         active={this.state.active}
                     />
 
-                    <SidebarOption
+                    {/* <SidebarOption
                         title="مقاطع"
                         icon={group}
                         changePanel={this.changePanel}
                         term="categories"
                         active={this.state.active}
-                    />
+                    /> */}
 
                     <SidebarOption
+                        title="پایه های تحصیلی"
+                        icon={group}
+                        changePanel={this.changePanel}
+                        term="grades"
+                        active={this.state.active}
+                    />
+
+                    {/* <SidebarOption
                         title="دروس"
                         icon={courses}
                         changePanel={this.changePanel}
                         term="courses"
                         active={this.state.active}
-                    />
+                    /> */}
 
                     <SidebarOption
                         title="معلمان"
@@ -96,6 +105,7 @@ class Dashboard extends React.Component {
 
                     <Route path={this.props.match.url + "/dashboard"} component={Home} />
                     <Route path={this.props.match.url + "/categories"} component={Categories} />
+                    <Route path={this.props.match.url + "/grades"} component={Grades} />
                     <Route path={this.props.match.url + "/courses"} component={Courses} />
                     <Route path={this.props.match.url + "/teachers"} component={Teachers} />
                     <Route path={this.props.match.url + "/students"} component={Students} />
