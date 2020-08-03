@@ -155,7 +155,7 @@ namespace lms_with_moodle.Controllers
             {
                 UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
 
-                UserDetail userDetail = appDbContext.UserDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                StudentDetail userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
 
                 if(!userInformation.ConfirmedAcc)
                 {
@@ -187,8 +187,8 @@ namespace lms_with_moodle.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     ) ;
 
-                UserDetail userdetail = appDbContext.UserDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                int baseId = (userdetail != null ? userdetail.BaseId : -1);
+                StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                int baseId = (studentDetail != null ? studentDetail.BaseId : -1);
                 CategoryDetail category = new CategoryDetail();
                 if(baseId != -1)
                 {
@@ -262,7 +262,7 @@ namespace lms_with_moodle.Controllers
                     int userId = userManager.FindByNameAsync(newUser.MelliCode).Result.Id;
 
                      //These file name Are set by default and its extension should be checked between jpg/png
-                    UserDetail userDetail = new UserDetail{
+                    StudentDetail userDetail = new StudentDetail{
                         ShDocument = _model.MelliCode,
                         Document2 = _model.MelliCode + "_Doc2",
                         BaseId = _model.userDetail.BaseId,
@@ -277,7 +277,7 @@ namespace lms_with_moodle.Controllers
                         UserId = userId
                     };
 
-                    appDbContext.UserDetails.Add(userDetail);
+                    appDbContext.StudentDetails.Add(userDetail);
                     appDbContext.SaveChanges();
                     
                     return Ok(newUser);

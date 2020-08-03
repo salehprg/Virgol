@@ -3,6 +3,8 @@ public class SchoolModel {
     public int Moodle_Id {get; set;}
     public int ManagerId {get; set;}
     public string SchoolName {get; set;}
+    public string SchoolAddress {get; set;}
+    public string PhoneNumber {get; set;}
     public int SchoolIdNumber {get; set;}
 
     ///<summary>

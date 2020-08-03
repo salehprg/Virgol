@@ -32,7 +32,7 @@ namespace lms_with_moodle.Controllers
     [ApiController]
     [Route("api/[controller]/[action]")]
     [Authorize(Roles = "Admin")]
-    public class AdminController : ControllerBase
+    public class AdministratorController : ControllerBase
     {
         private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
@@ -42,7 +42,7 @@ namespace lms_with_moodle.Controllers
 
         MoodleApi moodleApi;
         FarazSmsApi SMSApi;
-        public AdminController(UserManager<UserModel> _userManager 
+        public AdministratorController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
                                 , IOptions<AppSettings> _appsetting
@@ -57,6 +57,109 @@ namespace lms_with_moodle.Controllers
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
         }
+
+#region Functions
+        ///<param name="CategoryId">
+        ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
+        ///</param>
+        ///<param name="userTypeId">
+        ///Set userTypeId from UserType class Teacher,Student,...
+        ///</param>
+        public async Task<IActionResult> CreateBulkBase(string fileName)
+        {
+            //Username and password Default is MelliCode
+
+            //1 - Read data from excel
+            //2 - Check valid data
+            //3 - Add Base to Database
+
+            List<string> errors = new List<string>();
+
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
+            {
+                using (var excelData = ExcelReaderFactory.CreateReader(stream))
+                {
+                    excelData.Read(); //Ignore column header name
+
+                    while (excelData.Read()) //Each row of the file
+                    {
+                        UserDataModel selectedUser = new UserDataModel
+                        {
+                            FirstName = excelData.GetValue(0).ToString(),
+                            LastName = excelData.GetValue(1).ToString(),
+                            MelliCode = excelData.GetValue(2).ToString(),
+                            PhoneNumber = excelData.GetValue(3).ToString(),
+                            Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : ""),
+                            userDetail = new StudentDetail(){
+                                LatinFirstname = excelData.GetValue(5).ToString(),
+                                LatinLastname = excelData.GetValue(6).ToString()
+                            }
+                        };
+                    }
+                }
+            }
+            
+
+            return Ok(true);
+        }
+
+        public async Task<IActionResult> CreateBulkStudyF(string fileName , int BaseId)
+        {
+            //Username and password Default is MelliCode
+
+            //1 - Read data from excel
+            //2 - Check valid data
+            //3 - Add StudyF to Database
+
+            return Ok(true);
+        }
+
+        public async Task<IActionResult> CreateBulkGrades(string fileName , int StudyFId)
+        {
+            //Username and password Default is MelliCode
+
+            //1 - Read data from excel
+            //2 - Check valid data
+            //3 - Add Grade to Database
+
+            return Ok(true);
+        }
+
+        public async Task<IActionResult> CreateBulkLessons(string fileName , int gradeId)
+        {
+            //Username and password Default is MelliCode
+
+            //1 - Read data from excel
+            //2 - Check valid data
+            //3 - Add Lesson to Database
+
+            return Ok(true);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<bool> UploadFile(IFormFile file , string FileName)
+        {
+            bool result = false;
+
+            if (file != null)
+            {
+                if (file.Length > 0)
+                {
+                    string path = Path.Combine(Request.Host.Value, FileName);
+
+                    var fs = new FileStream(Path.Combine("BulkData", FileName), FileMode.Create);
+                    await file.CopyToAsync(fs);
+
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
+#endregion
 
 #region News
         [HttpGet]

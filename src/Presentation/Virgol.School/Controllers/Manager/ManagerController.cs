@@ -53,6 +53,34 @@ namespace lms_with_moodle.Controllers
         }
 
 
+#region CompleteInforamtion
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult CompleteInfo([FromBody]UserModel managerInfo)
+        {
+            try
+            {
+                UserModel originalMInfo = appDbContext.Users.Where(x => x.Id == managerInfo.Id).FirstOrDefault();
+
+                originalMInfo.PhoneNumber = (managerInfo.PhoneNumber != null ? managerInfo.PhoneNumber : originalMInfo.PhoneNumber);
+                originalMInfo.FirstName = (managerInfo.FirstName != null ? managerInfo.FirstName : originalMInfo.FirstName);
+                originalMInfo.LastName = (managerInfo.LastName != null ? managerInfo.LastName : originalMInfo.LastName);
+
+                appDbContext.Users.Update(originalMInfo);
+                appDbContext.SaveChanges();
+
+                return Ok(originalMInfo);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
+#endregion
+
 #region News
 
         [HttpGet]
@@ -425,8 +453,8 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var user in NewUsers)
                 {
-                    UserDetail userDetail = new UserDetail();
-                    userDetail = appDbContext.UserDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
+                    StudentDetail userDetail = new StudentDetail();
+                    userDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
 
                     UserDataModel dataModel= new UserDataModel();
                     dataModel.Id = user.Id;
@@ -548,7 +576,7 @@ namespace lms_with_moodle.Controllers
                 foreach(var id in usersId)
                 {
                     
-                    UserDetail userDetail = appDbContext.UserDetails.Where(x => x.UserId == id).FirstOrDefault();
+                    StudentDetail userDetail = appDbContext.StudentDetails.Where(x => x.UserId == id).FirstOrDefault();
                     var SelectedUser = appDbContext.Users.Where(user => user.Id == id).FirstOrDefault();
                     SelectedUser.ConfirmedAcc = true;
 
@@ -764,12 +792,12 @@ namespace lms_with_moodle.Controllers
 
                     int userId = userManager.FindByNameAsync(teacher.MelliCode).Result.Id;
 
-                    UserDetail userDetail = new UserDetail();
+                    StudentDetail userDetail = new StudentDetail();
                     userDetail = teacher.userDetail;
 
                     if(userDetail != null)
                     {
-                        appDbContext.UserDetails.Add(userDetail);
+                        appDbContext.StudentDetails.Add(userDetail);
                     }
 
                     ldap.AddUserToLDAP(teacher);
@@ -1290,7 +1318,7 @@ namespace lms_with_moodle.Controllers
                             MelliCode = excelData.GetValue(2).ToString(),
                             PhoneNumber = excelData.GetValue(3).ToString(),
                             Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : ""),
-                            userDetail = new UserDetail(){
+                            userDetail = new StudentDetail(){
                                 LatinFirstname = excelData.GetValue(5).ToString(),
                                 LatinLastname = excelData.GetValue(6).ToString()
                             }
