@@ -252,6 +252,7 @@ namespace lms_with_moodle.Controllers
                 
                 newUser.ConfirmedAcc = false;
                 newUser.UserName = _model.MelliCode;
+                newUser.userTypeId = UserType.Student;
                 
                 IdentityResult result = userManager.CreateAsync(newUser , newUser.MelliCode).Result;
                 

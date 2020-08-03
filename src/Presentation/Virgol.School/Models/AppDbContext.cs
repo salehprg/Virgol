@@ -33,6 +33,7 @@ namespace Models
         public DbSet<AdminDetail> AdminDetails {get; set;}
         public DbSet<ManagerDetail> ManagerDetails {get; set;}
         public DbSet<StudentDetail> StudentDetails {get; set;}
+        public DbSet<Class_WeeklySchedule> ClassWeeklySchedules {get; set;}
 
 
         // protected override void OnModelCreating(ModelBuilder builder)

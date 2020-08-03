@@ -48,8 +48,6 @@ public class SchoolDataHelper {
                 {
                     foreach (var studyFieldId in studyFIds)
                     {
-                        
-
                         StudyFieldModel study = studyFields.Where(x => x.Id == studyFieldId).FirstOrDefault();
                         int studyFMoodleId = await moodleApi.CreateCategory(study.StudyFieldName , baseMoodleId);
 
@@ -78,17 +76,6 @@ public class SchoolDataHelper {
                                 school_Grades.Add(school_Grade);
 
                             }
-                        }
-                    }
-                }
-                else
-                {
-                    List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.Base_Id == id).ToList();
-                    foreach (var grade in gradeModels)
-                    {
-                        if(gradeIds.Where(x => x == grade.Id).Count() >= 0)
-                        {
-                            await moodleApi.CreateCategory(grade.GradeName , baseMoodleId);
                         }
                     }
                 }

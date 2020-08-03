@@ -250,7 +250,7 @@ namespace lms_with_moodle.Controllers
                 foreach (var grade in grades)
                 {   
                     GradeModel gradeModel = appDbContext.Grades.Where(x => x.Id == grade.Grade_Id).FirstOrDefault();
-                    gradeModel.GradeMoodleId = categoryDetails.Where(x => x.name == gradeModel.GradeName).FirstOrDefault().id;
+                    gradeModel.NM_GradeMoodleId = categoryDetails.Where(x => x.name == gradeModel.GradeName).FirstOrDefault().id;
                     
                     gradeModels.Add(gradeModel);
                 }

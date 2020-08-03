@@ -555,71 +555,71 @@ namespace lms_with_moodle.Controllers
         }
 
 
-        [HttpPut]
-        [ProducesResponseType(typeof(SchoolModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewBase([FromBody]BaseModel model)
-        {
-            BaseModel newBase = model;
-            try
-            {
-                appDbContext.Bases.Add(newBase);
-                await appDbContext.SaveChangesAsync();
+        // [HttpPut]
+        // [ProducesResponseType(typeof(SchoolModel), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> AddNewBase([FromBody]BaseModel model)
+        // {
+        //     BaseModel newBase = model;
+        //     try
+        //     {
+        //         appDbContext.Bases.Add(newBase);
+        //         await appDbContext.SaveChangesAsync();
 
-                return Ok(appDbContext.Bases.OrderByDescending(x => x.Id).FirstOrDefault());
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return Ok(appDbContext.Bases.OrderByDescending(x => x.Id).FirstOrDefault());
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> EditBase([FromBody]BaseModel model)
-        {
-            try
-            {
-                if(model.Id != 0)
-                {
-                    appDbContext.Bases.Update(model);
-                    await appDbContext.SaveChangesAsync();
+        // [HttpPost]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> EditBase([FromBody]BaseModel model)
+        // {
+        //     try
+        //     {
+        //         if(model.Id != 0)
+        //         {
+        //             appDbContext.Bases.Update(model);
+        //             await appDbContext.SaveChangesAsync();
 
-                    return Ok(true);
-                }
+        //             return Ok(true);
+        //         }
 
-                return BadRequest("مقطعی انتخاب نشده است");
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return BadRequest("مقطعی انتخاب نشده است");
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
-        [HttpDelete]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveBase([FromBody]int baseId)
-        {
-            try
-            {
-                BaseModel baseModel = appDbContext.Bases.Where(x => x.Id == baseId).FirstOrDefault();
+        // [HttpDelete]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> RemoveBase([FromBody]int baseId)
+        // {
+        //     try
+        //     {
+        //         BaseModel baseModel = appDbContext.Bases.Where(x => x.Id == baseId).FirstOrDefault();
 
-                appDbContext.Bases.Remove(baseModel);
-                await appDbContext.SaveChangesAsync();
+        //         appDbContext.Bases.Remove(baseModel);
+        //         await appDbContext.SaveChangesAsync();
 
-                return Ok(true);
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return Ok(true);
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 #endregion
     
@@ -646,76 +646,76 @@ namespace lms_with_moodle.Controllers
         }
 
 
-        [HttpPut]
-        [ProducesResponseType(typeof(StudyFieldModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewStudyFields([FromBody]StudyFieldModel model)
-        {
-            StudyFieldModel newStudyF = model;
-            try
-            {
-                appDbContext.StudyFields.Add(newStudyF);
-                await appDbContext.SaveChangesAsync();
+        // [HttpPut]
+        // [ProducesResponseType(typeof(StudyFieldModel), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> AddNewStudyFields([FromBody]StudyFieldModel model)
+        // {
+        //     StudyFieldModel newStudyF = model;
+        //     try
+        //     {
+        //         appDbContext.StudyFields.Add(newStudyF);
+        //         await appDbContext.SaveChangesAsync();
 
-                return Ok(appDbContext.StudyFields.OrderByDescending(x => x.Id).FirstOrDefault());
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return Ok(appDbContext.StudyFields.OrderByDescending(x => x.Id).FirstOrDefault());
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditStudyFields([FromBody]StudyFieldModel model)
-        {
-            try
-            {
-                StudyFieldModel study = appDbContext.StudyFields.Where(x => x.Id == model.Id).FirstOrDefault();
+        // [HttpPost]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public IActionResult EditStudyFields([FromBody]StudyFieldModel model)
+        // {
+        //     try
+        //     {
+        //         StudyFieldModel study = appDbContext.StudyFields.Where(x => x.Id == model.Id).FirstOrDefault();
 
-                if(study != null)
-                {
-                    study.Base_Id = (model.Base_Id != 0 ? model.Base_Id : study.Base_Id);
-                    study.StudyFieldName = (model.StudyFieldName != "" ? model.StudyFieldName : study.StudyFieldName);
+        //         if(study != null)
+        //         {
+        //             study.Base_Id = (model.Base_Id != 0 ? model.Base_Id : study.Base_Id);
+        //             study.StudyFieldName = (model.StudyFieldName != "" ? model.StudyFieldName : study.StudyFieldName);
 
-                    appDbContext.StudyFields.Update(model);
-                    appDbContext.SaveChanges();
+        //             appDbContext.StudyFields.Update(model);
+        //             appDbContext.SaveChanges();
 
-                    return Ok(true);
-                }
+        //             return Ok(true);
+        //         }
 
-                return BadRequest("رشته ای انتخاب نشده است");
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return BadRequest("رشته ای انتخاب نشده است");
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
-        [HttpDelete]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveStudyFields([FromBody]int studyFId)
-        {
-            try
-            {
-                StudyFieldModel studyFModel = appDbContext.StudyFields.Where(x => x.Id == studyFId).FirstOrDefault();
+        // [HttpDelete]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> RemoveStudyFields([FromBody]int studyFId)
+        // {
+        //     try
+        //     {
+        //         StudyFieldModel studyFModel = appDbContext.StudyFields.Where(x => x.Id == studyFId).FirstOrDefault();
 
-                appDbContext.StudyFields.Remove(studyFModel);
-                await appDbContext.SaveChangesAsync();
+        //         appDbContext.StudyFields.Remove(studyFModel);
+        //         await appDbContext.SaveChangesAsync();
 
-                return Ok(true);
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return Ok(true);
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 #endregion
    
@@ -738,81 +738,80 @@ namespace lms_with_moodle.Controllers
         }
 
 
-        [HttpPut]
-        [ProducesResponseType(typeof(GradeModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewGrades([FromBody]GradeModel model)
-        {
-            GradeModel newStudyF = model;
-            try
-            {
-                if(appDbContext.Grades.Where(x => x.GradeName == model.GradeName).FirstOrDefault() == null)
-                {
-                    appDbContext.Grades.Add(newStudyF);
-                    await appDbContext.SaveChangesAsync();
+        // [HttpPut]
+        // [ProducesResponseType(typeof(GradeModel), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> AddNewGrades([FromBody]GradeModel model)
+        // {
+        //     GradeModel newStudyF = model;
+        //     try
+        //     {
+        //         if(appDbContext.Grades.Where(x => x.GradeName == model.GradeName).FirstOrDefault() == null)
+        //         {
+        //             appDbContext.Grades.Add(newStudyF);
+        //             await appDbContext.SaveChangesAsync();
 
-                    return Ok(appDbContext.Grades.OrderByDescending(x => x.Id).FirstOrDefault());
-                }
-                return BadRequest("نام انتخابی برای پایه تکراری است");
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //             return Ok(appDbContext.Grades.OrderByDescending(x => x.Id).FirstOrDefault());
+        //         }
+        //         return BadRequest("نام انتخابی برای پایه تکراری است");
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditGrades([FromBody]GradeModel model)
-        {
-            try
-            {
-                GradeModel grade = appDbContext.Grades.Where(x => x.Id == model.Id).FirstOrDefault();
+        // [HttpPost]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public IActionResult EditGrades([FromBody]GradeModel model)
+        // {
+        //     try
+        //     {
+        //         GradeModel grade = appDbContext.Grades.Where(x => x.Id == model.Id).FirstOrDefault();
 
-                if(grade != null && appDbContext.Grades.Where(x => x.GradeName == model.GradeName).FirstOrDefault() == null)
-                {
-                    grade.Base_Id = (model.Base_Id != 0 ? model.Base_Id : grade.Base_Id);
-                    grade.GradeName = (model.GradeName != "" ? model.GradeName : grade.GradeName);
-                    grade.StudyField_Id = (model.StudyField_Id != 0 ? model.StudyField_Id : grade.StudyField_Id);
+        //         if(grade != null && appDbContext.Grades.Where(x => x.GradeName == model.GradeName).FirstOrDefault() == null)
+        //         {
+        //             grade.GradeName = (model.GradeName != "" ? model.GradeName : grade.GradeName);
+        //             grade.StudyField_Id = (model.StudyField_Id != 0 ? model.StudyField_Id : grade.StudyField_Id);
 
-                    appDbContext.Grades.Update(grade);
-                    appDbContext.SaveChanges();
+        //             appDbContext.Grades.Update(grade);
+        //             appDbContext.SaveChanges();
 
-                    return Ok(true);
-                }
+        //             return Ok(true);
+        //         }
 
-                 return BadRequest("پایه ای انتخاب نشده است");
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //          return BadRequest("پایه ای انتخاب نشده است");
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
-        [HttpDelete]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveGrades([FromBody]int studyFId)
-        {
-            try
-            {
-                GradeModel studyFModel = appDbContext.Grades.Where(x => x.Id == studyFId).FirstOrDefault();
+        // [HttpDelete]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> RemoveGrades([FromBody]int studyFId)
+        // {
+        //     try
+        //     {
+        //         GradeModel studyFModel = appDbContext.Grades.Where(x => x.Id == studyFId).FirstOrDefault();
 
-                appDbContext.Grades.Remove(studyFModel);
-                await appDbContext.SaveChangesAsync();
+        //         appDbContext.Grades.Remove(studyFModel);
+        //         await appDbContext.SaveChangesAsync();
 
-                return Ok(true);
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return Ok(true);
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 #endregion
    
@@ -835,78 +834,78 @@ namespace lms_with_moodle.Controllers
         }
 
 
-        [HttpPut]
-        [ProducesResponseType(typeof(LessonModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewLessons([FromBody]LessonModel model)
-        {
-            LessonModel newStudyF = model;
-            try
-            {
-                appDbContext.Lessons.Add(newStudyF);
-                await appDbContext.SaveChangesAsync();
+        // [HttpPut]
+        // [ProducesResponseType(typeof(LessonModel), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> AddNewLessons([FromBody]LessonModel model)
+        // {
+        //     LessonModel newStudyF = model;
+        //     try
+        //     {
+        //         appDbContext.Lessons.Add(newStudyF);
+        //         await appDbContext.SaveChangesAsync();
 
-                return Ok(appDbContext.Lessons.OrderByDescending(x => x.Id).FirstOrDefault());
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return Ok(appDbContext.Lessons.OrderByDescending(x => x.Id).FirstOrDefault());
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditLessons([FromBody]LessonModel model)
-        {
-            try
-            {
-                LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == model.Id).FirstOrDefault();
+        // [HttpPost]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public IActionResult EditLessons([FromBody]LessonModel model)
+        // {
+        //     try
+        //     {
+        //         LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == model.Id).FirstOrDefault();
 
-                if(lesson != null)
-                {
-                    lesson.BookCode = (model.BookCode != "" ? model.BookCode : lesson.BookCode);
-                    lesson.Grade_Id = (model.Grade_Id != 0 ? model.Grade_Id : lesson.Grade_Id);
-                    lesson.LessonName = (model.LessonName != "" ? model.LessonName : lesson.LessonName);
-                    lesson.Vahed = (model.Vahed != 0 ? model.Vahed : lesson.Vahed);
+        //         if(lesson != null)
+        //         {
+        //             lesson.LessonCode = (model.LessonCode != "" ? model.LessonCode : lesson.LessonCode);
+        //             lesson.Grade_Id = (model.Grade_Id != 0 ? model.Grade_Id : lesson.Grade_Id);
+        //             lesson.LessonName = (model.LessonName != "" ? model.LessonName : lesson.LessonName);
+        //             lesson.Vahed = (model.Vahed != 0 ? model.Vahed : lesson.Vahed);
 
-                    appDbContext.Lessons.Update(lesson);
-                    appDbContext.SaveChanges();
+        //             appDbContext.Lessons.Update(lesson);
+        //             appDbContext.SaveChanges();
 
-                    return Ok(true);
-                }
+        //             return Ok(true);
+        //         }
 
-                return BadRequest("درسی انتخاب نشده است");
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return BadRequest("درسی انتخاب نشده است");
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
-        [HttpDelete]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveLessons([FromBody]int studyFId)
-        {
-            try
-            {
-                LessonModel studyFModel = appDbContext.Lessons.Where(x => x.Id == studyFId).FirstOrDefault();
+        // [HttpDelete]
+        // [ProducesResponseType(typeof(bool), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> RemoveLessons([FromBody]int studyFId)
+        // {
+        //     try
+        //     {
+        //         LessonModel studyFModel = appDbContext.Lessons.Where(x => x.Id == studyFId).FirstOrDefault();
 
-                appDbContext.Lessons.Remove(studyFModel);
-                await appDbContext.SaveChangesAsync();
+        //         appDbContext.Lessons.Remove(studyFModel);
+        //         await appDbContext.SaveChangesAsync();
 
-                return Ok(true);
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
+        //         return Ok(true);
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
 
 #endregion
      

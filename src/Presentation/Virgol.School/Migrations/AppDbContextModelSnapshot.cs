@@ -50,6 +50,9 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("BaseName")
                         .HasColumnType("text");
 
+                    b.Property<string>("CodeBase")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Bases");
@@ -86,7 +89,7 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Base_Id")
+                    b.Property<int>("CodeGrade")
                         .HasColumnType("integer");
 
                     b.Property<string>("GradeName")
@@ -107,13 +110,16 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("BookCode")
-                        .HasColumnType("text");
-
                     b.Property<int>("Grade_Id")
                         .HasColumnType("integer");
 
+                    b.Property<string>("LessonCode")
+                        .HasColumnType("text");
+
                     b.Property<string>("LessonName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OrgLessonName")
                         .HasColumnType("text");
 
                     b.Property<float>("Vahed")
@@ -692,6 +698,9 @@ namespace lms_with_moodle.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("Base_Id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CodeStudyField")
                         .HasColumnType("integer");
 
                     b.Property<string>("StudyFieldName")
