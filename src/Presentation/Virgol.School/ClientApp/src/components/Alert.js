@@ -1,22 +1,29 @@
-import React from 'react';
-import {clear, errorOutline, success} from "../assets/icons";
+import React from "react";
+import { motion } from 'framer-motion';
+import {alert_octagon, x} from "../assets/icons";
 
-const Alert = (props) => {
-
-    const icon = () => {
-        switch (props.type) {
-            case 'alert_success': return success("w-8 text-green-light");
-            default: return errorOutline("w-8 text-red-200");
-        }
-    }
+const Alert = ({ type, message, fade }) => {
 
     return (
-        <div onClick={(e) => e.stopPropagation()} className={`${props.type === 'alert_success' ? 'bg-green' :  'bg-red-500'} flex z-50 flex-row fixed rounded-full items-center justify-between w-5/6 max-w-500 mt-8 ml-8 px-4 py-2`}>
-            <div>{icon()}</div>
-            <p className="mx-4 text-white">{props.message}</p>
-            <div onClick={() => props.fade()} className="cursor-pointer">{clear("w-8 text-white")}</div>
-        </div>
+        <motion.div className="fixed top-0 w-screen mt-8"
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.5, type: 'spring' }}
+        >
+            <div className={`rounded-full mx-auto w-11/12 max-w-500 px-4 py-2 flex flex-row justify-between items-center ${type === 'alert-success' ? 'bg-greenish' : 'bg-redish'}`}>
+                {type === 'alert-error' ?
+                    alert_octagon('w-6 text-white')
+                    :
+                    ''
+                }
+                <p className="text-white px-2 text-center">{message}</p>
+                <div onClick={fade} className="cursor-pointer">
+                    {x('w-6 text-white')}
+                </div>
+            </div>
+        </motion.div>
     );
+
 }
 
 export default Alert;

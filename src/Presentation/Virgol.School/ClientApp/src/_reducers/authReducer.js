@@ -1,45 +1,21 @@
-import * as Type from "../_types/authTypes";
+import * as Type from "../_actions/authTypes";
 
 const INITIAL_STATE = {
-    'isLogged' : false,
-    'userInfo' : null,
-    'status' : null,
-    'sendCode' : {
-        status: false,
-        melliCode: null,
-        success: null
-    }
+    'authed': false,
+    'userType': -1,
+    'userInfo': null,
+    'status': false
 }
 
-export default (state = INITIAL_STATE, action) => {
+export default ( state = INITIAL_STATE, action ) => {
 
-    if (action.type === Type.LOGIN)
-        return { ...state, isLogged: true, userInfo: action.payload };
+    switch (action.type) {
 
-    if (action.type === Type.REGISTER)
-        return { ...state, isLogged: true, userInfo: action.payload }
+        case Type.LOGIN: return { ...state, authed: true, userType: action.payload.userType, userInfo: action.payload }
+        case Type.USER_STATUS: return { ...state, status: true }
+        case Type.LOGOUT: return INITIAL_STATE
+        default: return state
 
-    if (action.type === Type.LOGOUT)
-        return INITIAL_STATE
-
-    if (action.type === Type.USER_STATUS)
-        return { ...state, status: true }
-
-    if (action.type === Type.REMOVE_STATUS)
-        return { ...state, status: null }
-
-    if (action.type === Type.SEND_CODE)
-        return { ...state, sendCode: { status: true, melliCode: action.payload, success: null } }
-
-    if (action.type === Type.FADE_SEND_CODE)
-        return { ...state, sendCode: { status: false, melliCode: null, success: null } }
-
-    if (action.type === Type.FORGOT_PASS_OK)
-        return { ...state, sendCode: { status: false, melliCode: null, success: true } }
-
-    if (action.type === Type.FORGOT_PASS_OK_FADE)
-        return { ...state, sendCode: { status: false, melliCode: null, success: null } }
-
-    return state;
+    }
 
 }

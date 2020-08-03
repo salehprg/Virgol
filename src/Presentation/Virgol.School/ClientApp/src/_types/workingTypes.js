@@ -1,2 +1,0 @@
-export const START_WORKING = 'START_WORKING';
-export const STOP_WORKING = 'STOP_WORKING'

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import history from "../../history";
 
 export default ChildComponent => {
 
@@ -12,33 +13,33 @@ export default ChildComponent => {
         }
 
         componentDidUpdate() {
-            this.shouldNavigateAway();
+            this.shouldNavigateAway()
         }
 
         shouldNavigateAway() {
 
-            const { auth, history } = this.props
-            if (auth) {
-                if (auth.userType === 3) {
+            const { type } = this.props
+            if (type) {
+                if (type === 4) {
                     if (!this.state.condition) this.setState({ condition: true })
                     return;
                 }
             }
-            history.push('/')
 
+            history.push('/')
         }
 
         render() {
             return (
-                <React.Fragment>
-                    {this.state.condition ? <ChildComponent {...this.props} /> : null}
-                </React.Fragment>
+                <>
+                    {this.state.condition && <ChildComponent {...this.props} />}
+                </>
             );
         }
     }
 
-    function mapStateToProps(state) {
-        return { auth: state.auth.userInfo };
+    const mapStateToProps = state => {
+        return { type: state.auth.userType };
     }
 
     return connect(mapStateToProps)(ProtectedAdmin);

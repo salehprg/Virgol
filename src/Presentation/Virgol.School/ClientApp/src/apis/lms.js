@@ -1,6 +1,6 @@
-import Axios from "axios";
-import { config } from "config.js";
+import axios from "axios";
+import { config } from "../config";
 
-export default Axios.create({
+export default axios.create({
     baseURL: config.url.API_URL
 });

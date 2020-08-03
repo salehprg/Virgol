@@ -8,6 +8,11 @@
 }
 
 @font-face {
+    font-family: vazirMedium;
+    src: url(/fonts/Vazir-Medium.woff);
+}
+
+@font-face {
     font-family: vazirBold;
     src: url(/fonts/Vazir-Bold.woff);
 }
@@ -16,67 +21,32 @@
     text-align: right;
 }
 
-.test {
-    top: 25px;
-    right: 25px;
+.hor-centerize {
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-.show-sidebar-pos {
+.ver-centerize {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.centerize {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.toggle-pass-vis {
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.sidebar-toggle {
     left: -40px;
     top: 10px;
-}
-
-.grid-courses {
-    grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
-    justify-content: center;
-    direction: rtl;
-}
-
-.grid-categories {
-    grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
-    grid-gap: 20px;
-    justify-content: center;
-    direction: rtl;
-}
-
-.transition-height {
-    transition: max-height 1s ease-out;
-}
-
-.category:hover > .category-reveal {
-    height: 0;
-    transition: height 0.5s ease;
-}
-
-.addCat {
-    background-image: url("/Sun-Tornado.svg");
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.addCourse {
-    background-image: url("/Rainbow-Vortex.svg");
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.addCourseToCat {
-    background-image: url("/Liquid-Cheese.svg");
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.teacherInfoBg {
-    background: linear-gradient(to right, #1BA098, #fff);
-}
-
-.studentInfoBg {
-    background: linear-gradient(to bottom, #1BA098 50%, #fff 50%);
-}
-
-.cont::after {
-    content: "";
-    flex: auto;
 }
 
 @tailwind utilities;

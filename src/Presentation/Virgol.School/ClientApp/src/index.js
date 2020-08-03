@@ -1,4 +1,4 @@
-import './assets/main.css';
+import './assets/main.css'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -9,13 +9,13 @@ import { applyMiddleware, compose, createStore } from "redux";
 import thunk from "redux-thunk";
 import App from './components/App';
 import reducers from "./_reducers";
-import Loading from "./components/Loading";
+import Working from "./components/Working";
 import * as serviceWorker from './serviceWorker';
 
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['error', 'loading', 'form', 'success', 'alert', 'worker']
+    blacklist: [ 'form', 'alert' ]
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -29,11 +29,11 @@ let persistor = persistStore(store)
 
 ReactDOM.render(
     <Provider store={store}>
-        <PersistGate loading={<Loading />} persistor={persistor}>
+        <PersistGate loading={<Working />} persistor={persistor}>
             <App />
         </PersistGate>
     </Provider>,
-  document.getElementById('root')
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

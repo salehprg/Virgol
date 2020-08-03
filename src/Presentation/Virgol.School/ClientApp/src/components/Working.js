@@ -1,11 +1,11 @@
-import React from 'react';
-import {gear, loading} from "../assets/icons";
+import React from "react";
+import {working} from "../assets/icons";
 
 const Working = () => {
 
     return (
-        <div className="w-screen h-screen z-50 fixed top-0 bg-white bg-opacity-75 flex justify-center items-center">
-            {gear("w-12")}
+        <div className="z-50 w-screen h-screen bg-black-blue bg-opacity-75 flex justify-center items-center">
+            {working('w-12 text-grayish')}
         </div>
     );
 
