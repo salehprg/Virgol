@@ -9,11 +9,11 @@ import protectedManager from "../../protectedRoutes/protectedManager";
 import SidebarOption from "../sidebar/SidebarOption";
 import history from "../../../history";
 import Header from "../header/Header";
-import Categories from "./category/Categories";
+import ClassList from "./grades/ClassList";
 import Grades from "./grades/Grades";
 import Teachers from "./teachers/Teachers";
 import Students from "./students/Students";
-import Courses from "./course/Courses";
+// import Courses from "./course/Courses";
 
 class Dashboard extends React.Component {
 
@@ -104,9 +104,9 @@ class Dashboard extends React.Component {
                     <Header user={this.props.user.userInformation} />
 
                     <Route path={this.props.match.url + "/dashboard"} component={Home} />
-                    <Route path={this.props.match.url + "/categories"} component={Categories} />
-                    <Route path={this.props.match.url + "/grades"} component={Grades} />
-                    <Route path={this.props.match.url + "/courses"} component={Courses} />
+                    <Route path={this.props.match.url + "/grades"} exact component={Grades}/>
+                    <Route path={this.props.match.url + "/grades/:id"} component={ClassList}/>
+                    
                     <Route path={this.props.match.url + "/teachers"} component={Teachers} />
                     <Route path={this.props.match.url + "/students"} component={Students} />
                 </div>

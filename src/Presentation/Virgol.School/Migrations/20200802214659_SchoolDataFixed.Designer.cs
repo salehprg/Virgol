@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200802214659_SchoolDataFixed")]
+    partial class SchoolDataFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,15 +21,12 @@ namespace lms_with_moodle.Migrations
                 .HasAnnotation("ProductVersion", "3.1.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("AdminDetail", b =>
+            modelBuilder.Entity("AdminModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("SchoolLimit")
-                        .HasColumnType("integer");
 
                     b.Property<int>("SchoolsType")
                         .HasColumnType("integer");
@@ -37,7 +36,7 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdminDetails");
+                    b.ToTable("AdminModels");
                 });
 
             modelBuilder.Entity("BaseModel", b =>
@@ -122,24 +121,6 @@ namespace lms_with_moodle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Lessons");
-                });
-
-            modelBuilder.Entity("ManagerDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("personalIdNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ManagerDetails");
                 });
 
             modelBuilder.Entity("Meeting", b =>
@@ -352,7 +333,7 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("TeacherView");
                 });
 
-            modelBuilder.Entity("Models.User.StudentDetail", b =>
+            modelBuilder.Entity("Models.User.UserDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -399,7 +380,7 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StudentDetails");
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("Models.User.UserModel", b =>
@@ -570,12 +551,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("Moodle_Id")
                         .HasColumnType("integer");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SchoolAddress")
-                        .HasColumnType("text");
 
                     b.Property<int>("SchoolIdNumber")
                         .HasColumnType("integer");

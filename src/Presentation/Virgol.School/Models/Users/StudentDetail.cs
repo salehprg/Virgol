@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Models.User
 {
-    public class UserDetail {
+    public class StudentDetail {
         public int Id {get; set;}
         public int UserId {get; set;}
         

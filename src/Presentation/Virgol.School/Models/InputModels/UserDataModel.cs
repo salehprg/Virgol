@@ -10,6 +10,6 @@ namespace Models.InputModel
         // {
         //     this.FirstName
         // }
-        public UserDetail userDetail {get; set;}
+        public StudentDetail userDetail {get; set;}
     }
 }

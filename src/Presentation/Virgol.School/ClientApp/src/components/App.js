@@ -11,8 +11,7 @@ import NoFound from "./NoFound";
 import ManagerDashboard from "./dashboard/manager/Dashboard";
 import StudentDashboard from "./dashboard/student/Dashboard";
 import Working from "./Working";
-import CategoryInfo from "./dashboard/manager/category/CategoryInfo";
-import ShowCourse from "./dashboard/manager/course/ShowCourse";
+// import ShowCourse from "./dashboard/manager/course/ShowCourse";
 import TeacherInfo from "./dashboard/manager/teachers/TeacherInfo";
 import StudentInfo from "./dashboard/manager/students/StudentInfo";
 import Confirm from "./dashboard/manager/home/Confirm";
@@ -45,8 +44,7 @@ class App extends React.Component {
                         <Route path="/SignUp" exact component={SignUp} />
                         <Route path="/status" exact component={Status} />
                         <Route path="/m" component={ManagerDashboard} />
-                        <Route path="/category/:id" component={CategoryInfo} />
-                        <Route path="/course/:id" component={ShowCourse} />
+
                         <Route path="/teacher/:id" component={TeacherInfo} />
                         <Route path="/student/:id" component={StudentInfo} />
                         <Route path="/confirm/:id" component={Confirm} />
