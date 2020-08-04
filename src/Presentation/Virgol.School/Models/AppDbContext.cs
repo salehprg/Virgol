@@ -34,6 +34,7 @@ namespace Models
         public DbSet<ManagerDetail> ManagerDetails {get; set;}
         public DbSet<StudentDetail> StudentDetails {get; set;}
         public DbSet<Class_WeeklySchedule> ClassWeeklySchedules {get; set;}
+        public DbSet<ClassScheduleView> ClassScheduleView {get; set;}
 
 
         // protected override void OnModelCreating(ModelBuilder builder)

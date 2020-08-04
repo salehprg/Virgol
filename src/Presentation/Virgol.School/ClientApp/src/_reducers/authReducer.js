@@ -11,9 +11,15 @@ export default ( state = INITIAL_STATE, action ) => {
 
     switch (action.type) {
 
-        case Type.LOGIN: return { ...state, authed: true, userType: action.payload.userType, userInfo: action.payload }
-        case Type.USER_STATUS: return { ...state, status: true }
-        case Type.LOGOUT: return INITIAL_STATE
+        case Type.LOGIN: 
+            return { ...state, authed: true, userType: action.payload.userType, userInfo: action.payload }
+
+        case Type.USER_STATUS: 
+            return { ...state, status: true }
+
+        case Type.LOGOUT: 
+            return INITIAL_STATE
+            
         default: return state
 
     }

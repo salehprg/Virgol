@@ -1,28 +1,40 @@
 import React from "react";
 import News from "./News";
+import { connect } from "react-redux";
+import protectedAdmin from "../../protectedRoutes/protectedAdmin";
+import {getNews} from "../../../_actions/adminActions"
 
 class Feed extends React.Component {
 
+
     render() {
         const { title, pos } = this.props
+
         return (
             <div className={`${pos} w-full h-full px-6 py-4 text-right bg-dark-blue rounded-xl`}>
                 <p className="text-white">{title}</p>
-                <News
-                    text="پایان راه اندازی سامانه آموزش مجازی ویرگول"
-                    tags={['آموزشی']}
-                    time="1399/5/1 10:00"
-                />
-                <News
-                    text="اطلاعیه ثبت کدملی دانش آموزان در شونصدمین سامانه آموزش و
-پرورش توسط مدیران مدارس                         "
-                    tags={['اطلاعیه مهم']}
-                    time="1399/5/1 10:00"
-                />
+                {
+                    (
+                        this.props.news.length == 0 
+                        ? 
+                        <span className="text-2xl text-grayish block text-center">هیچ اخباری وجود ندارد</span> 
+                        :
+                        this.props.news.map(x => {
+                            return (
+                                <News
+                                    text={x.message}
+                                    tags={x.tagsStr}
+                                    time={x.createTime}
+                                />
+                            );
+                        })
+                    )
+                }
+            
             </div>
         );
     }
 
 }
 
-export default Feed;
+export default Feed

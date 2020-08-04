@@ -2,15 +2,18 @@ import React from "react";
 import PlusTable from "../../tables/PlusTable";
 import { edit } from "../../../../assets/icons";
 import history from "../../../../history";
+import {getSchools} from "../../../../_actions/adminActions"
+import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
+import { connect } from "react-redux";
 
 class Schools extends React.Component {
 
     state = { loading: false, query: '' }
 
-    componentDidMount() {
-        if (this.props.history.action === 'POP') {
+    componentDidMount = async () => {
+        if (this.props.history.action === 'POP' || this.props.schools.length == 0 ) {
             this.setState({ loading: true })
-            // api calls
+            await this.props.getSchools(this.props.user.token);
             this.setState({ loading: false })
         }
     }
@@ -20,6 +23,7 @@ class Schools extends React.Component {
     }
 
     render() {
+        if(this.state.loading) return "هیچ مدرسه ای وجود ندارد"
         return (
             <div className="w-full mt-10">
                 <PlusTable
@@ -36,24 +40,25 @@ class Schools extends React.Component {
                     body={() => {
                         return (
                             <React.Fragment>
-                                <tr>
-                                    <td className="py-4">شهید هاشمی نژاد 1</td>
-                                    <td>#568425</td>
-                                    <td>سمپاد</td>
-                                    <td>احسان فاضلی</td>
-                                    <td className="cursor-pointer" onClick={() => history.push(`/school/${2}`)}>
-                                        {edit('w-6 text-white')}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="py-4">شهید هاشمی نژاد 1</td>
-                                    <td>#568425</td>
-                                    <td>سمپاد</td>
-                                    <td>احسان فاضلی</td>
-                                    <td className="cursor-pointer" onClick={() => history.push(`/school/${3}`)}>
-                                        {edit('w-6 text-white')}
-                                    </td>
-                                </tr>
+                                {
+                                    this.props.schools.map(x => {
+                                        if(x.schoolName.includes(this.state.query))
+                                        {
+                                            return(
+                                            <tr>
+                                                <td className="py-4">{x.schoolName}</td>
+                                                <td>{x.schoolIdNumber}</td>
+                                                <td>سمپاد</td>
+                                                <td>احسان فاضلی</td>
+                                                <td className="cursor-pointer" onClick={() => history.push(`/school/${2}`)}>
+                                                    {edit('w-6 text-white')}
+                                                </td>
+                                            </tr>
+                                            )
+                                        }
+                                    })
+                                    
+                                }
                             </React.Fragment>
                         );
                     }}
@@ -64,4 +69,8 @@ class Schools extends React.Component {
 
 }
 
-export default Schools;
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , schools: state.adminData.schools}
+}
+
+export default connect(mapStateToProps, { getSchools })(Schools);

@@ -69,7 +69,16 @@ namespace lms_with_moodle.Controllers
                 string IdNumber = userManager.GetUserId(User);
                 int userId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
 
-                return Ok(appDbContext.News.Where(x => x.AutherId == userId).ToList());
+                List<NewsModel> myNews = appDbContext.News.Where(x => x.AutherId == userId).ToList();
+
+                foreach (var news in myNews)
+                {
+                    List<string> tags = news.Tags.Split(",").ToList();
+
+                    news.tagsStr = tags;
+                }
+
+                return Ok(myNews);
             }
             catch(Exception ex)
             {
@@ -114,7 +123,7 @@ namespace lms_with_moodle.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(NewsModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult EditNews([FromBody]NewsModel model)
         {
@@ -133,7 +142,7 @@ namespace lms_with_moodle.Controllers
                 appDbContext.News.Update(newsModel);
                 appDbContext.SaveChanges();
 
-                return BadRequest("رشته ای انتخاب نشده است");
+                return Ok(newsModel);
             }
             catch(Exception ex)
             {
@@ -143,7 +152,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(NewsModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> RemoveNews([FromBody]int newsId)
         {
@@ -153,7 +162,7 @@ namespace lms_with_moodle.Controllers
                 appDbContext.News.Remove(news);
                 await appDbContext.SaveChangesAsync();
 
-                return Ok(true);
+                return Ok(news);
             }
             catch(Exception ex)
             {
@@ -195,16 +204,16 @@ namespace lms_with_moodle.Controllers
 
 
         [HttpPut]
-        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewManager([FromBody]ManagerData model)
+        public async Task<IActionResult> AddNewManager([FromBody]UserModel model)
         {
             try
             {
                 UserModel manager = model;
                 manager.UserName = model.MelliCode;
                 manager.ConfirmedAcc = true;
-                manager.userTypeId = UserType.Manager;
+                manager.userTypeId = (int)UserType.Manager;
                 manager.Moodle_Id = 0;
 
                 bool result = userManager.CreateAsync(manager , manager.MelliCode).Result.Succeeded;
@@ -213,11 +222,14 @@ namespace lms_with_moodle.Controllers
                 {
                     await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
 
-                    SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.schoolId).FirstOrDefault();
+                    SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
 
-                    school.ManagerId = userManager.FindByNameAsync(manager.UserName).Result.Id;
-                    appDbContext.Schools.Update(school);
-                    appDbContext.SaveChanges();
+                    if(school != null)
+                    {
+                        school.ManagerId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+                        appDbContext.Schools.Update(school);
+                        appDbContext.SaveChanges();
+                    }
                 }
 
                 return Ok(model);
@@ -230,7 +242,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult EditManager([FromBody]ManagerData model)
         {
@@ -243,23 +255,24 @@ namespace lms_with_moodle.Controllers
                 SchoolModel newSchool = new SchoolModel();
                 newSchool = appDbContext.Schools.Where(x => x.Id == model.schoolId).FirstOrDefault();
 
-                if(oldSchool != null)
+                if(oldSchool != null && model.SchoolId != 0)
                 {
                     oldSchool.ManagerId = -1;
+                    appDbContext.Schools.Update(oldSchool);
                 }
 
-                if(newSchool != null)
+                if(newSchool != null && model.SchoolId != 0)
                 {
                     newSchool.ManagerId = model.Id;
+                    appDbContext.Schools.Update(newSchool);
                 }
 
-                appDbContext.Schools.Update(oldSchool);
-                appDbContext.Schools.Update(newSchool);
+            
                 appDbContext.Users.Update(model);
                 
                 appDbContext.SaveChanges();
 
-                return Ok(true);
+                return Ok((UserModel)model);
             }
             catch(Exception ex)
             {
@@ -269,7 +282,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult RemoveManager([FromBody]int managerId)
         {
@@ -281,18 +294,19 @@ namespace lms_with_moodle.Controllers
 
                 if(oldSchool != null)
                 {
-                    appDbContext.Schools.Remove(oldSchool);
+                    oldSchool.ManagerId = -1;
+                    appDbContext.Schools.Update(oldSchool);
                 }
 
-                UserModel teacher = appDbContext.Users.Where(x => x.Id == managerId).FirstOrDefault();
-                bool removeTeacher = userManager.DeleteAsync(teacher).Result.Succeeded;
+                UserModel manager = appDbContext.Users.Where(x => x.Id == managerId).FirstOrDefault();
+                bool removeManager = userManager.DeleteAsync(manager).Result.Succeeded;
 
-                if(removeTeacher)
+                if(removeManager)
                 {
                     appDbContext.SaveChanges();
                 }
                 
-                return Ok(true);
+                return Ok(manager);
             }
             catch(Exception ex)
             {
@@ -306,7 +320,6 @@ namespace lms_with_moodle.Controllers
 #region School
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<SchoolModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult getDashboardInfo()
         {
@@ -325,8 +338,8 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var school in schools)
                 {
-                    studentsCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == UserType.Student).Count();
-                    teacherCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == UserType.Teacher).Count();
+                    studentsCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && (x.userTypeId == (int)UserType.Student)).Count();
+                    teacherCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Teacher).Count();
                 }
 
                 return Ok(new{
@@ -628,7 +641,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult GetStudyFields([FromBody] int BaseId = -1)
+        public IActionResult GetStudyFields(int BaseId)
         {
             try
             {
@@ -724,11 +737,11 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult GetGrade()
+        public IActionResult GetGrade(int StudyFieldId)
         {
             try
             {
-                return Ok(appDbContext.Grades.ToList());
+                return Ok(appDbContext.Grades.Where(x => x.StudyField_Id == StudyFieldId).ToList());
             }
             catch(Exception ex)
             {
@@ -820,11 +833,11 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<LessonModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult GetLessons()
+        public IActionResult GetLessons(int gradeId)
         {
             try
             {
-                return Ok(appDbContext.Lessons.ToList());
+                return Ok(appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList());
             }
             catch(Exception ex)
             {

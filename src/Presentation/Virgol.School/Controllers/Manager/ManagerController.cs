@@ -431,7 +431,7 @@ namespace lms_with_moodle.Controllers
                 string ManagerIdNumber = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().SchoolId;
 
-                List<UserModel> AllStudent = appDbContext.Users.Where(x => x.userTypeId == UserType.Student && x.ConfirmedAcc && x.SchoolId == schoolId).ToList();
+                List<UserModel> AllStudent = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Student && x.ConfirmedAcc && x.SchoolId == schoolId).ToList();
 
                 return Ok(AllStudent);
             }
@@ -497,7 +497,7 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    var errors = await CreateBulkUser(UserType.Student , "BulkUserData.xlsx" , CategoryId);
+                    var errors = await CreateBulkUser((int)UserType.Student , "BulkUserData.xlsx" , CategoryId);
                     return Ok(errors);
                 }
 
@@ -547,7 +547,7 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    var errors = CreateBulkUser(UserType.Teacher , "BulkTeacher.xlsx");
+                    var errors = CreateBulkUser((int)UserType.Teacher , "BulkTeacher.xlsx");
                     return Ok(errors);
                 }
                 return BadRequest("آپلود فایل با مشکل مواجه شد");
@@ -764,7 +764,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Users.Where(user => user.userTypeId == UserType.Teacher).ToList());
+                return Ok(appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Teacher).ToList());
             }
             catch(Exception ex)
             {
@@ -780,7 +780,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 teacher.UserName = teacher.MelliCode;
-                teacher.userTypeId = UserType.Teacher;
+                teacher.userTypeId = (int)UserType.Teacher;
                 teacher.ConfirmedAcc = true;
                 
                 IdentityResult resultCreate = userManager.CreateAsync(teacher , teacher.MelliCode).Result;
@@ -1345,7 +1345,7 @@ namespace lms_with_moodle.Controllers
                         bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
                         if(result)
                         {
-                            if(userManager.AddToRolesAsync(user , new string[]{"User" , (userTypeId == UserType.Teacher ? "Teacher" : null)}).Result.Succeeded)
+                            if(userManager.AddToRolesAsync(user , new string[]{"User" , (userTypeId == (int)UserType.Teacher ? "Teacher" : null)}).Result.Succeeded)
                             {
                                 ldap.AddUserToLDAP(user);
                             }

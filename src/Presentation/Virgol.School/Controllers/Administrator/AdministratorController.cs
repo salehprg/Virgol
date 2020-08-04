@@ -450,7 +450,7 @@ namespace lms_with_moodle.Controllers
                 UserModel manager = model;
                 manager.UserName = model.MelliCode;
                 manager.ConfirmedAcc = true;
-                manager.userTypeId = UserType.Manager;
+                manager.userTypeId = (int)UserType.Manager;
                 manager.Moodle_Id = 0;
 
                 bool result = userManager.CreateAsync(manager , manager.MelliCode).Result.Succeeded;
@@ -571,8 +571,8 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var school in schools)
                 {
-                    studentsCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == UserType.Student).Count();
-                    teacherCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == UserType.Teacher).Count();
+                    studentsCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Student).Count();
+                    teacherCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Teacher).Count();
                 }
 
                 return Ok(new{

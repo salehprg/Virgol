@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 import alertReducer from "./alertReducer";
+import adminReducer from "./adminReducer";
 import workerReducer from "./workerReducer";
 import authReducer from "./authReducer";
 
 export default combineReducers({
+    adminData: adminReducer,
     auth: authReducer,
     form: formReducer,
     alert: alertReducer,

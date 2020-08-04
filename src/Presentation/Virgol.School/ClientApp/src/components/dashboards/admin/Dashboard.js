@@ -7,16 +7,17 @@ import {layout, open_book} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from "./home/Home";
 import Schools from "./schools/Schools";
+import { connect } from "react-redux";
+import protectedAdmin from "../../protectedRoutes/protectedAdmin";
+
 
 class Dashboard extends React.Component {
 
-    state = { sidebar: true, active: 'dashboard' }
+    state = {loading : false, sidebar: true, active: 'dashboard' }
 
-    componentDidMount() {
+    componentDidMount = async () => {
         if (window.innerWidth < 1024) this.setState({ sidebar: false })
-        if (this.props.history.action === 'POP') {
-            // api calls
-        }
+        
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -34,6 +35,7 @@ class Dashboard extends React.Component {
     }
 
     render() {
+        if (this.state.loading) return "درحال بارگذاری اطلاعات"
         return (
             <div className="w-screen min-h-screen">
                 <Sidebar
@@ -61,7 +63,7 @@ class Dashboard extends React.Component {
                     <Header />
 
                     <Switch>
-                        <Route path={this.props.match.url + "/dashboard"} component={Home} />
+                        <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/schools"} component={Schools} />
                     </Switch>
                 </div>
@@ -71,4 +73,6 @@ class Dashboard extends React.Component {
 
 }
 
-export default Dashboard;
+const authWrapped = protectedAdmin(Dashboard)
+
+export default authWrapped

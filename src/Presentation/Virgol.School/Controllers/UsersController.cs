@@ -155,11 +155,53 @@ namespace lms_with_moodle.Controllers
             {
                 UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
 
-                StudentDetail userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-
                 if(!userInformation.ConfirmedAcc)
                 {
                     return StatusCode(423);
+                }
+
+                object userDetail = null;
+
+                switch(userInformation.userTypeId)
+                {
+                    case (int)UserType.Student:
+                        userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        
+                        break;
+
+                    case (int)UserType.Teacher:
+                        userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        break;
+
+                    case (int)UserType.Admin:
+                        userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+
+                        string schooltypeName = "";
+                        if (((AdminDetail)userDetail).SchoolsType == SchoolType.Sampad)
+                        {
+                            schooltypeName = "سمپاد";
+                        }
+                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.AmoozeshRahDor)
+                        {
+                            schooltypeName = "آموزش از راه دور";
+                        }
+                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.Gheyrdolati)
+                        {
+                            schooltypeName = "غیر دولتی";
+                        }
+                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.Dolati)
+                        {
+                            schooltypeName = "دولتی";
+                        }
+
+                        userDetail = new {userDetail , schooltypeName };
+                        
+                        break;
+
+                    case (int)UserType.Manager:
+                        userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        break;
+                    
                 }
 
                 var userRoleNames = new List<string>();
@@ -252,7 +294,7 @@ namespace lms_with_moodle.Controllers
                 
                 newUser.ConfirmedAcc = false;
                 newUser.UserName = _model.MelliCode;
-                newUser.userTypeId = UserType.Student;
+                newUser.userTypeId = (int)UserType.Student;
                 
                 IdentityResult result = userManager.CreateAsync(newUser , newUser.MelliCode).Result;
                 

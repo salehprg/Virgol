@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200803214330_classSchedules")]
+    partial class classSchedules
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,45 +58,6 @@ namespace lms_with_moodle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Bases");
-                });
-
-            modelBuilder.Entity("ClassScheduleView", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("ClassId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DayType")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("EndHour")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("LessonId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("OrgLessonName")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("StartHour")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("TeaacherId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ClassScheduleView");
                 });
 
             modelBuilder.Entity("Class_WeeklySchedule", b =>

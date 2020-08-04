@@ -29,12 +29,12 @@ const particles = {
     },
 }
 
-const Hero = () => {
+const Hero = (props) => {
 
     return (
         <div className="relative sm:col-span-4 col-span-2 w-full text-right rounded-xl bg-pinkish py-4 px-6">
-            <p className="text-3xl text-white my-2">سجاد جاویدمنش</p>
-            <p className="text-white my-2">مدیر مدارس سمپاد استان خراسان رضوی</p>
+            <p className="text-3xl text-white my-2">{props.userInfo.firstName} {props.userInfo.lastName}</p>
+            <p className="text-white my-2">مدیر مدارس {props.userDetail.schooltypeName} استان خراسان رضوی</p>
             <Particles className="absolute top-0 bottom-0 right-0 left-0" params={particles} />
         </div>
     );

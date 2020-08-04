@@ -12,7 +12,7 @@ class Header extends React.Component {
                 <Notification />
 
                 <div className="w-11/12 max-w-250 mr-4 px-2 py-1 flex flex-row-reverse justify-between items-center border-2 rounded-lg border-dark-blue">
-                    <span className="text-white text-right">سجاد جاویدمنش</span>
+                    <span className="text-white text-right">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</span>
                     <div onClick={this.props.logout} className="relative">
                         {log_out("w-6 text-white cursor-pointer")}
                     </div>
@@ -23,4 +23,8 @@ class Header extends React.Component {
 
 }
 
-export default connect(null, { logout })(Header);
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo }
+}
+
+export default connect(mapStateToProps, { logout })(Header);

@@ -22,7 +22,8 @@ public class NewsModel {
     public string Tags {get; set;} 
 
     [NotMapped]
-    [JsonIgnore]
     public List<int> AccessRoleIdList {get; set;}
+    [NotMapped]
+    public List<string> tagsStr {get; set;}
 
 }
