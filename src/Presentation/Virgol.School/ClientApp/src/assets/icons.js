@@ -203,3 +203,69 @@ export const edit = (styles) => {
         </svg>
     );
 }
+
+export const plus = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 20c-.6 0-1-.4-1-1V5c0-.6.4-1 1-1s1 .4 1 1v14c0 .6-.4 1-1 1z"/>
+            <path d="M19 13H5c-.6 0-1-.4-1-1s.4-1 1-1h14c.6 0 1 .4 1 1s-.4 1-1 1z"/>
+        </svg>
+    );
+}
+
+export const trash = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M21 7H3c-.6 0-1-.4-1-1s.4-1 1-1h18c.6 0 1 .4 1 1s-.4 1-1 1z"/>
+            <path d="M17 23H7c-1.7 0-3-1.3-3-3V6c0-.6.4-1 1-1s1 .4 1 1v14c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V6c0-.6.4-1 1-1s1 .4 1 1v14c0 1.7-1.3 3-3 3zM16 7c-.6 0-1-.4-1-1V4c0-.6-.4-1-1-1h-4c-.6 0-1 .4-1 1v2c0 .6-.4 1-1 1s-1-.4-1-1V4c0-1.7 1.3-3 3-3h4c1.7 0 3 1.3 3 3v2c0 .6-.4 1-1 1z"/>
+        </svg>
+    );
+}
+
+export const check_circle = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 23C5.9 23 1 18.1 1 12S5.9 1 12 1c1.6 0 3.1.3 4.5 1 .5.2.7.8.5 1.3-.2.5-.8.7-1.3.5-1.2-.5-2.4-.8-3.7-.8-5 0-9 4-9 9s4 9 9 9 9-4 9-9v-.9c0-.6.4-1 1-1s1 .4 1 1v.9c0 6.1-4.9 11-11 11z"/>
+            <path d="M12 15c-.3 0-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l2.3 2.3 9.3-9.3c.4-.4 1-.4 1.4 0 .4.4.4 1 0 1.4l-10 10c-.2.2-.4.3-.7.3z"/>
+        </svg>
+    );
+}
+
+export const briefcase = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 22H4c-1.7 0-3-1.3-3-3V9c0-1.7 1.3-3 3-3h16c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3zM4 8c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h16c.6 0 1-.4 1-1V9c0-.6-.4-1-1-1H4z"/>
+            <path d="M16 22c-.6 0-1-.4-1-1V5c0-.6-.4-1-1-1h-4c-.6 0-1 .4-1 1v16c0 .6-.4 1-1 1s-1-.4-1-1V5c0-1.7 1.3-3 3-3h4c1.7 0 3 1.3 3 3v16c0 .6-.4 1-1 1z"/>
+        </svg>
+    );
+}
+
+export const slash = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 23C5.9 23 1 18.1 1 12S5.9 1 12 1s11 4.9 11 11-4.9 11-11 11zm0-20c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9z"/>
+            <path d="M19.1 20.1c-.3 0-.5-.1-.7-.3L4.2 5.6c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l14.1 14.1c.4.4.4 1 0 1.4-.1.3-.4.4-.6.4z"/>
+        </svg>
+    );
+}
+
+export const arrow_left = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M19 13H5c-.6 0-1-.4-1-1s.4-1 1-1h14c.6 0 1 .4 1 1s-.4 1-1 1z"/>
+            <path d="M12 20c-.3 0-.5-.1-.7-.3l-7-7c-.4-.4-.4-1 0-1.4l7-7c.4-.4 1-.4 1.4 0s.4 1 0 1.4L6.4 12l6.3 6.3c.4.4.4 1 0 1.4-.2.2-.4.3-.7.3z"/>
+        </svg>
+    );
+}
