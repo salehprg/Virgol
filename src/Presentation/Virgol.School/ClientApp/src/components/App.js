@@ -8,6 +8,7 @@ import Working from "./Working";
 import Login from "./login/Login";
 import AdminDashboard from "./dashboards/admin/Dashboard";
 import NoFound from "./NoFound";
+import SchoolInfo from './dashboards/admin/schools/SchoolInfo'
 
 class App extends React.Component {
 
@@ -31,6 +32,7 @@ class App extends React.Component {
                     <Switch>
                         <Route path="/" exact component={Login} />
                         <Route path="/a" component={AdminDashboard} />
+                        <Route path="/school/:id" component={SchoolInfo} />
                         <Route path="" component={NoFound} />
                     </Switch>
                 </Router>

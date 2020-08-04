@@ -28,10 +28,19 @@ module.exports = {
       },
       minWidth: {
         '250': '250px',
-        '700': '700px'
+        '350': '350px',
+        '700': '700px',
+        '900': '900px',
+      },
+      height: {
+        '90': '90vh'
       },
       minHeight: {
-        '70': '70vh'
+        '70': '70vh',
+        '90': '90vh'
+      },
+      maxHeight: {
+        '500': '500px'
       },
       borderRadius: {
         xl: '1rem'
