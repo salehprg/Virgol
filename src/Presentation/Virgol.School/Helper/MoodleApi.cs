@@ -217,7 +217,7 @@ namespace lms_with_moodle.Helper
                 for (int i = 0; i < _users.Count; i++)
                 {
                     information += "&enrolments["+i+"][userid]=" + _users[i].UserId;
-                    information += "&enrolments["+i+"][courseid]=" + _users[i].CourseId;
+                    information += "&enrolments["+i+"][courseid]=" + _users[i].lessonId;
                     information += "&enrolments["+i+"][roleid]=" + _users[i].RoleId;
                 }
                 
@@ -247,7 +247,7 @@ namespace lms_with_moodle.Helper
                 for (int i = 0; i < _users.Count; i++)
                 {
                     information += "&enrolments["+i+"][userid]=" + _users[i].UserId;
-                    information += "&enrolments["+i+"][courseid]=" + _users[i].CourseId;
+                    information += "&enrolments["+i+"][courseid]=" + _users[i].lessonId;
                 }
                 
                 data += information;

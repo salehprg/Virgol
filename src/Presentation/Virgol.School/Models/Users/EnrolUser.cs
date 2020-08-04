@@ -11,6 +11,9 @@ public class EnrolUser {
     ///User Id in moodle
     ///</summary>
     public int UserId {get; set;}
-    public int CourseId {get; set;}
-    public int CategoryId {get; set;} // use When add student to category
+    public int lessonId {get; set;}// use When add teacher to lesson
+    ///<summary>
+    ///grade Id in moodle
+    ///</summary>
+    public int gradeId {get; set;} // use When add student to grade
 }
