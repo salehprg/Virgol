@@ -3,16 +3,16 @@ import PlusTable from "../../tables/PlusTable";
 import { edit } from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
-import {getAllTeachers} from "../../../../_actions/managerActions"
+import {getAllGrades} from "../../../../_actions/managerActions"
 
-class Teachers extends React.Component {
+class Grades extends React.Component {
 
     state = { loading: false, query: '' }
 
     componentDidMount = async () => {
-        if (this.props.history.action === 'POP' || this.props.teachers.length == 0 ) {
+        if (this.props.history.action === 'POP' || this.props.grades.length == 0 ) {
             this.setState({ loading: true })
-            await this.props.getAllTeachers(this.props.user.token);
+            await this.props.getAllGrades(this.props.user.token);
             this.setState({ loading: false })
         }
     }
@@ -22,7 +22,7 @@ class Teachers extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return "لودینگ..."
+        if(this.state.loading) return "لودیمگ..."
         return (
             <div className="w-full mt-10">
                 <PlusTable
@@ -32,23 +32,20 @@ class Teachers extends React.Component {
                     changeQuery={this.changeQuery}
                     button={() => {
                         return (
-                            <button className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
+                            <button className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">دانش آموزان جدید</button>
                         );
                     }}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'واحد تدریس']}
+                    headers={['نام پایه']}
                     body={() => {
                         return (
                             <React.Fragment>
                                 {
-                                    this.props.teachers.map(x => {
-                                        if(x.firstName.includes(this.state.query))
+                                    this.props.grades.map(x => {
+                                        if(x.gradeName.includes(this.state.query))
                                         {
                                             return(
                                             <tr>
-                                                <td className="py-4">{x.firstName}</td>
-                                                <td>{x.lastName}</td>
-                                                <td>{x.melliCode}</td>
-                                                <td>{x.moodle_Id}</td>
+                                                <td className="py-4">{x.gradeName}</td>
                                                 <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>            
@@ -68,7 +65,7 @@ class Teachers extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , teachers: state.managerData.teachers}
+    return {user: state.auth.userInfo , grades: state.managerData.grades}
 }
 
-export default connect(mapStateToProps, { getAllTeachers })(Teachers);
+export default connect(mapStateToProps, { getAllGrades })(Grades);

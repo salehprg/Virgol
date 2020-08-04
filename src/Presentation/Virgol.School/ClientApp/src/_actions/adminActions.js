@@ -294,11 +294,14 @@ export const GetSchoolInfo = (token,schoolId) => async dispatch => {
     try {
         dispatch(worker.start)
         
+        
         const response = await lms.get(`/Admin/GetSchoolInfo?schoolId=${schoolId}` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
+
+        console.log("stop")
 
         dispatch(worker.stop)
         dispatch({ type: Type.GetSchoolInfo, payload: response.data })
@@ -306,6 +309,7 @@ export const GetSchoolInfo = (token,schoolId) => async dispatch => {
         return true
 
     } catch (e) {
+        console.log(e)
 
         switch (e.response.status) {
             case 401:
@@ -394,8 +398,6 @@ export const AddNewSchool = (token ,formvalue) => async dispatch => {
 export const EditSchool = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
-        
         dispatch(worker.start)
 
         const response = await lms.post('/Admin/EditSchool' , formvalue , {

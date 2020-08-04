@@ -1,19 +1,23 @@
-import * as Type from '../_types/managerTypes'
-import { LOGOUT } from "../_types/authTypes";
+import * as Type from '../_actions/managerTypes'
+import { LOGOUT } from "../_actions/authTypes";
 
 const INITIAL_STATE = {
-    'newUsers' : null,
-    'inNews': null,
-    'myNews': null,
-    'accessRoleIds': null,
-    'grades': null,
-    'classes': null,
-    'teachers' : null,
-    'students' : null,
-    'catInfo': null
+    'newUsers' : [],
+    'inNews': [],
+    myNews: [],
+    'accessRoleIds': [],
+    grades: [],
+    'classes': [],
+    teachers : [],
+    students : [],
+    'catInfo': [],
+    dashboardInfo : {}
 }
 
 export default (state = INITIAL_STATE, action) => {
+
+    if (action.type === Type.getManagerDashboardInfo)
+        return { ...state, dashboardInfo: action.payload };
 
     if (action.type === Type.CONFIRM)
         return { ...state, newUsers: state.newUsers.filter(element => element.id !== action.payload) };
@@ -42,10 +46,10 @@ export default (state = INITIAL_STATE, action) => {
 
 //#region News
 
-    if (action.type === Type.GET_INCOMMING_NEWS)
+    if (action.type === Type.GetIncommingNews)
         return { ...state, inNews: action.payload };
 
-    if (action.type === Type.GET_MY_NEWS)
+    if (action.type === Type.GetMyNews)
         return { ...state, myNews: action.payload };
 
     if (action.type === Type.GET_ACCESS_ROLE_IDS)

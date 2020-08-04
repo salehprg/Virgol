@@ -35,9 +35,11 @@ class SchoolInfo extends React.Component {
     componentDidMount = async () => {
         
         this.setState({loadingCats: true})
+
         await this.props.getBases(this.props.user.token);
         await this.props.GetSchoolInfo(this.props.user.token , this.props.match.params.id);
         this.setState({loadingCats: false})
+        console.log("end")
     }
 
     // getFields = async () => {
@@ -163,29 +165,31 @@ class SchoolInfo extends React.Component {
                     </form>
                 </div>
 
+                {(!this.props.schoolLessonInfo ? "... درحال بارگذاری اطلاعات" :
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
                     <div className="flex flex-row-reverse justify-between">
                         <div>
-                            <p className="text-right text-white text-2xl">شهید هاشمی نژاد 1</p>
-                            <p className="text-right text-white">#546253</p>
+                            <p className="text-right text-white text-2xl">{this.props.schoolLessonInfo.schoolModel.schoolName}</p>
+                            <p className="text-right text-white">#{this.props.schoolLessonInfo.schoolModel.schoolIdNumber}</p>
                         </div>
                         <div>
                             <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>
                         </div>
                     </div>
                     <div className="mt-8 overflow-auto">
+                        
                         <BaseManager
                             editable={true}
                             onAdd={this.onAdd}
-                            categories={this.props.schoolLessonInfo.bases}
+                            categories={this.props.schoolInfo.bases}
                             selectedCat={this.state.selectedCat}
                             selectCat={this.selectCat}
                             loadingCats={this.state.loadingCats}
-                            fields={this.props.schoolLessonInfo.studies}
+                            fields={this.props.schoolInfo.studyFields}
                             selectedField={this.state.selectedField}
                             selectField={this.selectField}
                             loadingFields={this.state.loadingFields}
-                            grades={this.props.schoolLessonInfo.grades}
+                            grades={this.props.schoolInfo.grades}
                             selectedGrade={this.state.selectedGrade}
                             selectGrade={this.selectGrade}
                             loadingGrades={this.state.loadingGrades}
@@ -194,8 +198,10 @@ class SchoolInfo extends React.Component {
                             selectCourse={this.selectCourse}
                             loadingCourses={this.state.loadingCourses}
                         />
+                        
                     </div>
                 </div>
+                )}
             </div>
         );
     }

@@ -35,9 +35,9 @@ class BaseManager extends React.Component {
     }
 
     renderFields = () => {
-        const { selectField, selectedField, fields, loadingFields } = this.props
+        const {selectedCat , selectField, selectedField, fields, loadingFields } = this.props
         if (loadingFields) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!fields) return <p className="text-grayish text-center centerize w-full">یک مقطع انتخاب کنید</p>
+        if (!selectedCat) return <p className="text-grayish text-center centerize w-full">یک مقطع انتخاب کنید</p>
         if (fields.length === 0) return <p className="text-grayish text-center">این مقطع رشته ندارد</p>
         return fields.map(field => {
             return (
@@ -52,14 +52,14 @@ class BaseManager extends React.Component {
     }
 
     renderGrades = () => {
-        const { selectGrade, selectedGrade, grades, loadingGrades } = this.props
+        const {selectedField , selectGrade, selectedGrade, grades, loadingGrades } = this.props
         if (loadingGrades) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!grades) return <p className="text-grayish text-center centerize w-full">یک رشته انتخاب کنید</p>
+        if (!selectedField) return <p className="text-grayish text-center centerize w-full">یک رشته انتخاب کنید</p>
         if (grades.length === 0) return <p className="text-grayish text-center">این رشته پایه ندارد</p>
         return grades.map(grade => {
             return (
                 <SelectableCard
-                    id={grade.grade_Id}
+                    id={grade.id}
                     title={grade.gradeName}
                     isSelected={grade.id === selectedGrade}
                     select={selectGrade}
@@ -69,9 +69,9 @@ class BaseManager extends React.Component {
     }
 
     renderCourses = () => {
-        const { selectCourse, selectedCourse, courses, loadingCourses } = this.props
+        const {selectedGrade , selectCourse, selectedCourse, courses, loadingCourses } = this.props
         if (loadingCourses) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!courses) return <p className="text-grayish text-center centerize w-full">یک پایه انتخاب کنید</p>
+        if (!selectedGrade) return <p className="text-grayish text-center centerize w-full">یک پایه انتخاب کنید</p>
         if (courses.length === 0) return <p className="text-grayish text-center">این رشته پایه ندارد</p>
         return courses.map(course => {
             return (

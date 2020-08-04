@@ -1,27 +1,27 @@
 import history from "../history";
 import lms from "../apis/lms";
-import { alert } from "./alerts";
-import * as Type from '../_types/managerTypes'
-import {START_WORKING, STOP_WORKING} from "../_types/workingTypes";
+import { alert } from "./alertActions";
+import * as Type from '../_actions/managerTypes'
+import { worker } from "./workerActions";
 
 export const confirmUser = (token, id) => async dispatch => {
 
     try {
-        dispatch({ type: START_WORKING })
+        dispatch(worker.start)
         const response = await lms.post("/Manager/ConfirmUsers", [parseInt(id)],{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch({ type: Type.CONFIRM, payload: id });
         history.push('/m/students')
         window.location.reload();
         dispatch(alert.success("دانش اموز تایید شد"))
 
     } catch (e) {
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch(alert.error("خطا در اتصال"))
     }
 }
@@ -29,17 +29,76 @@ export const confirmUser = (token, id) => async dispatch => {
 export const getNewUsers = token => async dispatch => {
 
     try {
-        dispatch({ type: START_WORKING })
+        dispatch(worker.start)
         const response = await lms.get("/Manager/GetNewUsers", {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch({ type: Type.GET_NEW_USERS, payload: response.data });
     } catch (e) {
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
+        dispatch(alert.error("خطا دربرقراری اتصال"))
+    }
+
+}
+
+export const GetIncommingNews = token => async dispatch => {
+
+    try {
+        dispatch(worker.start)
+        const response = await lms.get("/Manager/GetIncommingNews", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch(worker.stop)
+        dispatch({ type: Type.GetIncommingNews, payload: response.data });
+    } catch (e) {
+        dispatch(worker.stop)
+        dispatch(alert.error("خطا دربرقراری اتصال"))
+    }
+
+}
+
+export const GetMyNews = token => async dispatch => {
+
+    try {
+        dispatch(worker.start)
+        const response = await lms.get("/Manager/GetIncommingNews", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch(worker.stop)
+        dispatch({ type: Type.GetMyNews, payload: response.data });
+    } catch (e) {
+        dispatch(worker.stop)
+        dispatch(alert.error("خطا دربرقراری اتصال"))
+    }
+
+}
+
+export const getManagerDashboardInfo = token => async dispatch => {
+
+    try {
+        dispatch(worker.start)
+        const response = await lms.get("/Manager/getManagerDashboardInfo", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch(worker.stop)
+        dispatch({ type: Type.getManagerDashboardInfo, payload: response.data });
+    } catch (e) {
+        console.log(e)
+
+        dispatch(worker.stop)
         dispatch(alert.error("خطا دربرقراری اتصال"))
     }
 
@@ -84,18 +143,18 @@ export const getClassInGrades = (token,gradeId) => async dispatch => {
 export const addNewClass = (token, formValues) => async dispatch => {
 
     try {
-        dispatch({ type: START_WORKING })
+        dispatch(worker.start)
         const response = await lms.put("/Manager/AddNewClass", formValues ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch(alert.success("کلاس جدید افزوده شد"))
         dispatch({ type: Type.ADD_NEW_CLASS, payload: response.data });
     } catch (e) {
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch(alert.error("خطا در افزودن مقطع"))
     }
 
@@ -104,19 +163,19 @@ export const addNewClass = (token, formValues) => async dispatch => {
 export const editClass = (token, values) => async dispatch => {
 
     try {
-        dispatch({ type: START_WORKING })
+        dispatch(worker.start)
         const response = await lms.post('/Manager/EditClass', values,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch({ type: Type.EDIT_CLASS, payload: response.data})
         dispatch(alert.success("کلاسُ با موفقیت ویرایش گردید"))
 
     } catch (e) {
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch(alert.error("خطا در ویرایش مقطع"))
     }
 
@@ -125,19 +184,19 @@ export const editClass = (token, values) => async dispatch => {
 export const deleteClass = (token, classId) => async dispatch => {
 
     try {
-        dispatch({ type: START_WORKING })
+        dispatch(worker.start)
         const response = await lms.post("/Manager/DeleteClass", { classId } ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch(alert.success("کلاس با موفقیت حذف گردید"))
         dispatch({ type: Type.DELETE_CLASS, payload: classId})
 
     } catch (e) {
-        dispatch({ type: STOP_WORKING })
+        dispatch(worker.stop)
         dispatch(alert.error("خطا در حذف مقطع"))
     }
 
@@ -253,20 +312,20 @@ export const deleteTeacher = (token, ids) => async dispatch => {
 
     try {
         console.log(token)
-        dispatch({ type: START_WORKING })
+        dispatch(worker.start)
         const response = await lms.post(`/Manager/DeleteTeacher`, ids ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({type: STOP_WORKING})
+        dispatch(worker.stop)
         dispatch({ type: Type.DELETE_TEACHER, payload: ids})
         dispatch(alert.success("معلم حذف شد"))
 
     } catch (e) {
         console.log(e.response)
-        dispatch({type: STOP_WORKING})
+        dispatch(worker.stop)
         dispatch(alert.error("خطا در حذف معلم"))
     }
 

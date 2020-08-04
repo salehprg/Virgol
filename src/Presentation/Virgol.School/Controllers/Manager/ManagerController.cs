@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using Models.Teacher;
 using Microsoft.AspNetCore.Http;
 using Models.InputModel;
+using Newtonsoft.Json;
 
 namespace lms_with_moodle.Controllers
 {
@@ -52,6 +53,37 @@ namespace lms_with_moodle.Controllers
             
         }
 
+
+        [HttpGet]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult getManagerDashboardInfo()
+        {
+            try
+            {
+                string userIdnumber = userManager.GetUserId(User);
+                UserModel userModel = appDbContext.Users.Where(x => x.MelliCode == userIdnumber).FirstOrDefault();
+                ManagerDetail managerDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userModel.Id).FirstOrDefault();
+
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == userModel.SchoolId).FirstOrDefault();
+
+                int classCount = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).Count();
+                int studentsCount = appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Student).Count();
+                int teacherCount = appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Teacher).Count();
+                int onlineClass = 0;
+
+                return Ok(new{
+                    classCount,
+                    studentsCount,
+                    teacherCount,
+                    onlineClass
+                });
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
 
 #region CompleteInforamtion
 
@@ -92,6 +124,13 @@ namespace lms_with_moodle.Controllers
 
             List<NewsModel> allowedNews = appDbContext.News.Where(x => x.AccessRoleId.Contains(managerRoleId.ToString())).ToList();
 
+            foreach (var news in allowedNews)
+            {
+                List<string> tags = news.Tags.Split(",").ToList();
+
+                news.tagsStr = tags;
+            }
+
             return Ok(allowedNews);
         }
 
@@ -103,6 +142,13 @@ namespace lms_with_moodle.Controllers
             int UserId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
 
             List<NewsModel> myNews = appDbContext.News.Where(x => x.AutherId == UserId).ToList();
+
+            foreach (var news in myNews)
+            {
+                List<string> tags = news.Tags.Split(",").ToList();
+
+                news.tagsStr = tags;
+            }
 
             return Ok(myNews);
         }
@@ -242,19 +288,18 @@ namespace lms_with_moodle.Controllers
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
-                List<School_Grades> grades = appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList();
+                List<School_GradesVW> grades = new List<School_GradesVW>();
+                foreach (var grade in appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList())
+                {
+                    var serializedParent = JsonConvert.SerializeObject(grade); 
+                    School_GradesVW gradeVW  = JsonConvert.DeserializeObject<School_GradesVW>(serializedParent);
 
-                List<GradeModel> gradeModels = new List<GradeModel>();
-                List<CategoryDetail_moodle> categoryDetails = await moodleApi.GetAllCategories(school.Moodle_Id);
+                    gradeVW.GradeName = appDbContext.Grades.Where(x => x.Id == grade.Grade_Id).FirstOrDefault().GradeName;
 
-                foreach (var grade in grades)
-                {   
-                    GradeModel gradeModel = appDbContext.Grades.Where(x => x.Id == grade.Grade_Id).FirstOrDefault();
-                    
-                    gradeModels.Add(gradeModel);
+                    grades.Add(gradeVW);
                 }
 
-                return Ok(gradeModels);
+                return Ok(grades);
             }
             catch(Exception ex)
             {
@@ -768,7 +813,10 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Teacher).ToList());
+                string idNumber = userManager.GetUserId(User);
+                int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+
+                return Ok(appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Teacher && user.SchoolId == schoolId).ToList());
             }
             catch(Exception ex)
             {

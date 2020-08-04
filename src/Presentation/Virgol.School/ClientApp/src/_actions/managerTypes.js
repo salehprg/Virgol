@@ -7,8 +7,9 @@ export const ADD_NEW_CLASS = 'ADD_NEW_COURSE';
 export const EDIT_CLASS = 'EDIT_CATEGORY';
 export const DELETE_CLASS = 'DELETE_COURSE';
 
-export const GET_INCOMMING_NEWS = 'GET_INCOMMING_NEWS';
-export const GET_MY_NEWS = 'GET_MY_NEWS';
+export const getManagerDashboardInfo = 'getManagerDashboardInfo';
+export const GetIncommingNews = 'GetIncommingNews';
+export const GetMyNews = 'GetMyNews';
 export const GET_ACCESS_ROLE_IDS = 'GET_ACCESS_ROLE_IDS';
 export const CREATE_NEWS = 'CREATE_NEWS';
 export const EDIT_NEWS = 'EDIT_NEWS';

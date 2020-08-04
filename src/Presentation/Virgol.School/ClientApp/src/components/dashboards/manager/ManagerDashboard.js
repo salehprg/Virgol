@@ -8,6 +8,7 @@ import Header from "../header/Header";
 import Home from './home/Home'
 import Teachers from "./teachers/Teachers";
 import Students from "./students/Students";
+import Grades from "./grades/Grades";
 
 class ManagerDashboard extends React.Component {
 
@@ -78,6 +79,7 @@ class ManagerDashboard extends React.Component {
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/teachers"} component={Teachers}/>
+                        <Route path={this.props.match.url + "/bases"} component={Grades}/>
                         <Route path={this.props.match.url + "/students"} component={Students}/>
                     </Switch>
                 </div>

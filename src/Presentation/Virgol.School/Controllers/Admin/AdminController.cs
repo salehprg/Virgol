@@ -402,11 +402,16 @@ namespace lms_with_moodle.Controllers
 
                 SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
 
+                UserModel managerInfo = appDbContext.Users.Where(x => x.SchoolId == schoolModel.Id && x.userTypeId == (int)UserType.Manager).FirstOrDefault();
+                ManagerDetail managerDetail = appDbContext.ManagerDetails.Where(x => x.UserId == managerInfo.Id).FirstOrDefault();
+
                 return Ok(new{
                     bases,
                     studies,
                     grades,
-                    schoolModel
+                    schoolModel,
+                    managerInfo,
+                    managerDetail
                 });
             }
             catch(Exception ex)

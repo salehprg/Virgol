@@ -14,11 +14,11 @@ export const login = formValues => async dispatch => {
                 history.push('/s/dashboard');
                 break;
             }
-            case 2: {
+            case 3: {
                 history.push('/t/dashboard');
                 break;
             }
-            case 3: {
+            case 2: {
                 history.push('/m/dashboard');
                 break;
             }
