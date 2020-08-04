@@ -26,6 +26,7 @@ using System.IO;
 using Models.InputModel;
 using static SchoolDataHelper;
 using ExcelDataReader;
+using Newtonsoft.Json;
 
 namespace lms_with_moodle.Controllers
 {
@@ -57,6 +58,45 @@ namespace lms_with_moodle.Controllers
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult getDashboardInfo()
+        {
+            try
+            {
+                string userIdnumber = userManager.GetUserId(User);
+                int userId = appDbContext.Users.Where(x => x.MelliCode == userIdnumber).FirstOrDefault().Id;
+                AdminDetail adminModel = appDbContext.AdminDetails.Where(x => x.UserId == userId).FirstOrDefault();
+
+                List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == adminModel.SchoolsType).ToList();
+
+                int schoolCount = schools.Count;
+                int limitCount = adminModel.SchoolLimit - schoolCount;
+                int studentsCount = 0;
+                int teacherCount = 0;
+
+                foreach (var school in schools)
+                {
+                    studentsCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && (x.userTypeId == (int)UserType.Student)).Count();
+                    teacherCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Teacher).Count();
+                }
+
+                return Ok(new{
+                    adminDetail = adminModel,
+                    schoolCount,
+                    keyCount = limitCount,
+                    studentsCount,
+                    teacherCount
+                });
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 #region News
         [HttpGet]
@@ -319,35 +359,54 @@ namespace lms_with_moodle.Controllers
     
 #region School
 
+
         [HttpGet]
+        [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult getDashboardInfo()
+        public IActionResult GetSchoolInfo(int schoolId)
         {
             try
             {
-                string userIdnumber = userManager.GetUserId(User);
-                int userId = appDbContext.Users.Where(x => x.MelliCode == userIdnumber).FirstOrDefault().Id;
-                AdminDetail adminModel = appDbContext.AdminDetails.Where(x => x.UserId == userId).FirstOrDefault();
-
-                List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == adminModel.SchoolsType).ToList();
-
-                int schoolCount = schools.Count;
-                int limitCount = adminModel.SchoolLimit - schoolCount;
-                int studentsCount = 0;
-                int teacherCount = 0;
-
-                foreach (var school in schools)
+                List<School_BasesVW> bases = new List<School_BasesVW>();
+                foreach (var basee in appDbContext.School_Bases.Where(x => x.School_Id == schoolId).ToList())
                 {
-                    studentsCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && (x.userTypeId == (int)UserType.Student)).Count();
-                    teacherCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Teacher).Count();
+                    var serializedParent = JsonConvert.SerializeObject(basee); 
+                    School_BasesVW basesVW  = JsonConvert.DeserializeObject<School_BasesVW>(serializedParent);
+
+                    basesVW.BaseName = appDbContext.Bases.Where(x => x.Id == basee.Base_Id).FirstOrDefault().BaseName;
+
+                    bases.Add(basesVW);
                 }
 
+                List<School_StudyFieldsVW> studies = new List<School_StudyFieldsVW>();
+                foreach (var studyF in appDbContext.School_StudyFields.Where(x => x.School_Id == schoolId).ToList())
+                {
+                    var serializedParent = JsonConvert.SerializeObject(studyF); 
+                    School_StudyFieldsVW studyField  = JsonConvert.DeserializeObject<School_StudyFieldsVW>(serializedParent);
+
+                    studyField.StudyFieldName = appDbContext.StudyFields.Where(x => x.Id == studyF.StudyField_Id).FirstOrDefault().StudyFieldName;
+
+                    studies.Add(studyField);
+                }
+
+                List<School_GradesVW> grades = new List<School_GradesVW>();
+                foreach (var grade in appDbContext.School_Grades.Where(x => x.School_Id == schoolId).ToList())
+                {
+                    var serializedParent = JsonConvert.SerializeObject(grade); 
+                    School_GradesVW gradeVW  = JsonConvert.DeserializeObject<School_GradesVW>(serializedParent);
+
+                    gradeVW.GradeName = appDbContext.Grades.Where(x => x.Id == grade.Grade_Id).FirstOrDefault().GradeName;
+
+                    grades.Add(gradeVW);
+                }
+
+                SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+
                 return Ok(new{
-                    adminDetail = adminModel,
-                    schoolCount,
-                    keyCount = limitCount,
-                    studentsCount,
-                    teacherCount
+                    bases,
+                    studies,
+                    grades,
+                    schoolModel
                 });
             }
             catch(Exception ex)
@@ -356,7 +415,6 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         [HttpGet]
         [ProducesResponseType(typeof(List<SchoolModel>), 200)]
@@ -647,7 +705,7 @@ namespace lms_with_moodle.Controllers
             {
                 if(BaseId != -1)
                 {
-                    return Ok(appDbContext.StudyFields.Where(x => x.Base_Id == BaseId).ToList());
+                    return Ok(appDbContext.StudyFields.Where(x => x.Base_Id == BaseId).ToList().Take(15));
                 }
                 return Ok(appDbContext.StudyFields.ToList());
             }
@@ -658,77 +716,6 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-
-        // [HttpPut]
-        // [ProducesResponseType(typeof(StudyFieldModel), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public async Task<IActionResult> AddNewStudyFields([FromBody]StudyFieldModel model)
-        // {
-        //     StudyFieldModel newStudyF = model;
-        //     try
-        //     {
-        //         appDbContext.StudyFields.Add(newStudyF);
-        //         await appDbContext.SaveChangesAsync();
-
-        //         return Ok(appDbContext.StudyFields.OrderByDescending(x => x.Id).FirstOrDefault());
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
-
-
-        // [HttpPost]
-        // [ProducesResponseType(typeof(bool), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public IActionResult EditStudyFields([FromBody]StudyFieldModel model)
-        // {
-        //     try
-        //     {
-        //         StudyFieldModel study = appDbContext.StudyFields.Where(x => x.Id == model.Id).FirstOrDefault();
-
-        //         if(study != null)
-        //         {
-        //             study.Base_Id = (model.Base_Id != 0 ? model.Base_Id : study.Base_Id);
-        //             study.StudyFieldName = (model.StudyFieldName != "" ? model.StudyFieldName : study.StudyFieldName);
-
-        //             appDbContext.StudyFields.Update(model);
-        //             appDbContext.SaveChanges();
-
-        //             return Ok(true);
-        //         }
-
-        //         return BadRequest("رشته ای انتخاب نشده است");
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
-
-        // [HttpDelete]
-        // [ProducesResponseType(typeof(bool), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public async Task<IActionResult> RemoveStudyFields([FromBody]int studyFId)
-        // {
-        //     try
-        //     {
-        //         StudyFieldModel studyFModel = appDbContext.StudyFields.Where(x => x.Id == studyFId).FirstOrDefault();
-
-        //         appDbContext.StudyFields.Remove(studyFModel);
-        //         await appDbContext.SaveChangesAsync();
-
-        //         return Ok(true);
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
 
 #endregion
    
@@ -741,7 +728,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Grades.Where(x => x.StudyField_Id == StudyFieldId).ToList());
+                return Ok(appDbContext.Grades.Where(x => x.StudyField_Id == StudyFieldId).ToList().Take(15));
             }
             catch(Exception ex)
             {
@@ -750,81 +737,6 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-
-        // [HttpPut]
-        // [ProducesResponseType(typeof(GradeModel), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public async Task<IActionResult> AddNewGrades([FromBody]GradeModel model)
-        // {
-        //     GradeModel newStudyF = model;
-        //     try
-        //     {
-        //         if(appDbContext.Grades.Where(x => x.GradeName == model.GradeName).FirstOrDefault() == null)
-        //         {
-        //             appDbContext.Grades.Add(newStudyF);
-        //             await appDbContext.SaveChangesAsync();
-
-        //             return Ok(appDbContext.Grades.OrderByDescending(x => x.Id).FirstOrDefault());
-        //         }
-        //         return BadRequest("نام انتخابی برای پایه تکراری است");
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
-
-
-        // [HttpPost]
-        // [ProducesResponseType(typeof(bool), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public IActionResult EditGrades([FromBody]GradeModel model)
-        // {
-        //     try
-        //     {
-        //         GradeModel grade = appDbContext.Grades.Where(x => x.Id == model.Id).FirstOrDefault();
-
-        //         if(grade != null && appDbContext.Grades.Where(x => x.GradeName == model.GradeName).FirstOrDefault() == null)
-        //         {
-        //             grade.GradeName = (model.GradeName != "" ? model.GradeName : grade.GradeName);
-        //             grade.StudyField_Id = (model.StudyField_Id != 0 ? model.StudyField_Id : grade.StudyField_Id);
-
-        //             appDbContext.Grades.Update(grade);
-        //             appDbContext.SaveChanges();
-
-        //             return Ok(true);
-        //         }
-
-        //          return BadRequest("پایه ای انتخاب نشده است");
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
-
-        // [HttpDelete]
-        // [ProducesResponseType(typeof(bool), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public async Task<IActionResult> RemoveGrades([FromBody]int studyFId)
-        // {
-        //     try
-        //     {
-        //         GradeModel studyFModel = appDbContext.Grades.Where(x => x.Id == studyFId).FirstOrDefault();
-
-        //         appDbContext.Grades.Remove(studyFModel);
-        //         await appDbContext.SaveChangesAsync();
-
-        //         return Ok(true);
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
 
 #endregion
    
@@ -837,7 +749,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList());
+                return Ok(appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList().Take(20));
             }
             catch(Exception ex)
             {
@@ -846,79 +758,6 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-
-        // [HttpPut]
-        // [ProducesResponseType(typeof(LessonModel), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public async Task<IActionResult> AddNewLessons([FromBody]LessonModel model)
-        // {
-        //     LessonModel newStudyF = model;
-        //     try
-        //     {
-        //         appDbContext.Lessons.Add(newStudyF);
-        //         await appDbContext.SaveChangesAsync();
-
-        //         return Ok(appDbContext.Lessons.OrderByDescending(x => x.Id).FirstOrDefault());
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
-
-
-        // [HttpPost]
-        // [ProducesResponseType(typeof(bool), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public IActionResult EditLessons([FromBody]LessonModel model)
-        // {
-        //     try
-        //     {
-        //         LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == model.Id).FirstOrDefault();
-
-        //         if(lesson != null)
-        //         {
-        //             lesson.LessonCode = (model.LessonCode != "" ? model.LessonCode : lesson.LessonCode);
-        //             lesson.Grade_Id = (model.Grade_Id != 0 ? model.Grade_Id : lesson.Grade_Id);
-        //             lesson.LessonName = (model.LessonName != "" ? model.LessonName : lesson.LessonName);
-        //             lesson.Vahed = (model.Vahed != 0 ? model.Vahed : lesson.Vahed);
-
-        //             appDbContext.Lessons.Update(lesson);
-        //             appDbContext.SaveChanges();
-
-        //             return Ok(true);
-        //         }
-
-        //         return BadRequest("درسی انتخاب نشده است");
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
-
-        // [HttpDelete]
-        // [ProducesResponseType(typeof(bool), 200)]
-        // [ProducesResponseType(typeof(string), 400)]
-        // public async Task<IActionResult> RemoveLessons([FromBody]int studyFId)
-        // {
-        //     try
-        //     {
-        //         LessonModel studyFModel = appDbContext.Lessons.Where(x => x.Id == studyFId).FirstOrDefault();
-
-        //         appDbContext.Lessons.Remove(studyFModel);
-        //         await appDbContext.SaveChangesAsync();
-
-        //         return Ok(true);
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         //await userManager.DeleteAsync(newSchool);
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
 
 #endregion
      

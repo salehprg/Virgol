@@ -10,6 +10,7 @@ export const RemoveManager = 'RemoveManager';
 
 export const getDashboardInfo = 'getDashboardInfo';
 
+export const GetSchoolInfo = 'GetSchoolInfo';
 export const GetSchools = 'GetSchools';
 export const AddNewSchool = 'AddNewSchool';
 export const EditSchool = 'EditSchool';

@@ -50,7 +50,7 @@ class Schools extends React.Component {
                                                 <td>{x.schoolIdNumber}</td>
                                                 <td>سمپاد</td>
                                                 <td>احسان فاضلی</td>
-                                                <td className="cursor-pointer" onClick={() => history.push(`/school/${2}`)}>
+                                                <td className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>
                                             </tr>

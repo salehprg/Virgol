@@ -26,7 +26,7 @@ class BaseManager extends React.Component {
                 return (
                     <SelectableCard
                         id={cat.id}
-                        title={cat.name}
+                        title={cat.baseName}
                         isSelected={cat.id === selectedCat}
                         select={selectCat}
                     />
@@ -43,7 +43,7 @@ class BaseManager extends React.Component {
             return (
                 <SelectableCard
                     id={field.id}
-                    title={field.name}
+                    title={field.studyFieldName}
                     isSelected={field.id === selectedField}
                     select={selectField}
                 />
@@ -59,8 +59,8 @@ class BaseManager extends React.Component {
         return grades.map(grade => {
             return (
                 <SelectableCard
-                    id={grade.id}
-                    title={grade.name}
+                    id={grade.grade_Id}
+                    title={grade.gradeName}
                     isSelected={grade.id === selectedGrade}
                     select={selectGrade}
                 />
@@ -77,7 +77,7 @@ class BaseManager extends React.Component {
             return (
                 <SelectableCard
                     id={course.id}
-                    title={course.name}
+                    title={course.lessonName}
                     isSelected={course.id === selectedCourse}
                     select={selectCourse}
                 />

@@ -4,7 +4,14 @@ import {LOGOUT} from "../_actions/authTypes";
 const INITIAL_STATE = {
     news : [],
     dashboardInfo : [],
-    schools: []
+    schools: [],
+    schoolLessonInfo : null,
+    schoolInfo : {
+        bases : [],
+        studyFields : [],
+        grades: [] ,
+        lessons : []
+    }
 }
 
 export default ( state = INITIAL_STATE, action ) => {
@@ -35,6 +42,9 @@ export default ( state = INITIAL_STATE, action ) => {
         case Type.RemoveManager: 
             return { ...state, managers: state.managers.filter(element => !action.payload.includes(element.id)) }
 
+        case Type.GetSchoolInfo: 
+            return { ...state, schoolLessonInfo: action.payload}
+
         case Type.GetSchools: 
             return { ...state, schools: action.payload}
 
@@ -51,16 +61,16 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, dashboardInfo: action.payload}
 
         case Type.GetBases: 
-            return { ...state, bases: action.payload}
+            return { ...state, schoolInfo : {...state.schoolInfo , bases : action.payload}}
 
         case Type.GetStudyFields: 
-            return { ...state, studyFields: action.payload}
+            return { ...state, schoolInfo : {...state.schoolInfo , studyFields : action.payload}}
 
         case Type.GetGrade: 
-            return { ...state, grades: action.payload}
+            return { ...state, schoolInfo : {...state.schoolInfo , grades : action.payload}}
         
         case Type.GetLessons: 
-            return { ...state, lessons: action.payload}
+            return { ...state, schoolInfo : {...state.schoolInfo , lessons : action.payload}}
 
         case LOGOUT: 
             return INITIAL_STATE

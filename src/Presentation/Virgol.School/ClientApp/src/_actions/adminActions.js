@@ -289,6 +289,40 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
 
 //#region Schools
 
+export const GetSchoolInfo = (token,schoolId) => async dispatch => {
+
+    try {
+        dispatch(worker.start)
+        
+        const response = await lms.get(`/Admin/GetSchoolInfo?schoolId=${schoolId}` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch(worker.stop)
+        dispatch({ type: Type.GetSchoolInfo, payload: response.data })
+
+        return true
+
+    } catch (e) {
+
+        switch (e.response.status) {
+            case 401:
+                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+                history.push('/')
+                break;
+
+            default:
+                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        }
+
+        return false
+
+    }
+
+}
+
 export const getSchools = token => async dispatch => {
 
     try {

@@ -4,6 +4,7 @@ import {Field, reduxForm} from "redux-form";
 import {briefcase, loading, slash} from "../../../../assets/icons";
 import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
+import {GetSchoolInfo , getBases , getGrades , getStudyfields , getLessons , AddNewSchool , EditSchool , EditManager} from "../../../../_actions/adminActions"
 import {Link} from "react-router-dom";
 
 class SchoolInfo extends React.Component {
@@ -31,31 +32,53 @@ class SchoolInfo extends React.Component {
         loadingCourses: false,
     }
 
-    getFields =  () => {
-        if (!this.state.selectedCat) return null
-        return this.state.fields.find(el => el.catId === this.state.selectedCat).fields
+    componentDidMount = async () => {
+        
+        this.setState({loadingCats: true})
+        await this.props.getBases(this.props.user.token);
+        await this.props.GetSchoolInfo(this.props.user.token , this.props.match.params.id);
+        this.setState({loadingCats: false})
     }
 
-    getGrades = () => {
-        if (!this.state.selectedField && (!this.state.selectedCat || this.state.fields.find(el => el.catId === this.state.selectedCat).fields.length !== 0)) return null
-        return this.state.grades.find(el => el.catId === this.state.selectedCat).grades
-    }
+    // getFields = async () => {
+    //     console.log("test")
+    //     await this.props.getStudyfields(this.props.user.token , this.state.selectedCat);
+    //     if (!this.props.bases) return null
+    //     return this.props.studyFields.find(el => el.catId === this.state.selectedCat).fields
+    // }
 
-    getCourses = () => {
-        if (!this.state.selectedGrade) return null
-        return this.state.courses.find(el => (el.fieldId === -1 || el.fieldId === this.state.selectedField) && el.gradeId === this.state.selectedGrade).courses
-    }
+    // getGrades = () => {
+    //     if (!this.state.selectedField && (!this.state.selectedCat || this.state.fields.find(el => el.catId === this.state.selectedCat).fields.length !== 0)) return null
+    //     return this.state.grades.find(el => el.catId === this.state.selectedCat).grades
+    // }
 
-    selectCat = (id) => {
+    // getCourses = () => {
+    //     if (!this.state.selectedGrade) return null
+    //     return this.state.courses.find(el => (el.fieldId === -1 || el.fieldId === this.state.selectedField) && el.gradeId === this.state.selectedGrade).courses
+    // }
+
+    selectCat = async (id) => {
         this.setState({ selectedCat: id, selectedField: null, selectedGrade: null, selectedCourse: null })
+
+        this.setState({loadingFields: true})
+        await this.props.getStudyfields(this.props.user.token , id);
+        this.setState({loadingFields: false})
     }
 
-    selectField = (id) => {
+    selectField = async (id) => {
         this.setState({ selectedField: id })
+
+        this.setState({loadingGrades: true})
+        await this.props.getGrades(this.props.user.token , id);
+        this.setState({loadingGrades: false})
     }
 
-    selectGrade = (id) => {
+    selectGrade = async (id) => {
         this.setState({ selectedGrade: id })
+
+        this.setState({loadingCourses: true})
+        await this.props.getLessons(this.props.user.token , id);
+        this.setState({loadingCourses: false})
     }
 
     selectCourse = (id) => {
@@ -154,19 +177,19 @@ class SchoolInfo extends React.Component {
                         <BaseManager
                             editable={true}
                             onAdd={this.onAdd}
-                            categories={this.state.categories}
+                            categories={this.props.schoolLessonInfo.bases}
                             selectedCat={this.state.selectedCat}
                             selectCat={this.selectCat}
                             loadingCats={this.state.loadingCats}
-                            fields={this.getFields()}
+                            fields={this.props.schoolLessonInfo.studies}
                             selectedField={this.state.selectedField}
                             selectField={this.selectField}
                             loadingFields={this.state.loadingFields}
-                            grades={this.getGrades()}
+                            grades={this.props.schoolLessonInfo.grades}
                             selectedGrade={this.state.selectedGrade}
                             selectGrade={this.selectGrade}
                             loadingGrades={this.state.loadingGrades}
-                            courses={this.getCourses()}
+                            courses={this.props.schoolInfo.lessons}
                             selectedCourse={this.state.selectedCourse}
                             selectCourse={this.selectCourse}
                             loadingCourses={this.state.loadingCourses}
@@ -183,4 +206,8 @@ const formWrapped = reduxForm({
     form: 'editSchoolManager'
 })(SchoolInfo)
 
-export default connect(null)(formWrapped);
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , schoolInfo: state.adminData.schoolInfo , schoolLessonInfo : state.adminData.schoolLessonInfo}
+}
+
+export default connect(mapStateToProps, { GetSchoolInfo ,getBases , getStudyfields , getGrades , getLessons , EditManager , EditSchool })(formWrapped);
