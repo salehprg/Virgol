@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
-import {Field, reduxForm} from "redux-form";
+import {Field, reduxForm, reset} from "redux-form";
 import {briefcase, loading, slash} from "../../../../assets/icons";
 import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
@@ -87,13 +87,13 @@ class SchoolInfo extends React.Component {
         this.setState({ selectedCourse: id })
     }
 
-    renderInputs = ({ input, meta, type, placeholder }) => {
+    renderInputs = ({ input, meta, dir, type, placeholder }) => {
         return (
             <Fieldish
                 input={input}
                 redCondition={meta.touched && meta.error}
                 type={type}
-                dir="ltr"
+                dir={dir}
                 placeholder={placeholder}
                 extra="w-full max-w-350 my-4 md:mx-4 lg:mx-0 mx-0"
             />
@@ -101,7 +101,7 @@ class SchoolInfo extends React.Component {
     }
 
     changeManagerInfo = (formValues) => {
-
+        // handle manager update
     }
 
     onAdd = (status) => {
@@ -125,18 +125,21 @@ class SchoolInfo extends React.Component {
                         <div className="w-full flex flex-row justify-center items-center flex-wrap">
                             <Field
                                 name="firstName"
+                                dir="rtl"
                                 type="text"
                                 placeholder="نام"
                                 component={this.renderInputs}
                             />
                             <Field
                                 name="lastName"
+                                dir="rtl"
                                 type="text"
                                 placeholder="نام خانوادگی"
                                 component={this.renderInputs}
                             />
                             <Field
-                                name="personalCode"
+                                name="personalIdNumber"
+                                dir="ltr"
                                 type="text"
                                 placeholder="شماره پرسنلی"
                                 component={this.renderInputs}
@@ -144,12 +147,14 @@ class SchoolInfo extends React.Component {
                             <Field
                                 name="melliCode"
                                 type="text"
+                                dir="ltr"
                                 placeholder="کد ملی"
                                 component={this.renderInputs}
                             />
                             <Field
                                 name="phoneNumber"
                                 type="text"
+                                dir="ltr"
                                 placeholder="شماره همراه"
                                 component={this.renderInputs}
                             />
@@ -158,7 +163,7 @@ class SchoolInfo extends React.Component {
                             <button type="submit" className="w-5/12 py-1 mx-1 rounded-lg border-2 border-transparent bg-pinkish text-white">
                                 ذخیره
                             </button>
-                            <button className="w-5/12 py-1 mx-1 rounded-lg border-2 border-pinkish text-pinkish">
+                            <button onClick={this.props.reset} className="w-5/12 py-1 mx-1 rounded-lg border-2 border-pinkish text-pinkish">
                                 ریست
                             </button>
                         </div>
@@ -208,12 +213,23 @@ class SchoolInfo extends React.Component {
 
 }
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth.userInfo , 
+        schoolInfo: state.adminData.schoolInfo , 
+        schoolLessonInfo : state.adminData.schoolLessonInfo,
+        initialValues: {
+            firstName: state.adminData.schoolLessonInfo.managerInfo.firstName,
+            lastName: state.adminData.schoolLessonInfo.managerInfo.lastName,
+            personalIdNumber: state.adminData.schoolLessonInfo.managerDetail.personalIdNumber,
+            melliCode: state.adminData.schoolLessonInfo.managerInfo.melliCode,
+            phoneNumber: state.adminData.schoolLessonInfo.managerInfo.phoneNumber,
+        }
+    }
+}
+
 const formWrapped = reduxForm({
     form: 'editSchoolManager'
-})(SchoolInfo)
-
-const mapStateToProps = state => {
-    return {user: state.auth.userInfo , schoolInfo: state.adminData.schoolInfo , schoolLessonInfo : state.adminData.schoolLessonInfo}
-}
+}, mapStateToProps)(SchoolInfo)
 
 export default connect(mapStateToProps, { GetSchoolInfo ,getBases , getStudyfields , getGrades , getLessons , EditManager , EditSchool })(formWrapped);

@@ -1,63 +1,71 @@
 import React from "react";
 import Add from "../../../../field/Add";
+import { connect } from 'react-redux'
+import {reduxForm, Field} from 'redux-form';
 import history from "../../../../../history";
-import BaseInfo from "./BaseInfo";
+import Fieldish from '../../../../field/Fieldish';
 
 class AddSchool extends React.Component {
 
-    state = {
-        page: 1
-    }
-
-    nextPage = () => {
-        this.setState({ page: this.state.page + 1 })
-    }
-
-    previousPage = () => {
-        this.setState({ page: this.state.page - 1 })
+    renderInputs = ({ input, meta, type, placeholder }) => {
+        return (
+            <Fieldish
+                input={input}
+                redCondition={meta.touched && meta.error}
+                type={type}
+                dir="ltr"
+                placeholder={placeholder}
+                extra="w-full my-4"
+            />
+        );
     }
 
     onSubmit = (formValues) => {
 
     }
 
-    renderPanel = () => {
-        if (this.state.page === 1) {
-            return (
-                <BaseInfo
-                    onCancel={() => history.push('/a/schools')}
-                    onSubmit={this.nextPage}
-                />
-            );
-        } else if (this.state.page === 2) {
-            return (
-                <Add
-                    onCancel={this.previousPage}
-                    onSubmit={this.nextPage}
-                >
-
-                </Add>
-            );
-        } else {
-            return (
-                <Add
-                    onCancel={this.previousPage}
-                    onSubmit={this.onSubmit}
-                >
-
-                </Add>
-            );
-        }
-    }
-
     render() {
         return (
-            <>
-                {this.renderPanel()}
-            </>
+            <Add 
+                onCancel={() => history.push('/a/schools')}
+                title="افزودن مدرسه"
+            >
+                <form className="w-full" onClick={this.props.handleSubmit(this.onSubmit)}>
+                    <Field
+                        name="name"
+                        type="text"
+                        placeholder="نام مدرسه"
+                        component={this.renderInputs}
+                    />
+                    <Field
+                        name="code"
+                        type="text"
+                        placeholder="کد مدرسه"
+                        component={this.renderInputs}
+                    />
+                    <Field
+                        name="managerFirstName"
+                        type="text"
+                        placeholder="نام مدیر"
+                        component={this.renderInputs}
+                    />
+                    <Field
+                        name="managerLastName"
+                        type="text"
+                        placeholder="نام خانوادگی مدیر"
+                        component={this.renderInputs}
+                    />
+
+                    <button className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">افزودن</button>
+                </form>
+            </Add>
         );
     }
 
 }
 
-export default AddSchool;
+const formWrapped = reduxForm({
+    form: ''
+})(AddSchool);
+
+export default connect(null)(formWrapped);
