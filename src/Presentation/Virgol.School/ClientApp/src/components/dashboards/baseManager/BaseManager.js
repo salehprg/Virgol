@@ -9,6 +9,11 @@ class BaseManager extends React.Component {
 
     state = { addStatus: null }
 
+    onAddData = (dataIds) => {
+        this.props.onAdd(this.state.addStatus , dataIds);
+        this.onCancel();
+    }
+
     onAdd = (addStatus) => {
         this.setState({ addStatus })
         this.props.onAdd(addStatus);
@@ -38,7 +43,7 @@ class BaseManager extends React.Component {
         const {selectedCat , selectField, selectedField, fields, loadingFields } = this.props
         if (loadingFields) return <div className="centerize">{loading('w-8 text-grayish')}</div>
         if (!selectedCat) return <p className="text-grayish text-center centerize w-full">یک مقطع انتخاب کنید</p>
-        if (fields.length === 0) return <p className="text-grayish text-center">این مقطع رشته ندارد</p>
+        if (fields.length === 0) return <p className="text-grayish text-center">رشته ای اضافه نشده است</p>
         return fields.map(field => {
             return (
                 <SelectableCard
@@ -89,8 +94,8 @@ class BaseManager extends React.Component {
         const { editable, categories, deleteCat, deleteField, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
         return (
             <div className="w-full grid grid-cols-4 gap-6 min-w-900">
-                {this.state.addStatus === 'category' ? <AddCategory cancel={this.onCancel} /> : null}
-                {this.state.addStatus === 'field' ? <AddField cancel={this.onCancel} /> : null}
+                {this.state.addStatus === 'category' ? <AddCategory onAddBase={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
+                {this.state.addStatus === 'field' ? <AddField selectedBaseId={selectedCat} onAddField={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
                 <BMCard
                     title="دروس"
                     editable={false}
@@ -122,7 +127,7 @@ class BaseManager extends React.Component {
                     showAdd={selectedCat}
                     deleteItem={deleteField}
                     listed={fields}
-                    onAdd={() => this.onAdd('field')}
+                    onAdd={() => this.onAdd('field' )}
                     onCancel={this.onCancel}
                     addStatus={this.state.addStatus === 'field'}
                 >

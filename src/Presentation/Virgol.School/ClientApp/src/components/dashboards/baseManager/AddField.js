@@ -1,19 +1,29 @@
 import React from "react";
 import Modal from "../../modals/Modal";
 import Searchish from "../../field/Searchish";
+import {getStudyfields } from "../../../_actions/adminActions"
+import { connect } from "react-redux";
 
 class AddField extends React.Component {
 
     state = {
         cats: [{id: 1, name: 'دبستان'}, {id: 2, name: 'متوسطه اول'}, {id: 3, name: 'متوسطه دوم'}],
-        selectedCats: []
+        selectedFields: []
+    }
+
+    componentDidMount = async () => {
+        await this.props.getStudyfields(this.props.user.token , this.props.selectedBaseId)
+    }
+
+    addFieldToSchool = async () => {
+        this.props.onAddField(this.state.selectedFields)
     }
 
     setCat = (id) => {
-        if (!this.state.selectedCats.some(el => el === id)) {
-            this.setState({ selectedCats: [...this.state.selectedCats, id] })
+        if (!this.state.selectedFields.some(el => el === id)) {
+            this.setState({ selectedFields: [...this.state.selectedFields, id] })
         } else {
-            this.setState({ selectedCats: this.state.selectedCats.filter(el => el !== id)})
+            this.setState({ selectedFields: this.state.selectedFields.filter(el => el !== id)})
         }
     }
 
@@ -25,18 +35,18 @@ class AddField extends React.Component {
                         className="mx-auto max-w-350"
                     />
                     <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
-                        {this.state.cats.map(cat => {
+                        {this.props.newSchoolInfo.studyFields.map(study => {
                             return (
-                                <span onClick={() => this.setCat(cat.id)}
-                                      className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedCats.some(el => el === cat.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                <span onClick={() => this.setCat(study.id)}
+                                      className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
                                 >
-                                    {cat.name}
+                                    {study.studyFieldName}
                                 </span>
                             );
                         })}
                     </div>
                     <div className="flex mt-8 flex-row items-center">
-                        <button className="px-6 py-1 mx-1 border-2 border-transparent rounded-lg bg-greenish text-white">
+                        <button onClick={this.addFieldToSchool} className="px-6 py-1 mx-1 border-2 border-transparent rounded-lg bg-greenish text-white">
                             ذخیره
                         </button>
                         <button onClick={this.props.cancel} className="px-6 mx-1 py-1 rounded-lg border-2 border-grayish text-grayish">
@@ -50,4 +60,8 @@ class AddField extends React.Component {
 
 }
 
-export default AddField;
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , newSchoolInfo: state.adminData.newSchoolInfo }
+}
+
+export default connect(mapStateToProps, { getStudyfields  })(AddField);

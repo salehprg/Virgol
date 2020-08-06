@@ -6,7 +6,7 @@ const INITIAL_STATE = {
     dashboardInfo : [],
     schools: [],
     schoolLessonInfo : null,
-    schoolInfo : {
+    newSchoolInfo : {
         bases : [],
         studyFields : [],
         grades: [] ,
@@ -48,8 +48,20 @@ export default ( state = INITIAL_STATE, action ) => {
         case Type.GetSchools: 
             return { ...state, schools: action.payload}
 
-        case Type.AddNewSchool: 
-            return { ...state, schools: [...state.schools, action.payload]};
+        case Type.CreateSchool: 
+            return { ...state, schools: [...state.schools , action.payload]};
+
+        case Type.AddBaseToSchool: 
+            return { ...state, schoolLessonInfo: {...state.schoolLessonInfo , bases :  action.payload}}
+
+        case Type.RemoveBaseFromSchool: 
+            return { ...state, schoolLessonInfo: state.schoolLessonInfo.bases.filter(element => !action.payload.includes(element.id))};
+
+        case Type.AddStudyFToSchool: 
+            return { ...state, schoolLessonInfo: {...state.schoolLessonInfo , studyFields : action.payload}};
+
+        case Type.RemoveStudyFFromSchool: 
+            return { ...state, schoolLessonInfo: state.schoolLessonInfo.studyFields.filter(element => !action.payload.includes(element.id))};
 
         case Type.EditSchool: 
             return { ...state, schools: state.schools.map(el => el.id === action.payload.id ? action.payload : el) }
@@ -61,16 +73,22 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, dashboardInfo: action.payload}
 
         case Type.GetBases: 
-            return { ...state, schoolInfo : {...state.schoolInfo , bases : action.payload}}
+            return { ...state, newSchoolInfo : {...state.newSchoolInfo , bases : action.payload}}
 
         case Type.GetStudyFields: 
-            return { ...state, schoolInfo : {...state.schoolInfo , studyFields : action.payload}}
+            return { ...state, newSchoolInfo : {...state.newSchoolInfo , studyFields : action.payload}}
+
+        case Type.GetSchool_StudyFields: 
+            return { ...state, schoolLessonInfo : {...state.schoolLessonInfo , studyFields : action.payload}}
 
         case Type.GetGrade: 
-            return { ...state, schoolInfo : {...state.schoolInfo , grades : action.payload}}
+            return { ...state, newSchoolInfo : {...state.newSchoolInfo , grades : action.payload}}
+
+        case Type.GetSchool_Grades: 
+            return { ...state, schoolLessonInfo : {...state.schoolLessonInfo , grades : action.payload}}
         
         case Type.GetLessons: 
-            return { ...state, schoolInfo : {...state.schoolInfo , lessons : action.payload}}
+            return { ...state, newSchoolInfo : {...state.newSchoolInfo , lessons : action.payload}}
 
         case LOGOUT: 
             return INITIAL_STATE

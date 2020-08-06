@@ -4,7 +4,8 @@ import {Field, reduxForm, reset} from "redux-form";
 import {briefcase, loading, slash} from "../../../../assets/icons";
 import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
-import {GetSchoolInfo , getBases , getGrades , getStudyfields , getLessons , AddNewSchool , EditSchool , EditManager} from "../../../../_actions/adminActions"
+import {GetSchoolInfo  , GetSchool_Grades , GetSchool_StudyFields 
+        , getLessons , EditSchool , EditManager , AddBaseToSchool  , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool} from "../../../../_actions/adminActions"
 import {Link} from "react-router-dom";
 import Modal from "../../../modals/Modal";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
@@ -40,8 +41,6 @@ class SchoolInfo extends React.Component {
     componentDidMount = async () => {
         
         this.setState({loadingCats: true})
-
-        await this.props.getBases(this.props.user.token);
         await this.props.GetSchoolInfo(this.props.user.token , this.props.match.params.id);
         this.setState({loadingCats: false})
         console.log("end")
@@ -68,7 +67,7 @@ class SchoolInfo extends React.Component {
         this.setState({ selectedCat: id, selectedField: null, selectedGrade: null, selectedCourse: null })
 
         this.setState({loadingFields: true})
-        await this.props.getStudyfields(this.props.user.token , id);
+        await this.props.GetSchool_StudyFields(this.props.user.token , id);
         this.setState({loadingFields: false})
     }
 
@@ -76,7 +75,7 @@ class SchoolInfo extends React.Component {
         this.setState({ selectedField: id })
 
         this.setState({loadingGrades: true})
-        await this.props.getGrades(this.props.user.token , id);
+        await this.props.GetSchool_Grades(this.props.user.token , id);
         this.setState({loadingGrades: false})
     }
 
@@ -105,20 +104,44 @@ class SchoolInfo extends React.Component {
         );
     }
 
-    changeManagerInfo = (formValues) => {
-        // handle manager update
+    changeManagerInfo = async (formValues) => {
+        formValues.schoolId = parseInt(this.props.match.params.id);
+        await this.props.EditManager(this.props.user.token , formValues)
     }
 
-    onAdd = (status) => {
+    onAdd = async (status , dataIds) => {
 
+        const data = {
+            schoolId : parseInt(this.props.match.params.id),
+            dataIds : dataIds
+        };
+        
         switch (status) {
-            case "category": this.setState({ selectedCat:null, selectedField: null, selectedGrade: null, selectedCourse: null })
+            
+            case "category": 
+                this.setState({ selectedCat:null, selectedField: null, selectedGrade: null, selectedCourse: null })
+    
+                await this.props.AddBaseToSchool(this.props.user.token , data)
+                break;
+
+            case "field": 
+                this.setState({ selectedField: null, selectedGrade: null, selectedCourse: null })
+
+                await this.props.AddStudyFToSchool(this.props.user.token , data)
+
+                this.setState({loadingFields: true})
+                await this.props.GetSchool_StudyFields(this.props.user.token , this.state.selectedCat);
+                this.setState({loadingFields: false})
+                break;
         }
 
     }
 
-    confirmDelete = () => {
-        // check deleteCatId and deleteFieldId in state and delete whichever that is null
+    confirmDelete = async () => {
+
+        (this.state.deleteCatId ? await this.props.RemoveBaseFromSchool(this.props.user.token , this.state.deleteCatId)
+        : 
+        await this.props.RemoveStudyFFromSchool(this.props.user.token , this.state.deleteFieldId))
     }
 
     render() {
@@ -206,23 +229,24 @@ class SchoolInfo extends React.Component {
                     <div className="mt-8 overflow-auto">
                         
                         <BaseManager
+                            schoolId={this.props.match.params.id}
                             editable={true}
                             onAdd={this.onAdd}
                             deleteCat={(id) => this.setState({ showDeleteModal: true, deleteCatId: id })}
                             deleteField={(id) => this.setState({ showDeleteModal: true, deleteFieldId: id })}
-                            categories={this.props.schoolInfo.bases}
+                            categories={this.props.schoolLessonInfo.bases}
                             selectedCat={this.state.selectedCat}
                             selectCat={this.selectCat}
                             loadingCats={this.state.loadingCats}
-                            fields={this.props.schoolInfo.studyFields}
+                            fields={this.props.schoolLessonInfo.studyFields}
                             selectedField={this.state.selectedField}
                             selectField={this.selectField}
                             loadingFields={this.state.loadingFields}
-                            grades={this.props.schoolInfo.grades}
+                            grades={this.props.schoolLessonInfo.grades}
                             selectedGrade={this.state.selectedGrade}
                             selectGrade={this.selectGrade}
                             loadingGrades={this.state.loadingGrades}
-                            courses={this.props.schoolInfo.lessons}
+                            courses={this.props.newSchoolInfo.lessons}
                             selectedCourse={this.state.selectedCourse}
                             selectCourse={this.selectCourse}
                             loadingCourses={this.state.loadingCourses}
@@ -240,7 +264,8 @@ class SchoolInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.auth.userInfo , 
-        schoolInfo: state.adminData.schoolInfo , 
+        newSchoolInfo: state.adminData.newSchoolInfo , 
+        schoolLessonInfo2 : state.adminData.schoolLessonInfo2,
         schoolLessonInfo : state.adminData.schoolLessonInfo,
         initialValues: {
             firstName: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.firstName : null,
@@ -256,4 +281,5 @@ const formWrapped = reduxForm({
     form: 'editSchoolManager'
 }, mapStateToProps)(SchoolInfo)
 
-export default connect(mapStateToProps, { GetSchoolInfo ,getBases , getStudyfields , getGrades , getLessons , EditManager , EditSchool })(formWrapped);
+export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , 
+                                        GetSchool_Grades , getLessons , EditManager , EditSchool , AddBaseToSchool , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool})(formWrapped);

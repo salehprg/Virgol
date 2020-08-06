@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -100,10 +101,16 @@ public class SchoolDataHelper {
                         foreach (var grade in grades)
                         {
                             School_Grades schoolGrade = appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id).FirstOrDefault();
-                            appDbContext.School_Grades.Remove(schoolGrade);
+                            if(schoolGrade != null)
+                            {
+                                appDbContext.School_Grades.Remove(schoolGrade);
+                            }
                         }
 
-                        appDbContext.School_StudyFields.Remove(schoolStudyField);
+                        if(schoolStudyField != null)
+                        {
+                            appDbContext.School_StudyFields.Remove(schoolStudyField);
+                        }
                     }
 
                     appDbContext.School_Bases.Remove(schoolBase);
@@ -133,7 +140,7 @@ public class SchoolDataHelper {
 
                 foreach (var studyFModel in inputData)
                 {
-                    int baseId = appDbContext.StudyFields.Where(x => x.Id == studyFModel.Id).FirstOrDefault().Base_Id;
+                    int baseId = appDbContext.StudyFields.Where(x => x.Id == studyFModel.StudyField_Id).FirstOrDefault().Base_Id;
                     int baseMoodleId = appDbContext.School_Bases.Where(x => x.Base_Id == baseId && x.School_Id == schoolId).FirstOrDefault().Moodle_Id;
 
                     StudyFieldModel studyField = appDbContext.StudyFields.Where(x => x.Id == studyFModel.StudyField_Id).FirstOrDefault();
@@ -170,8 +177,9 @@ public class SchoolDataHelper {
 
                 return school_StudyFields;
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return null;
             }
             

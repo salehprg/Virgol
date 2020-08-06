@@ -246,7 +246,7 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewManager([FromBody]UserModel model)
+        public async Task<IActionResult> AddNewManager([FromBody]ManagerData model)
         {
             try
             {
@@ -261,12 +261,21 @@ namespace lms_with_moodle.Controllers
                 if(result)
                 {
                     await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
+                    
+                    int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
 
+                    ManagerDetail managerDetail = new ManagerDetail();
+                    managerDetail.personalIdNumber = model.personalIdNumber;
+                    managerDetail.UserId = userId;
+
+                    appDbContext.ManagerDetails.Add(managerDetail);
+                    appDbContext.SaveChanges();
+                    
                     SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
 
                     if(school != null)
                     {
-                        school.ManagerId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+                        school.ManagerId = userId;
                         appDbContext.Schools.Update(school);
                         appDbContext.SaveChanges();
                     }
@@ -284,35 +293,54 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditManager([FromBody]ManagerData model)
+        public async Task<IActionResult> EditManager([FromBody]ManagerData model)
         {
             try
             {
                 
-                SchoolModel oldSchool = new SchoolModel();
-                oldSchool = appDbContext.Schools.Where(x => x.ManagerId == model.Id).FirstOrDefault();
+                // SchoolModel oldSchool = new SchoolModel();
+                // oldSchool = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
                 
-                SchoolModel newSchool = new SchoolModel();
-                newSchool = appDbContext.Schools.Where(x => x.Id == model.schoolId).FirstOrDefault();
+                // SchoolModel newSchool = new SchoolModel();
+                // newSchool = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
 
-                if(oldSchool != null && model.SchoolId != 0)
+                // if(oldSchool != null && model.SchoolId != 0)
+                // {
+                //     oldSchool.ManagerId = -1;
+                //     appDbContext.Schools.Update(oldSchool);
+                // }
+
+                // if(newSchool != null && model.SchoolId != 0)
+                // {
+                //     newSchool.ManagerId = model.Id;
+                //     appDbContext.Schools.Update(newSchool);
+                // }
+
+                UserModel manager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
+                if(manager != null)
                 {
-                    oldSchool.ManagerId = -1;
-                    appDbContext.Schools.Update(oldSchool);
+
+                    manager.FirstName = model.FirstName;
+                    manager.LastName = model.LastName;
+                    manager.PhoneNumber = model.PhoneNumber;
+
+                    appDbContext.Users.Update(manager);
+                    appDbContext.SaveChanges();
+                }
+                else
+                {
+                    UserModel oldManager = appDbContext.Users.Where(x => x.SchoolId == model.SchoolId && x.userTypeId == (int)UserType.Manager).FirstOrDefault();
+                    if(oldManager != null)
+                    {
+                        oldManager.SchoolId = -1;
+
+                        appDbContext.Users.Update(oldManager);
+                        appDbContext.SaveChanges();
+                    }
+                    await AddNewManager(model);
                 }
 
-                if(newSchool != null && model.SchoolId != 0)
-                {
-                    newSchool.ManagerId = model.Id;
-                    appDbContext.Schools.Update(newSchool);
-                }
-
-            
-                appDbContext.Users.Update(model);
-                
-                appDbContext.SaveChanges();
-
-                return Ok((UserModel)model);
+                return Ok(manager);
             }
             catch(Exception ex)
             {
@@ -378,7 +406,7 @@ namespace lms_with_moodle.Controllers
                     bases.Add(basesVW);
                 }
 
-                List<School_StudyFieldsVW> studies = new List<School_StudyFieldsVW>();
+                List<School_StudyFieldsVW> studyFields = new List<School_StudyFieldsVW>();
                 foreach (var studyF in appDbContext.School_StudyFields.Where(x => x.School_Id == schoolId).ToList())
                 {
                     var serializedParent = JsonConvert.SerializeObject(studyF); 
@@ -386,7 +414,7 @@ namespace lms_with_moodle.Controllers
 
                     studyField.StudyFieldName = appDbContext.StudyFields.Where(x => x.Id == studyF.StudyField_Id).FirstOrDefault().StudyFieldName;
 
-                    studies.Add(studyField);
+                    studyFields.Add(studyField);
                 }
 
                 List<School_GradesVW> grades = new List<School_GradesVW>();
@@ -407,7 +435,7 @@ namespace lms_with_moodle.Controllers
 
                 return Ok(new{
                     bases,
-                    studies,
+                    studyFields,
                     grades,
                     schoolModel,
                     managerInfo,
@@ -469,30 +497,36 @@ namespace lms_with_moodle.Controllers
 
 
         [HttpPut]
-        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(List<School_BasesVW>), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> AddBaseToSchool([FromBody]SchoolData inputData)
         {
             try
             {
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                if(inputData.schoolId == 0 || inputData.dataIds == null)
+                    return BadRequest("اطلاعات صحیح نمی باشد");
 
                 List<School_Bases> result = new List<School_Bases>();
 
                 foreach (var baseId in inputData.dataIds)
                 {
-                    BaseModel basee = appDbContext.Bases.Where(x => x.Id == baseId).FirstOrDefault();
-                    School_Bases schoolBase = new School_Bases();
-                    schoolBase.Base_Id = basee.Id;
-                    schoolBase.School_Id = inputData.schoolId;
+                    if(appDbContext.School_Bases.Where(x => x.Base_Id == baseId).FirstOrDefault() == null)
+                    {
+                        BaseModel basee = appDbContext.Bases.Where(x => x.Id == baseId).FirstOrDefault();
+                        School_Bases schoolBase = new School_Bases();
+                        schoolBase.Base_Id = basee.Id;
+                        schoolBase.School_Id = inputData.schoolId;
 
-                    result.Add(schoolBase);
+                        result.Add(schoolBase);
+                    }
                 }
+
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
 
                 List<School_Bases> schoolBases = await schoolDataHelper.AddBaseToSchool(result);
 
                 List<School_BasesVW> basesView = new List<School_BasesVW>();
-                foreach (var basee in schoolBases)
+                foreach (var basee in appDbContext.School_Bases.Where(x => x.School_Id == inputData.schoolId).ToList())
                 {
                     var serializedParent = JsonConvert.SerializeObject(basee); 
                     School_BasesVW basesVW  = JsonConvert.DeserializeObject<School_BasesVW>(serializedParent);
@@ -513,9 +547,9 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(School_Bases), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveBaseFromSchool([FromBody]int baseId)
+        public async Task<IActionResult> RemoveBaseFromSchool(int baseId)
         {
             try
             {
@@ -523,7 +557,12 @@ namespace lms_with_moodle.Controllers
 
                 School_Bases basee = await schoolDataHelper.DeleteBaseFromSchool(baseId);
                 
-                return Ok(basee);
+                var serializedParent = JsonConvert.SerializeObject(basee); 
+                School_BasesVW basesVW  = JsonConvert.DeserializeObject<School_BasesVW>(serializedParent);
+
+                basesVW.BaseName = appDbContext.Bases.Where(x => x.Id == basee.Base_Id).FirstOrDefault().BaseName;
+
+                return Ok(basesVW);
 
             }
             catch(Exception ex)
@@ -534,7 +573,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(List<School_StudyFieldsVW>), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> AddStudyFToSchool([FromBody]SchoolData inputData)
         {
@@ -546,26 +585,35 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var studyId in inputData.dataIds)
                 {
-                    StudyFieldModel studyF = appDbContext.StudyFields.Where(x => x.Id == studyId).FirstOrDefault();
+                    if(appDbContext.School_StudyFields.Where(x => x.StudyField_Id == studyId).FirstOrDefault() == null)
+                    {
+                        StudyFieldModel studyF = appDbContext.StudyFields.Where(x => x.Id == studyId).FirstOrDefault();
 
-                    School_StudyFields data = new School_StudyFields();
-                    data.StudyField_Id = studyF.Id;
-                    data.School_Id = inputData.schoolId;
+                        School_StudyFields data = new School_StudyFields();
+                        data.StudyField_Id = studyF.Id;
+                        data.School_Id = inputData.schoolId;
 
-                    result.Add(data);
+                        result.Add(data);
+                    }
                 }
 
                 List<School_StudyFields> schoolStudies = await schoolDataHelper.AddStudyFieldToSchool(result);
 
                 List<School_StudyFieldsVW> studies = new List<School_StudyFieldsVW>();
-                foreach (var studyF in schoolStudies)
+
+                int baseId = appDbContext.StudyFields.Where(x => x.Id == schoolStudies[0].StudyField_Id).FirstOrDefault().Base_Id;
+
+                foreach (var studyF in appDbContext.School_StudyFields.Where(x => x.School_Id == inputData.schoolId ).ToList())
                 {
-                    var serializedParent = JsonConvert.SerializeObject(studyF); 
-                    School_StudyFieldsVW studyField  = JsonConvert.DeserializeObject<School_StudyFieldsVW>(serializedParent);
+                    if(appDbContext.StudyFields.Where(x => x.Id == schoolStudies[0].StudyField_Id).FirstOrDefault().Base_Id == baseId)
+                    {
+                        var serializedParent = JsonConvert.SerializeObject(studyF); 
+                        School_StudyFieldsVW studyField  = JsonConvert.DeserializeObject<School_StudyFieldsVW>(serializedParent);
 
-                    studyField.StudyFieldName = appDbContext.StudyFields.Where(x => x.Id == studyF.StudyField_Id).FirstOrDefault().StudyFieldName;
+                        studyField.StudyFieldName = appDbContext.StudyFields.Where(x => x.Id == studyF.StudyField_Id).FirstOrDefault().StudyFieldName;
 
-                    studies.Add(studyField);
+                        studies.Add(studyField);              
+                    }
                 }
 
                 return Ok(studies);
@@ -580,9 +628,9 @@ namespace lms_with_moodle.Controllers
 
 
         [HttpDelete]
-        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(School_StudyFields), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveStudyFFromSchool([FromBody]int studyFId)
+        public async Task<IActionResult> RemoveStudyFFromSchool(int studyFId)
         {
             try
             {
@@ -590,7 +638,13 @@ namespace lms_with_moodle.Controllers
 
                 School_StudyFields studyField = await schoolDataHelper.DeleteStudyFieldFromSchool(studyFId);
                 
-                return Ok(studyField);
+                var serializedParent = JsonConvert.SerializeObject(studyField); 
+                School_StudyFieldsVW studyFieldVW  = JsonConvert.DeserializeObject<School_StudyFieldsVW>(serializedParent);
+
+                studyFieldVW.StudyFieldName = appDbContext.StudyFields.Where(x => x.Id == studyField.StudyField_Id).FirstOrDefault().StudyFieldName;
+
+
+                return Ok(studyFieldVW);
 
             }
             catch(Exception ex)
@@ -796,6 +850,7 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        
 
         // [HttpPut]
         // [ProducesResponseType(typeof(SchoolModel), 200)]
@@ -876,9 +931,13 @@ namespace lms_with_moodle.Controllers
             {
                 if(BaseId != -1)
                 {
-                    return Ok(appDbContext.StudyFields.Where(x => x.Base_Id == BaseId).ToList().Take(15));
+                    int base_id = appDbContext.School_Bases.Where(x => x.Id == BaseId).FirstOrDefault().Base_Id;
+
+                    List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == base_id).Take(15).ToList();
+                    return Ok(studies);
                 }
-                return Ok(appDbContext.StudyFields.ToList());
+                
+                return BadRequest();
             }
             catch(Exception ex)
             {
@@ -887,6 +946,47 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetSchool_StudyFields(int BaseId)
+        {
+            try
+            {
+                if(BaseId != -1)
+                {
+                    int base_Id = appDbContext.School_Bases.Where(x => x.Id == BaseId).FirstOrDefault().Base_Id;
+
+                    List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == base_Id).ToList();
+                    List<School_StudyFieldsVW> result = new List<School_StudyFieldsVW>();
+
+                    foreach (var studyf in studies)
+                    {
+                        School_StudyFields schoolStudyField = appDbContext.School_StudyFields.Where(x => x.StudyField_Id == studyf.Id).FirstOrDefault();
+
+                        if(schoolStudyField != null)
+                        {
+                            var serializedParent = JsonConvert.SerializeObject(schoolStudyField); 
+                            School_StudyFieldsVW studyVW  = JsonConvert.DeserializeObject<School_StudyFieldsVW>(serializedParent);
+
+                            studyVW.StudyFieldName = appDbContext.StudyFields.Where(x => x.Id == studyf.Id).FirstOrDefault().StudyFieldName;
+
+                            result.Add(studyVW);
+                        }
+                    }
+
+                    return Ok(result);
+                }
+                
+                return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
 
 #endregion
    
@@ -900,6 +1000,43 @@ namespace lms_with_moodle.Controllers
             try
             {
                 return Ok(appDbContext.Grades.Where(x => x.StudyField_Id == StudyFieldId).ToList().Take(15));
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetSchool_Grades(int StudyFieldId)
+        {
+            try
+            {
+                if(StudyFieldId != -1)
+                {
+                    int studyField_Id = appDbContext.School_StudyFields.Where(x => x.Id == StudyFieldId).FirstOrDefault().StudyField_Id;
+
+                    List<GradeModel> grades = appDbContext.Grades.Where(x => x.StudyField_Id == studyField_Id).ToList();
+                    List<School_GradesVW> result = new List<School_GradesVW>();
+
+                    foreach (var grade in grades)
+                    {
+                        if(appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id).FirstOrDefault() != null)
+                        {
+                            var serializedParent = JsonConvert.SerializeObject(grade); 
+                            School_GradesVW gradeVW  = JsonConvert.DeserializeObject<School_GradesVW>(serializedParent);
+
+                            result.Add(gradeVW);
+                        }
+                    }
+
+                    return Ok(result);
+                }
+                
+                return BadRequest();
             }
             catch(Exception ex)
             {

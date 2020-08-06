@@ -6,7 +6,6 @@ using Models.User;
 namespace Models.InputModel
 {
     public class ManagerData : UserModel {
-
-        public int schoolId {get; set;}
+        public string personalIdNumber {get; set;}
     }
 }
