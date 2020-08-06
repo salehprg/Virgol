@@ -33,7 +33,7 @@ class Schools extends React.Component {
                     changeQuery={this.changeQuery}
                     button={() => {
                         return (
-                            <button className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>
+                            <button onClick={() => history.push('/newSchool')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>
                         );
                     }}
                     headers={['نام مدرسه', 'کد', 'نوع', 'مدیر', '']}

@@ -6,6 +6,8 @@ import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
 import {GetSchoolInfo , getBases , getGrades , getStudyfields , getLessons , AddNewSchool , EditSchool , EditManager} from "../../../../_actions/adminActions"
 import {Link} from "react-router-dom";
+import Modal from "../../../modals/Modal";
+import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class SchoolInfo extends React.Component {
 
@@ -30,6 +32,9 @@ class SchoolInfo extends React.Component {
         loadingFields: false,
         loadingGrades: false,
         loadingCourses: false,
+        showDeleteModal: false,
+        deleteCatId: null,
+        deleteFieldId: null
     }
 
     componentDidMount = async () => {
@@ -112,15 +117,31 @@ class SchoolInfo extends React.Component {
 
     }
 
+    confirmDelete = () => {
+        // check deleteCatId and deleteFieldId in state and delete whichever that is null
+    }
+
     render() {
         return (
             <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+                {this.state.showDeleteModal ? 
+                <DeleteConfirm
+                    title="آیا از عمل حذف مطمئن هستید؟ تمامی درس های زیرمجموعه پاک خواهند شد و این عمل قابلیت بازگشت ندارد!"
+                    confirm={this.confirmDelete}
+                    cancel={() => this.setState({ showDeleteModal: false, deleteFieldId: null, deleteCatId: null })}
+                /> 
+                : 
+                null
+                }
                 <div className="w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
                     <div className="absolute manager-options">
                         {slash('w-6 text-white')}
                     </div>
                     {briefcase('w-1/5 mb-2 text-white mx-auto')}
                     <p className="text-white">اطلاعات مدیر</p>
+                    {this.state.loadingCats ? 
+                    <span>در حال گرفتن اطلاعات</span>
+                    : 
                     <form className="text-center mt-8 w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
                         <div className="w-full flex flex-row justify-center items-center flex-wrap">
                             <Field
@@ -168,6 +189,7 @@ class SchoolInfo extends React.Component {
                             </button>
                         </div>
                     </form>
+                    }
                 </div>
 
                 {(!this.props.schoolLessonInfo ? "... درحال بارگذاری اطلاعات" :
@@ -186,6 +208,8 @@ class SchoolInfo extends React.Component {
                         <BaseManager
                             editable={true}
                             onAdd={this.onAdd}
+                            deleteCat={(id) => this.setState({ showDeleteModal: true, deleteCatId: id })}
+                            deleteField={(id) => this.setState({ showDeleteModal: true, deleteFieldId: id })}
                             categories={this.props.schoolInfo.bases}
                             selectedCat={this.state.selectedCat}
                             selectCat={this.selectCat}
@@ -219,11 +243,11 @@ const mapStateToProps = state => {
         schoolInfo: state.adminData.schoolInfo , 
         schoolLessonInfo : state.adminData.schoolLessonInfo,
         initialValues: {
-            firstName: state.adminData.schoolLessonInfo.managerInfo.firstName,
-            lastName: state.adminData.schoolLessonInfo.managerInfo.lastName,
-            personalIdNumber: state.adminData.schoolLessonInfo.managerDetail.personalIdNumber,
-            melliCode: state.adminData.schoolLessonInfo.managerInfo.melliCode,
-            phoneNumber: state.adminData.schoolLessonInfo.managerInfo.phoneNumber,
+            firstName: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.firstName : null,
+            lastName: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.lastName : null,
+            personalIdNumber: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerDetail.personalIdNumber : null,
+            melliCode: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.melliCode : null,
+            phoneNumber: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.phoneNumber : null,
         }
     }
 }
