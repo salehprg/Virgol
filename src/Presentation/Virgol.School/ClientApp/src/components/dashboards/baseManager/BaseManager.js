@@ -86,15 +86,16 @@ class BaseManager extends React.Component {
     }
 
     render() {
-        const { editable, categories, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
+        const { editable, categories, deleteCat, deleteField, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
         return (
             <div className="w-full grid grid-cols-4 gap-6 min-w-900">
                 {this.state.addStatus === 'category' ? <AddCategory cancel={this.onCancel} /> : null}
                 {this.state.addStatus === 'field' ? <AddField cancel={this.onCancel} /> : null}
                 <BMCard
                     title="دروس"
-                    editable={editable}
+                    editable={false}
                     isSelected={selectedCourse}
+                    showAdd={selectedGrade}
                     listed={courses}
                     onAdd={() => this.onAdd('course')}
                     onCancel={this.onCancel}
@@ -106,6 +107,7 @@ class BaseManager extends React.Component {
                     title="پایه ها"
                     editable={false}
                     isSelected={selectedGrade}
+                    showAdd={selectedField}
                     listed={grades}
                     onAdd={() => this.onAdd('grade')}
                     onCancel={this.onCancel}
@@ -117,6 +119,8 @@ class BaseManager extends React.Component {
                     title="رشته ها"
                     editable={editable}
                     isSelected={selectedField}
+                    showAdd={selectedCat}
+                    deleteItem={deleteField}
                     listed={fields}
                     onAdd={() => this.onAdd('field')}
                     onCancel={this.onCancel}
@@ -128,6 +132,8 @@ class BaseManager extends React.Component {
                     title="مقاطع"
                     editable={editable}
                     isSelected={selectedCat}
+                    showAdd={true}
+                    deleteItem={deleteCat}
                     listed={categories}
                     onAdd={() => this.onAdd('category')}
                     onCancel={this.onCancel}

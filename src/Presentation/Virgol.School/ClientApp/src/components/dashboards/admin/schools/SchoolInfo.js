@@ -1,11 +1,13 @@
 import React from "react";
 import { connect } from 'react-redux';
-import {Field, reduxForm} from "redux-form";
+import {Field, reduxForm, reset} from "redux-form";
 import {briefcase, loading, slash} from "../../../../assets/icons";
 import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
 import {GetSchoolInfo , getBases , getGrades , getStudyfields , getLessons , AddNewSchool , EditSchool , EditManager} from "../../../../_actions/adminActions"
 import {Link} from "react-router-dom";
+import Modal from "../../../modals/Modal";
+import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class SchoolInfo extends React.Component {
 
@@ -30,6 +32,9 @@ class SchoolInfo extends React.Component {
         loadingFields: false,
         loadingGrades: false,
         loadingCourses: false,
+        showDeleteModal: false,
+        deleteCatId: null,
+        deleteFieldId: null
     }
 
     componentDidMount = async () => {
@@ -87,13 +92,13 @@ class SchoolInfo extends React.Component {
         this.setState({ selectedCourse: id })
     }
 
-    renderInputs = ({ input, meta, type, placeholder }) => {
+    renderInputs = ({ input, meta, dir, type, placeholder }) => {
         return (
             <Fieldish
                 input={input}
                 redCondition={meta.touched && meta.error}
                 type={type}
-                dir="ltr"
+                dir={dir}
                 placeholder={placeholder}
                 extra="w-full max-w-350 my-4 md:mx-4 lg:mx-0 mx-0"
             />
@@ -101,7 +106,7 @@ class SchoolInfo extends React.Component {
     }
 
     changeManagerInfo = (formValues) => {
-
+        // handle manager update
     }
 
     onAdd = (status) => {
@@ -112,31 +117,50 @@ class SchoolInfo extends React.Component {
 
     }
 
+    confirmDelete = () => {
+        // check deleteCatId and deleteFieldId in state and delete whichever that is null
+    }
+
     render() {
         return (
             <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+                {this.state.showDeleteModal ? 
+                <DeleteConfirm
+                    title="آیا از عمل حذف مطمئن هستید؟ تمامی درس های زیرمجموعه پاک خواهند شد و این عمل قابلیت بازگشت ندارد!"
+                    confirm={this.confirmDelete}
+                    cancel={() => this.setState({ showDeleteModal: false, deleteFieldId: null, deleteCatId: null })}
+                /> 
+                : 
+                null
+                }
                 <div className="w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
                     <div className="absolute manager-options">
                         {slash('w-6 text-white')}
                     </div>
                     {briefcase('w-1/5 mb-2 text-white mx-auto')}
                     <p className="text-white">اطلاعات مدیر</p>
+                    {this.state.loadingCats ? 
+                    <span>در حال گرفتن اطلاعات</span>
+                    : 
                     <form className="text-center mt-8 w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
                         <div className="w-full flex flex-row justify-center items-center flex-wrap">
                             <Field
                                 name="firstName"
+                                dir="rtl"
                                 type="text"
                                 placeholder="نام"
                                 component={this.renderInputs}
                             />
                             <Field
                                 name="lastName"
+                                dir="rtl"
                                 type="text"
                                 placeholder="نام خانوادگی"
                                 component={this.renderInputs}
                             />
                             <Field
-                                name="personalCode"
+                                name="personalIdNumber"
+                                dir="ltr"
                                 type="text"
                                 placeholder="شماره پرسنلی"
                                 component={this.renderInputs}
@@ -144,12 +168,14 @@ class SchoolInfo extends React.Component {
                             <Field
                                 name="melliCode"
                                 type="text"
+                                dir="ltr"
                                 placeholder="کد ملی"
                                 component={this.renderInputs}
                             />
                             <Field
                                 name="phoneNumber"
                                 type="text"
+                                dir="ltr"
                                 placeholder="شماره همراه"
                                 component={this.renderInputs}
                             />
@@ -158,11 +184,12 @@ class SchoolInfo extends React.Component {
                             <button type="submit" className="w-5/12 py-1 mx-1 rounded-lg border-2 border-transparent bg-pinkish text-white">
                                 ذخیره
                             </button>
-                            <button className="w-5/12 py-1 mx-1 rounded-lg border-2 border-pinkish text-pinkish">
+                            <button onClick={this.props.reset} className="w-5/12 py-1 mx-1 rounded-lg border-2 border-pinkish text-pinkish">
                                 ریست
                             </button>
                         </div>
                     </form>
+                    }
                 </div>
 
                 {(!this.props.schoolLessonInfo ? "... درحال بارگذاری اطلاعات" :
@@ -181,6 +208,8 @@ class SchoolInfo extends React.Component {
                         <BaseManager
                             editable={true}
                             onAdd={this.onAdd}
+                            deleteCat={(id) => this.setState({ showDeleteModal: true, deleteCatId: id })}
+                            deleteField={(id) => this.setState({ showDeleteModal: true, deleteFieldId: id })}
                             categories={this.props.schoolInfo.bases}
                             selectedCat={this.state.selectedCat}
                             selectCat={this.selectCat}
@@ -208,12 +237,23 @@ class SchoolInfo extends React.Component {
 
 }
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth.userInfo , 
+        schoolInfo: state.adminData.schoolInfo , 
+        schoolLessonInfo : state.adminData.schoolLessonInfo,
+        initialValues: {
+            firstName: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.firstName : null,
+            lastName: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.lastName : null,
+            personalIdNumber: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerDetail.personalIdNumber : null,
+            melliCode: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.melliCode : null,
+            phoneNumber: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.phoneNumber : null,
+        }
+    }
+}
+
 const formWrapped = reduxForm({
     form: 'editSchoolManager'
-})(SchoolInfo)
-
-const mapStateToProps = state => {
-    return {user: state.auth.userInfo , schoolInfo: state.adminData.schoolInfo , schoolLessonInfo : state.adminData.schoolLessonInfo}
-}
+}, mapStateToProps)(SchoolInfo)
 
 export default connect(mapStateToProps, { GetSchoolInfo ,getBases , getStudyfields , getGrades , getLessons , EditManager , EditSchool })(formWrapped);
