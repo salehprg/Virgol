@@ -441,54 +441,24 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-
         [HttpPut]
         [ProducesResponseType(typeof(SchoolModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewSchool([FromBody]SchoolData inputData)
+        public async Task<IActionResult> CreateSchool([FromBody]SchoolModel inputData)
         {
-            SchoolModel newSchool = inputData.schoolModel;
             try
             {
-                int schoolMoodleId = await moodleApi.CreateCategory(newSchool.SchoolName , 0);
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
 
-                if(schoolMoodleId != -1)
+                if(!string.IsNullOrEmpty(inputData.SchoolName))
                 {
-                    newSchool.Moodle_Id = schoolMoodleId;
-
-                    SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                    CreateSchoolResult schoolResult = await schoolDataHelper.CreateSchool_Grade(inputData.BaseIds , inputData.StudyFieldIds , inputData.GradeIds , schoolMoodleId);
-
-                    appDbContext.Schools.Add(newSchool);
-                    appDbContext.SaveChanges();
-
-                    newSchool.Id = appDbContext.Schools.OrderByDescending(x => x.Id).FirstOrDefault().Id;
-
-                    foreach(var schGrade in schoolResult.school_Grades)
-                    {
-                        schGrade.School_Id = newSchool.Id;
-                    }
-                    foreach(var schStudyF in schoolResult.school_StudyFields)
-                    {
-                        schStudyF.School_Id = newSchool.Id;
-                    }
-                    foreach(var schBase in schoolResult.school_Bases)
-                    {
-                        schBase.School_Id = newSchool.Id;
-                    }
-
-                    appDbContext.School_Bases.AddRange(schoolResult.school_Bases);
-                    appDbContext.School_Grades.AddRange(schoolResult.school_Grades);
-                    appDbContext.School_StudyFields.AddRange(schoolResult.school_StudyFields);
-
-                    appDbContext.SaveChanges();
-
-                    return Ok(newSchool);
+                    SchoolModel result = await schoolDataHelper.CreateSchool(inputData);
+                    
+                    return Ok(result);
                 }
-                else
-                {
-                    return BadRequest("در ایجاد مدرسه مشکلی پیش آمد");
-                }
+
+                return BadRequest("نام مدرسه را وارد کنید");
+
             }
             catch(Exception ex)
             {
@@ -498,71 +468,267 @@ namespace lms_with_moodle.Controllers
         }
 
 
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
+        [HttpPut]
+        [ProducesResponseType(typeof(SchoolModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> EditSchool([FromBody]SchoolData inputData)
+        public async Task<IActionResult> AddBaseToSchool([FromBody]SchoolData inputData)
         {
             try
             {
-                SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == inputData.schoolModel.Id).FirstOrDefault();
-
-                List<School_Bases> previousBases = appDbContext.School_Bases.Where(x => x.School_Id == schoolInfo.Id).ToList();
-                List<School_StudyFields> previousStudyF = appDbContext.School_StudyFields.Where(x => x.School_Id == schoolInfo.Id).ToList();
-                List<School_Grades> previousGrades = appDbContext.School_Grades.Where(x => x.School_Id == schoolInfo.Id).ToList();
-
-                //Check for add new Base->StudyField->Grade
-                foreach (var newBaseId in inputData.BaseIds)
-                {
-                    if(previousBases.Where(x => x.Base_Id == newBaseId).FirstOrDefault() != null)
-                    {
-                        //Remove same
-                        previousBases.Remove(previousBases.Where(x => x.Id == newBaseId).FirstOrDefault());
-                        inputData.BaseIds.Remove(newBaseId);
-                    }
-                }
-
-                foreach (var newStudyFId in inputData.StudyFieldIds)
-                {
-                    if(previousStudyF.Where(x => x.StudyField_Id == newStudyFId).FirstOrDefault() != null)
-                    {
-                        //Remove same
-                        previousStudyF.Remove(previousStudyF.Where(x => x.Id == newStudyFId).FirstOrDefault());
-                        inputData.StudyFieldIds.Remove(newStudyFId);
-                    }
-                }
-
-                foreach (var newGradeId in inputData.GradeIds)
-                {
-                    if(previousGrades.Where(x => x.Grade_Id == newGradeId).FirstOrDefault() != null)
-                    {
-                        //Remove same
-                        previousGrades.Remove(previousGrades.Where(x => x.Id == newGradeId).FirstOrDefault());
-                        inputData.BaseIds.Remove(newGradeId);
-                    }
-                }
-
-                //Create new data
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                await schoolDataHelper.CreateSchool_Grade(inputData.BaseIds , inputData.StudyFieldIds , inputData.GradeIds , schoolInfo.Moodle_Id);
-                
-                //Remove deleted data from moodle
-                foreach (var prBase in previousBases)
+
+                List<School_Bases> result = new List<School_Bases>();
+
+                foreach (var baseId in inputData.dataIds)
                 {
-                    await moodleApi.DeleteCategory(prBase.Moodle_Id);
-                }
-                foreach (var prStudyF in previousStudyF)
-                {
-                    await moodleApi.DeleteCategory(prStudyF.Moodle_Id);
-                }
-                foreach (var prGrade in previousGrades)
-                {
-                    await moodleApi.DeleteCategory(prGrade.Moodle_Id);
+                    BaseModel basee = appDbContext.Bases.Where(x => x.Id == baseId).FirstOrDefault();
+                    School_Bases schoolBase = new School_Bases();
+                    schoolBase.Base_Id = basee.Id;
+                    schoolBase.School_Id = inputData.schoolId;
+
+                    result.Add(schoolBase);
                 }
 
-                appDbContext.School_Bases.RemoveRange(previousBases);
-                appDbContext.School_StudyFields.RemoveRange(previousStudyF);
-                appDbContext.School_Grades.AddRange(previousGrades);
+                List<School_Bases> schoolBases = await schoolDataHelper.AddBaseToSchool(result);
+
+                List<School_BasesVW> basesView = new List<School_BasesVW>();
+                foreach (var basee in schoolBases)
+                {
+                    var serializedParent = JsonConvert.SerializeObject(basee); 
+                    School_BasesVW basesVW  = JsonConvert.DeserializeObject<School_BasesVW>(serializedParent);
+
+                    basesVW.BaseName = appDbContext.Bases.Where(x => x.Id == basee.Base_Id).FirstOrDefault().BaseName;
+
+                    basesView.Add(basesVW);
+                }
+
+                return Ok(basesView);
+
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveBaseFromSchool([FromBody]int baseId)
+        {
+            try
+            {
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+
+                School_Bases basee = await schoolDataHelper.DeleteBaseFromSchool(baseId);
+                
+                return Ok(basee);
+
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddStudyFToSchool([FromBody]SchoolData inputData)
+        {
+            try
+            {
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+
+                List<School_StudyFields> result = new List<School_StudyFields>();
+
+                foreach (var studyId in inputData.dataIds)
+                {
+                    StudyFieldModel studyF = appDbContext.StudyFields.Where(x => x.Id == studyId).FirstOrDefault();
+
+                    School_StudyFields data = new School_StudyFields();
+                    data.StudyField_Id = studyF.Id;
+                    data.School_Id = inputData.schoolId;
+
+                    result.Add(data);
+                }
+
+                List<School_StudyFields> schoolStudies = await schoolDataHelper.AddStudyFieldToSchool(result);
+
+                List<School_StudyFieldsVW> studies = new List<School_StudyFieldsVW>();
+                foreach (var studyF in schoolStudies)
+                {
+                    var serializedParent = JsonConvert.SerializeObject(studyF); 
+                    School_StudyFieldsVW studyField  = JsonConvert.DeserializeObject<School_StudyFieldsVW>(serializedParent);
+
+                    studyField.StudyFieldName = appDbContext.StudyFields.Where(x => x.Id == studyF.StudyField_Id).FirstOrDefault().StudyFieldName;
+
+                    studies.Add(studyField);
+                }
+
+                return Ok(studies);
+
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(SchoolModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveStudyFFromSchool([FromBody]int studyFId)
+        {
+            try
+            {
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+
+                School_StudyFields studyField = await schoolDataHelper.DeleteStudyFieldFromSchool(studyFId);
+                
+                return Ok(studyField);
+
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+        // [HttpPut]
+        // [ProducesResponseType(typeof(SchoolModel), 200)]
+        // [ProducesResponseType(typeof(string), 400)]
+        // public async Task<IActionResult> AddNewSchool([FromBody]SchoolData inputData)
+        // {
+        //     SchoolModel newSchool = inputData.schoolModel;
+        //     try
+        //     {
+        //         int schoolMoodleId = await moodleApi.CreateCategory(newSchool.SchoolName , 0);
+
+        //         if(schoolMoodleId != -1)
+        //         {
+        //             newSchool.Moodle_Id = schoolMoodleId;
+
+        //             SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+        //             CreateSchoolResult schoolResult = await schoolDataHelper.CreateSchool_Grade(inputData.BaseIds , inputData.StudyFieldIds , inputData.GradeIds , schoolMoodleId);
+
+        //             appDbContext.Schools.Add(newSchool);
+        //             appDbContext.SaveChanges();
+
+        //             newSchool.Id = appDbContext.Schools.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+
+        //             foreach(var schGrade in schoolResult.school_Grades)
+        //             {
+        //                 schGrade.School_Id = newSchool.Id;
+        //             }
+        //             foreach(var schStudyF in schoolResult.school_StudyFields)
+        //             {
+        //                 schStudyF.School_Id = newSchool.Id;
+        //             }
+        //             foreach(var schBase in schoolResult.school_Bases)
+        //             {
+        //                 schBase.School_Id = newSchool.Id;
+        //             }
+
+        //             appDbContext.School_Bases.AddRange(schoolResult.school_Bases);
+        //             appDbContext.School_Grades.AddRange(schoolResult.school_Grades);
+        //             appDbContext.School_StudyFields.AddRange(schoolResult.school_StudyFields);
+
+        //             appDbContext.SaveChanges();
+
+        //             return Ok(newSchool);
+        //         }
+        //         else
+        //         {
+        //             return BadRequest("در ایجاد مدرسه مشکلی پیش آمد");
+        //         }
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         //await userManager.DeleteAsync(newSchool);
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        //if want use commented Part change inputData ObjectType to SchoolData
+        public async Task<IActionResult> EditSchool([FromBody]SchoolModel inputData)
+        {
+            try
+            {
+                SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == inputData.Id).FirstOrDefault();
+
+                schoolInfo.SchoolName = (!String.IsNullOrEmpty(inputData.SchoolName) ? inputData.SchoolName : schoolInfo.SchoolName);
+                schoolInfo.SchoolType = (inputData.SchoolType != 0 ? inputData.SchoolType : schoolInfo.SchoolType);
+                schoolInfo.SelfSign = inputData.SelfSign;
+
+                appDbContext.Schools.Update(schoolInfo);
+                // List<School_Bases> previousBases = appDbContext.School_Bases.Where(x => x.School_Id == schoolInfo.Id).ToList();
+                // List<School_StudyFields> previousStudyF = appDbContext.School_StudyFields.Where(x => x.School_Id == schoolInfo.Id).ToList();
+                // List<School_Grades> previousGrades = appDbContext.School_Grades.Where(x => x.School_Id == schoolInfo.Id).ToList();
+
+                // //Check for add new Base->StudyField->Grade
+                // foreach (var newBaseId in inputData.BaseIds)
+                // {
+                //     if(previousBases.Where(x => x.Base_Id == newBaseId).FirstOrDefault() != null)
+                //     {
+                //         //Remove same
+                //         previousBases.Remove(previousBases.Where(x => x.Id == newBaseId).FirstOrDefault());
+                //         inputData.BaseIds.Remove(newBaseId);
+                //     }
+                // }
+
+                // foreach (var newStudyFId in inputData.StudyFieldIds)
+                // {
+                //     if(previousStudyF.Where(x => x.StudyField_Id == newStudyFId).FirstOrDefault() != null)
+                //     {
+                //         //Remove same
+                //         previousStudyF.Remove(previousStudyF.Where(x => x.Id == newStudyFId).FirstOrDefault());
+                //         inputData.StudyFieldIds.Remove(newStudyFId);
+                //     }
+                // }
+
+                // foreach (var newGradeId in inputData.GradeIds)
+                // {
+                //     if(previousGrades.Where(x => x.Grade_Id == newGradeId).FirstOrDefault() != null)
+                //     {
+                //         //Remove same
+                //         previousGrades.Remove(previousGrades.Where(x => x.Id == newGradeId).FirstOrDefault());
+                //         inputData.BaseIds.Remove(newGradeId);
+                //     }
+                // }
+
+                // //Create new data
+                // SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                // await schoolDataHelper.CreateSchool_Grade(inputData.BaseIds , inputData.StudyFieldIds , inputData.GradeIds , schoolInfo.Moodle_Id);
+                
+                // //Remove deleted data from moodle
+                // foreach (var prBase in previousBases)
+                // {
+                //     await moodleApi.DeleteCategory(prBase.Moodle_Id);
+                // }
+                // foreach (var prStudyF in previousStudyF)
+                // {
+                //     await moodleApi.DeleteCategory(prStudyF.Moodle_Id);
+                // }
+                // foreach (var prGrade in previousGrades)
+                // {
+                //     await moodleApi.DeleteCategory(prGrade.Moodle_Id);
+                // }
+
+                // appDbContext.School_Bases.RemoveRange(previousBases);
+                // appDbContext.School_StudyFields.RemoveRange(previousStudyF);
+                // appDbContext.School_Grades.AddRange(previousGrades);
 
                 appDbContext.SaveChanges();
                 
