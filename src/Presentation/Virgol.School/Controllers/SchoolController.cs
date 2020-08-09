@@ -169,8 +169,11 @@ namespace lms_with_moodle.Controllers
 
                     UserModel mangerInfo = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault();
 
-                    schoolVW.FirstName = mangerInfo.FirstName;
-                    schoolVW.LastName = mangerInfo.LastName;
+                    if(mangerInfo != null)
+                    {
+                        schoolVW.FirstName = mangerInfo.FirstName;
+                        schoolVW.LastName = mangerInfo.LastName;
+                    }
                     schoolVW.schoolTypeName = schooltypeName;
 
                     schools.Add(schoolVW);
