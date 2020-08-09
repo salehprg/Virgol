@@ -225,7 +225,7 @@ namespace lms_with_moodle.Controllers
                     UserModel manager = new UserModel();
                     manager.FirstName = inputData.FirstName;
                     manager.LastName = inputData.LastName;
-                    manager.MelliCode = inputData.MelliCode;
+                    manager.MelliCode = ConvertToPersian.PersianToEnglish(inputData.MelliCode);
                     manager.UserName = inputData.MelliCode;
                     manager.SchoolId = schoolResult.Id;
                     manager.userTypeId = (int)UserType.Manager;
@@ -242,7 +242,7 @@ namespace lms_with_moodle.Controllers
                         int managerId = userManager.FindByNameAsync(manager.UserName).Result.Id;
 
                         ManagerDetail managerDetail = new ManagerDetail();
-                        managerDetail.personalIdNumber = inputData.personalIdNumber;
+                        managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(inputData.personalIdNumber);
                         managerDetail.UserId = managerId;
 
                         appDbContext.ManagerDetails.Add(managerDetail);
