@@ -44,8 +44,7 @@ class SchoolInfo extends React.Component {
         this.setState({loadingCats: true})
         await this.props.GetSchoolInfo(this.props.user.token , this.props.match.params.id);
         this.setState({loadingCats: false})
-        this.setState({loadingCats: false})
-        console.log("end")
+
     }
 
     // getFields = async () => {
@@ -217,7 +216,9 @@ class SchoolInfo extends React.Component {
                     }
                 </div>
 
-                {(this.state.loadingCats ? "... درحال بارگذاری اطلاعات" :
+                {(this.state.loadingCats || this.props.schoolLessonInfo == null ? 
+                <span>در حال گرفتن اطلاعات ...</span>   
+                :
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
                     <div className="flex flex-row-reverse justify-between">
                         <div>

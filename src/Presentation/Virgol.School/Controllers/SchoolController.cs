@@ -218,6 +218,8 @@ namespace lms_with_moodle.Controllers
                 if(!string.IsNullOrEmpty(inputData.SchoolName) && !duplicateManager)
                 {
                     inputData.SchoolType = schoolType;
+                    inputData.SchoolIdNumber = ConvertToPersian.PersianToEnglish(inputData.SchoolIdNumber);
+
                     SchoolModel schoolResult = await schoolDataHelper.CreateSchool(inputData);
                     
                     UserModel manager = new UserModel();
