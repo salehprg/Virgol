@@ -140,6 +140,7 @@ namespace lms_with_moodle.Controllers
                 manager.ConfirmedAcc = true;
                 manager.userTypeId = (int)UserType.Manager;
                 manager.Moodle_Id = 0;
+                manager.MelliCode = ConvertToPersian.PersianToEnglish(manager.MelliCode);
 
                 bool result = userManager.CreateAsync(manager , manager.MelliCode).Result.Succeeded;
 
@@ -150,7 +151,7 @@ namespace lms_with_moodle.Controllers
                     int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
 
                     ManagerDetail managerDetail = new ManagerDetail();
-                    managerDetail.personalIdNumber = model.personalIdNumber;
+                    managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(model.personalIdNumber);
                     managerDetail.UserId = userId;
 
                     appDbContext.ManagerDetails.Add(managerDetail);
@@ -200,6 +201,7 @@ namespace lms_with_moodle.Controllers
                 //     newSchool.ManagerId = model.Id;
                 //     appDbContext.Schools.Update(newSchool);
                 // }
+                model.MelliCode = ConvertToPersian.PersianToEnglish(model.MelliCode);
 
                 UserModel manager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
                 if(manager != null)
@@ -207,7 +209,7 @@ namespace lms_with_moodle.Controllers
 
                     manager.FirstName = model.FirstName;
                     manager.LastName = model.LastName;
-                    manager.PhoneNumber = model.PhoneNumber;
+                    manager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
 
                     appDbContext.Users.Update(manager);
                     appDbContext.SaveChanges();
