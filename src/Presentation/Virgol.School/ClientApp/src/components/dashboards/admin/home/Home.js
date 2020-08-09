@@ -5,18 +5,19 @@ import {home, key, user, users} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
 import { connect } from "react-redux";
-import {getDashboardInfo , getNews} from "../../../../_actions/adminActions"
+import {getDashboardInfo} from "../../../../_actions/adminActions"
+import {GetMyNews} from "../../../../_actions/newsActions"
 
 class Home extends React.Component {
 
     state = {loading : false}
 
     componentDidMount = async () =>{
-        if (this.props.history.action === 'POP' || this.props.dashboardInfo.length == 0 || this.props.news.length == 0 ) {
+        if (this.props.history.action === 'POP' || this.props.dashboardInfo.length == 0 || this.props.myNews.length == 0 ) {
 
             this.setState({loading: true})
             await this.props.getDashboardInfo(this.props.user.token);
-            await this.props.getNews(this.props.user.token);
+            await this.props.GetMyNews(this.props.user.token);
             this.setState({loading: false})
 
         }
@@ -67,11 +68,19 @@ class Home extends React.Component {
                     pos="row-start-3"
                 />
 
+                {(this.props.myNews.length == 0 ? 
                 <Feed
-                    news={this.props.news}
+                    news={[]}
                     title="آخرین خبرهای منتشر شده از سمت شما"
                     pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                 />
+                :
+                <Feed
+                    news={this.props.myNews}
+                    title="آخرین خبرهای منتشر شده از سمت شما"
+                    pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                />
+                )}
             </div>
         );
     }
@@ -79,7 +88,7 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , dashboardInfo: state.adminData.dashboardInfo , news : state.adminData.news}
+    return {user: state.auth.userInfo , dashboardInfo: state.adminData.dashboardInfo , myNews : state.newsData.myNews}
 }
 
-export default connect(mapStateToProps, { getDashboardInfo , getNews })(Home);
+export default connect(mapStateToProps, { getDashboardInfo , GetMyNews })(Home);

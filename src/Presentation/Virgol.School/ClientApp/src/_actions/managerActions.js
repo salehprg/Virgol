@@ -45,44 +45,6 @@ export const getNewUsers = token => async dispatch => {
 
 }
 
-export const GetIncommingNews = token => async dispatch => {
-
-    try {
-        dispatch(worker.start)
-        const response = await lms.get("/Manager/GetIncommingNews", {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
-
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetIncommingNews, payload: response.data });
-    } catch (e) {
-        dispatch(worker.stop)
-        dispatch(alert.error("خطا دربرقراری اتصال"))
-    }
-
-}
-
-export const GetMyNews = token => async dispatch => {
-
-    try {
-        dispatch(worker.start)
-        const response = await lms.get("/Manager/GetIncommingNews", {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
-
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetMyNews, payload: response.data });
-    } catch (e) {
-        dispatch(worker.stop)
-        dispatch(alert.error("خطا دربرقراری اتصال"))
-    }
-
-}
-
 export const getManagerDashboardInfo = token => async dispatch => {
 
     try {

@@ -65,8 +65,8 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                string userIdnumber = userManager.GetUserId(User);
-                int userId = appDbContext.Users.Where(x => x.MelliCode == userIdnumber).FirstOrDefault().Id;
+                string adminUserName = userManager.GetUserId(User);
+                int userId = appDbContext.Users.Where(x => x.UserName == adminUserName).FirstOrDefault().Id;
                 AdminDetail adminModel = appDbContext.AdminDetails.Where(x => x.UserId == userId).FirstOrDefault();
 
                 List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == adminModel.SchoolsType).ToList();
@@ -97,121 +97,6 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-
-#region News
-        [HttpGet]
-        [ProducesResponseType(typeof(List<NewsModel>), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public IActionResult GetNews()
-        {
-            try
-            {
-                string IdNumber = userManager.GetUserId(User);
-                int userId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
-
-                List<NewsModel> myNews = appDbContext.News.Where(x => x.AutherId == userId).ToList();
-
-                foreach (var news in myNews)
-                {
-                    List<string> tags = news.Tags.Split(",").ToList();
-
-                    news.tagsStr = tags;
-                }
-
-                return Ok(myNews);
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpPut]
-        [ProducesResponseType(typeof(NewsModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> CreateNews([FromBody]NewsModel model)
-        {
-            NewsModel newsModel = model;
-            try
-            {
-                string accessStr = "";
-                foreach (var access in model.AccessRoleIdList)
-                {
-                    accessStr += access + ",";
-                }
-
-                newsModel.AccessRoleId = accessStr;
-                string IdNumber = userManager.GetUserId(User);
-                int userId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().Id;
-
-                newsModel.AutherId = userId;
-                newsModel.CreateTime = DateTime.Now;
-
-                appDbContext.News.Add(newsModel);
-                await appDbContext.SaveChangesAsync();
-
-                return Ok(appDbContext.News.OrderByDescending(x => x.Id).FirstOrDefault());
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpPost]
-        [ProducesResponseType(typeof(NewsModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditNews([FromBody]NewsModel model)
-        {
-            try
-            {
-                NewsModel newsModel = model;
-
-                string accessStr = "";
-                foreach (var access in model.AccessRoleIdList)
-                {
-                    accessStr += access + ",";
-                }
-
-                newsModel.AccessRoleId = accessStr;
-
-                appDbContext.News.Update(newsModel);
-                appDbContext.SaveChanges();
-
-                return Ok(newsModel);
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete]
-        [ProducesResponseType(typeof(NewsModel), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveNews([FromBody]int newsId)
-        {
-            try
-            {
-                NewsModel news = appDbContext.News.Where(x => x.Id == newsId).FirstOrDefault();
-                appDbContext.News.Remove(news);
-                await appDbContext.SaveChangesAsync();
-
-                return Ok(news);
-            }
-            catch(Exception ex)
-            {
-                //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
-            }
-        }
-
-#endregion
 
 #region Manager
 
@@ -352,7 +237,7 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult RemoveManager([FromBody]int managerId)
+        public IActionResult RemoveManager(int managerId)
         {
             try
             {
@@ -374,7 +259,7 @@ namespace lms_with_moodle.Controllers
                     appDbContext.SaveChanges();
                 }
                 
-                return Ok(manager);
+                return Ok(managerId);
             }
             catch(Exception ex)
             {

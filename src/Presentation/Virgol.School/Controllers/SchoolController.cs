@@ -69,8 +69,8 @@ namespace lms_with_moodle.Controllers
                 //Use when request from managerDashboard
                 if(schoolId == 0)
                 {
-                    string idNumber = userManager.GetUserId(User);
-                    schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+                    string userName = userManager.GetUserId(User);
+                    schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
                 }
 
                 if(schoolId == 0)
@@ -141,7 +141,7 @@ namespace lms_with_moodle.Controllers
                 List<SchoolVW> schools = new List<SchoolVW>();
 
                 string userIdnumber = userManager.GetUserId(User);
-                int userId = appDbContext.Users.Where(x => x.MelliCode == userIdnumber).FirstOrDefault().Id;
+                int userId = appDbContext.Users.Where(x => x.UserName == userIdnumber).FirstOrDefault().Id;
                 AdminDetail adminModel = appDbContext.AdminDetails.Where(x => x.UserId == userId).FirstOrDefault();
 
                 string schooltypeName = "";
@@ -194,7 +194,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string idNumberAdmin = userManager.GetUserId(User);
-                int adminId = appDbContext.Users.Where(x => x.MelliCode == idNumberAdmin).FirstOrDefault().Id;
+                int adminId = appDbContext.Users.Where(x => x.UserName == idNumberAdmin).FirstOrDefault().Id;
                 AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault();
                 int schoolType = adminDetail.SchoolsType;
 
@@ -202,7 +202,7 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("شما حداکثر تعداد مدارس خودرا ثبت کردید");
 
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                bool duplicateManager = appDbContext.Users.Where(x => x.MelliCode == inputData.MelliCode).FirstOrDefault() != null;
+                bool duplicateManager = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault() != null;
 
                 if(!string.IsNullOrEmpty(inputData.SchoolName) && !duplicateManager)
                 {
@@ -347,17 +347,24 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveSchool([FromBody]int schoolId)
+        public async Task<IActionResult> RemoveSchool(int schoolId)
         {
             try
             {
+                if(schoolId == 0)
+                    return BadRequest("مدرسه ای انتخاب نشده است");
+
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
 
                 bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
 
                 if(removeCat)
                 {
-    
+                    UserModel manager = appDbContext.Users.Where(x => x.SchoolId == schoolId && x.userTypeId == (int)UserType.Manager).FirstOrDefault();
+                    manager.SchoolId = -1;
+                    
+                    appDbContext.Users.Update(manager);
+
                     appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_StudyFields.RemoveRange(appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
@@ -366,7 +373,7 @@ namespace lms_with_moodle.Controllers
 
                     appDbContext.SaveChanges();
 
-                    return Ok(true);
+                    return Ok(schoolId);
                 }
                 
                 return BadRequest("مشکلی در حذف مدرسه بوجود آمد");
@@ -464,7 +471,7 @@ namespace lms_with_moodle.Controllers
 
                 basesVW.BaseName = appDbContext.Bases.Where(x => x.Id == basee.Base_Id).FirstOrDefault().BaseName;
 
-                return Ok(basesVW);
+                return Ok(baseId);
 
             }
             catch(Exception ex)
@@ -512,6 +519,16 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                //Use when request from managerDashboard
+                if(schoolId == 0)
+                {
+                    string userName = userManager.GetUserId(User);
+                    schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
+                }
+
+                if(schoolId == 0)
+                    return BadRequest();
+
                 if(BaseId != -1)
                 {
                     int base_Id = appDbContext.School_Bases.Where(x => x.Id == BaseId).FirstOrDefault().Base_Id;
@@ -615,13 +632,7 @@ namespace lms_with_moodle.Controllers
 
                 School_StudyFields studyField = await schoolDataHelper.DeleteStudyFieldFromSchool(studyFId);
                 
-                var serializedParent = JsonConvert.SerializeObject(studyField); 
-                School_StudyFieldsVW studyFieldVW  = JsonConvert.DeserializeObject<School_StudyFieldsVW>(serializedParent);
-
-                studyFieldVW.StudyFieldName = appDbContext.StudyFields.Where(x => x.Id == studyField.StudyField_Id).FirstOrDefault().StudyFieldName;
-
-
-                return Ok(studyFieldVW);
+                return Ok(studyFId);
 
             }
             catch(Exception ex)
@@ -659,6 +670,16 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                //Use when request from managerDashboard
+                if(schoolId == 0)
+                {
+                    string userName = userManager.GetUserId(User);
+                    schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
+                }
+
+                if(schoolId == 0)
+                    return BadRequest();
+
                 if(StudyFieldId != -1)
                 {
                     int studyField_Id = appDbContext.School_StudyFields.Where(x => x.Id == StudyFieldId).FirstOrDefault().StudyField_Id;
@@ -668,7 +689,9 @@ namespace lms_with_moodle.Controllers
 
                     foreach (var grade in grades)
                     {
-                        if(appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id && x.School_Id == schoolId).FirstOrDefault() != null)
+                        School_Grades schoolGrade = appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id && x.School_Id == schoolId).FirstOrDefault();
+
+                        if(schoolGrade != null)
                         {
                             var serializedParent = JsonConvert.SerializeObject(grade); 
                             School_GradesVW gradeVW  = JsonConvert.DeserializeObject<School_GradesVW>(serializedParent);
@@ -722,8 +745,8 @@ namespace lms_with_moodle.Controllers
             try
             {   
                 //We set IdNumber as userId in Token
-                string ManagerIdNumber = userManager.GetUserId(User);
-                int managerId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().Id;
+                string ManagerUserName = userManager.GetUserId(User);
+                int managerId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().Id;
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
@@ -753,8 +776,8 @@ namespace lms_with_moodle.Controllers
         {
             try
             {   
-                string ManagerIdNumber = userManager.GetUserId(User);
-                int managerId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().Id;
+                string ManagerUserName = userManager.GetUserId(User);
+                int managerId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().Id;
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
                 return Ok(appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Grade_Id == gradeId));
@@ -769,27 +792,34 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddNewClass([FromBody]ClassData classModel)
+        public async Task<IActionResult> AddNewClass([FromBody]ClassData classModel , int schoolId)
         {
             try
             {
                 if(classModel.ClassName == null)
                     return BadRequest();
                     
-                int grade_moodleId = appDbContext.School_Grades.Where(x => x.Grade_Id == classModel.gradeId).FirstOrDefault().Moodle_Id;
+                SchoolModel school = new SchoolModel();
 
-                string ManagerIdNumber = userManager.GetUserId(User);
-                int managerId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().Id;
-                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+                if(schoolId == 0)
+                {
+                    string ManagerUserName = userManager.GetUserId(User);
+                    int managerId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().Id;
+                    school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+                }
+                else
+                {
+                    school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                }
+
+                School_Grades gradeModel = appDbContext.School_Grades.Where(x => x.Grade_Id == classModel.gradeId && x.School_Id == school.Id).FirstOrDefault();
+
+                int grade_moodleId = gradeModel.Moodle_Id;
 
                 int classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , grade_moodleId);
                 if(classMoodleId != -1)
                 {
-                    string gradeName = moodleApi.getCategoryDetail(grade_moodleId).Result.Name;
-                    //Retreive gradeId in our database
-                    int gradeId = appDbContext.Grades.Where(x => x.GradeName == gradeName).FirstOrDefault().Id;
-
-                    List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeId).ToList();
+                    List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeModel.Grade_Id).ToList();
                     foreach (var lesson in lessons)
                     {
                         await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + classMoodleId + ")", lesson.LessonName , classMoodleId);
@@ -797,7 +827,7 @@ namespace lms_with_moodle.Controllers
 
                     School_Class schoolClass = new School_Class();
                     schoolClass.ClassName = classModel.ClassName;
-                    schoolClass.Grade_Id = gradeId;
+                    schoolClass.Grade_Id = gradeModel.Grade_Id;
                     schoolClass.Grade_MoodleId = grade_moodleId;
                     schoolClass.Moodle_Id = classMoodleId;
                     schoolClass.School_Id = school.Id;
@@ -825,8 +855,8 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                string ManagerIdNumber = userManager.GetUserId(User);
-                int managerId = appDbContext.Users.Where(x => x.MelliCode == ManagerIdNumber).FirstOrDefault().Id;
+                string ManagerUserName = userManager.GetUserId(User);
+                int managerId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().Id;
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
@@ -884,7 +914,7 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> DeleteClass([FromBody]int classId)
+        public async Task<IActionResult> DeleteClass(int classId)
         {
             try
             {
@@ -894,7 +924,7 @@ namespace lms_with_moodle.Controllers
                 appDbContext.School_Classes.Remove(schoolClass);
                 appDbContext.SaveChanges();
 
-                return Ok(true);
+                return Ok(classId);
             }
             catch(Exception ex)
             {

@@ -58,6 +58,144 @@ namespace lms_with_moodle.Controllers
             SMSApi = new FarazSmsApi(appSettings);
         }
 
+#region Admin
+        [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetAdmins()
+        {
+            try
+            {
+                return Ok(appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Admin).ToList());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [ProducesResponseType(typeof(UserModel), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddAdmin([FromBody]Admin_InputData model , string userName , string password)
+        {
+            UserModel newAdmin = model;
+            try
+            {   
+                if(userName == null)
+                {
+                    newAdmin.UserName = model.MelliCode;
+                }
+                else
+                {
+                    newAdmin.UserName = userName;
+                }
+
+                if(password == null)
+                {
+                    password = model.MelliCode;
+                }
+
+                newAdmin.userTypeId = (int)UserType.Admin;
+                newAdmin.ConfirmedAcc = true;
+                IdentityResult result = await userManager.CreateAsync(newAdmin , password);
+
+                if(result.Succeeded)
+                {
+                    newAdmin.Id = (await userManager.FindByNameAsync(newAdmin.UserName)).Id;
+                    await userManager.AddToRolesAsync(newAdmin , new string[]{"User" , "Admin"});
+                    
+                    AdminDetail adminDetail = new AdminDetail();
+                    adminDetail.UserId = newAdmin.Id;
+                    adminDetail.SchoolsType = model.schoolType;
+                    adminDetail.SchoolLimit = model.schoolLimit;
+
+                    appDbContext.AdminDetails.Add(adminDetail);
+                    appDbContext.SaveChanges();
+                }
+                else
+                {
+                    return BadRequest(result.Errors);
+                }
+
+                return Ok(newAdmin);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> EditAdmin([FromBody]Admin_InputData model)
+        {
+            try
+            {
+                UserModel admin = new UserModel();
+                if(model.Id != 0)
+                {
+                    admin = appDbContext.Users.Where(x => x.Id == model.Id).FirstOrDefault();
+                    AdminDetail adminDetail_DbData = appDbContext.AdminDetails.Where(x => x.UserId == admin.Id).FirstOrDefault();
+
+                    admin.FirstName = (model.FirstName == null ? admin.FirstName : model.FirstName);
+                    admin.LastName = (model.LastName == null ? admin.LastName : model.LastName);
+                    admin.PhoneNumber = (admin.PhoneNumber == null ? admin.PhoneNumber : model.PhoneNumber);
+                    admin.MelliCode = (admin.MelliCode == null ? admin.MelliCode : model.MelliCode);
+                    
+                    AdminDetail adminDetail = new AdminDetail();
+                    adminDetail.UserId = admin.Id;
+                    adminDetail.SchoolsType = (model.schoolType != 0 ? model.schoolType : adminDetail_DbData.SchoolsType);
+                    adminDetail.SchoolLimit = (model.schoolLimit != 0 ? model.schoolLimit : adminDetail_DbData.SchoolLimit);
+
+                    appDbContext.Users.Update(admin);
+                    appDbContext.AdminDetails.Update(adminDetail);
+                    appDbContext.SaveChanges();
+                }
+                else
+                {
+                    return BadRequest("اید مدیرکل به درستی وارد نشده است");
+                }
+
+                return Ok(admin);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> RemoveAdmin(int adminId)
+        {
+            try
+            {
+                await userManager.DeleteAsync(appDbContext.Users.Where(x => x.Id == adminId).FirstOrDefault());
+
+                AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault();
+
+                appDbContext.AdminDetails.Remove(adminDetail);
+                appDbContext.SaveChanges();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+#endregion
+
 #region Functions
         ///<param name="CategoryId">
         ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id

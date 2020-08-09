@@ -59,8 +59,8 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(NewsModel), 200)]
         public IActionResult GetIncommingNews()
         {
-            string IdNumber = userManager.GetUserId(User);
-            int schoolId = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault().SchoolId;
+            string userName = userManager.GetUserId(User);
+            int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
             int teacherRoleId = roleManager.FindByNameAsync("Teacher").Result.Id;
             int adminRoleId = roleManager.FindByNameAsync("Admin").Result.Id;
@@ -88,8 +88,8 @@ namespace lms_with_moodle.Controllers
             try
             {
                 //userManager getuserid get MelliCode field of user beacause we set in token
-                string userIdNumber = userManager.GetUserId(User);
-                int userId_Moodle = appDbContext.Users.Where(x => x.MelliCode == userIdNumber).FirstOrDefault().Moodle_Id;
+                string userName = userManager.GetUserId(User);
+                int userId_Moodle = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Moodle_Id;
 
                 List<Meeting> Meetings = appDbContext.Meetings.Where(x => x.ModeretorId == userId_Moodle).ToList();
                 

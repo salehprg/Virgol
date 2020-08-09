@@ -157,7 +157,7 @@ namespace lms_with_moodle.Controllers
 
                 if(!userInformation.ConfirmedAcc)
                 {
-                    return StatusCode(423);
+                    return StatusCode(423 , "حساب کاربری شما تایید نشده است");
                 }
 
                 object userDetail = null;
@@ -179,7 +179,7 @@ namespace lms_with_moodle.Controllers
                         string schooltypeName = "";
                         if (((AdminDetail)userDetail).SchoolsType == SchoolType.Sampad)
                         {
-                            schooltypeName = "سمپاد";
+                            schooltypeName = "استعداد های درخشان";
                         }
                         else if (((AdminDetail)userDetail).SchoolsType == SchoolType.AmoozeshRahDor)
                         {
@@ -210,7 +210,8 @@ namespace lms_with_moodle.Controllers
 
                 List<Claim> authClaims = new List<Claim>()
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, inpuLogin.Username),
+                    new Claim(JwtRegisteredClaimNames.Sub, userInformation.UserName),
+                    new Claim(JwtRegisteredClaimNames.GivenName, userInformation.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),          
                 };
 

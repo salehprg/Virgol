@@ -1,26 +1,27 @@
 import lms from "../apis/lms";
 import history from "../history";
 import { alert } from "./alertActions";
-import * as Type from './adminTypes'
+import * as Type from './newsTypes'
 import * as authType from './authTypes'
 import { worker } from "./workerActions";
 
+//#region News
 
-//#region Manager
-
-export const getManagers = token => async dispatch => {
+export const GetMyNews = token => async dispatch => {
 
     try {
         dispatch(worker.start)
         
-        const response = await lms.get('/Admin/GetManagers' , {
+        const response = await lms.get('/News/GetMyNews' , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
         dispatch(worker.stop)
-        dispatch({ type: Type.GetManagers, payload: response.data })
+
+
+        dispatch({ type: Type.GetMyNews, payload: response.data })
 
         return true
 
@@ -42,19 +43,21 @@ export const getManagers = token => async dispatch => {
 
 }
 
-export const AddNewManager = (token ,formvalue) => async dispatch => {
+export const GetIncommingNews = token => async dispatch => {
 
     try {
         dispatch(worker.start)
         
-        const response = await lms.put('/Admin/AddNewManager' , formvalue , {
+        const response = await lms.get('/News/GetIncommingNews' , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
         dispatch(worker.stop)
-        dispatch({ type: Type.AddNewManager, payload: response.data })
+
+
+        dispatch({ type: Type.GetIncommingNews, payload: response.data })
 
         return true
 
@@ -76,19 +79,21 @@ export const AddNewManager = (token ,formvalue) => async dispatch => {
 
 }
 
-export const EditManager = (token ,formvalue) => async dispatch => {
+export const GetAccessRoleIds = token => async dispatch => {
 
     try {
         dispatch(worker.start)
         
-        const response = await lms.post('/Admin/EditManager' , formvalue , {
+        const response = await lms.get('/News/GetAccessRoleIds' , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
         dispatch(worker.stop)
-        dispatch({ type: Type.EditManager, payload: response.data })
+
+
+        dispatch({ type: Type.GetAccessRoleIds, payload: response.data })
 
         return true
 
@@ -110,19 +115,19 @@ export const EditManager = (token ,formvalue) => async dispatch => {
 
 }
 
-export const RemoveManager = (token ,formvalue) => async dispatch => {
+export const CreateNews = (token ,formvalue) => async dispatch => {
 
     try {
         dispatch(worker.start)
         
-        const response = await lms.delete('/Admin/RemoveManager' , formvalue , {
+        const response = await lms.put('/News/CreateNews' , formvalue , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
         dispatch(worker.stop)
-        dispatch({ type: Type.RemoveManager, payload: response.data })
+        dispatch({ type: Type.CreateNews, payload: response.data })
 
         return true
 
@@ -144,21 +149,19 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
 
 }
 
-//#endregion
-
-export const getDashboardInfo = token => async dispatch => {
+export const EditNews = (token ,formvalue) => async dispatch => {
 
     try {
         dispatch(worker.start)
         
-        const response = await lms.get('/Admin/getDashboardInfo' , {
+        const response = await lms.post('/News/EditNews' , formvalue , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
         dispatch(worker.stop)
-        dispatch({ type: Type.getDashboardInfo, payload: response.data })
+        dispatch({ type: Type.EditNews, payload: response.data })
 
         return true
 
@@ -180,7 +183,36 @@ export const getDashboardInfo = token => async dispatch => {
 
 }
 
-export const logout = () => {
-    history.push('/')
-    return { type: authType.LOGOUT }
+export const RemoveNews = (token ,formvalue) => async dispatch => {
+
+    try {
+        dispatch(worker.start)
+        
+        const response = await lms.delete('/News/RemoveNews' , formvalue , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch(worker.stop)
+        dispatch({ type: Type.RemoveNews, payload: response.data })
+
+        return true
+
+    } catch (e) {
+
+        switch (e.response.status) {
+            case 401:
+                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+                history.push('/')
+                break;
+
+            default:
+                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        }
+
+        return false
+
+    }
+
 }

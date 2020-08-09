@@ -4,7 +4,8 @@ import CounterCard from "../../admin/home/CounterCard";
 import {home, key, user, users} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import { connect } from "react-redux";
-import {GetIncommingNews , GetMyNews , getManagerDashboardInfo} from "../../../../_actions/managerActions"
+import {getManagerDashboardInfo} from "../../../../_actions/managerActions"
+import {GetIncommingNews , GetMyNews} from "../../../../_actions/newsActions"
 
 class Home extends React.Component {
 
@@ -76,7 +77,7 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , inNews : state.managerData.inNews , myNews : state.managerData.myNews , dashboardInfo : state.managerData.dashboardInfo}
+    return {user: state.auth.userInfo , inNews : state.newsData.incomeNews , myNews : state.newsData.myNews , dashboardInfo : state.managerData.dashboardInfo}
 }
 
 export default connect(mapStateToProps, { GetIncommingNews , GetMyNews  , getManagerDashboardInfo})(Home);

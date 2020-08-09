@@ -16,7 +16,6 @@ class AddClass extends React.Component {
     }
 
     handleChange = (event) => {
-        console.log(event)
         this.setState({className: event.target.value});  
     }
 

@@ -31,28 +31,6 @@ export default (state = INITIAL_STATE, action) => {
 
 //#endregion
 
-//#region News
-
-    if (action.type === Type.GetIncommingNews)
-        return { ...state, inNews: action.payload };
-
-    if (action.type === Type.GetMyNews)
-        return { ...state, myNews: action.payload };
-
-    if (action.type === Type.GET_ACCESS_ROLE_IDS)
-        return { ...state, accessRoleIds: action.payload };
-
-    if (action.type === Type.CREATE_NEWS)
-        return { ...state, myNews: [...state.myNews, action.payload]};
-
-    if (action.type === Type.EDIT_NEWS)
-        return { ...state, myNews: state.myNews.map(el => el.id === action.payload.id ? action.payload : el) }
-
-    if (action.type === Type.DELETE_NEWS)
-        return { ...state, myNews: state.myNews.filter(element => !action.payload.includes(element.id)) }
-
-//#endregion
-
     if (action.type === Type.GET_ALL_TEACHERS)
         return { ...state, teachers: action.payload };
 

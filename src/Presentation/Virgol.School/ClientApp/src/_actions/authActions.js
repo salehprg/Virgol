@@ -6,7 +6,7 @@ import * as Type from './authTypes'
 export const login = formValues => async dispatch => {
 
     try {
-        const response = await lms.post('/Users/LoginUser', formValues);
+        const response = await lms.post('/Users/LoginUser', formValues)
         dispatch({ type: Type.LOGIN, payload: response.data })
 
         switch (response.data.userType) {
@@ -33,16 +33,27 @@ export const login = formValues => async dispatch => {
 
         return true
 
-    } catch (e) {
+    } catch(e) {
 
-        console.log(e);
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("نام کاربری یا گذرواژه اشتباه است"))
-                break;
+        if(e.response)
+        {
+            switch (e.response.status) {
+                
+                case 423:
+                    dispatch(alert.error(e.response.data))
+                    break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+                case 401:
+                    dispatch(alert.error("نام کاربری یا گذرواژه اشتباه است"))
+                    break;
+
+                default:
+                    dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+            }
+        }
+        else
+        {
+            dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
 
         return false

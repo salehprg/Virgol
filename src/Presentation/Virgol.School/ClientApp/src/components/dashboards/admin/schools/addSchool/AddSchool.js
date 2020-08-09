@@ -38,7 +38,7 @@ class AddSchool extends React.Component {
                 onCancel={() => history.push('/a/schools')}
                 title="افزودن مدرسه"
             >
-                {this.state.showManagerInfo ? 
+                {this.state.showManagerInfo || !this.props.managerInfo ? 
                 <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
                 <Field
                     name="schoolName"

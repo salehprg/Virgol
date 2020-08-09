@@ -6,8 +6,10 @@ import workerReducer from "./workerReducer";
 import authReducer from "./authReducer";
 import managerReducer from "./managerReducer";
 import schoolReducer from "./schoolReducer";
+import newsReducer from "./newsReducer";
 
 export default combineReducers({
+    newsData: newsReducer,
     schoolData: schoolReducer,
     managerData: managerReducer,
     adminData: adminReducer,

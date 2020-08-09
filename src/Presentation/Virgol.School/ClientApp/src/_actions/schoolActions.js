@@ -265,6 +265,7 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
             }
         });
 
+        console.log(response)
         dispatch(worker.stop)
         dispatch({ type: Type.RemoveBaseFromSchool, payload: response.data })
 
@@ -272,14 +273,18 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
 
     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                //history.push('/')
-                break;
+        console.log(e)
+        if(e.response)
+        {
+            switch (e.response.status) {
+                case 401:
+                    dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+                    //history.push('/')
+                    break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+                default:
+                    dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+            }
         }
 
         return false
@@ -326,7 +331,7 @@ export const getStudyfields = (token,baseId) => async dispatch => {
 
 }
 
-export const GetSchool_StudyFields = (token,baseId,schoolId) => async dispatch => {
+export const GetSchool_StudyFields = (token,baseId,schoolId = 0) => async dispatch => {
 
     try {
         dispatch(worker.start)
@@ -465,11 +470,11 @@ export const getClassList = (token,gradeId) => async dispatch => {
 
 }
 
-export const addNewClass = (token, formValues) => async dispatch => {
+export const addNewClass = (token, formValues,schoolId = 0) => async dispatch => {
 
     try {
         dispatch(worker.start)
-        const response = await lms.put("/School/AddNewClass", formValues ,{
+        const response = await lms.put(`/School/AddNewClass?schoolId=${schoolId}`, formValues ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -562,7 +567,7 @@ export const getLessons = (token,gradeId) => async dispatch => {
     
 }
 
-export const GetSchool_Grades = (token,studyFId,schoolId) => async dispatch => {
+export const GetSchool_Grades = (token,studyFId,schoolId = 0) => async dispatch => {
 
     try {
         dispatch(worker.start)
