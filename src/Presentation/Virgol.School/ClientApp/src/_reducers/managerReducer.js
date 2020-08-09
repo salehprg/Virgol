@@ -5,6 +5,7 @@ const INITIAL_STATE = {
     'newUsers' : [],
     'inNews': [],
     myNews: [],
+    schoolLessonInfo : null,
     'accessRoleIds': [],
     grades: [],
     'classes': [],
@@ -27,20 +28,6 @@ export default (state = INITIAL_STATE, action) => {
 
 //#region Grades/Class
 
-    if (action.type === Type.GET_ALL_GRADES)
-        return { ...state, grades: action.payload };
-        
-    if (action.type === Type.GET_CLASS_IN_GRADE)
-        return { ...state, classes: action.payload };
-
-    if (action.type === Type.ADD_NEW_CLASS)
-        return { ...state, classes: [...state.classes, action.payload]};
-
-    if (action.type === Type.EDIT_CLASS)
-        return { ...state, classes: state.classes.map(el => el.id === action.payload.id ? action.payload : el) }
-
-    if (action.type === Type.DELETE_CLASS)
-        return { ...state, classes: state.classes.filter(element => !action.payload.includes(element.id)) }
 
 //#endregion
 

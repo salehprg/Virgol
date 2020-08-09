@@ -35,6 +35,7 @@ export const login = formValues => async dispatch => {
 
     } catch (e) {
 
+        console.log(e);
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("نام کاربری یا گذرواژه اشتباه است"))

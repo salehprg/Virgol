@@ -1,11 +1,11 @@
 export const CONFIRM = 'CONFIRM';
 export const GET_NEW_USERS = 'GET_NEW_USERS';
 
-export const GET_ALL_GRADES = 'GET_ALL_GRADES';
-export const GET_CLASS_IN_GRADE = 'GET_CLASS_IN_GRADE';
-export const ADD_NEW_CLASS = 'ADD_NEW_COURSE';
-export const EDIT_CLASS = 'EDIT_CATEGORY';
-export const DELETE_CLASS = 'DELETE_COURSE';
+// export const GET_ALL_GRADES = 'GET_ALL_GRADES';
+// export const ClassList = 'ClassList';
+// export const ADD_NEW_CLASS = 'ADD_NEW_COURSE';
+// export const EDIT_CLASS = 'EDIT_CATEGORY';
+// export const DELETE_CLASS = 'DELETE_COURSE';
 
 export const getManagerDashboardInfo = 'getManagerDashboardInfo';
 export const GetIncommingNews = 'GetIncommingNews';

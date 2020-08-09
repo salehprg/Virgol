@@ -289,522 +289,522 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
 
 //#region Schools
 
-export const GetSchoolInfo = (token,schoolId) => async dispatch => {
+// export const GetSchoolInfo = (token,schoolId) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
         
-        const response = await lms.get(`/Admin/GetSchoolInfo?schoolId=${schoolId}` , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.get(`/Admin/GetSchoolInfo?schoolId=${schoolId}` , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        console.log("stop")
+//         console.log("stop")
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetSchoolInfo, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.GetSchoolInfo, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
-        console.log(e)
+//     } catch (e) {
+//         console.log(e)
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const getSchools = token => async dispatch => {
+// export const getSchools = token => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.get('/Admin/GetSchools' , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.get('/Admin/GetSchools' , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetSchools, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.GetSchools, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const CreateSchool = (token ,formvalue) => async dispatch => {
+// export const CreateSchool = (token ,formvalue) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.put('/Admin/CreateSchool' , formvalue , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.put('/Admin/CreateSchool' , formvalue , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.CreateSchool, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.CreateSchool, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const AddBaseToSchool = (token ,formvalue) => async dispatch => {
+// export const AddBaseToSchool = (token ,formvalue) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.put('/Admin/AddBaseToSchool' , formvalue , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.put('/Admin/AddBaseToSchool' , formvalue , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.AddBaseToSchool, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.AddBaseToSchool, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
+// export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.delete(`/Admin/RemoveBaseFromSchool?baseId=${formvalue}`  , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.delete(`/Admin/RemoveBaseFromSchool?baseId=${formvalue}`  , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.RemoveBaseFromSchool, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.RemoveBaseFromSchool, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                //history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 //history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
+// export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.put('/Admin/AddStudyFToSchool' , formvalue , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.put('/Admin/AddStudyFToSchool' , formvalue , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.AddStudyFToSchool, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.AddStudyFToSchool, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const RemoveStudyFFromSchool = (token ,formvalue) => async dispatch => {
+// export const RemoveStudyFFromSchool = (token ,formvalue) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.delete(`/Admin/RemoveStudyFFromSchool?studyFId=${formvalue}` , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.delete(`/Admin/RemoveStudyFFromSchool?studyFId=${formvalue}` , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.RemoveStudyFFromSchool, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.RemoveStudyFFromSchool, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                //history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 //history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const EditSchool = (token ,formvalue) => async dispatch => {
+// export const EditSchool = (token ,formvalue) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
 
-        const response = await lms.post('/Admin/EditSchool' , formvalue , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.post('/Admin/EditSchool' , formvalue , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
+//         dispatch(worker.stop)
         
-        dispatch({ type: Type.EditSchool, payload: response.data })
-        dispatch(alert.success("مدرسه با موفقیت ویرایش شد"))
-        return true
+//         dispatch({ type: Type.EditSchool, payload: response.data })
+//         dispatch(alert.success("مدرسه با موفقیت ویرایش شد"))
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const RemoveSchool = (token ,formvalue) => async dispatch => {
+// export const RemoveSchool = (token ,formvalue) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.delete('/Admin/RemoveSchool' , formvalue , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.delete('/Admin/RemoveSchool' , formvalue , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.RemoveSchool, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.RemoveSchool, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
 //#endregion
 
-export const getBases = token => async dispatch => {
+// export const getBases = token => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.get('/Admin/GetBases' , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.get('/Admin/GetBases' , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetBases, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.GetBases, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const getStudyfields = (token,baseId) => async dispatch => {
+// export const getStudyfields = (token,baseId) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.get(`/Admin/GetStudyFields?BaseId=${baseId}` , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.get(`/Admin/GetStudyFields?BaseId=${baseId}` , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetStudyFields, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.GetStudyFields, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const GetSchool_StudyFields = (token,baseId) => async dispatch => {
+// export const GetSchool_StudyFields = (token,baseId) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.get(`/Admin/GetSchool_StudyFields?BaseId=${baseId}` , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.get(`/Admin/GetSchool_StudyFields?BaseId=${baseId}` , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetSchool_StudyFields, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.GetSchool_StudyFields, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const getGrades = (token,studyFId) => async dispatch => {
+// export const getGrades = (token,studyFId) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.get(`/Admin/GetGrade?StudyFieldId=${studyFId}` , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.get(`/Admin/GetGrade?StudyFieldId=${studyFId}` , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetGrade, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.GetGrade, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const GetSchool_Grades = (token,studyFId) => async dispatch => {
+// export const GetSchool_Grades = (token,studyFId) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.get(`/Admin/GetSchool_Grades?StudyFieldId=${studyFId}` , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.get(`/Admin/GetSchool_Grades?StudyFieldId=${studyFId}` , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetSchool_Grades, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.GetSchool_Grades, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
-export const getLessons = (token,gradeId) => async dispatch => {
+// export const getLessons = (token,gradeId) => async dispatch => {
 
-    try {
-        dispatch(worker.start)
+//     try {
+//         dispatch(worker.start)
         
-        const response = await lms.get(`/Admin/GetLessons?gradeId=${gradeId}` , {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
+//         const response = await lms.get(`/Admin/GetLessons?gradeId=${gradeId}` , {
+//             headers: {
+//                 authorization: `Bearer ${token}`
+//             }
+//         });
 
-        dispatch(worker.stop)
-        dispatch({ type: Type.GetLessons, payload: response.data })
+//         dispatch(worker.stop)
+//         dispatch({ type: Type.GetLessons, payload: response.data })
 
-        return true
+//         return true
 
-    } catch (e) {
+//     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+//         switch (e.response.status) {
+//             case 401:
+//                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+//                 history.push('/')
+//                 break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
+//             default:
+//                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+//         }
 
-        return false
+//         return false
 
-    }
+//     }
 
-}
+// }
 
 export const getDashboardInfo = token => async dispatch => {
 

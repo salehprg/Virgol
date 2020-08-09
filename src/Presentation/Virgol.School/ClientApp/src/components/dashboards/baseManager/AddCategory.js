@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "../../modals/Modal";
 import Searchish from "../../field/Searchish";
-import {getBases } from "../../../_actions/adminActions"
+import {getBases } from "../../../_actions/schoolActions"
 import { connect } from "react-redux";
 
 class AddCategory extends React.Component {
@@ -71,7 +71,7 @@ class AddCategory extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , newSchoolInfo: state.adminData.newSchoolInfo }
+    return {user: state.auth.userInfo , newSchoolInfo: state.schoolData.newSchoolInfo }
 }
 
 export default connect(mapStateToProps, { getBases  })(AddCategory);

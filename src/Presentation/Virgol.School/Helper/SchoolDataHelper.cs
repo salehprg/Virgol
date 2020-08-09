@@ -35,6 +35,8 @@ public class SchoolDataHelper {
 
                 if(SchoolMoodleId != -1)
                 {
+                    schoolModel.Moodle_Id = SchoolMoodleId;
+                    
                     appDbContext.Schools.Add(schoolModel);
                     appDbContext.SaveChanges();
 
@@ -219,7 +221,6 @@ public class SchoolDataHelper {
             
         }
         
-
 
         // public async Task<CreateSchoolResult> CreateSchool_Grade(List<int> baseIds , List<int> studyFIds , List<int> gradeIds , int SchoolMoodleId)
         // {

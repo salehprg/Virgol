@@ -29,8 +29,14 @@ class Home extends React.Component {
         
         return (
             <div className="grid sm:grid-cols-4 grid-cols-2 gap-4 py-6">
+                {(this.props.user 
+                ?
                 <Hero userInfo={this.props.user.userInformation}
-                        userDetail={this.props.user.userDetail}/>
+                        title={`مدیر مدارس ${this.props.user.userDetail.schooltypeName} استان خراسان رضوی`} />
+                :
+                <Hero userInfo="درحال بارگذاری ..."
+                    title="درحال بارگذاری ..." />
+                )}
                 <CounterCard
                     title="مدارس"
                     icon={home}

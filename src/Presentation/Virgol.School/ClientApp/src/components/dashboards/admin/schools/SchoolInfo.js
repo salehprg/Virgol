@@ -5,7 +5,8 @@ import {briefcase, loading, slash} from "../../../../assets/icons";
 import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
 import {GetSchoolInfo  , GetSchool_Grades , GetSchool_StudyFields 
-        , getLessons , EditSchool , EditManager , AddBaseToSchool  , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool} from "../../../../_actions/adminActions"
+        , getLessons , EditSchool , AddBaseToSchool  , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool} from "../../../../_actions/schoolActions"
+import {EditManager} from '../../../../_actions/adminActions'
 import {Link} from "react-router-dom";
 import Modal from "../../../modals/Modal";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
@@ -67,7 +68,7 @@ class SchoolInfo extends React.Component {
         this.setState({ selectedCat: id, selectedField: null, selectedGrade: null, selectedCourse: null })
 
         this.setState({loadingFields: true})
-        await this.props.GetSchool_StudyFields(this.props.user.token , id);
+        await this.props.GetSchool_StudyFields(this.props.user.token , id , this.props.match.params.id);
         this.setState({loadingFields: false})
     }
 
@@ -75,7 +76,7 @@ class SchoolInfo extends React.Component {
         this.setState({ selectedField: id })
 
         this.setState({loadingGrades: true})
-        await this.props.GetSchool_Grades(this.props.user.token , id);
+        await this.props.GetSchool_Grades(this.props.user.token , id, this.props.match.params.id);
         this.setState({loadingGrades: false})
     }
 
@@ -264,15 +265,14 @@ class SchoolInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.auth.userInfo , 
-        newSchoolInfo: state.adminData.newSchoolInfo , 
-        schoolLessonInfo2 : state.adminData.schoolLessonInfo2,
-        schoolLessonInfo : state.adminData.schoolLessonInfo,
+        newSchoolInfo: state.schoolData.newSchoolInfo , 
+        schoolLessonInfo : state.schoolData.schoolLessonInfo,
         initialValues: {
-            firstName: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.firstName : null,
-            lastName: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.lastName : null,
-            personalIdNumber: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerDetail.personalIdNumber : null,
-            melliCode: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.melliCode : null,
-            phoneNumber: state.adminData.schoolLessonInfo ? state.adminData.schoolLessonInfo.managerInfo.phoneNumber : null,
+            firstName: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.firstName : null,
+            lastName: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.lastName : null,
+            personalIdNumber: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerDetail.personalIdNumber : null,
+            melliCode: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.melliCode : null,
+            phoneNumber: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.phoneNumber : null,
         }
     }
 }

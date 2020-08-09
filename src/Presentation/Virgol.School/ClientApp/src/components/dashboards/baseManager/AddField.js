@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "../../modals/Modal";
 import Searchish from "../../field/Searchish";
-import {getStudyfields } from "../../../_actions/adminActions"
+import {getStudyfields } from "../../../_actions/schoolActions"
 import { connect } from "react-redux";
 
 class AddField extends React.Component {
@@ -61,7 +61,7 @@ class AddField extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , newSchoolInfo: state.adminData.newSchoolInfo }
+    return {user: state.auth.userInfo , newSchoolInfo: state.schoolData.newSchoolInfo }
 }
 
 export default connect(mapStateToProps, { getStudyfields  })(AddField);

@@ -7,10 +7,11 @@ import history from "../../../../../history";
 import Fieldish from '../../../../field/Fieldish';
 import { check_circle } from "../../../../../assets/icons";
 import ManagerGenerated from "./ManagerGenerated";
+import {CreateSchool} from "../../../../../_actions/schoolActions";
 
 class AddSchool extends React.Component {
 
-    state = { showManagerInfo: false }
+    state = { showManagerInfo: true }
 
     renderInputs = ({ input, meta, type, placeholder }) => {
         return (
@@ -18,15 +19,17 @@ class AddSchool extends React.Component {
                 input={input}
                 redCondition={meta.touched && meta.error}
                 type={type}
-                dir="ltr"
+                dir="rtl"
                 placeholder={placeholder}
                 extra="w-full my-4"
             />
         );
     }
 
-    onSubmit = (formValues) => {
-        
+    onSubmit = async (formValues) => {
+        console.log(formValues);
+        await this.props.CreateSchool(this.props.user.token , formValues)
+        this.setState({showManagerInfo : false})
     }
 
     render() {
@@ -36,33 +39,45 @@ class AddSchool extends React.Component {
                 title="افزودن مدرسه"
             >
                 {this.state.showManagerInfo ? 
-                <form className="w-full" onClick={this.props.handleSubmit(this.onSubmit)}>
+                <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
                 <Field
-                    name="name"
+                    name="schoolName"
                     type="text"
                     placeholder="نام مدرسه"
                     component={this.renderInputs}
                 />
                 <Field
-                    name="code"
+                    name="schoolIdNumber"
                     type="text"
                     placeholder="کد مدرسه"
                     component={this.renderInputs}
                 />
                 <Field
-                    name="managerFirstName"
+                    name="firstName"
                     type="text"
                     placeholder="نام مدیر"
                     component={this.renderInputs}
                 />
                 <Field
-                    name="managerLastName"
+                    name="lastName"
                     type="text"
                     placeholder="نام خانوادگی مدیر"
                     component={this.renderInputs}
                 />
+                <Field
+                    name="melliCode"
+                    type="text"
+                    placeholder="کدملی مدیر"
+                    component={this.renderInputs}
+                />
+                <Field
+                    name="personalIdNumber"
+                    type="text"
+                    placeholder="کد پرسنلی مدیر"
+                    component={this.renderInputs}
+                />
 
-                <button className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">افزودن</button>
+                <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">افزودن</button>
             </form> 
                 : 
                 <div className="p-6 border-2 border-dashed border-dark-blue">
@@ -72,13 +87,13 @@ class AddSchool extends React.Component {
                     </p>
                     <ManagerGenerated 
                         title="نام کاربری"
-                        value="schoolManager123"
+                        value={this.props.managerInfo.melliCode}
                     />
                     <ManagerGenerated 
                         title="گدرواژه"
-                        value="56599561"
+                        value={this.props.managerInfo.password}
                     />
-                    <Link className="w-full border-2 border-sky-blue text-sky-blue" to="">افزودن مقاطع، رشته ها و دروس</Link>
+                    <button type="button" className="w-full border-2 border-sky-blue text-sky-blue" onClick={() => history.push(`/school/${this.props.managerInfo.schoolId}`)}>افزودن مقاطع، رشته ها و دروس</button>
                 </div>
                 }
             </Add>
@@ -87,8 +102,12 @@ class AddSchool extends React.Component {
 
 }
 
-const formWrapped = reduxForm({
-    form: ''
-})(AddSchool);
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , managerInfo: state.schoolData.CreateSchool}
+}
 
-export default connect(null)(formWrapped);
+const formWrapped = reduxForm({
+    form: 'schoolInfo'
+}, mapStateToProps)(AddSchool)
+
+export default connect(mapStateToProps,{CreateSchool})(formWrapped);

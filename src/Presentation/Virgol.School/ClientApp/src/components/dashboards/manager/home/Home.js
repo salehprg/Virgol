@@ -26,8 +26,14 @@ class Home extends React.Component {
         if(this.state.loading) return "درحال بارگداری اطلاعات ..."
         return (
             <div className="grid sm:grid-cols-4 grid-cols-2 gap-4 py-6">
+                {(this.props.dashboardInfo.school
+                ?
                 <Hero userInfo={this.props.user.userInformation}
-                        userDetail={this.props.user.userDetail}/>
+                    title={`مدیر مدرسه ${this.props.dashboardInfo.school.schoolName}`}/>
+                    :
+                <Hero userInfo="درحال بارگذاری ..."
+                    title="درحال بارگذاری ..." />
+                )}
                 <CounterCard
                     title="کل کلاس ها"
                     icon={home}
