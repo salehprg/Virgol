@@ -7,6 +7,8 @@ export const GET_NEW_USERS = 'GET_NEW_USERS';
 // export const EDIT_CLASS = 'EDIT_CATEGORY';
 // export const DELETE_CLASS = 'DELETE_COURSE';
 
+export const getStudentsClass = 'getStudentsClass';
+
 export const getManagerDashboardInfo = 'getManagerDashboardInfo';
 export const GetIncommingNews = 'GetIncommingNews';
 export const GetMyNews = 'GetMyNews';

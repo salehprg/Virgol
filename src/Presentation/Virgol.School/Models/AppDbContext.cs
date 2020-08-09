@@ -30,11 +30,13 @@ namespace Models
         public DbSet<School_Bases> School_Bases {get; set;}
         public DbSet<School_Grades> School_Grades {get; set;}
         public DbSet<School_StudyFields> School_StudyFields {get; set;}
+        public DbSet<School_studentClass> School_StudentClasses {get; set;}
         public DbSet<AdminDetail> AdminDetails {get; set;}
         public DbSet<ManagerDetail> ManagerDetails {get; set;}
         public DbSet<StudentDetail> StudentDetails {get; set;}
         public DbSet<Class_WeeklySchedule> ClassWeeklySchedules {get; set;}
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}
+        
 
 
         // protected override void OnModelCreating(ModelBuilder builder)

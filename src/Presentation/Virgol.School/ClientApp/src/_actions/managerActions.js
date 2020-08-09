@@ -98,6 +98,22 @@ export const getAllStudents = token => async dispatch => {
 
 }
 
+export const getStudentsClass = (token , classId) => async dispatch => {
+
+    try {
+        const response = await lms.get(`/Manager/getStudentsClass?classId=${classId}`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.getStudentsClass, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
 export const addNewTeacher = (token, formValues) => async dispatch => {
 
     const values = {

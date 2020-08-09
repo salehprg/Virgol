@@ -37,6 +37,9 @@ export default (state = INITIAL_STATE, action) => {
     if (action.type === Type.GET_ALL_STUDENTS)
         return { ...state, students: action.payload };
 
+    if (action.type === Type.getStudentsClass)
+        return { ...state, studentsInClass: action.payload };
+
     if (action.type === Type.ADD_NEW_TEACHER)
         return { ...state, teachers: [...state.teachers, action.payload]};
 

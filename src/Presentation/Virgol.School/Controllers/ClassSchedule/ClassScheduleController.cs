@@ -21,7 +21,7 @@ namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "User")]
     public class ClassScheduleController : ControllerBase
     {
         
@@ -64,7 +64,12 @@ namespace lms_with_moodle.Controllers
                 //We set IdNumber as userId in Token
                 List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == classId).ToList();
 
-                return Ok(classScheduleViews);
+                var groupedSchedule = classScheduleViews
+                    .GroupBy(x => x.DayType)
+                    .Select(grp => grp.ToList())
+                    .ToList();
+
+                return Ok(groupedSchedule);
             }
             catch(Exception ex)
             {
@@ -75,10 +80,12 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<GradeModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult getTeacherSchedule(int teacherId)
+        public IActionResult getTeacherSchedule()
         {
             try
             {   
+                string userName = userManager.GetUserName(User);
+                int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
                 //We set IdNumber as userId in Token
                 List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId).ToList();
 
@@ -156,18 +163,20 @@ namespace lms_with_moodle.Controllers
         }
     
         [HttpDelete]
-        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult DeleteClass([FromBody]Class_WeeklySchedule classSchedule)
+        public IActionResult DeleteClassSchedule(int classId)
         {
             try
             {
+                Class_WeeklySchedule classSchedule = appDbContext.ClassWeeklySchedules.Where(x => x.Id == classId).FirstOrDefault();
+
                 if(classSchedule.Id != 0)
                 {
                     appDbContext.ClassWeeklySchedules.Remove(classSchedule);
                     appDbContext.SaveChanges();
 
-                    return Ok("ساعت مورد نظر با موفقیت افزوده شد");
+                    return Ok(classId);
                 }
 
                 
@@ -210,6 +219,7 @@ namespace lms_with_moodle.Controllers
         }
         #endregion
 #endregion   
+
 
     }
 }

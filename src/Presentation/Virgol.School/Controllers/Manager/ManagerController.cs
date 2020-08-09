@@ -590,7 +590,33 @@ namespace lms_with_moodle.Controllers
 
 #endregion
     
-#region Courses
+#region Classes
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult getStudentsClass(int classId)
+        {
+            try
+            {   
+                string userName = userManager.GetUserName(User);
+                int managerId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                //We set IdNumber as userId in Token
+                List<School_studentClass> studentClass = appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
+                List<UserModel> users = new List<UserModel>();
+                foreach (var user in studentClass)
+                {
+                    UserModel student = appDbContext.Users.Where(x => x.Id == user.UserId).FirstOrDefault();
+                    users.Add(student);
+                }
+
+                return Ok(users);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
         // [HttpPut]

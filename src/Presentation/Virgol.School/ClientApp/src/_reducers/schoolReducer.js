@@ -49,7 +49,7 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, schools: state.schools.map(el => el.id === action.payload.id ? action.payload : el) }
 
         case Type.RemoveSchool: 
-            return { ...state, schools: state.schools.filter(element => !action.payload.includes(element.id)) }
+            return { ...state, schools: state.schools.filter(element => element.id != action.payload) }
 
 
 //#region Base

@@ -54,12 +54,15 @@ export const AddNewManager = (token ,formvalue) => async dispatch => {
         });
 
         dispatch(worker.stop)
+        dispatch(alert.success("اطلاعات مدیر با موفقیت اضافه شد"))
         dispatch({ type: Type.AddNewManager, payload: response.data })
 
         return true
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -69,6 +72,7 @@ export const AddNewManager = (token ,formvalue) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -88,12 +92,15 @@ export const EditManager = (token ,formvalue) => async dispatch => {
         });
 
         dispatch(worker.stop)
+        dispatch(alert.success("اطلاعات مدیر با موفقیت ویرایش شد"))
         dispatch({ type: Type.EditManager, payload: response.data })
 
         return true
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -103,6 +110,7 @@ export const EditManager = (token ,formvalue) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -122,12 +130,15 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
         });
 
         dispatch(worker.stop)
+        dispatch(alert.success(" مدیر با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveManager, payload: response.data })
 
         return true
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -137,6 +148,7 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 

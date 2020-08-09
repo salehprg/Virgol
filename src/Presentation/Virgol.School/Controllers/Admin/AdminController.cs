@@ -209,7 +209,7 @@ namespace lms_with_moodle.Controllers
 
                     manager.FirstName = model.FirstName;
                     manager.LastName = model.LastName;
-                    manager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
+                    manager.PhoneNumber = (model.PhoneNumber != null ? ConvertToPersian.PersianToEnglish(model.PhoneNumber) : null );
 
                     appDbContext.Users.Update(manager);
                     appDbContext.SaveChanges();

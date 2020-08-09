@@ -12,6 +12,7 @@ import SchoolInfo from './dashboards/admin/schools/SchoolInfo'
 import ManagerDashboard from './dashboards/manager/ManagerDashboard';
 import AddSchool from './dashboards/admin/schools/addSchool/AddSchool';
 import StudentDashboard from './dashboards/student/Dashboard';
+import ClassInfo from './dashboards/manager/class/ClassInfo';
 
 class App extends React.Component {
 
@@ -36,6 +37,7 @@ class App extends React.Component {
                         <Route path="/" exact component={Login} />
                         <Route path="/a" component={AdminDashboard} />
                         <Route path="/school/:id" component={SchoolInfo} />
+                        <Route path="/class/:id" component={ClassInfo} />
                         <Route path="/newSchool" component={AddSchool} />
                         <Route path="/m" component={ManagerDashboard} />
                         <Route path="/s" component={StudentDashboard} />

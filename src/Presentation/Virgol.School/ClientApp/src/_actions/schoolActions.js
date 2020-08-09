@@ -29,6 +29,8 @@ export const GetSchoolInfo = (token,schoolId = 0) => async dispatch => {
     } catch (e) {
         console.log(e)
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -38,6 +40,7 @@ export const GetSchoolInfo = (token,schoolId = 0) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -63,6 +66,8 @@ export const getSchools = token => async dispatch => {
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -72,6 +77,7 @@ export const getSchools = token => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -97,6 +103,9 @@ export const CreateSchool = (token ,formvalue) => async dispatch => {
 
     } catch (e) {
 
+        dispatch({ type: Type.CreateSchool, payload: null })
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -106,6 +115,7 @@ export const CreateSchool = (token ,formvalue) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -132,6 +142,8 @@ export const EditSchool = (token ,formvalue) => async dispatch => {
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -141,6 +153,7 @@ export const EditSchool = (token ,formvalue) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -153,27 +166,35 @@ export const RemoveSchool = (token ,formvalue) => async dispatch => {
     try {
         dispatch(worker.start)
         
-        const response = await lms.delete('/School/RemoveSchool' , formvalue , {
+        const response = await lms.delete(`/School/RemoveSchool?schoolId=${formvalue}` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
         dispatch(worker.stop)
+        dispatch(alert.success("مدرسه با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveSchool, payload: response.data })
 
         return true
 
     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+        if(e.response)
+        {
+            switch (e.response.status) {
+                case 401:
+                    dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+                    history.push('/')
+                    break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+                default:
+                    dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+            }
+        }
+        else
+        {
+            console.log(e)
         }
 
         return false
@@ -204,14 +225,17 @@ export const getBases = token => async dispatch => {
 
     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+        if(e.response)
+        {
+            switch (e.response.status) {
+                case 401:
+                    dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+                    history.push('/')
+                    break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+                default:
+                    dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+            }
         }
 
         return false
@@ -232,20 +256,24 @@ export const AddBaseToSchool = (token ,formvalue) => async dispatch => {
         });
 
         dispatch(worker.stop)
+        dispatch(alert.success(" مقطع تحصیلی با موفقیت اضافه شد"))
         dispatch({ type: Type.AddBaseToSchool, payload: response.data })
 
         return true
 
     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
+        if(e.response)
+        {
+            switch (e.response.status) {
+                case 401:
+                    dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+                    history.push('/')
+                    break;
 
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+                default:
+                    dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+            }
         }
 
         return false
@@ -267,6 +295,7 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
 
         console.log(response)
         dispatch(worker.stop)
+        dispatch(alert.success(" مقطع تحصیلی با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveBaseFromSchool, payload: response.data })
 
         return true
@@ -276,7 +305,7 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
         console.log(e)
         if(e.response)
         {
-            switch (e.response.status) {
+        switch (e.response.status) {
                 case 401:
                     dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
                     //history.push('/')
@@ -288,7 +317,6 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
         }
 
         return false
-
     }
 
 }
@@ -315,6 +343,8 @@ export const getStudyfields = (token,baseId) => async dispatch => {
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -324,6 +354,7 @@ export const getStudyfields = (token,baseId) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -349,6 +380,8 @@ export const GetSchool_StudyFields = (token,baseId,schoolId = 0) => async dispat
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -358,6 +391,7 @@ export const GetSchool_StudyFields = (token,baseId,schoolId = 0) => async dispat
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -377,12 +411,15 @@ export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
         });
 
         dispatch(worker.stop)
+        dispatch(alert.success(" رشته تحصیلی با موفقیت اضافه شد"))
         dispatch({ type: Type.AddStudyFToSchool, payload: response.data })
 
         return true
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -392,6 +429,7 @@ export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -411,12 +449,15 @@ export const RemoveStudyFFromSchool = (token ,formvalue) => async dispatch => {
         });
 
         dispatch(worker.stop)
+        dispatch(alert.success(" مقطع تحصیلی با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveStudyFFromSchool, payload: response.data })
 
         return true
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -426,6 +467,7 @@ export const RemoveStudyFFromSchool = (token ,formvalue) => async dispatch => {
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
@@ -485,7 +527,7 @@ export const addNewClass = (token, formValues,schoolId = 0) => async dispatch =>
         dispatch({ type: Type.AddNewClass, payload: response.data });
     } catch (e) {
         dispatch(worker.stop)
-        dispatch(alert.error("خطا در افزودن مقطع"))
+        dispatch(alert.error("خطا در افزودن کلاس"))
     }
 
 }
@@ -502,7 +544,7 @@ export const editClass = (token, values) => async dispatch => {
 
         dispatch(worker.stop)
         dispatch({ type: Type.EditClass, payload: response.data})
-        dispatch(alert.success("کلاسُ با موفقیت ویرایش گردید"))
+        dispatch(alert.success("کلاس با موفقیت ویرایش گردید"))
 
     } catch (e) {
         dispatch(worker.stop)
@@ -551,20 +593,22 @@ export const getLessons = (token,gradeId) => async dispatch => {
     
         } catch (e) {
     
-            switch (e.response.status) {
-                case 401:
-                    dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                    history.push('/')
-                    break;
-    
-                default:
-                    dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+            if(e.response)
+            {
+                switch (e.response.status) {
+                    case 401:
+                        dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
+                        history.push('/')
+                        break;
+        
+                    default:
+                        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+                }
             }
     
             return false
     
         }
-    
 }
 
 export const GetSchool_Grades = (token,studyFId,schoolId = 0) => async dispatch => {
@@ -585,6 +629,8 @@ export const GetSchool_Grades = (token,studyFId,schoolId = 0) => async dispatch 
 
     } catch (e) {
 
+        if(e.response)
+        {
         switch (e.response.status) {
             case 401:
                 dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
@@ -594,9 +640,9 @@ export const GetSchool_Grades = (token,studyFId,schoolId = 0) => async dispatch 
             default:
                 dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
+    }
 
         return false
 
     }
-
 }

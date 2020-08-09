@@ -374,10 +374,13 @@ namespace lms_with_moodle.Controllers
                 if(removeCat)
                 {
                     UserModel manager = appDbContext.Users.Where(x => x.SchoolId == schoolId && x.userTypeId == (int)UserType.Manager).FirstOrDefault();
-                    manager.SchoolId = -1;
+                    if(manager != null)
+                    {
+                        manager.SchoolId = -1;
+                        
+                        appDbContext.Users.Update(manager);
+                    }
                     
-                    appDbContext.Users.Update(manager);
-
                     appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_StudyFields.RemoveRange(appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
