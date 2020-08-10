@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 import Schedule from './Schedule'
 import {AddClassSchedule , EditClassSchedule , DeleteClassSchedule , getClassSchedule} from '../../../../_actions/classScheduleActions'
 import { connect } from 'react-redux';
+import AddLesson from './AddLesson';
 
 class ClassInfo extends React.Component {
 
-    state = {lessons : []}
+    state = {lessons : [], addLesson: false}
     componentDidMount = async () =>{
         this.setState({loading : true})
         await this.props.getClassSchedule(this.props.user.token , this.props.match.params.id)
@@ -27,6 +28,13 @@ class ClassInfo extends React.Component {
     render() {
         return (
             <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+                {this.state.addLesson ? 
+                <AddLesson 
+                    cancel={() => this.setState({ addLesson: false })}
+                /> 
+                : 
+                null
+                }
                 <div className="w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
                      <p className="text-xl text-white mb-8">لیست دانش آموزان</p>
                      <div className="flex flex-row-reverse justify-between items-center">
@@ -50,7 +58,7 @@ class ClassInfo extends React.Component {
                         </div>
                     </div>
                     <div className="my-8">
-                        <button className="px-6 py-1 bg-greenish text-white rounded-lg mb-2">افزودن درس</button>
+                        <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2">افزودن درس</button>
                         <div className="border-2 border-dark-blue overflow-auto">
                             <Schedule 
                                 editable={true}
