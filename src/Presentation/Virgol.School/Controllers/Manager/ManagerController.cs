@@ -482,7 +482,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                string userNameManager = userManager.GetUserName(User);
+                string userNameManager = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
 
                 teacher.SchoolId = schoolId;
@@ -524,9 +524,12 @@ namespace lms_with_moodle.Controllers
                         appDbContext.Users.Update(teacher);
 
                         appDbContext.SaveChanges();
+
+                        return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
                     }
                     
-                    return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
+                    return BadRequest("مشکلی در ثبت معلم بوجود آمد");
+                    
                 }
 
                 return BadRequest(resultCreate.Errors);
@@ -601,7 +604,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {   
-                string userName = userManager.GetUserName(User);
+                string userName = userManager.GetUserId(User);
                 int managerId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
                 //We set IdNumber as userId in Token
                 List<School_studentClass> studentClass = appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList();

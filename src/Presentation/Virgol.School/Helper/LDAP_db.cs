@@ -41,6 +41,8 @@ namespace lms_with_moodle.Helper
                     uniqueMailId = string.Format("{0}.{1}.{2}" , user.userDetail.LatinFirstname 
                                                                             , user.userDetail.LatinLastname 
                                                                             , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
+
+                    hasMail = true;
                 }
                 
 
@@ -83,7 +85,15 @@ namespace lms_with_moodle.Helper
                 attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
                 attributeSet.Add( new LdapAttribute("title", title));
                 attributeSet.Add( new LdapAttribute("userPassword", user.MelliCode));
-                attributeSet.Add( new LdapAttribute("uniqueIdentifier", new string[]{ user.MelliCode ,  (hasMail ? uniqueMailId : null)}));
+                if(hasMail)
+                {
+                    attributeSet.Add( new LdapAttribute("uniqueIdentifier", new string[]{ user.MelliCode , uniqueMailId }));
+                }
+                else
+                {
+                    attributeSet.Add( new LdapAttribute("uniqueIdentifier", user.MelliCode));
+                }
+                
 
 
                 // DN of the entry to be added
