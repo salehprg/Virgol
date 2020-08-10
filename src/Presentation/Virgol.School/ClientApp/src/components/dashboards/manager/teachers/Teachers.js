@@ -10,7 +10,7 @@ class Teachers extends React.Component {
     state = { loading: false, query: '' }
 
     componentDidMount = async () => {
-        if (this.props.history.action === 'POP' || this.props.teachers.length == 0 ) {
+        if (this.props.history.action === 'POP' || this.props.teachers.length === 0 ) {
             this.setState({ loading: true })
             await this.props.getAllTeachers(this.props.user.token);
             this.setState({ loading: false })
@@ -19,6 +19,10 @@ class Teachers extends React.Component {
 
     changeQuery = query => {
         this.setState({ query })
+    }
+
+    submitExcel = (excel) => {
+
     }
 
     render() {
@@ -35,6 +39,8 @@ class Teachers extends React.Component {
                             <button className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
                         );
                     }}
+                    excel="آپلود اکسل معلمان"
+                    handleExcel={this.submitExcel}
                     headers={['نام', 'نام خانوادگی', 'کد ملی', 'واحد تدریس']}
                     body={() => {
                         return (

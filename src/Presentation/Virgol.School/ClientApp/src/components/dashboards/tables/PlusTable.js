@@ -1,12 +1,12 @@
 import React from "react";
 import Searchish from "../../field/Searchish";
 import Tablish from "./Tablish";
-import {loading, working} from "../../../assets/icons";
+import {loading} from "../../../assets/icons";
 
 class PlusTable extends React.Component {
 
     render() {
-        const { isLoading, query, changeQuery, button, title, headers, body } = this.props
+        const { isLoading, query, changeQuery, button, excel, handleExcel, title, headers, body } = this.props
         return (
             <div className="w-full">
                 <div className="flex sm:flex-row-reverse flex-col justify-start sm:items-stretch items-end mb-4">
@@ -16,6 +16,20 @@ class PlusTable extends React.Component {
                         changeQuery={changeQuery}
                     />
                     {button()}
+                    {excel ?
+                        <>
+                            <label htmlFor="excel" className="px-6 cursor-pointer mx-4 py-1 border-2 border-greenish text-greenish rounded-lg">{excel}</label>
+                            <input
+                                onChange={(e) => handleExcel(e.target.files[0])}
+                                type="file"
+                                id="excel"
+                                className="hidden"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            />
+                        </>
+                        :
+                        null
+                    }
                 </div>
 
                 <div className="w-full relative rounded-xl bg-dark-blue px-6 py-2 min-h-70">
