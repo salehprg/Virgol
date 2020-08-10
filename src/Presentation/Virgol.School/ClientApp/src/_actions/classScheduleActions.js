@@ -63,17 +63,9 @@ export const getTeacherSchedule = (token) => async dispatch => {
 
 export const AddClassSchedule = (token, formValues) => async dispatch => {
 
-    const values = {
-        ClassId: formValues.classId,
-        DayType: formValues.dayType,
-        LessonId: formValues.lessonId,
-        TeacherId: formValues.teacherId,
-        StartHour: formValues.teacherId,
-        EndHour: formValues.teacherId,
-    }
-
     try {
-        const response = await lms.put("/ClassSchedule/AddClassSchedule", values ,{
+        console.log(formValues)
+        const response = await lms.put("/ClassSchedule/AddClassSchedule", formValues ,{
             headers: {
                 authorization: `Bearer ${token}`
             }

@@ -127,7 +127,11 @@ namespace lms_with_moodle.Controllers
                 {
                     //Check for interupt class Schedule
                     object result = CheckInteruptSchedule(classSchedule);
-                    if((bool)result)
+                    bool interupt = false;
+
+                    try{interupt = (bool)result;}catch{}
+
+                    if(interupt)
                     {
                         int lessonMoodle_Id = appDbContext.School_Lessons.Where(x => x.classId == classSchedule.ClassId && x.Lesson_Id == classSchedule.LessonId).FirstOrDefault().Moodle_Id;
                         EnrolUser teacher = new EnrolUser();
@@ -141,9 +145,9 @@ namespace lms_with_moodle.Controllers
                             appDbContext.ClassWeeklySchedules.Add(classSchedule);
                             appDbContext.SaveChanges();
 
-                            int classId = appDbContext.ClassWeeklySchedules.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+                            int classScheduleId = appDbContext.ClassWeeklySchedules.OrderByDescending(x => x.Id).FirstOrDefault().Id;
 
-                            ClassScheduleView scheduleView = appDbContext.ClassScheduleView.Where(x => x.ClassId == classId).FirstOrDefault();
+                            ClassScheduleView scheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == classScheduleId).FirstOrDefault();
 
                             return Ok(scheduleView);
                         }
