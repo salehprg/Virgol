@@ -4,6 +4,7 @@ import { alert } from "./alertActions";
 import * as Type from './adminTypes'
 import * as authType from './authTypes'
 import { worker } from "./workerActions";
+import {START, STOP} from "./workerTypes";
 
 
 //#region Manager
@@ -11,7 +12,7 @@ import { worker } from "./workerActions";
 export const getManagers = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get('/Admin/GetManagers' , {
             headers: {
@@ -19,7 +20,7 @@ export const getManagers = token => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.GetManagers, payload: response.data })
 
         return true
@@ -45,7 +46,7 @@ export const getManagers = token => async dispatch => {
 export const AddNewManager = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.put('/Admin/AddNewManager' , formvalue , {
             headers: {
@@ -53,7 +54,7 @@ export const AddNewManager = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success("اطلاعات مدیر با موفقیت اضافه شد"))
         dispatch({ type: Type.AddNewManager, payload: response.data })
 
@@ -83,7 +84,7 @@ export const AddNewManager = (token ,formvalue) => async dispatch => {
 export const EditManager = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.post('/Admin/EditManager' , formvalue , {
             headers: {
@@ -91,7 +92,7 @@ export const EditManager = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success("اطلاعات مدیر با موفقیت ویرایش شد"))
         dispatch({ type: Type.EditManager, payload: response.data })
 
@@ -121,7 +122,7 @@ export const EditManager = (token ,formvalue) => async dispatch => {
 export const RemoveManager = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.delete('/Admin/RemoveManager' , formvalue , {
             headers: {
@@ -129,7 +130,7 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success(" مدیر با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveManager, payload: response.data })
 
@@ -161,7 +162,7 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
 export const getDashboardInfo = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get('/Admin/getDashboardInfo' , {
             headers: {
@@ -169,7 +170,7 @@ export const getDashboardInfo = token => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.getDashboardInfo, payload: response.data })
 
         return true

@@ -3,25 +3,26 @@ import lms from "../apis/lms";
 import { alert } from "./alertActions";
 import * as Type from '../_actions/managerTypes'
 import { worker } from "./workerActions";
+import {START, STOP} from "./workerTypes";
 
 export const confirmUser = (token, id) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.post("/Manager/ConfirmUsers", [parseInt(id)],{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.CONFIRM, payload: id });
         history.push('/m/students')
         window.location.reload();
         dispatch(alert.success("دانش اموز تایید شد"))
 
     } catch (e) {
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در اتصال"))
     }
 }
@@ -29,17 +30,17 @@ export const confirmUser = (token, id) => async dispatch => {
 export const getNewUsers = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.get("/Manager/GetNewUsers", {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.GET_NEW_USERS, payload: response.data });
     } catch (e) {
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا دربرقراری اتصال"))
     }
 
@@ -48,19 +49,19 @@ export const getNewUsers = token => async dispatch => {
 export const getManagerDashboardInfo = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.get("/Manager/getManagerDashboardInfo", {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.getManagerDashboardInfo, payload: response.data });
     } catch (e) {
         console.log(e)
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا دربرقراری اتصال"))
     }
 
@@ -226,20 +227,20 @@ export const deleteTeacher = (token, ids) => async dispatch => {
 
     try {
         console.log(token)
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.post(`/Manager/DeleteTeacher`, ids ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.DELETE_TEACHER, payload: ids})
         dispatch(alert.success("معلم حذف شد"))
 
     } catch (e) {
         console.log(e.response)
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در حذف معلم"))
     }
 

@@ -4,7 +4,7 @@ import {working} from "../assets/icons";
 const Working = () => {
 
     return (
-        <div className="z-50 w-screen h-screen bg-black-blue bg-opacity-75 flex justify-center items-center">
+        <div className="z-50 w-screen h-screen fixed bg-black-blue bg-opacity-75 flex justify-center items-center">
             {working('w-12 text-grayish')}
         </div>
     );

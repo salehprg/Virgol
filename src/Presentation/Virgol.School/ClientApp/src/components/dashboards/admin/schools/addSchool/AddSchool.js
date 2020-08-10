@@ -93,7 +93,7 @@ class AddSchool extends React.Component {
                         title="گدرواژه"
                         value={this.props.managerInfo.password}
                     />
-                    <button type="button" className="w-full border-2 border-sky-blue text-sky-blue" onClick={() => history.push(`/school/${this.props.managerInfo.schoolId}`)}>افزودن مقاطع، رشته ها و دروس</button>
+                    <button type="button" className="w-full px-4 py-2 border-2 border-sky-blue text-sky-blue" onClick={() => history.push(`/school/${this.props.managerInfo.schoolId}`)}>افزودن مقاطع، رشته ها و دروس</button>
                 </div>
                 }
             </Add>
@@ -102,12 +102,28 @@ class AddSchool extends React.Component {
 
 }
 
+const validate = (formValues) => {
+
+    const errors = {}
+
+    if (!formValues.schoolName) errors.schoolName = true
+    if (!formValues.schoolIdNumber) errors.schoolIdNumber = true
+    if (!formValues.firstName) errors.firstName = true
+    if (!formValues.lastName) errors.lastName = true
+    if (!formValues.melliCode) errors.melliCode = true
+    if (!formValues.personalIdNumber) errors.personalIdNumber = true
+
+    return errors;
+
+}
+
 const mapStateToProps = state => {
     return {user: state.auth.userInfo , managerInfo: state.schoolData.CreateSchool}
 }
 
 const formWrapped = reduxForm({
-    form: 'schoolInfo'
+    form: 'schoolInfo',
+    validate
 }, mapStateToProps)(AddSchool)
 
 export default connect(mapStateToProps,{CreateSchool})(formWrapped);

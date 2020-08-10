@@ -60,7 +60,7 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, schoolLessonInfo: {...state.schoolLessonInfo , bases :  action.payload}}
 
         case Type.RemoveBaseFromSchool: 
-            return { ...state, schoolLessonInfo: state.schoolLessonInfo.bases.filter(element => !action.payload.includes(element.id))};
+            return { ...state, schoolLessonInfo: {...state.schoolLessonInfo, bases: state.schoolLessonInfo.bases.filter(element => element.id !== action.payload)}};
 //#endregion
 
 //#region StudyField
@@ -74,7 +74,7 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, schoolLessonInfo: {...state.schoolLessonInfo , studyFields : action.payload}};
 
         case Type.RemoveStudyFFromSchool: 
-            return { ...state, schoolLessonInfo: state.schoolLessonInfo.studyFields.filter(element => !action.payload.includes(element.id))};
+            return { ...state, schoolLessonInfo: {...state.schoolLessonInfo, studyFields: state.schoolLessonInfo.studyFields.filter(element => element.id !== action.payload)}};
 //#endregion
 
         case Type.GetGrade: 

@@ -4,13 +4,14 @@ import { alert } from "./alertActions";
 import * as Type from './schoolTypes'
 import * as authType from './authTypes'
 import { worker } from "./workerActions";
+import { START, STOP } from "./workerTypes";
 
 //#region Schools
 
 export const GetSchoolInfo = (token,schoolId = 0) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         
         const response = await lms.get(`/School/GetSchoolInfo?schoolId=${schoolId}` , {
@@ -21,7 +22,7 @@ export const GetSchoolInfo = (token,schoolId = 0) => async dispatch => {
 
         console.log("stop")
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.GetSchoolInfo, payload: response.data })
 
         return true
@@ -51,7 +52,7 @@ export const GetSchoolInfo = (token,schoolId = 0) => async dispatch => {
 export const getSchools = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get('/School/GetSchools' , {
             headers: {
@@ -59,7 +60,7 @@ export const getSchools = token => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.GetSchools, payload: response.data })
 
         return true
@@ -88,7 +89,7 @@ export const getSchools = token => async dispatch => {
 export const CreateSchool = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.put('/School/CreateSchool' , formvalue , {
             headers: {
@@ -96,7 +97,7 @@ export const CreateSchool = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.CreateSchool, payload: response.data })
 
         return true
@@ -104,18 +105,8 @@ export const CreateSchool = (token ,formvalue) => async dispatch => {
     } catch (e) {
 
         dispatch({ type: Type.CreateSchool, payload: null })
-        if(e.response)
-        {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
-    }
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
 
         return false
 
@@ -126,7 +117,7 @@ export const CreateSchool = (token ,formvalue) => async dispatch => {
 export const EditSchool = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
 
         const response = await lms.post('/School/EditSchool' , formvalue , {
             headers: {
@@ -134,7 +125,7 @@ export const EditSchool = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         
         dispatch({ type: Type.EditSchool, payload: response.data })
         dispatch(alert.success("مدرسه با موفقیت ویرایش شد"))
@@ -164,7 +155,7 @@ export const EditSchool = (token ,formvalue) => async dispatch => {
 export const RemoveSchool = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.delete(`/School/RemoveSchool?schoolId=${formvalue}` , {
             headers: {
@@ -172,7 +163,7 @@ export const RemoveSchool = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success("مدرسه با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveSchool, payload: response.data })
 
@@ -210,7 +201,7 @@ export const RemoveSchool = (token ,formvalue) => async dispatch => {
 export const getBases = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get('/School/GetBases' , {
             headers: {
@@ -218,13 +209,14 @@ export const getBases = token => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.GetBases, payload: response.data })
 
         return true
 
     } catch (e) {
 
+        console.log(e.response)
         if(e.response)
         {
             switch (e.response.status) {
@@ -247,7 +239,7 @@ export const getBases = token => async dispatch => {
 export const AddBaseToSchool = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.put('/School/AddBaseToSchool' , formvalue , {
             headers: {
@@ -255,7 +247,7 @@ export const AddBaseToSchool = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success(" مقطع تحصیلی با موفقیت اضافه شد"))
         dispatch({ type: Type.AddBaseToSchool, payload: response.data })
 
@@ -285,7 +277,7 @@ export const AddBaseToSchool = (token ,formvalue) => async dispatch => {
 export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.delete(`/School/RemoveBaseFromSchool?baseId=${formvalue}`  , {
             headers: {
@@ -294,7 +286,7 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
         });
 
         console.log(response)
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success(" مقطع تحصیلی با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveBaseFromSchool, payload: response.data })
 
@@ -328,7 +320,7 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
 export const getStudyfields = (token,baseId) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get(`/School/GetStudyFields?BaseId=${baseId}&schoolId` , {
             headers: {
@@ -336,7 +328,7 @@ export const getStudyfields = (token,baseId) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.GetStudyFields, payload: response.data })
 
         return true
@@ -365,7 +357,7 @@ export const getStudyfields = (token,baseId) => async dispatch => {
 export const GetSchool_StudyFields = (token,baseId,schoolId = 0) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get(`/School/GetSchool_StudyFields?BaseId=${baseId}&schoolId=${schoolId}` , {
             headers: {
@@ -373,27 +365,15 @@ export const GetSchool_StudyFields = (token,baseId,schoolId = 0) => async dispat
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.GetSchool_StudyFields, payload: response.data })
 
         return true
 
     } catch (e) {
 
-        if(e.response)
-        {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
-    }
-
-        return false
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        dispatch({ type: STOP })
 
     }
 
@@ -402,7 +382,7 @@ export const GetSchool_StudyFields = (token,baseId,schoolId = 0) => async dispat
 export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.put('/School/AddStudyFToSchool' , formvalue , {
             headers: {
@@ -410,7 +390,7 @@ export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success(" رشته تحصیلی با موفقیت اضافه شد"))
         dispatch({ type: Type.AddStudyFToSchool, payload: response.data })
 
@@ -418,20 +398,8 @@ export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
 
     } catch (e) {
 
-        if(e.response)
-        {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
-    }
-
-        return false
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        dispatch({ type: STOP })
 
     }
 
@@ -440,7 +408,7 @@ export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
 export const RemoveStudyFFromSchool = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.delete(`/School/RemoveStudyFFromSchool?studyFId=${formvalue}` , {
             headers: {
@@ -448,8 +416,8 @@ export const RemoveStudyFFromSchool = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
-        dispatch(alert.success(" مقطع تحصیلی با موفقیت حذف شد"))
+        dispatch({ type: STOP })
+        dispatch(alert.success(" رشته با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveStudyFFromSchool, payload: response.data })
 
         return true
@@ -515,18 +483,18 @@ export const getClassList = (token,gradeId) => async dispatch => {
 export const addNewClass = (token, formValues,schoolId = 0) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.put(`/School/AddNewClass?schoolId=${schoolId}`, formValues ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success("کلاس جدید افزوده شد"))
         dispatch({ type: Type.AddNewClass, payload: response.data });
     } catch (e) {
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در افزودن کلاس"))
     }
 
@@ -535,19 +503,19 @@ export const addNewClass = (token, formValues,schoolId = 0) => async dispatch =>
 export const editClass = (token, values) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.post('/School/EditClass', values,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.EditClass, payload: response.data})
         dispatch(alert.success("کلاس با موفقیت ویرایش گردید"))
 
     } catch (e) {
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در ویرایش مقطع"))
     }
 
@@ -556,19 +524,19 @@ export const editClass = (token, values) => async dispatch => {
 export const deleteClass = (token, classId) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.post("/School/DeleteClass", { classId } ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.success("کلاس با موفقیت حذف گردید"))
         dispatch({ type: Type.DeleteClass, payload: classId})
 
     } catch (e) {
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در حذف مقطع"))
     }
 
@@ -578,7 +546,7 @@ export const deleteClass = (token, classId) => async dispatch => {
 export const getLessons = (token,gradeId) => async dispatch => {
 
         try {
-            dispatch(worker.start)
+            dispatch({ type: START })
             
             const response = await lms.get(`/School/GetLessons?gradeId=${gradeId}` , {
                 headers: {
@@ -586,7 +554,7 @@ export const getLessons = (token,gradeId) => async dispatch => {
                 }
             });
     
-            dispatch(worker.stop)
+            dispatch({ type: STOP })
             dispatch({ type: Type.GetLessons, payload: response.data })
     
             return true
@@ -614,7 +582,7 @@ export const getLessons = (token,gradeId) => async dispatch => {
 export const GetSchool_Grades = (token,studyFId,schoolId = 0) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get(`/School/GetSchool_Grades?StudyFieldId=${studyFId}&schoolId=${schoolId}` , {
             headers: {
@@ -622,7 +590,7 @@ export const GetSchool_Grades = (token,studyFId,schoolId = 0) => async dispatch 
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.GetSchool_Grades, payload: response.data })
 
         return true

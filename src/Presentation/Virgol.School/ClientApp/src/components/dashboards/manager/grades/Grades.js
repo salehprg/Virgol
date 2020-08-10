@@ -64,8 +64,6 @@ class Grades extends React.Component {
 
     selectClass = (id) => {
         this.setState({ selectedClass: id })
-
-        
     }
     
     changeQuery = query => {
