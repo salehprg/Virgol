@@ -28,26 +28,28 @@ class Schedule extends React.Component {
         {i: "t13", name: "20:00", x: 26, y: 0, w: 2, h: 1, static: true},
         {i: "t14", name: "21:00", x: 28, y: 0, w: 2, h: 1, static: true},
         {i: "t15", name: "22:00", x: 30, y: 0, w: 2, h: 1, static: true},
-    ]}
+    ],
+    showLessonInfo: null
+    }
 
-    lessons = [
-        {i: "1", name: "حسابان 1", c: "bg-redish text-white", x: 2, y: 1, w: 3, h: 1, static: true},
-        {i: "2", name: "هندسه 1", c: "bg-purplish text-white", x: 6, y: 2, w: 3, h: 1, static: true},
-    ]
+    showLessonInfo = (id) => {
+        this.setState({ showLessonInfo: this.props.lessons.find(el => el.i === id) })
+    }
 
-    componentDidMount() {
-        this.setState({ layout: this.state.layout.concat(this.lessons) })
+    onCancel = () => {
+        this.setState({ showLessonInfo: null })
     }
 
     render() {
+        const layout = this.state.layout.concat(this.props.lessons);
         return (
-            <div className="w-11/12 centerize h-64 overflow-auto border-2 border-dark-blue">
-                <GridLayout className="layout" layout={this.state.layout} cols={32} rowHeight={50} width={1800}>
-                    {this.state.layout.map(x => {
-                        return <div className={`border border-grayish ${x.c}`} key={x.i}><p className="centerize">{x.name}</p></div>
+            <>
+                <GridLayout className="layout" layout={layout} cols={32} rowHeight={50} width={1800}>
+                    {layout.map(x => {
+                        return <div onClick={() => this.showLessonInfo(x.i)} className={`border border-white text-center text-white ${x.c}`} key={x.i}><p className="centerize">{x.name}</p></div>
                     })}
                 </GridLayout>
-            </div>
+            </>
         );
     }
 

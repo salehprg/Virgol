@@ -29,10 +29,17 @@ class ClassInfo extends React.Component {
                             <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/bases">بازگشت</Link>
                         </div>
                     </div>
-                    <div className="mb-8 relative overflow-auto">
-                        <Schedule 
-                            editable={true}
-                        />
+                    <div className="my-8">
+                        <button className="px-6 py-1 bg-greenish text-white rounded-lg mb-2">افزودن درس</button>
+                        <div className="border-2 border-dark-blue overflow-auto">
+                            <Schedule 
+                                editable={true}
+                                lessons={[
+                                    {i: "1", name: "حسابان 1", teachername: "احمدی", c: "bg-redish cursor-pointer", x: 2, y: 1, w: 3, h: 1, static: true},
+                                    {i: "2", name: "هندسه 1", teachername: "باقری", c: "bg-purplish cursor-pointer", x: 6, y: 2, w: 3, h: 1, static: true},
+                                ]}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
