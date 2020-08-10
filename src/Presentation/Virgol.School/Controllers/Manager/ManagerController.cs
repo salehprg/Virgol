@@ -484,6 +484,10 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                string userNameManager = userManager.GetUserName(User);
+                int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
+
+                teacher.SchoolId = schoolId;
                 teacher.UserName = teacher.MelliCode;
                 teacher.userTypeId = (int)UserType.Teacher;
                 teacher.ConfirmedAcc = true;

@@ -90,15 +90,6 @@ class Grades extends React.Component {
 
                 {(!this.props.schoolLessonInfo ? "... درحال بارگذاری اطلاعات" :
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
-                    <div className="flex flex-row-reverse justify-between">
-                        <div>
-                            <p className="text-right text-white text-2xl">{this.props.schoolLessonInfo.schoolModel.schoolName}</p>
-                            <p className="text-right text-white">#{this.props.schoolLessonInfo.schoolModel.schoolIdNumber}</p>
-                        </div>
-                        <div>
-                            <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>
-                        </div>
-                    </div>
                     <div className="mt-8 overflow-auto">
                         
                         <BaseManager

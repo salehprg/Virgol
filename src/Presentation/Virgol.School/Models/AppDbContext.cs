@@ -31,6 +31,7 @@ namespace Models
         public DbSet<School_Grades> School_Grades {get; set;}
         public DbSet<School_StudyFields> School_StudyFields {get; set;}
         public DbSet<School_studentClass> School_StudentClasses {get; set;}
+        public DbSet<School_Lessons> School_Lessons {get; set;}
         public DbSet<AdminDetail> AdminDetails {get; set;}
         public DbSet<ManagerDetail> ManagerDetails {get; set;}
         public DbSet<StudentDetail> StudentDetails {get; set;}

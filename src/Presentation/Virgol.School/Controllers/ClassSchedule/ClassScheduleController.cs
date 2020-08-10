@@ -101,7 +101,7 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult AddClassSchedule([FromBody]Class_WeeklySchedule classSchedule)
+        public async Task<IActionResult> AddClassSchedule([FromBody]Class_WeeklySchedule classSchedule)
         {
             try
             {
@@ -111,10 +111,26 @@ namespace lms_with_moodle.Controllers
                     object result = CheckInteruptSchedule(classSchedule);
                     if((bool)result)
                     {
-                        appDbContext.ClassWeeklySchedules.Add(classSchedule);
-                        appDbContext.SaveChanges();
+                        int lessonMoodle_Id = appDbContext.School_Lessons.Where(x => x.classId == classSchedule.ClassId && x.Lesson_Id == classSchedule.LessonId).FirstOrDefault().Moodle_Id;
+                        EnrolUser teacher = new EnrolUser();
+                        teacher.lessonId = lessonMoodle_Id;
+                        teacher.RoleId = 3;
+                        teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
 
-                        return Ok("ساعت مورد نظر با موفقیت افزوده شد");
+                        bool teacherMoodle = await moodleApi.AssignUsersToCourse(new List<EnrolUser>{teacher});
+                        if(teacherMoodle)
+                        {
+                            appDbContext.ClassWeeklySchedules.Add(classSchedule);
+                            appDbContext.SaveChanges();
+
+                            int classId = appDbContext.ClassWeeklySchedules.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+
+                            ClassScheduleView scheduleView = appDbContext.ClassScheduleView.Where(x => x.ClassId == classId).FirstOrDefault();
+
+                            return Ok(scheduleView);
+                        }
+
+                        return BadRequest("افزودن ساعت با مشکل مواجه لطفا بعدا تلاش نمایدد");
                     }
                     else
                     {
@@ -165,7 +181,7 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult DeleteClassSchedule(int classId)
+        public async Task<IActionResult> DeleteClassSchedule(int classId)
         {
             try
             {
@@ -173,13 +189,24 @@ namespace lms_with_moodle.Controllers
 
                 if(classSchedule.Id != 0)
                 {
-                    appDbContext.ClassWeeklySchedules.Remove(classSchedule);
-                    appDbContext.SaveChanges();
+                    int lessonMoodleId = appDbContext.School_Lessons.Where(x => x.Lesson_Id == classSchedule.LessonId && x.classId == classSchedule.ClassId).FirstOrDefault().Moodle_Id;
 
-                    return Ok(classId);
+                    EnrolUser teacher = new EnrolUser();
+                    teacher.lessonId = lessonMoodleId;
+                    teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
+
+                    bool unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
+                    if(unassignTeacher)
+                    {
+                        appDbContext.ClassWeeklySchedules.Remove(classSchedule);
+                        appDbContext.SaveChanges();
+
+                        return Ok(classId);
+                    }
+
+                    return BadRequest("لطفا بعدا تلاش کنید");
                 }
 
-                
                 return BadRequest("کلاسی انتخاب شده است");
             }
             catch(Exception ex)

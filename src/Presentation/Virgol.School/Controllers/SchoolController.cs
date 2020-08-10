@@ -213,7 +213,8 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("شما حداکثر تعداد مدارس خودرا ثبت کردید");
 
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                bool duplicateManager = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault() != null;
+                UserModel user = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault();
+                bool duplicateManager = user != null;
 
                 if(!string.IsNullOrEmpty(inputData.SchoolName) && !duplicateManager)
                 {
@@ -822,6 +823,8 @@ namespace lms_with_moodle.Controllers
                     string ManagerUserName = userManager.GetUserId(User);
                     int managerId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().Id;
                     school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+
+                    schoolId = school.Id;
                 }
                 else
                 {
@@ -836,10 +839,7 @@ namespace lms_with_moodle.Controllers
                 if(classMoodleId != -1)
                 {
                     List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeModel.Grade_Id).ToList();
-                    foreach (var lesson in lessons)
-                    {
-                        await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + classMoodleId + ")", lesson.LessonName , classMoodleId);
-                    }
+                    List<School_Lessons> schoolLessons = new List<School_Lessons>();
 
                     School_Class schoolClass = new School_Class();
                     schoolClass.ClassName = classModel.ClassName;
@@ -849,6 +849,24 @@ namespace lms_with_moodle.Controllers
                     schoolClass.School_Id = school.Id;
 
                     appDbContext.School_Classes.Add(schoolClass);
+                    appDbContext.SaveChanges();
+
+                    schoolClass.Id = appDbContext.School_Classes.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+
+                    foreach (var lesson in lessons)
+                    {
+                        int moodleId = await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + classMoodleId + ")", lesson.LessonName , classMoodleId);
+
+                        School_Lessons schoolLesson = new School_Lessons();
+                        schoolLesson.Lesson_Id = lesson.Id;
+                        schoolLesson.Moodle_Id = moodleId;
+                        schoolLesson.School_Id = schoolId;
+                        schoolLesson.classId = schoolClass.Id;
+
+                        schoolLessons.Add(schoolLesson);
+                    }
+                    
+                    appDbContext.School_Lessons.AddRange(schoolLessons);
                     appDbContext.SaveChanges();
 
                     schoolClass.Id = appDbContext.School_Classes.OrderByDescending(x => x.Id).FirstOrDefault().Id;
@@ -938,6 +956,7 @@ namespace lms_with_moodle.Controllers
                 await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
 
                 appDbContext.School_Classes.Remove(schoolClass);
+                appDbContext.School_Lessons.RemoveRange(appDbContext.School_Lessons.Where(x => x.classId == schoolClass.Id).ToList());
                 appDbContext.SaveChanges();
 
                 return Ok(classId);

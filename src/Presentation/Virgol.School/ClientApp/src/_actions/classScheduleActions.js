@@ -8,14 +8,14 @@ export const getClassSchedule = (token, classId) => async dispatch => {
 
     try {
         dispatch(worker.start)
-        const response = await lms.get(`/ClassSchedule/getClassSchedule?classId${classId}`,{
+        const response = await lms.get(`/ClassSchedule/getClassSchedule?classId=${classId}`,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
         dispatch(worker.stop)
-        dispatch({ type: Type.getClassSchedule, payload: id });
+        dispatch({ type: Type.getClassSchedule, payload: response.data });
 
     } catch (e) {
         dispatch(worker.stop)
@@ -34,7 +34,7 @@ export const getTeacherSchedule = (token) => async dispatch => {
         })
 
         dispatch(worker.stop)
-        dispatch({ type: Type.getTeacherSchedule, payload: id });
+        dispatch({ type: Type.getTeacherSchedule, payload: response.data });
 
     } catch (e) {
         dispatch(worker.stop)
@@ -93,7 +93,7 @@ export const DeleteClassSchedule = (token, classId) => async dispatch => {
     try {
 
         dispatch(worker.start)
-        const response = await lms.post(`/Manager/DeleteClassSchedule?classId=${classId}`, ids ,{
+        const response = await lms.post(`/Manager/DeleteClassSchedule?classId=${classId}` ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -113,6 +113,6 @@ export const DeleteClassSchedule = (token, classId) => async dispatch => {
 
 
 
-export const wipeCatInfo = () => {
-    return { type: Type.WIPE_CAT_INFO }
-}
+// export const wipeCatInfo = () => {
+//     return { type: Type.WIPE_CAT_INFO }
+// }

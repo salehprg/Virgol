@@ -46,6 +46,17 @@ namespace lms_with_moodle.Helper
 
                 string mailAddress = uniqueMailId + "@legace.ir";
 
+                string title = null;
+                switch(user.userTypeId)
+                {
+                    case (int)UserType.Student :
+                        title = "Student";
+                        break;
+
+                    case (int)UserType.Teacher:
+                        title = "Teacher";
+                        break;
+                }
                 //Creates the List attributes of the entry and add them to attribute set 
                 LdapAttributeSet attributeSet = new LdapAttributeSet();
                 attributeSet.Add( new LdapAttribute("objectclass", new string[] {"organizationalPerson" ,
@@ -70,6 +81,7 @@ namespace lms_with_moodle.Helper
                 attributeSet.Add( new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir"));
                 attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
                 attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
+                attributeSet.Add( new LdapAttribute("title", title));
                 attributeSet.Add( new LdapAttribute("userPassword", user.MelliCode));
                 attributeSet.Add( new LdapAttribute("uniqueIdentifier", new string[]{ user.MelliCode ,  (hasMail ? uniqueMailId : null)}));
 
