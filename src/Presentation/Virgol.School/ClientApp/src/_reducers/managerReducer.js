@@ -43,6 +43,9 @@ export default (state = INITIAL_STATE, action) => {
     if (action.type === Type.AssignUserToClass)
         return { ...state, assigned: action.payload };
 
+    if (action.type === Type.UnAssignUserFromClass)
+        return { ...state, unAssigned: action.payload };
+
     if (action.type === Type.ADD_NEW_TEACHER)
         return { ...state, teachers: [...state.teachers, action.payload]};
 

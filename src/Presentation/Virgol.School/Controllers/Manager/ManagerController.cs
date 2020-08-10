@@ -667,6 +667,47 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> UnAssignUserFromClass([FromBody]List<int> userIds , int classId)
+        {
+            try
+            {   
+                int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
+
+                List<School_studentClass> studentClasses = new List<School_studentClass>();
+                List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
+                List<EnrolUser> enrolsData = new List<EnrolUser>();
+
+                foreach (var userid in userIds)
+                {
+                    School_studentClass studentClass = appDbContext.School_StudentClasses.Where(x => x.UserId == userid && x.ClassId == classId).FirstOrDefault();
+
+                    studentClasses.Add(studentClass);
+
+                    foreach(var course in courses)
+                    {
+                        EnrolUser enrolInfo = new EnrolUser();
+                        enrolInfo.lessonId = course.id;
+                        enrolInfo.UserId = userid;
+
+                        enrolsData.Add(enrolInfo);
+                    }  
+                }
+
+                await moodleApi.UnAssignUsersFromCourse(enrolsData);
+
+                appDbContext.School_StudentClasses.RemoveRange(studentClasses);
+                appDbContext.SaveChanges();
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         // [HttpPut]
         // [ProducesResponseType(typeof(List<CourseDetail>), 200)]

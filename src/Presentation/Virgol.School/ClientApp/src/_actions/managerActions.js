@@ -132,6 +132,22 @@ export const AssignUserToClass = (token , classId , userIds) => async dispatch =
 
 }
 
+export const UnAssignUserFromClass = (token , classId , userIds) => async dispatch => {
+
+    try {
+        const response = await lms.post(`/Manager/UnAssignUserFromClass?classId=${classId}` , userIds, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.AssignUserToClass, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
 //#endregion
 
 export const addNewTeacher = (token, formValues) => async dispatch => {
