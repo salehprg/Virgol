@@ -98,6 +98,8 @@ export const getAllStudents = token => async dispatch => {
 
 }
 
+//#region Class
+
 export const getStudentsClass = (token , classId) => async dispatch => {
 
     try {
@@ -113,6 +115,24 @@ export const getStudentsClass = (token , classId) => async dispatch => {
     }
 
 }
+
+export const AssignUserToClass = (token , classId , userIds) => async dispatch => {
+
+    try {
+        const response = await lms.post(`/Manager/AssignUserToClass?classId=${classId}` , userIds, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.AssignUserToClass, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
+//#endregion
 
 export const addNewTeacher = (token, formValues) => async dispatch => {
 

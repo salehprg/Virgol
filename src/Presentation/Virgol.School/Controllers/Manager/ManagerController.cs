@@ -352,9 +352,7 @@ namespace lms_with_moodle.Controllers
                         enrolInfo.UserId = enrolUser.UserId;
 
                         enrolsData.Add(enrolInfo);
-                    }
-
-                    
+                    }  
                 }
 
                 await moodleApi.AssignUsersToCourse(enrolsData);
@@ -615,6 +613,53 @@ namespace lms_with_moodle.Controllers
                 }
 
                 return Ok(users);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AssignUserToClass([FromBody]List<int> userIds , int classId)
+        {
+            try
+            {   
+
+                int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
+
+                List<School_studentClass> studentClasses = new List<School_studentClass>();
+                List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
+                List<EnrolUser> enrolsData = new List<EnrolUser>();
+
+                foreach (var userid in userIds)
+                {
+                    School_studentClass studentClass = new School_studentClass();
+
+                    studentClass.ClassId = classId;
+                    studentClass.UserId = userid;
+
+                    studentClasses.Add(studentClass);
+
+                    foreach(var course in courses)
+                    {
+                        EnrolUser enrolInfo = new EnrolUser();
+                        enrolInfo.lessonId = course.id;
+                        enrolInfo.RoleId = 5;
+                        enrolInfo.UserId = userid;
+
+                        enrolsData.Add(enrolInfo);
+                    }  
+                }
+
+                await moodleApi.AssignUsersToCourse(enrolsData);
+
+                appDbContext.School_StudentClasses.AddRange(studentClasses);
+                appDbContext.SaveChanges();
+
+                return Ok(true);
             }
             catch(Exception ex)
             {

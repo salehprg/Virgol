@@ -8,14 +8,10 @@ export const GET_NEW_USERS = 'GET_NEW_USERS';
 // export const DELETE_CLASS = 'DELETE_COURSE';
 
 export const getStudentsClass = 'getStudentsClass';
+export const AssignUserToClass = 'AssignUserToClass';
+
 
 export const getManagerDashboardInfo = 'getManagerDashboardInfo';
-export const GetIncommingNews = 'GetIncommingNews';
-export const GetMyNews = 'GetMyNews';
-export const GET_ACCESS_ROLE_IDS = 'GET_ACCESS_ROLE_IDS';
-export const CREATE_NEWS = 'CREATE_NEWS';
-export const EDIT_NEWS = 'EDIT_NEWS';
-export const DELETE_NEWS = 'DELETE_NEWS';
 
 export const GET_ALL_TEACHERS = 'GET_ALL_TEACHERS';
 export const GET_ALL_STUDENTS = 'GET_ALL_STUDENTS';

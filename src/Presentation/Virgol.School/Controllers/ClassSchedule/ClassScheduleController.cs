@@ -207,7 +207,7 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("لطفا بعدا تلاش کنید");
                 }
 
-                return BadRequest("کلاسی انتخاب شده است");
+                return BadRequest("کلاسی انتخاب نشده است");
             }
             catch(Exception ex)
             {
