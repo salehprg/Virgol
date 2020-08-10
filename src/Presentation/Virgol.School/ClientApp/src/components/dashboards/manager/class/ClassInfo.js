@@ -44,7 +44,6 @@ class ClassInfo extends React.Component {
                 null
                 }
                 <div className="w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
-<<<<<<< HEAD
                      <p className="text-xl text-white mb-8">لیست دانش آموزان</p>
                      {(this.state.loading ? "درحال بارگذاری ..." :
                         (!this.props.students || this.props.students.length == 0 ? 
@@ -60,7 +59,6 @@ class ClassInfo extends React.Component {
                             </div>
                         )}))
                      )}
-=======
                      <div className="flex flex-row-reverse justify-center items-center mb-8">
                          <p className="text-xl text-white">لیست دانش آموزان</p>
                          <label htmlFor="excel" className="px-1 cursor-pointer mx-4 py-1 border-2 border-greenish text-greenish rounded-lg">
@@ -82,7 +80,6 @@ class ClassInfo extends React.Component {
                         <p className="text-right text-white">صالح ابراهیمینا</p>
                         <p className="text-right text-white">1059645869</p>
                      </div>
->>>>>>> 05e818519a25ba8825c00780ae63e5150c485778
                 </div>
 
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
