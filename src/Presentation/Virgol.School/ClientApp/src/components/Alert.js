@@ -5,7 +5,7 @@ import {alert_octagon, x} from "../assets/icons";
 const Alert = ({ type, message, fade }) => {
 
     return (
-        <motion.div className="fixed top-0 w-screen mt-8"
+        <motion.div className="fixed z-50 top-0 w-screen mt-8"
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.5, type: 'spring' }}

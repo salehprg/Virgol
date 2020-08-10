@@ -130,9 +130,9 @@ class SchoolInfo extends React.Component {
 
                 await this.props.AddStudyFToSchool(this.props.user.token , data)
 
-                this.setState({loadingFields: true})
-                await this.props.GetSchool_StudyFields(this.props.user.token , this.state.selectedCat);
-                this.setState({loadingFields: false})
+                // this.setState({loadingFields: true})
+                // await this.props.GetSchool_StudyFields(this.props.user.token , this.state.selectedCat);
+                // this.setState({loadingFields: false})
                 break;
         }
 
@@ -140,9 +140,13 @@ class SchoolInfo extends React.Component {
 
     confirmDelete = async () => {
 
-        (this.state.deleteCatId ? await this.props.RemoveBaseFromSchool(this.props.user.token , this.state.deleteCatId)
-        : 
-        await this.props.RemoveStudyFFromSchool(this.props.user.token , this.state.deleteFieldId))
+        if (this.state.deleteCatId) {
+            await this.props.RemoveBaseFromSchool(this.props.user.token , this.state.deleteCatId)
+            this.setState({ selectedCat: null, selectedField: null, selectedGrade: null, selectedCourse: null })
+        } else {
+            await this.props.RemoveStudyFFromSchool(this.props.user.token , this.state.deleteFieldId)
+            this.setState({ selectedField: null, selectedGrade: null, selectedCourse: null })
+        }
     }
 
     render() {
@@ -280,7 +284,8 @@ const mapStateToProps = state => {
 }
 
 const formWrapped = reduxForm({
-    form: 'editSchoolManager'
+    form: 'editSchoolManager',
+    enableReinitialize : true
 }, mapStateToProps)(SchoolInfo)
 
 export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , 

@@ -21,6 +21,10 @@ class Students extends React.Component {
         this.setState({ query })
     }
 
+    submitExcel = (excel) => {
+
+    }
+
     render() {
         if(this.state.loading) return "لودیمگ..."
         return (
@@ -35,6 +39,8 @@ class Students extends React.Component {
                             <button className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">دانش آموزان جدید</button>
                         );
                     }}
+                    excel="آپلود اکسل دانش آموزان"
+                    handleExcel={this.submitExcel}
                     headers={['نام', 'نام خانوادگی', 'کد ملی', 'پایه', '']}
                     body={() => {
                         return (

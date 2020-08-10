@@ -8,8 +8,11 @@ class AddField extends React.Component {
 
     state = {
         cats: [{id: 1, name: 'دبستان'}, {id: 2, name: 'متوسطه اول'}, {id: 3, name: 'متوسطه دوم'}],
-        selectedFields: []
+        selectedFields: [],
+        query: ''
     }
+
+
 
     componentDidMount = async () => {
         await this.props.getStudyfields(this.props.user.token , this.props.selectedBaseId)
@@ -33,16 +36,20 @@ class AddField extends React.Component {
                 <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
                     <Searchish
                         className="mx-auto max-w-350"
+                        query={this.state.query}
+                        changeQuery={(query) => this.setState({ query })}
                     />
                     <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
                         {this.props.newSchoolInfo.studyFields.map(study => {
-                            return (
-                                <span onClick={() => this.setCat(study.id)}
-                                      className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
-                                >
-                                    {study.studyFieldName}
-                                </span>
-                            );
+                            if (study.studyFieldName.includes(this.state.query)) {
+                                return (
+                                    <span onClick={() => this.setCat(study.id)}
+                                          className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                    >
+                                        {study.studyFieldName}
+                                    </span>
+                                );
+                            }
                         })}
                     </div>
                     <div className="flex mt-8 flex-row items-center">

@@ -1,10 +1,10 @@
 import { START, STOP } from "./workerTypes";
 
-const start = (message) => {
+const start = () => {
     return { type: START }
 }
 
-const stop = (message) => {
+const stop = () => {
     return { type: STOP }
 }
 

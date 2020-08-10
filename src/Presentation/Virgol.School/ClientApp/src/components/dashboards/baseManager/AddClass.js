@@ -11,9 +11,9 @@ class AddClass extends React.Component {
         className : ""
     }
 
-    componentDidMount = async () => {
-        await this.props.getStudyfields(this.props.user.token , this.props.selectedBaseId)
-    }
+    // componentDidMount = async () => {
+    //     await this.props.getStudyfields(this.props.user.token , this.props.selectedBaseId)
+    // }
 
     handleChange = (event) => {
         this.setState({className: event.target.value});  

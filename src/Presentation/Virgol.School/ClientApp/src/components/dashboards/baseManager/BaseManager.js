@@ -17,7 +17,7 @@ class BaseManager extends React.Component {
 
     onAdd = (addStatus) => {
         this.setState({ addStatus })
-        this.props.onAdd(addStatus);
+        // this.props.onAdd(addStatus);
     }
 
     onCancel = () => {

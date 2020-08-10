@@ -4,13 +4,14 @@ import { alert } from "./alertActions";
 import * as Type from './newsTypes'
 import * as authType from './authTypes'
 import { worker } from "./workerActions";
+import {START, STOP} from "./workerTypes";
 
 //#region News
 
 export const GetMyNews = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get('/News/GetMyNews' , {
             headers: {
@@ -18,9 +19,7 @@ export const GetMyNews = token => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
-
-
+        dispatch({ type: STOP })
         dispatch({ type: Type.GetMyNews, payload: response.data })
 
         return true
@@ -46,7 +45,7 @@ export const GetMyNews = token => async dispatch => {
 export const GetIncommingNews = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get('/News/GetIncommingNews' , {
             headers: {
@@ -54,7 +53,7 @@ export const GetIncommingNews = token => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
 
 
         dispatch({ type: Type.GetIncommingNews, payload: response.data })
@@ -82,7 +81,7 @@ export const GetIncommingNews = token => async dispatch => {
 export const GetAccessRoleIds = token => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.get('/News/GetAccessRoleIds' , {
             headers: {
@@ -90,7 +89,7 @@ export const GetAccessRoleIds = token => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
 
 
         dispatch({ type: Type.GetAccessRoleIds, payload: response.data })
@@ -118,7 +117,7 @@ export const GetAccessRoleIds = token => async dispatch => {
 export const CreateNews = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.put('/News/CreateNews' , formvalue , {
             headers: {
@@ -126,7 +125,7 @@ export const CreateNews = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.CreateNews, payload: response.data })
 
         return true
@@ -152,7 +151,7 @@ export const CreateNews = (token ,formvalue) => async dispatch => {
 export const EditNews = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.post('/News/EditNews' , formvalue , {
             headers: {
@@ -160,7 +159,7 @@ export const EditNews = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.EditNews, payload: response.data })
 
         return true
@@ -186,7 +185,7 @@ export const EditNews = (token ,formvalue) => async dispatch => {
 export const RemoveNews = (token ,formvalue) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         
         const response = await lms.delete('/News/RemoveNews' , formvalue , {
             headers: {
@@ -194,7 +193,7 @@ export const RemoveNews = (token ,formvalue) => async dispatch => {
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.RemoveNews, payload: response.data })
 
         return true

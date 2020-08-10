@@ -3,22 +3,23 @@ import lms from "../apis/lms";
 import { alert } from "./alertActions";
 import * as Type from './classScheduleTypes'
 import { worker } from "./workerActions";
+import {START, STOP} from "./workerTypes";
 
 export const getClassSchedule = (token, classId) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.get(`/ClassSchedule/getClassSchedule?classId=${classId}`,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.getClassSchedule, payload: response.data });
 
     } catch (e) {
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در اتصال"))
     }
 }
@@ -26,18 +27,18 @@ export const getClassSchedule = (token, classId) => async dispatch => {
 export const getClassLessons = (token, classId) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.get(`/ClassSchedule/getClassLessons?classId=${classId}`,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.getClassLessons, payload: response.data });
 
     } catch (e) {
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در اتصال"))
     }
 }
@@ -45,18 +46,18 @@ export const getClassLessons = (token, classId) => async dispatch => {
 export const getTeacherSchedule = (token) => async dispatch => {
 
     try {
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.get("/ClassSchedule/getClassSchedule",{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.getTeacherSchedule, payload: response.data });
 
     } catch (e) {
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در اتصال"))
     }
 }
@@ -103,20 +104,20 @@ export const DeleteClassSchedule = (token, classId) => async dispatch => {
 
     try {
 
-        dispatch(worker.start)
+        dispatch({ type: START })
         const response = await lms.post(`/Manager/DeleteClassSchedule?classId=${classId}` ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch({ type: Type.DeleteClassSchedule, payload: classId})
         dispatch(alert.success("ساعت درسی حذف شد"))
 
     } catch (e) {
         console.log(e.response)
-        dispatch(worker.stop)
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا در حذف ساعت درسی"))
     }
 
