@@ -2,7 +2,8 @@ import * as Type from "../_actions/classScheduleTypes";
 import {LOGOUT} from "../_actions/authTypes";
 
 const INITIAL_STATE = {
-    classSchedules : []
+    classSchedules : [],
+    classLessons : []
 }
 
 export default ( state = INITIAL_STATE, action ) => {
@@ -10,6 +11,9 @@ export default ( state = INITIAL_STATE, action ) => {
     switch (action.type) {
         case Type.getClassSchedule:
             return { ...state, classSchedules: action.payload };
+
+        case Type.getClassLessons:
+            return { ...state, classLessons: action.payload };
 
         case Type.getTeacherSchedule:
             return { ...state, classSchedules: action.payload };

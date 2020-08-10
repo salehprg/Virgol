@@ -513,6 +513,10 @@ namespace lms_with_moodle.Helper
         }
 
 
+        public class ErrorModel {
+            public string errorcode {get; set;}
+            public string message {get; set;}
+        }
         ///<summary>
         ///Delete all content in Category
         ///</summary>
@@ -527,6 +531,17 @@ namespace lms_with_moodle.Helper
 
                 HttpResponseModel Response = await sendData(data);
                 string error = Response.Message; 
+
+                try{
+                    ErrorModel errorModel = JsonConvert.DeserializeObject <ErrorModel> (Response.Message); 
+                    if(errorModel != null)
+                    {
+                        if(errorModel.errorcode == "unknowncategory")
+                        {
+                            error = "null";
+                        }
+                    }
+                }catch{}
 
                 return (error == "null" ? true : false);
             }

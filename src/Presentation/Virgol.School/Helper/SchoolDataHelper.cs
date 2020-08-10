@@ -91,18 +91,19 @@ public class SchoolDataHelper {
             try
             {
                 School_Bases schoolBase = appDbContext.School_Bases.Where(x => x.Id == baseId).FirstOrDefault();
+                
                 bool deleteBase = await moodleApi.DeleteCategory(schoolBase.Moodle_Id);
                 if(deleteBase)
                 {
                     List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == schoolBase.Base_Id).ToList();
                     foreach (var study in studies)
                     {
-                        School_StudyFields schoolStudyField = appDbContext.School_StudyFields.Where(x => x.StudyField_Id == study.Id).FirstOrDefault();
+                        School_StudyFields schoolStudyField = appDbContext.School_StudyFields.Where(x => x.StudyField_Id == study.Id && x.School_Id == schoolBase.School_Id).FirstOrDefault();
                         List<GradeModel> grades = appDbContext.Grades.Where(x => x.StudyField_Id == study.Id).ToList();
                         
                         foreach (var grade in grades)
                         {
-                            School_Grades schoolGrade = appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id).FirstOrDefault();
+                            School_Grades schoolGrade = appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id && x.School_Id == schoolBase.School_Id).FirstOrDefault();
                             if(schoolGrade != null)
                             {
                                 appDbContext.School_Grades.Remove(schoolGrade);
@@ -201,7 +202,7 @@ public class SchoolDataHelper {
                     
                     foreach (var grade in grades)
                     {
-                        School_Grades schoolGrade = appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id).FirstOrDefault();
+                        School_Grades schoolGrade = appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id && x.School_Id == schoolStudyField.School_Id).FirstOrDefault();
                         appDbContext.School_Grades.Remove(schoolGrade);
                     }
 

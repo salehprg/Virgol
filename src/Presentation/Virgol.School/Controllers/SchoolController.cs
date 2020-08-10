@@ -204,19 +204,26 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                if(!string.IsNullOrEmpty(inputData.SchoolName) && !string.IsNullOrEmpty(inputData.MelliCode) && !string.IsNullOrEmpty(inputData.SchoolIdNumber))
+                    return BadRequest("اطلاعات وارد شده کافی نیست");
+
+
                 string idNumberAdmin = userManager.GetUserId(User);
                 int adminId = appDbContext.Users.Where(x => x.UserName == idNumberAdmin).FirstOrDefault().Id;
                 AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault();
                 int schoolType = adminDetail.SchoolsType;
 
+                if(appDbContext.Schools.Where(x => x.SchoolIdNumber == inputData.SchoolIdNumber).FirstOrDefault() != null)
+                    return BadRequest("کد مدرسه وارد شده تکراریست");
+
                 if(appDbContext.Schools.Where(x => x.SchoolType == schoolType).Count() >= adminDetail.SchoolLimit)
-                    return BadRequest("شما حداکثر تعداد مدارس خودرا ثبت کردید");
+                    return BadRequest("شما حداکثر تعداد مدارس خود را ثبت کردید");
 
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault();
                 bool duplicateManager = user != null;
 
-                if(!string.IsNullOrEmpty(inputData.SchoolName) && !duplicateManager)
+                if(!duplicateManager)
                 {
                     inputData.SchoolType = schoolType;
                     inputData.SchoolIdNumber = ConvertToPersian.PersianToEnglish(inputData.SchoolIdNumber);

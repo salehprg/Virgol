@@ -23,6 +23,25 @@ export const getClassSchedule = (token, classId) => async dispatch => {
     }
 }
 
+export const getClassLessons = (token, classId) => async dispatch => {
+
+    try {
+        dispatch(worker.start)
+        const response = await lms.get(`/ClassSchedule/getClassLessons?classId=${classId}`,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
+
+        dispatch(worker.stop)
+        dispatch({ type: Type.getClassLessons, payload: response.data });
+
+    } catch (e) {
+        dispatch(worker.stop)
+        dispatch(alert.error("خطا در اتصال"))
+    }
+}
+
 export const getTeacherSchedule = (token) => async dispatch => {
 
     try {

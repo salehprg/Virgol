@@ -30,6 +30,7 @@ class ClassInfo extends React.Component {
             <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
                 {this.state.addLesson ? 
                 <AddLesson 
+                    classId={this.props.match.params.id}
                     cancel={() => this.setState({ addLesson: false })}
                 /> 
                 : 

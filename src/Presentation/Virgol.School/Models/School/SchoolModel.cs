@@ -11,6 +11,11 @@ public class SchoolModel {
     ///Get schoolType from SchoolType Class
     ///</summary>
     public int SchoolType {get; set;}
+    
+    ///<summary>
+    ///1 = boy , 0 = girl
+    ///</summary>
+    public int sexuality {get; set;}
     public bool SelfSign {get; set;}
 
 }

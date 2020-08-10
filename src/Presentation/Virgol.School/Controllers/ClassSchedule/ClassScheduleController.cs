@@ -97,6 +97,24 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(List<GradeModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult getClassLessons(int classId)
+        {
+            try
+            {             
+                int grade_id = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Grade_Id;
+                List<LessonModel> classLessons = appDbContext.Lessons.Where(x => x.Grade_Id == grade_id).ToList();
+
+                return Ok(classLessons);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]
