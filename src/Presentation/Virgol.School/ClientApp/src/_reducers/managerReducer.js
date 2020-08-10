@@ -6,6 +6,7 @@ const INITIAL_STATE = {
     'inNews': [],
     myNews: [],
     schoolLessonInfo : null,
+    studentsInClass : null,
     'accessRoleIds': [],
     grades: [],
     'classes': [],

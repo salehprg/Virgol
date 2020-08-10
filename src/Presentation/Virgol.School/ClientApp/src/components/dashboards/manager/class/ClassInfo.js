@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Schedule from './Schedule'
 import {AddClassSchedule , EditClassSchedule , DeleteClassSchedule , getClassSchedule} from '../../../../_actions/classScheduleActions'
+import {getStudentsClass } from '../../../../_actions/managerActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
 
@@ -11,6 +12,7 @@ class ClassInfo extends React.Component {
     componentDidMount = async () =>{
         this.setState({loading : true})
         await this.props.getClassSchedule(this.props.user.token , this.props.match.params.id)
+        await this.props.getStudentsClass(this.props.user.token , this.props.match.params.id)
         this.setState({loading : false})
 
         const lessons = [];
@@ -38,14 +40,20 @@ class ClassInfo extends React.Component {
                 }
                 <div className="w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
                      <p className="text-xl text-white mb-8">لیست دانش آموزان</p>
-                     <div className="flex flex-row-reverse justify-between items-center">
-                        <p className="text-right text-white">صالح ابراهیمینا</p>
-                        <p className="text-right text-white">1059645869</p>
-                     </div>
-                     <div className="flex flex-row-reverse justify-between items-center">
-                        <p className="text-right text-white">صالح ابراهیمینا</p>
-                        <p className="text-right text-white">1059645869</p>
-                     </div>
+                     {(this.state.loading ? "درحال بارگذاری ..." :
+                        (!this.props.students || this.props.students.length == 0 ? 
+                            <div className="flex flex-row-reverse justify-between items-center">
+                                <p className="text-center text-white">لیست دانش آموزان خالیست</p>
+                            </div>
+                        :
+                        this.props.students.map(x => {
+                            return (
+                            <div className="flex flex-row-reverse justify-between items-center">
+                                <p className="text-right text-white">{x.firstName} {x.lastName}</p>
+                                <p className="text-right text-white">{x.melliCode}</p>
+                            </div>
+                        )}))
+                     )}
                 </div>
 
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
@@ -79,7 +87,7 @@ class ClassInfo extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user : state.auth.userInfo , classes :  state.schoolData.classes , schedules : state.schedules.classSchedules}
+    return {user : state.auth.userInfo , classes :  state.schoolData.classes , schedules : state.schedules.classSchedules , students : state.managerData.studentsInClass}
 }
 
-export default connect(mapStateToProps , {AddClassSchedule , EditClassSchedule , DeleteClassSchedule , getClassSchedule})(ClassInfo);
+export default connect(mapStateToProps , {AddClassSchedule , getStudentsClass , DeleteClassSchedule , getClassSchedule})(ClassInfo);
