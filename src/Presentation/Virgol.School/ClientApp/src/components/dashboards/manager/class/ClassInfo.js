@@ -25,7 +25,11 @@ class ClassInfo extends React.Component {
             }))
         })
 
-        this.setState({classDetail : this.props.classes.filter(x => x.id == this.props.match.id)})
+        const classDetail = this.props.classes.filter(x => x.id == parseInt(this.props.match.params.id))
+
+        console.log(parseInt(this.props.match.params.id))
+
+        this.setState({classDetail : classDetail[0]})
         this.setState({lessons : lessons})
         
 
@@ -83,8 +87,7 @@ class ClassInfo extends React.Component {
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
                     <div className="flex flex-row-reverse justify-between">
                         <div>
-                            <p className="text-right text-white text-2xl">101</p>
-                            <p className="text-right text-white">دهم ریاضی</p>
+                            <p className="text-right text-white text-2xl">{this.state.classDetail.className}</p>
                         </div>
                         <div>
                             <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/m/bases">بازگشت</Link>
