@@ -10,7 +10,7 @@ RUN apt update -yq --allow-releaseinfo-change \
 #RUN curl -sL https://deb.nodesource.com/setup_14.x | bash \
 #    && apt install nodejs -yq
 
-RUN apt install nodejs
+RUN apt install nodejs -yq
 
 RUN nodejs -v
 RUN npm -v
