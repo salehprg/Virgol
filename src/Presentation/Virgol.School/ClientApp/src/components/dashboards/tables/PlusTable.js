@@ -24,7 +24,7 @@ class PlusTable extends React.Component {
                                 type="file"
                                 id="excel"
                                 className="hidden"
-                                type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                             />
                         </>
                         :
