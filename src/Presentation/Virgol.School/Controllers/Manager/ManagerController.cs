@@ -639,11 +639,11 @@ namespace lms_with_moodle.Controllers
             {   
                 bool FileOk = await UploadFile(Files.Files[0] , Files.Files[0].FileName);
                 List<UserDataModel> userModels = new List<UserDataModel>();
-
+                int schoolId = 0;
                 if(FileOk)
                 {
                     string idNumber = userManager.GetUserId(User);
-                    int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+                    schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
 
                     BulkData data = await CreateBulkUser((int)UserType.Student , "BulkUserData\\" + Files.Files[0].FileName , schoolId);
                     userModels = data.users;
@@ -668,7 +668,10 @@ namespace lms_with_moodle.Controllers
 
                     if(appDbContext.School_StudentClasses.Where(x => x.UserId == userid && x.ClassId == classId).FirstOrDefault() == null)
                     {
-                        studentClasses.Add(studentClass);
+                        if(appDbContext.Users.Where(x => x.Id == studentClass.UserId && x.SchoolId == schoolId).FirstOrDefault() != null)
+                        {
+                            studentClasses.Add(studentClass);
+                        }
                     }
 
                     foreach(var course in courses)
