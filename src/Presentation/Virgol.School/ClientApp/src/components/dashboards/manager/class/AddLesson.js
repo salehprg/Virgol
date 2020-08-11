@@ -9,8 +9,7 @@ import { connect } from 'react-redux';
 class AddLesson extends React.Component {
 
     state = { selectedCourse: null, selectedTeacher: null , selectedDay : 0
-             , startHour : 0 , startMin : 0 
-             , endHour : 0 , endMin : 0 , loading : false , 
+             , selectedStartTime: null, selectedEndTime: null, loading : false ,
             teachers : [] , lessons : []};
 
     componentDidMount = async () =>{
@@ -48,42 +47,42 @@ class AddLesson extends React.Component {
         this.setState({ selectedDay });
     };
 
+    handleChangeStart = selectedStartTime => {
+        this.setState({ selectedStartTime });
+    };
+
+    handleChangeEnd = selectedEndTime => {
+        this.setState({ selectedEndTime });
+    };
+
     onAddSchedule = async () => {
-        try
-        {
+
+        if (this.state.selectedDay && this.state.selectedCourse && this.state.selectedTeacher && this.state.selectedStartTime && this.state.selectedEndTime) {
             const classSchedule = {
                 classId : parseInt(this.props.classId),
                 dayType : this.state.selectedDay.value,
                 lessonId : this.state.selectedCourse.value,
                 teacherId : this.state.selectedTeacher.value,
-                startHour : parseFloat(this.state.startHour + this.state.startMin / 60),
-                endHour : parseFloat(this.state.endHour + this.state.endMin / 60)
-
+                startHour : this.state.selectedStartTime.value,
+                endHour : this.state.selectedEndTime.value
             }
 
-            await this.props.AddClassSchedule(this.props.user.token , classSchedule)
+            this.props.addLesson(classSchedule);
         }
-        catch{}
     }
 
 
-    onHandleInput = e => {
-        let start = e.target.value;
-
-        if (!Number(start)) {
-            return;
-        }
-
-        this.setState({
-            [e.target.name]: parseInt(start)
-        });
-    };
-
-    options = [
-        { value: 'chocolate', label: 'Chocolate' },
-        { value: 'strawberry', label: 'Strawberry' },
-        { value: 'vanilla', label: 'Vanilla' },
-    ];
+    // onHandleInput = e => {
+    //     let start = e.target.value;
+    //
+    //     if (!Number(start)) {
+    //         return;
+    //     }
+    //
+    //     this.setState({
+    //         [e.target.name]: parseInt(start)
+    //     });
+    // };
 
     options = [
         { value: 1, label: 'شنبه' },
@@ -93,7 +92,38 @@ class AddLesson extends React.Component {
         { value: 5, label: 'چهار شنبه' },
         { value: 6, label: 'پنجشنبه' }
     ];
-    
+
+    times = [
+        { value: 8, label: '08:00' },
+        { value: 8.5, label: '08:30' },
+        { value: 9, label: '09:00' },
+        { value: 9.5, label: '09:30' },
+        { value: 10, label: '10:00' },
+        { value: 10.5, label: '10:30' },
+        { value: 11, label: '11:00' },
+        { value: 11.5, label: '11:30' },
+        { value: 12, label: '12:00' },
+        { value: 12.5, label: '12:30' },
+        { value: 13, label: '13:00' },
+        { value: 13.5, label: '13:30' },
+        { value: 14, label: '14:00' },
+        { value: 14.5, label: '14:30' },
+        { value: 15, label: '15:00' },
+        { value: 15.5, label: '15:30' },
+        { value: 16, label: '16:00' },
+        { value: 16.5, label: '16:30' },
+        { value: 17, label: '17:00' },
+        { value: 17.5, label: '17:30' },
+        { value: 18, label: '18:00' },
+        { value: 18.5, label: '18:30' },
+        { value: 19, label: '19:00' },
+        { value: 19.5, label: '19:30' },
+        { value: 20, label: '20:00' },
+        { value: 20.5, label: '20:30' },
+        { value: 21, label: '21:00' },
+        { value: 21.5, label: '21:30' },
+        { value: 22, label: '22:00' }
+    ]
 
     render() {
         return (
@@ -123,14 +153,31 @@ class AddLesson extends React.Component {
                             options={this.options}
                             placeholder="روز"
                         />
+                        <Select
+                            className="w-1/2 mx-auto my-4"
+                            value={this.state.selectedStartTime}
+                            onChange={this.handleChangeStart}
+                            options={this.times}
+                            placeholder="ساعت شروع"
+                        />
+                        {this.state.selectedStartTime ?
+                            <Select
+                                className="w-1/2 mx-auto my-4"
+                                value={this.state.selectedEndTime}
+                                onChange={this.handleChangeEnd}
+                                options={this.times.filter(el => el.value > this.state.selectedStartTime.value)}
+                                placeholder="ساعت پایان"
+                            />
+                            :
+                            null
+                        }
 
-                        <input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />
-                        <input type="number" name="startMin" placeholder="دقیقه" onChange={this.onHandleInput} value={this.state.startMin} />
-                        <br />
-                        <input type="number" name="endHour" placeholder="ساعت پایان" onChange={this.onHandleInput} value={this.state.endHour} />
-                        <input type="number" name="endMin" placeholder="دقیقه پایان" onChange={this.onHandleInput} value={this.state.endMin} />
+                        {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}
+                        {/*<input type="number" name="startMin" placeholder="دقیقه" onChange={this.onHandleInput} value={this.state.startMin} />*/}
+                        {/*<input type="number" name="endHour" placeholder="ساعت پایان" onChange={this.onHandleInput} value={this.state.endHour} />*/}
+                        {/*<input type="number" name="endMin" placeholder="دقیقه پایان" onChange={this.onHandleInput} value={this.state.endMin} />*/}
 
-                        <button onClick={this.onAddSchedule} >ثبت</button>
+                        <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={this.onAddSchedule} >ثبت</button>
                     </React.Fragment>
                     )}
                 </div>

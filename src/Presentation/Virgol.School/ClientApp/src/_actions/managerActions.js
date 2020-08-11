@@ -49,19 +49,14 @@ export const getNewUsers = token => async dispatch => {
 export const getManagerDashboardInfo = token => async dispatch => {
 
     try {
-        dispatch({ type: START })
         const response = await lms.get("/Manager/getManagerDashboardInfo", {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.getManagerDashboardInfo, payload: response.data });
     } catch (e) {
-        console.log(e)
-
-        dispatch({ type: STOP })
         dispatch(alert.error("خطا دربرقراری اتصال"))
     }
 

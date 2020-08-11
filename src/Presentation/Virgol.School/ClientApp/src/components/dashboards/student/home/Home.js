@@ -29,21 +29,21 @@ class Home extends React.Component {
                 <Hero userInfo={this.props.user.userInformation}
                         userDetail={this.props.user.userDetail}/>
                 <CounterCard
-                    title="کل کلاس ها"
+                    title="مقطع"
                     icon={home}
                     number={this.props.dashboardInfo.classCount}
                     border="border-sky-blue"
                 />
 
                 <CounterCard
-                    title="کلاس های آنلاین"
+                    title="پایه"
                     icon={user}
                     number={this.props.dashboardInfo.onlineClass}
                     border="border-purplish"
                 />
 
                 <CounterCard
-                    title="کل دانش آموزان"
+                    title="تعداد کل دروس"
                     icon={key}
                     number={this.props.dashboardInfo.studentsCount}
                     border="border-greenish"
@@ -51,7 +51,7 @@ class Home extends React.Component {
                 />
 
                 <CounterCard
-                    title="معلمان"
+                    title="معدل"
                     icon={users}
                     number={this.props.dashboardInfo.teacherCount}
                     border="border-redish"

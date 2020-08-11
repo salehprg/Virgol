@@ -269,3 +269,24 @@ export const arrow_left = (styles) => {
         </svg>
     );
 }
+
+export const video = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M23 18c-.2 0-.4-.1-.6-.2l-7-5c-.2-.2-.4-.5-.4-.8s.2-.6.4-.8l7-5c.3-.2.7-.2 1-.1.4.2.6.5.6.9v10c0 .4-.2.7-.5.9-.2.1-.3.1-.5.1zm-5.3-6l4.3 3.1V8.9L17.7 12z"/>
+            <path d="M14 20H3c-1.7 0-3-1.3-3-3V7c0-1.7 1.3-3 3-3h11c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3zM3 6c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h11c.6 0 1-.4 1-1V7c0-.6-.4-1-1-1H3z"/>
+        </svg>
+    );
+}
+
+export const message = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M3 22c-.1 0-.3 0-.4-.1-.4-.1-.6-.5-.6-.9V5c0-1.7 1.3-3 3-3h14c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3H7.4l-3.7 3.7c-.2.2-.4.3-.7.3zM5 4c-.6 0-1 .4-1 1v13.6l2.3-2.3c.2-.2.4-.3.7-.3h12c.6 0 1-.4 1-1V5c0-.6-.4-1-1-1H5z"/>
+        </svg>
+    );
+}

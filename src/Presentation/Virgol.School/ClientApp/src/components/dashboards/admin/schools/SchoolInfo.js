@@ -231,6 +231,7 @@ class SchoolInfo extends React.Component {
                         </div>
                         <div>
                             <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>
+                            <button className="px-6 py-1 mx-2 rounded-lg border-2 border-greenish text-greenish">ورود به عنوان مدیر مدرسه</button>
                         </div>
                     </div>
                     <div className="mt-8 overflow-auto">
