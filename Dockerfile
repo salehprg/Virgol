@@ -4,14 +4,12 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src                                                                    
 COPY ./src ./
 
-RUN apt update -yq --allow-releaseinfo-change \
-    && apt install curl gnupg libgdiplus libc6-dev -yq
+#RUN apt update -yq --allow-releaseinfo-change \
+#    && apt install curl gnupg libgdiplus libc6-dev nodejs npm -yq
 
-#RUN curl -sL https://deb.nodesource.com/setup_14.x | bash \
-#    && apt install nodejs -yq
-
-RUN apt install nodejs -yq
-
+# Fetch and install Node 12 LTS
+RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash -  
+RUN apt install -y nodejs
 RUN nodejs -v
 RUN npm -v
 
