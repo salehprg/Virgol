@@ -489,11 +489,6 @@ namespace lms_with_moodle.Controllers
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
 
                 School_Bases basee = await schoolDataHelper.DeleteBaseFromSchool(baseId);
-                
-                var serializedParent = JsonConvert.SerializeObject(basee); 
-                School_BasesVW basesVW  = JsonConvert.DeserializeObject<School_BasesVW>(serializedParent);
-
-                basesVW.BaseName = appDbContext.Bases.Where(x => x.Id == basee.Base_Id).FirstOrDefault().BaseName;
 
                 return Ok(baseId);
 

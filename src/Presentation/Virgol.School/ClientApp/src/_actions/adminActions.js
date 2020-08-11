@@ -181,6 +181,51 @@ export const getDashboardInfo = token => async dispatch => {
 
 }
 
+export const RedirectAdmin = (token , schoolId) => async dispatch => {
+
+    try {
+        
+        const response = await lms.get(`/Admin/RedirectAdmin?schoolId=${schoolId}` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: authType.LOGIN, payload: response.data })
+
+        switch (response.data.userType) {
+            case 1: {
+                history.push('/s/dashboard');
+                break;
+            }
+            case 3: {
+                history.push('/t/dashboard');
+                break;
+            }
+            case 2: {
+                history.push('/m/dashboard');
+                break;
+            }
+            case 4: {
+                history.push('/a/dashboard');
+                break;
+            }
+            case 5: {
+                history.push('/sa/dashboard');
+            }
+        }
+
+        return true
+
+    } catch (e) {
+        console.log(e.response)
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        return false
+
+    }
+
+}
+
 export const logout = () => {
     history.push('/')
     return { type: authType.LOGOUT }

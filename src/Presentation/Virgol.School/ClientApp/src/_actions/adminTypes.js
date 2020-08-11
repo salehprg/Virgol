@@ -9,3 +9,4 @@ export const EditManager = 'EditManager';
 export const RemoveManager = 'RemoveManager';
 
 export const getDashboardInfo = 'getDashboardInfo';
+export const RedirectAdmin = 'RedirectAdmin';
