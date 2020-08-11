@@ -3,26 +3,24 @@ import PlusTable from "../../tables/PlusTable";
 import { edit } from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
-import {getAllTeachers} from "../../../../_actions/managerActions"
+import {getAllTeachers , addBulkTeacher} from "../../../../_actions/managerActions"
 
 class Teachers extends React.Component {
 
     state = { loading: false, query: '' }
 
     componentDidMount = async () => {
-        if (this.props.history.action === 'POP' || this.props.teachers.length === 0 ) {
-            this.setState({ loading: true })
-            await this.props.getAllTeachers(this.props.user.token);
-            this.setState({ loading: false })
-        }
+        this.setState({ loading: true })
+        await this.props.getAllTeachers(this.props.user.token);
+        this.setState({ loading: false })
     }
 
     changeQuery = query => {
         this.setState({ query })
     }
 
-    submitExcel = (excel) => {
-
+    submitExcel = async (excel) => {
+        await this.props.addBulkTeacher(this.props.user.token , excel)
     }
 
     render() {
@@ -77,4 +75,4 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , teachers: state.managerData.teachers}
 }
 
-export default connect(mapStateToProps, { getAllTeachers })(Teachers);
+export default connect(mapStateToProps, { getAllTeachers , addBulkTeacher })(Teachers);

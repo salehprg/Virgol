@@ -194,7 +194,10 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    var errors = await CreateBulkUser((int)UserType.Student , "BulkUserData.xlsx");
+                    string idNumber = userManager.GetUserId(User);
+                    int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+
+                    var errors = await CreateBulkUser((int)UserType.Student , "BulkUserData\\BulkUserData.xlsx" , schoolId);
                     return Ok(errors);
                 }
 
@@ -244,8 +247,12 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    var errors = CreateBulkUser((int)UserType.Teacher , "BulkTeacher.xlsx");
-                    return Ok(errors);
+                    string idNumber = userManager.GetUserId(User);
+                    int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+
+                    BulkData errors = await CreateBulkUser((int)UserType.Teacher , "BulkUserData\\BulkTeacher.xlsx" , schoolId);
+
+                    return Ok(errors.users);
                 }
                 return BadRequest("آپلود فایل با مشکل مواجه شد");
                 
@@ -635,7 +642,10 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    BulkData data = await CreateBulkUser((int)UserType.Student , "BulkUserData.xlsx");
+                    string idNumber = userManager.GetUserId(User);
+                    int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+
+                    BulkData data = await CreateBulkUser((int)UserType.Student , "BulkUserData\\BulkUserData.xlsx" , schoolId);
                     userModels = data.users;
                 }
 
@@ -647,21 +657,26 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var user in userModels)
                 {
-                    int userid = user.Id;
+                    
+                    UserModel student = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault();
+                    int userid = student.Id;
 
                     School_studentClass studentClass = new School_studentClass();
 
                     studentClass.ClassId = classId;
                     studentClass.UserId = userid;
 
-                    studentClasses.Add(studentClass);
+                    if(appDbContext.School_StudentClasses.Where(x => x.UserId == userid && x.ClassId == classId).FirstOrDefault() == null)
+                    {
+                        studentClasses.Add(studentClass);
+                    }
 
                     foreach(var course in courses)
                     {
                         EnrolUser enrolInfo = new EnrolUser();
                         enrolInfo.lessonId = course.id;
                         enrolInfo.RoleId = 5;
-                        enrolInfo.UserId = userid;
+                        enrolInfo.UserId = student.Moodle_Id;
 
                         enrolsData.Add(enrolInfo);
                     }  
@@ -1134,100 +1149,128 @@ namespace lms_with_moodle.Controllers
         ///Set userTypeId from UserType class Teacher,Student,...
         ///</param>
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<BulkData> CreateBulkUser(int userTypeId , string fileName)
+        public async Task<BulkData> CreateBulkUser(int userTypeId , string fileName , int schoolId)
         {
-            //Username and password Default is MelliCode
-
-            //1 - Read data from excel
-            //2 - Check valid data
-            //3 - Add user to Database
-            //3.1 - don't add duplicate username 
-
-
-            List<UserDataModel> newUsers = new List<UserDataModel>();
-            List<UserDataModel> allUsers = new List<UserDataModel>();
-
-            List<UserModel> usersMoodle = new List<UserModel>();
-            List<string> errors = new List<string>();
-
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
-            using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
+            try
             {
-                using (var excelData = ExcelReaderFactory.CreateReader(stream))
+                //Username and password Default is MelliCode
+
+                //1 - Read data from excel
+                //2 - Check valid data
+                //3 - Add user to Database
+                //3.1 - don't add duplicate username 
+
+
+                List<UserDataModel> newUsers = new List<UserDataModel>();
+                List<UserDataModel> allUsers = new List<UserDataModel>();
+
+                List<UserModel> usersMoodle = new List<UserModel>();
+                List<string> errors = new List<string>();
+
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+                using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
                 {
-                    excelData.Read(); //Ignore column header name
-
-                    while (excelData.Read()) //Each row of the file
+                    using (var excelData = ExcelReaderFactory.CreateReader(stream))
                     {
-                        UserDataModel selectedUser = new UserDataModel
-                        {
-                            FirstName = excelData.GetValue(0).ToString(),
-                            LastName = excelData.GetValue(1).ToString(),
-                            MelliCode = excelData.GetValue(2).ToString(),
-                            PhoneNumber = excelData.GetValue(3).ToString(),
-                            Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : ""),
-                            userDetail = new StudentDetail(){
-                                LatinFirstname = excelData.GetValue(5).ToString(),
-                                LatinLastname = excelData.GetValue(6).ToString()
-                            }
-                        };
+                        excelData.Read(); //Ignore column header name
 
-                        selectedUser.ConfirmedAcc = true;
-                        selectedUser.UserName = selectedUser.MelliCode;
-                        selectedUser.userTypeId = userTypeId;
-
-                        if(await userManager.FindByNameAsync(selectedUser.UserName) == null)//Check for duplicate Username
+                        while (excelData.Read()) //Each row of the file
                         {
-                            newUsers.Add(selectedUser);
-                        }
-                        else
-                        {
-                            errors.Add(" معلم با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
-                        }
-
-                        allUsers.Add(selectedUser);
-                    }
-
-                    foreach(var user in newUsers)
-                    {
-                        bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
-                        if(result)
-                        {
-                            if(userManager.AddToRolesAsync(user , new string[]{"User" , (userTypeId == (int)UserType.Teacher ? "Teacher" : null)}).Result.Succeeded)
+                            UserDataModel selectedUser = new UserDataModel
                             {
-                                ldap.AddUserToLDAP(user);
+                                FirstName = excelData.GetValue(0).ToString(),
+                                LastName = excelData.GetValue(1).ToString(),
+                                MelliCode = excelData.GetValue(2).ToString(),
+                                PhoneNumber = excelData.GetValue(3).ToString(),
+                                Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : ""),
+                                userDetail = new StudentDetail(){
+                                    LatinFirstname = excelData.GetValue(5).ToString(),
+                                    LatinLastname = excelData.GetValue(6).ToString()
+                                }
+                            };
+
+                            selectedUser.ConfirmedAcc = true;
+                            selectedUser.UserName = selectedUser.MelliCode;
+                            selectedUser.userTypeId = userTypeId;
+                            selectedUser.SchoolId = schoolId;
+
+                            if(await userManager.FindByNameAsync(selectedUser.UserName) == null)//Check for duplicate Username
+                            {
+                                newUsers.Add(selectedUser);
                             }
+                            else
+                            {
+                                errors.Add(" معلم با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
+                            }
+
+                            allUsers.Add(selectedUser);
                         }
-                        usersMoodle.Add(user);//Use for add user to moodle
+
+                        foreach(var user in newUsers)
+                        {
+                            bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
+                            if(result)
+                            {
+                                List<string> roles = new List<string>();
+
+                                roles.Add("User");
+
+                                if(userTypeId == (int)UserType.Teacher)
+                                {
+                                    roles.Add("Teacher");
+                                }
+
+                                if(userManager.AddToRolesAsync(user , roles).Result.Succeeded)
+                                {
+                                    ldap.AddUserToLDAP(user);
+                                }
+                            }
+                            usersMoodle.Add(user);//Use for add user to moodle
+                        }
+
+                        await moodleApi.CreateUsers(usersMoodle);
+
+                        foreach(var user in newUsers)
+                        {
+                            if(userTypeId == (int)UserType.Student)
+                            {
+                                int userId = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault().Id;
+                                StudentDetail studentDetail = new StudentDetail();
+                                studentDetail.UserId = userId;
+                                studentDetail.LatinFirstname = user.userDetail.LatinFirstname;
+                                studentDetail.LatinLastname = user.userDetail.LatinLastname;
+
+                                appDbContext.StudentDetails.Add(studentDetail);
+                            }
+
+                            int userMoodle_id = await moodleApi.GetUserId(user.MelliCode);
+                            user.Moodle_Id = userMoodle_id;
+
+                            appDbContext.Users.Update(user);
+                            
+                        }
+
+                        appDbContext.SaveChanges();
                     }
-
-                    await moodleApi.CreateUsers(usersMoodle);
-
-                    foreach(var user in newUsers)
-                    {
-                        int userId = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault().Id;
-                        StudentDetail studentDetail = new StudentDetail();
-                        studentDetail.UserId = userId;
-                        studentDetail.LatinFirstname = user.userDetail.LatinFirstname;
-                        studentDetail.LatinLastname = user.userDetail.LatinLastname;
-
-                        int userMoodle_id = await moodleApi.GetUserId(user.MelliCode);
-                        user.Moodle_Id = userMoodle_id;
-
-                        appDbContext.Users.Update(user);
-                        appDbContext.StudentDetails.Add(studentDetail);
-                    }
-
-                    appDbContext.SaveChanges();
                 }
+
+                BulkData bulkData = new BulkData();
+                bulkData.errors = errors;
+                bulkData.users = allUsers;
+
+                return bulkData;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
 
-            BulkData bulkData = new BulkData();
-            bulkData.errors = errors;
-            bulkData.users = allUsers;
+                BulkData bulkData = new BulkData();
+                bulkData.errors = new List<string>{ex.Message};
+                bulkData.users = null;
 
-            return bulkData;
+                return bulkData;
+            }
         }
         
 
@@ -1241,9 +1284,17 @@ namespace lms_with_moodle.Controllers
                 if (file.Length > 0)
                 {
                     string path = Path.Combine(Request.Host.Value, "BulkUserData");
+                    string path2 = Path.Combine("BulkUserData", FileName);
 
-                    var fs = new FileStream(Path.Combine("BulkUserData", FileName), FileMode.Create);
+                    if(!Directory.Exists("BulkUserData"))
+                    {
+                        Directory.CreateDirectory("BulkUserData");
+                    }
+
+                    var fs = new FileStream(path2, FileMode.Create);
                     await file.CopyToAsync(fs);
+
+                    fs.Close();
 
                     result = true;
                 }

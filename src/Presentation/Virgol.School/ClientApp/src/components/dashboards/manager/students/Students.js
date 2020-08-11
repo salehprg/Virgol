@@ -3,7 +3,7 @@ import PlusTable from "../../tables/PlusTable";
 import { edit } from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
-import {getAllStudents} from "../../../../_actions/managerActions"
+import {getAllStudents , addBulkUser} from "../../../../_actions/managerActions"
 
 class Students extends React.Component {
 
@@ -21,8 +21,8 @@ class Students extends React.Component {
         this.setState({ query })
     }
 
-    submitExcel = (excel) => {
-
+    submitExcel = async (excel) => {
+        await this.props.addBulkUser(this.props.user.token , excel)
     }
 
     render() {
@@ -77,4 +77,4 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , students: state.managerData.students}
 }
 
-export default connect(mapStateToProps, { getAllStudents })(Students);
+export default connect(mapStateToProps, { getAllStudents , addBulkUser })(Students);

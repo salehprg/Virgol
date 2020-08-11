@@ -7,5 +7,6 @@ namespace Models.InputModel
 {
     public class ManagerData : UserModel {
         public string personalIdNumber {get; set;}
+        public string password {get; set;}
     }
 }

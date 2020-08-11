@@ -127,6 +127,103 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult RedirectAdmin(int schoolId)
+        {
+            try
+            {
+                var userRoleNames = new List<string>();
+                int managerId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().ManagerId;
+
+                UserModel userInformation  = appDbContext.Users.Where(x => x.Id == managerId).FirstOrDefault();
+
+                userRoleNames = userManager.GetRolesAsync(userInformation).Result.ToList();
+
+                List<Claim> authClaims = new List<Claim>()
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, userInformation.UserName),
+                    new Claim(JwtRegisteredClaimNames.GivenName, userInformation.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),          
+                };
+
+                foreach (var item in userRoleNames)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
+                }
+
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWTSecret));
+
+                var token = new JwtSecurityToken(
+                    issuer: "https://localhost:5001",
+                    audience: "https://localhost:5001",
+                    expires: DateTime.UtcNow.AddDays(1),
+                    claims: authClaims,  // Add user Roles to token
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                    ) ;
+
+                object userDetail = null;
+
+                switch(userInformation.userTypeId)
+                {
+                    case (int)UserType.Student:
+                        userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        
+                        break;
+
+                    case (int)UserType.Teacher:
+                        userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        break;
+
+                    case (int)UserType.Admin:
+                        userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+
+                        string schooltypeName = "";
+                        if (((AdminDetail)userDetail).SchoolsType == SchoolType.Sampad)
+                        {
+                            schooltypeName = "استعداد های درخشان";
+                        }
+                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.AmoozeshRahDor)
+                        {
+                            schooltypeName = "آموزش از راه دور";
+                        }
+                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.Gheyrdolati)
+                        {
+                            schooltypeName = "غیر دولتی";
+                        }
+                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.Dolati)
+                        {
+                            schooltypeName = "دولتی";
+                        }
+
+                        userDetail = new {userDetail , schooltypeName };
+                        
+                        break;
+
+                    case (int)UserType.Manager:
+                        userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        break;
+                    
+                }
+
+                //Get userTypeId information from UserType Class
+                return Ok(new
+                {
+                    UserType = userInformation.userTypeId,
+                    userInformation,
+                    userDetail,
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
@@ -206,7 +303,12 @@ namespace lms_with_moodle.Controllers
                 UserModel manager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
                 if(manager != null)
                 {
-
+                    
+                    if(!string.IsNullOrEmpty(model.password))
+                    {
+                        string token = await userManager.GeneratePasswordResetTokenAsync(manager);
+                        await userManager.ResetPasswordAsync(manager , token , model.password);
+                    }
                     manager.FirstName = model.FirstName;
                     manager.LastName = model.LastName;
                     manager.PhoneNumber = (model.PhoneNumber != null ? ConvertToPersian.PersianToEnglish(model.PhoneNumber) : null );
@@ -224,7 +326,12 @@ namespace lms_with_moodle.Controllers
                         appDbContext.Users.Update(oldManager);
                         appDbContext.SaveChanges();
                     }
+
                     await AddNewManager(model);
+                    UserModel newManager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
+
+                    string token = await userManager.GeneratePasswordResetTokenAsync(newManager);
+                    await userManager.ResetPasswordAsync(newManager , token , model.password);
                 }
 
                 return Ok(manager);

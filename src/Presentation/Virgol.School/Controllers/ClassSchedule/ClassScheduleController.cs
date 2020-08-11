@@ -105,6 +105,7 @@ namespace lms_with_moodle.Controllers
             try
             {             
                 int grade_id = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Grade_Id;
+                
                 List<LessonModel> classLessons = appDbContext.Lessons.Where(x => x.Grade_Id == grade_id).ToList();
 
                 return Ok(classLessons);

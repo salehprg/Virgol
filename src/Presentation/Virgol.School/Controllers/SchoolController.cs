@@ -204,7 +204,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                if(!string.IsNullOrEmpty(inputData.SchoolName) && !string.IsNullOrEmpty(inputData.MelliCode) && !string.IsNullOrEmpty(inputData.SchoolIdNumber))
+                if(string.IsNullOrEmpty(inputData.SchoolName) || string.IsNullOrEmpty(inputData.MelliCode) || string.IsNullOrEmpty(inputData.SchoolIdNumber))
                     return BadRequest("اطلاعات وارد شده کافی نیست");
 
 
