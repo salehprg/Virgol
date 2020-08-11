@@ -71,8 +71,8 @@ class Grades extends React.Component {
     }
 
     render() {
-        if(this.state.loading) 
-            return "لودیمگ..."
+        if(this.state.loading)
+            loading('w-10 text-grayish centerize')
 
         return (
             <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">

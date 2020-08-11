@@ -174,8 +174,7 @@ class SchoolInfo extends React.Component {
                     </div>
                     {briefcase('w-1/5 mb-2 text-white mx-auto')}
                     <p className="text-white">اطلاعات مدیر</p>
-                    {this.state.loadingCats ? 
-                    <span>در حال گرفتن اطلاعات</span>
+                    {this.state.loadingCats ? loading('w-10 text-grayish centerize')
                     : 
                     <form className="text-center mt-8 w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
                         <div className="w-full flex flex-row justify-center items-center flex-wrap">
@@ -241,8 +240,7 @@ class SchoolInfo extends React.Component {
                     }
                 </div>
 
-                {(this.state.loadingCats || this.props.schoolLessonInfo == null ? 
-                <span>در حال گرفتن اطلاعات ...</span>   
+                {(this.state.loadingCats || this.props.schoolLessonInfo == null ? loading('w-10 text-grayish centerize')
                 :
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
                     <div className="flex flex-row-reverse justify-between">

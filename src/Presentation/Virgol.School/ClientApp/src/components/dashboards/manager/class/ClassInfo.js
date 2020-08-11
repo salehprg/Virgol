@@ -62,7 +62,7 @@ class ClassInfo extends React.Component {
                         type="file"
                         id="excel"
                         className="hidden"
-                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                     />
                      {(this.state.loading ? "درحال بارگذاری ..." :
                         (!this.props.students || this.props.students.length === 0 ? 

@@ -1,6 +1,6 @@
 import React from "react";
 import PlusTable from "../../tables/PlusTable";
-import { edit } from "../../../../assets/icons";
+import {edit, loading} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {getAllTeachers , addBulkTeacher} from "../../../../_actions/managerActions"
@@ -24,7 +24,7 @@ class Teachers extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return "لودینگ..."
+        if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
             <div className="w-full mt-10">
                 <PlusTable
