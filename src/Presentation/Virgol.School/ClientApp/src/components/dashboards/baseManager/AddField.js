@@ -3,19 +3,23 @@ import Modal from "../../modals/Modal";
 import Searchish from "../../field/Searchish";
 import {getStudyfields } from "../../../_actions/schoolActions"
 import { connect } from "react-redux";
+import { loading } from "../../../assets/icons";
 
 class AddField extends React.Component {
 
     state = {
         cats: [{id: 1, name: 'دبستان'}, {id: 2, name: 'متوسطه اول'}, {id: 3, name: 'متوسطه دوم'}],
         selectedFields: [],
-        query: ''
+        query: '',
+        loading: false
     }
 
 
 
     componentDidMount = async () => {
+        this.setState({ loading: true })
         await this.props.getStudyfields(this.props.user.token , this.props.selectedBaseId)
+        this.setState({ loading: false })
     }
 
     addFieldToSchool = async () => {
@@ -31,6 +35,13 @@ class AddField extends React.Component {
     }
 
     render() {
+        if (this.state.loading) return (
+            <Modal cancel={this.props.cancel}>
+                <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
+                    {loading('w-8 text-white centerize')}
+                </div>
+            </Modal>
+        );
         return (
             <Modal cancel={this.props.cancel}>
                 <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
@@ -40,10 +51,10 @@ class AddField extends React.Component {
                         changeQuery={(query) => this.setState({ query })}
                     />
                     <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
-                        {this.state.query.length < 2 ? <p className="text-center text-white">حداقل سه حرف برای سرچ الزامیست</p> : ''}
+                        {this.state.query.length < 3 && this.props.newSchoolInfo.studyFields.length > 10 ? <p className="text-center text-white">حداقل سه حرف برای سرچ الزامیست</p> : ''}
                         {this.props.newSchoolInfo.studyFields.map(study => {
                             if (study.studyFieldName.includes(this.state.query)) {
-                                if (this.state.query.length > 2 && study.studyFieldName.includes(this.state.query)) {
+                                if (this.props.newSchoolInfo.studyFields.length < 10 || (this.state.query.length > 2 && study.studyFieldName.includes(this.state.query))) {
                                     return (
                                         <span onClick={() => this.setCat(study.id)}
                                               className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
