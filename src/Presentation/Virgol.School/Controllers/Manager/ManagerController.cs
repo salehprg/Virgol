@@ -194,7 +194,7 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    var errors = await CreateBulkUser((int)UserType.Student , "BulkUserData.xlsx" , CategoryId);
+                    var errors = await CreateBulkUser((int)UserType.Student , "BulkUserData.xlsx");
                     return Ok(errors);
                 }
 
@@ -626,10 +626,18 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AssignUserToClass([FromBody]List<int> userIds , int classId)
+        public async Task<IActionResult> AssignUserToClass([FromForm]IFormCollection Files , int classId)
         {
             try
             {   
+                bool FileOk = await UploadFile(Files.Files[0] , "BulkUserData.xlsx");
+                List<UserDataModel> userModels = new List<UserDataModel>();
+
+                if(FileOk)
+                {
+                    BulkData data = await CreateBulkUser((int)UserType.Student , "BulkUserData.xlsx");
+                    userModels = data.users;
+                }
 
                 int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
 
@@ -637,8 +645,10 @@ namespace lms_with_moodle.Controllers
                 List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
                 List<EnrolUser> enrolsData = new List<EnrolUser>();
 
-                foreach (var userid in userIds)
+                foreach (var user in userModels)
                 {
+                    int userid = user.Id;
+
                     School_studentClass studentClass = new School_studentClass();
 
                     studentClass.ClassId = classId;
@@ -1111,6 +1121,12 @@ namespace lms_with_moodle.Controllers
 #endregion
     
 #region Functions
+
+        public class BulkData{
+            public List<string> errors {get; set;}
+            public List<UserDataModel> users {get; set;}
+        }
+
         ///<param name="CategoryId">
         ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
         ///</param>
@@ -1118,7 +1134,7 @@ namespace lms_with_moodle.Controllers
         ///Set userTypeId from UserType class Teacher,Student,...
         ///</param>
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<string[]> CreateBulkUser(int userTypeId , string fileName , int CategoryId = -1)
+        public async Task<BulkData> CreateBulkUser(int userTypeId , string fileName)
         {
             //Username and password Default is MelliCode
 
@@ -1128,7 +1144,10 @@ namespace lms_with_moodle.Controllers
             //3.1 - don't add duplicate username 
 
 
-            List<UserDataModel> users = new List<UserDataModel>();
+            List<UserDataModel> newUsers = new List<UserDataModel>();
+            List<UserDataModel> allUsers = new List<UserDataModel>();
+
+            List<UserModel> usersMoodle = new List<UserModel>();
             List<string> errors = new List<string>();
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -1160,17 +1179,17 @@ namespace lms_with_moodle.Controllers
 
                         if(await userManager.FindByNameAsync(selectedUser.UserName) == null)//Check for duplicate Username
                         {
-                            users.Add(selectedUser);
+                            newUsers.Add(selectedUser);
                         }
                         else
                         {
                             errors.Add(" معلم با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
                         }
+
+                        allUsers.Add(selectedUser);
                     }
 
-                    List<UserModel> userModels = new List<UserModel>();
-
-                    foreach(var user in users)
+                    foreach(var user in newUsers)
                     {
                         bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
                         if(result)
@@ -1180,24 +1199,37 @@ namespace lms_with_moodle.Controllers
                                 ldap.AddUserToLDAP(user);
                             }
                         }
-                        userModels.Add(user);//Use for add user to moodle
+                        usersMoodle.Add(user);//Use for add user to moodle
                     }
 
-                    await moodleApi.CreateUsers(userModels);
+                    await moodleApi.CreateUsers(usersMoodle);
 
-                    foreach(var user in userModels)
+                    foreach(var user in newUsers)
                     {
+                        int userId = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault().Id;
+                        StudentDetail studentDetail = new StudentDetail();
+                        studentDetail.UserId = userId;
+                        studentDetail.LatinFirstname = user.userDetail.LatinFirstname;
+                        studentDetail.LatinLastname = user.userDetail.LatinLastname;
+
                         int userMoodle_id = await moodleApi.GetUserId(user.MelliCode);
                         user.Moodle_Id = userMoodle_id;
+
                         appDbContext.Users.Update(user);
+                        appDbContext.StudentDetails.Add(studentDetail);
                     }
 
                     appDbContext.SaveChanges();
                 }
             }
 
-            return errors.ToArray();
+            BulkData bulkData = new BulkData();
+            bulkData.errors = errors;
+            bulkData.users = allUsers;
+
+            return bulkData;
         }
+        
 
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<bool> UploadFile(IFormFile file , string FileName)

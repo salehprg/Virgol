@@ -123,6 +123,9 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                if(classSchedule.TeacherId == 0)
+                    return BadRequest("معلمی انتخاب شده است");
+                    
                 if(classSchedule.ClassId != 0)
                 {
                     //Check for interupt class Schedule
@@ -267,6 +270,7 @@ namespace lms_with_moodle.Controllers
             return true;
         }
         #endregion
+        
 #endregion   
 
 
