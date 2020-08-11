@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, open_book} from "../../../assets/icons";
+import {layout, loading, open_book} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from "./home/Home";
 import Schools from "./schools/Schools";
@@ -35,7 +35,7 @@ class Dashboard extends React.Component {
     }
 
     render() {
-        if (this.state.loading) return "درحال بارگذاری اطلاعات"
+        if (this.state.loading) return loading('w-10 text-grayish centerize')
         return (
             <div className="w-screen min-h-screen">
                 <Sidebar

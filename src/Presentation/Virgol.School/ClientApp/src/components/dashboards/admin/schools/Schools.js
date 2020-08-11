@@ -1,6 +1,6 @@
 import React from "react";
 import PlusTable from "../../tables/PlusTable";
-import { edit, trash } from "../../../../assets/icons";
+import {edit, external_link, trash} from "../../../../assets/icons";
 import history from "../../../../history";
 import {getSchools , RemoveSchool} from "../../../../_actions/schoolActions"
 import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
@@ -67,6 +67,9 @@ class Schools extends React.Component {
                                                 <td>{x.schoolIdNumber}</td>
                                                 <td>{x.schoolTypeName}</td>
                                                 <td>{x.firstName} {x.lastName}</td>
+                                                <td className="cursor-pointer">
+                                                    {external_link('w-6 text-white ')}
+                                                </td>
                                                 <td className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>

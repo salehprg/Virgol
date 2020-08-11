@@ -1,7 +1,7 @@
 import React from "react";
 import Hero from "./Hero";
 import CounterCard from "./CounterCard";
-import {home, key, user, users} from "../../../../assets/icons";
+import {home, key, loading, user, users} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
 import { connect } from "react-redux";
@@ -24,9 +24,7 @@ class Home extends React.Component {
     }
     
     render() {
-        console.log("test")
-
-        if(this.state.loading) return "درحال بارگداری اطلاعات ..."
+        if(this.state.loading) return loading('w-10 text-grayish centerize')
         
         return (
             <div className="grid sm:grid-cols-4 grid-cols-2 gap-4 py-6">

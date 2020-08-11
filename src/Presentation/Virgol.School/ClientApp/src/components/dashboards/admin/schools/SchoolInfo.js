@@ -106,6 +106,9 @@ class SchoolInfo extends React.Component {
     }
 
     changeManagerInfo = async (formValues) => {
+        if (formValues.password !== formValues.passwordagain) {
+            formValues.password = null;
+        }
         formValues.schoolId = parseInt(this.props.match.params.id);
         await this.props.EditManager(this.props.user.token , formValues)
     }
@@ -207,14 +210,28 @@ class SchoolInfo extends React.Component {
                                 placeholder="شماره همراه"
                                 component={this.renderInputs}
                             />
+                            <Field
+                                name="password"
+                                type="text"
+                                dir="ltr"
+                                placeholder="گذرواژه"
+                                component={this.renderInputs}
+                            />
+                            <Field
+                                name="passwordagain"
+                                type="text"
+                                dir="ltr"
+                                placeholder="تکرار گذرواژه"
+                                component={this.renderInputs}
+                            />
                         </div>
                         <div className="w-full mx-auto max-w-350 flex flex-row justify-between items-center">
-                            <button type="submit" className="w-5/12 py-1 mx-1 rounded-lg border-2 border-transparent bg-pinkish text-white">
+                            <button type="submit" className="w-full py-1 mx-1 rounded-lg border-2 border-transparent bg-pinkish text-white">
                                 ذخیره
                             </button>
-                            <button onClick={this.props.reset} className="w-5/12 py-1 mx-1 rounded-lg border-2 border-pinkish text-pinkish">
-                                ریست
-                            </button>
+                            {/*<button onClick={this.props.reset} className="w-5/12 py-1 mx-1 rounded-lg border-2 border-pinkish text-pinkish">*/}
+                            {/*    ریست*/}
+                            {/*</button>*/}
                         </div>
                     </form>
                     }
