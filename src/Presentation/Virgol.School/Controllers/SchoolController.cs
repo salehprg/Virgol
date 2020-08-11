@@ -517,7 +517,7 @@ namespace lms_with_moodle.Controllers
                 {
                     int base_id = appDbContext.School_Bases.Where(x => x.Id == BaseId).FirstOrDefault().Base_Id;
 
-                    List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == base_id).Take(15).ToList();
+                    List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == base_id).ToList();
                     return Ok(studies);
                 }
                 
