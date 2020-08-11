@@ -35,6 +35,10 @@ class Schools extends React.Component {
         this.setState({ query })
     }
 
+    submitExcel = excel => {
+        
+    }
+
     render() {
         if(this.state.loading) return loading('w-10 text-grayish centerize')
         return (
@@ -53,6 +57,8 @@ class Schools extends React.Component {
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
+                    excel="آپلود اکسل مدارس"
+                    handleExcel={this.submitExcel}
                     button={() => {
                         return (
                             <button onClick={() => history.push('/newSchool')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>
