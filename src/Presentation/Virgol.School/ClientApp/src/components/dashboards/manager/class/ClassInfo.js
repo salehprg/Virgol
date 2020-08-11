@@ -31,18 +31,13 @@ class ClassInfo extends React.Component {
 
     }
 
-<<<<<<< HEAD
     handleExcel = async excel => {
         await this.props.AssignUserToClass(this.props.user.token , this.props.match.params.id , excel)
-=======
+    }
+
     addLesson = async (classSchedule) => {
         this.setState({ addLesson: false })
         await this.props.AddClassSchedule(this.props.user.token, classSchedule)
-    }
-
-    handleExcel = excel => {
-
->>>>>>> 70c52f4faa5f057d2da947950b0cac3d5e21561a
     }
 
     render() {
