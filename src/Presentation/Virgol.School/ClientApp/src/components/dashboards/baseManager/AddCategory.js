@@ -44,13 +44,15 @@ class AddCategory extends React.Component {
                     <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
                         {(this.props.newSchoolInfo.bases ? 
                             this.props.newSchoolInfo.bases.map(cat => {
-                                return (
-                                    <span onClick={() => this.setCat(cat.id)}
-                                        className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedCats.some(el => el === cat.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
-                                    >
+                                if (cat.baseName.includes(this.state.query)) {
+                                    return (
+                                        <span onClick={() => this.setCat(cat.id)}
+                                              className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedCats.some(el => el === cat.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                        >
                                         {cat.baseName}
                                     </span>
-                                );
+                                    );
+                                }
                             })
                            : "درحال بارگذاری ..."
                         )}

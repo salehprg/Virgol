@@ -40,15 +40,18 @@ class AddField extends React.Component {
                         changeQuery={(query) => this.setState({ query })}
                     />
                     <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
+                        {this.state.query.length < 2 ? <p className="text-center text-white">حداقل سه حرف برای سرچ الزامیست</p> : ''}
                         {this.props.newSchoolInfo.studyFields.map(study => {
                             if (study.studyFieldName.includes(this.state.query)) {
-                                return (
-                                    <span onClick={() => this.setCat(study.id)}
-                                          className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
-                                    >
+                                if (this.state.query.length > 2 && study.studyFieldName.includes(this.state.query)) {
+                                    return (
+                                        <span onClick={() => this.setCat(study.id)}
+                                              className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                        >
                                         {study.studyFieldName}
                                     </span>
-                                );
+                                    );
+                                }
                             }
                         })}
                     </div>

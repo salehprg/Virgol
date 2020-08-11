@@ -1,6 +1,6 @@
 import React from "react";
 import PlusTable from "../../tables/PlusTable";
-import {edit, external_link, trash} from "../../../../assets/icons";
+import {edit, external_link, loading, trash} from "../../../../assets/icons";
 import history from "../../../../history";
 import {getSchools , RemoveSchool} from "../../../../_actions/schoolActions"
 import {RedirectAdmin } from "../../../../_actions/adminActions"
@@ -36,7 +36,7 @@ class Schools extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return "هیچ مدرسه ای وجود ندارد"
+        if(this.state.loading) return loading('w-10 text-grayish centerize')
         return (
             <div className="w-full mt-10">
                 {this.state.showDeleteModal ? 
