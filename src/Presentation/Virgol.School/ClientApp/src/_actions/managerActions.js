@@ -128,6 +128,7 @@ export const AssignUserToClass = (token , classId , excelData) => async dispatch
         });
 
         dispatch({ type: STOP })
+        dispatch(alert.success("لیست دانش آموزان به کلاس اضافه شد"))
         dispatch({ type: Type.AssignUserToClass, payload: response.data });
     } catch (e) {
         dispatch({ type: STOP })
