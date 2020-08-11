@@ -5,7 +5,7 @@ WORKDIR /src
 COPY ./src ./
 
 RUN apt update -yq --allow-releaseinfo-change \
-    && apt install curl gnupg libgdiplus libc6-dev -yq \
+    && apt install curl gnupg libgdiplus libc6-dev -yq
 
 #RUN curl -sL https://deb.nodesource.com/setup_14.x | bash \
 #    && apt install nodejs -yq
