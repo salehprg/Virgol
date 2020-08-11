@@ -637,7 +637,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {   
-                bool FileOk = await UploadFile(Files.Files[0] , "BulkUserData.xlsx");
+                bool FileOk = await UploadFile(Files.Files[0] , Files.Files[0].FileName);
                 List<UserDataModel> userModels = new List<UserDataModel>();
 
                 if(FileOk)
@@ -645,7 +645,7 @@ namespace lms_with_moodle.Controllers
                     string idNumber = userManager.GetUserId(User);
                     int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
 
-                    BulkData data = await CreateBulkUser((int)UserType.Student , "BulkUserData\\BulkUserData.xlsx" , schoolId);
+                    BulkData data = await CreateBulkUser((int)UserType.Student , "BulkUserData\\" + Files.Files[0].FileName , schoolId);
                     userModels = data.users;
                 }
 
