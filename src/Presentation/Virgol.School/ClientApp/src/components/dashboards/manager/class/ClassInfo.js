@@ -9,12 +9,8 @@ import {plus} from "../../../../assets/icons";
 
 class ClassInfo extends React.Component {
 
-<<<<<<< HEAD
-    state = {lessons : [], addLesson: false , classDetail : {}}
-=======
-    state = {lessons : [], addLesson: false, loading: false}
+    state = {lessons : [], addLesson: false, loading: false , classDetail : {}}
 
->>>>>>> 70c52f4faa5f057d2da947950b0cac3d5e21561a
     componentDidMount = async () =>{
         this.setState({loading : true})
         await this.props.getClassSchedule(this.props.user.token , this.props.match.params.id)
