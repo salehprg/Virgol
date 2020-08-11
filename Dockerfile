@@ -6,8 +6,14 @@ COPY ./src ./
 
 RUN apt update -yq --allow-releaseinfo-change \
     && apt install curl gnupg libgdiplus libc6-dev -yq \
-    && curl -sL https://deb.nodesource.com/setup_14.x | bash \
-    && apt install nodejs -yq
+
+#RUN curl -sL https://deb.nodesource.com/setup_14.x | bash \
+#    && apt install nodejs -yq
+
+RUN apt install nodejs
+
+RUN nodejs -v
+RUN npm -v
 
 # restore solution
 RUN dotnet restore Virgol.sln
