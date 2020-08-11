@@ -197,7 +197,7 @@ namespace lms_with_moodle.Controllers
                     string idNumber = userManager.GetUserId(User);
                     int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
 
-                    var errors = await CreateBulkUser((int)UserType.Student , "BulkUserData\\" + Files.Files[0].FileName , schoolId);
+                    var errors = await CreateBulkUser((int)UserType.Student , "BulkUserData/" + Files.Files[0].FileName , schoolId);
                     return Ok(errors);
                 }
 
@@ -250,7 +250,7 @@ namespace lms_with_moodle.Controllers
                     string idNumber = userManager.GetUserId(User);
                     int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
 
-                    BulkData errors = await CreateBulkUser((int)UserType.Teacher , "BulkUserData\\" + Files.Files[0].FileName , schoolId);
+                    BulkData errors = await CreateBulkUser((int)UserType.Teacher , "BulkUserData/" + Files.Files[0].FileName , schoolId);
 
                     return Ok(errors.users);
                 }
@@ -645,7 +645,7 @@ namespace lms_with_moodle.Controllers
                     string idNumber = userManager.GetUserId(User);
                     schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
 
-                    BulkData data = await CreateBulkUser((int)UserType.Student , "BulkUserData\\" + Files.Files[0].FileName , schoolId);
+                    BulkData data = await CreateBulkUser((int)UserType.Student , "BulkUserData/" + Files.Files[0].FileName , schoolId);
                     userModels = data.users;
                 }
 
