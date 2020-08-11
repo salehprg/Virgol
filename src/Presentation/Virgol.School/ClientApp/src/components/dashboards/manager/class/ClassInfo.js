@@ -8,7 +8,8 @@ import {plus} from "../../../../assets/icons";
 
 class ClassInfo extends React.Component {
 
-    state = {lessons : [], addLesson: false}
+    state = {lessons : [], addLesson: false, loading: false}
+
     componentDidMount = async () =>{
         this.setState({loading : true})
         await this.props.getClassSchedule(this.props.user.token , this.props.match.params.id)
@@ -18,12 +19,17 @@ class ClassInfo extends React.Component {
 
         this.props.schedules.map(day => {
             (day.map(lesson => {
-                lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, c: "bg-redish cursor-pointer", x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2, h: 1, static: true})
+                lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, c: "bg-purplish", x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2, h: 1, static: true})
             }))
         })
 
         this.setState({lessons : lessons})
 
+    }
+
+    addLesson = async (classSchedule) => {
+        this.setState({ addLesson: false })
+        await this.props.AddClassSchedule(this.props.user.token, classSchedule)
     }
 
     handleExcel = excel => {
@@ -34,7 +40,8 @@ class ClassInfo extends React.Component {
         return (
             <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
                 {this.state.addLesson ? 
-                <AddLesson 
+                <AddLesson
+                    addLesson={this.addLesson}
                     classId={this.props.match.params.id}
                     cancel={() => this.setState({ addLesson: false })}
                 /> 
@@ -78,14 +85,18 @@ class ClassInfo extends React.Component {
                     <div className="my-8">
                         <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2">افزودن درس</button>
                         <div className="border-2 border-dark-blue overflow-auto">
-                            <Schedule 
-                                editable={true}
-                                lessons={this.state.lessons}
-                                // lessons={[
-                                //     {i: "1", name: "حسابان 1", teachername: "احمدی", c: "bg-redish cursor-pointer", x: 8, y: 1, w: 2, h: 1, static: true},
-                                //     {i: "2", name: "هندسه 1", teachername: "باقری", c: "bg-purplish cursor-pointer", x: 6, y: 2, w: 3, h: 1, static: true},
-                                // ]}
-                            />
+                            {!this.state.loading ?
+                                <Schedule
+                                    editable={true}
+                                    lessons={this.state.lessons}
+                                    // lessons={[
+                                    //     {i: "1", name: "حسابان 1", teachername: "احمدی", c: "bg-redish cursor-pointer", x: 8, y: 1, w: 2, h: 1, static: true},
+                                    //     {i: "2", name: "هندسه 1", teachername: "باقری", c: "bg-purplish cursor-pointer", x: 6, y: 2, w: 3, h: 1, static: true},
+                                    // ]}
+                                />
+                                :
+                                "loading"
+                            }
                         </div>
                     </div>
                 </div>

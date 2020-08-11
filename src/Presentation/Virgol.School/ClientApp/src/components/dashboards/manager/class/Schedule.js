@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
+import { motion } from 'framer-motion'
 import GridLayout from 'react-grid-layout';
 import '../../../../../node_modules/react-grid-layout/css/styles.css'
 import '../../../../../node_modules/react-resizable/css/styles.css'
@@ -46,7 +48,11 @@ class Schedule extends React.Component {
             <>
                 <GridLayout className="layout" layout={layout} cols={32} rowHeight={50} width={1800}>
                     {layout.map(x => {
-                        return <div onClick={() => this.showLessonInfo(x.i)} className={`border border-white text-center text-white ${x.c}`} key={x.i}><p className="centerize">{x.name}</p></div>
+                        return (
+                            <div onClick={() => this.showLessonInfo(x.i)} className={`border border-white text-center text-white ${x.c}`} key={x.i}>
+                                <p className="centerize">{x.name}</p>
+                            </div>
+                        );
                     })}
                 </GridLayout>
             </>

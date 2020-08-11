@@ -162,31 +162,19 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
 export const getDashboardInfo = token => async dispatch => {
 
     try {
-        dispatch({ type: START })
-        
         const response = await lms.get('/Admin/getDashboardInfo' , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.getDashboardInfo, payload: response.data })
 
         return true
 
     } catch (e) {
 
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
-
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         return false
 
     }

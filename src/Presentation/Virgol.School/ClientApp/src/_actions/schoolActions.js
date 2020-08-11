@@ -11,40 +11,16 @@ import { START, STOP } from "./workerTypes";
 export const GetSchoolInfo = (token,schoolId = 0) => async dispatch => {
 
     try {
-        dispatch({ type: START })
-        
-        
         const response = await lms.get(`/School/GetSchoolInfo?schoolId=${schoolId}` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        console.log("stop")
-
-        dispatch({ type: STOP })
         dispatch({ type: Type.GetSchoolInfo, payload: response.data })
 
-        return true
-
     } catch (e) {
-        console.log(e)
-
-        if(e.response)
-        {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
-    }
-
-        return false
-
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
     }
 
 }
@@ -52,36 +28,18 @@ export const GetSchoolInfo = (token,schoolId = 0) => async dispatch => {
 export const getSchools = token => async dispatch => {
 
     try {
-        dispatch({ type: START })
-        
         const response = await lms.get('/School/GetSchools' , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.GetSchools, payload: response.data })
 
         return true
 
     } catch (e) {
-
-        if(e.response)
-        {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
-    }
-
-        return false
-
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
     }
 
 }
@@ -201,37 +159,18 @@ export const RemoveSchool = (token ,formvalue) => async dispatch => {
 export const getBases = token => async dispatch => {
 
     try {
-        dispatch({ type: START })
-        
         const response = await lms.get('/School/GetBases' , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.GetBases, payload: response.data })
 
         return true
 
     } catch (e) {
-
-        console.log(e.response)
-        if(e.response)
-        {
-            switch (e.response.status) {
-                case 401:
-                    dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                    history.push('/')
-                    break;
-
-                default:
-                    dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-            }
-        }
-
-        return false
-
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
     }
 
 }
@@ -320,36 +259,18 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
 export const getStudyfields = (token,baseId) => async dispatch => {
 
     try {
-        dispatch({ type: START })
-        
         const response = await lms.get(`/School/GetStudyFields?BaseId=${baseId}&schoolId` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.GetStudyFields, payload: response.data })
 
         return true
 
     } catch (e) {
-
-        if(e.response)
-        {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
-    }
-
-        return false
-
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
     }
 
 }
@@ -357,15 +278,12 @@ export const getStudyfields = (token,baseId) => async dispatch => {
 export const GetSchool_StudyFields = (token,baseId,schoolId = 0) => async dispatch => {
 
     try {
-        dispatch({ type: START })
-        
         const response = await lms.get(`/School/GetSchool_StudyFields?BaseId=${baseId}&schoolId=${schoolId}` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.GetSchool_StudyFields, payload: response.data })
 
         return true
@@ -466,7 +384,6 @@ export const getAllGrades = token => async dispatch => {
 export const getClassList = (token,gradeId) => async dispatch => {
 
     try {
-        console.log("grades");
         const response = await lms.get(`/School/ClassList?gradeId=${gradeId}`, {
             headers: {
                 authorization: `Bearer ${token}`
@@ -546,8 +463,6 @@ export const deleteClass = (token, classId) => async dispatch => {
 export const getLessons = (token,gradeId) => async dispatch => {
 
         try {
-            dispatch({ type: START })
-            
             const response = await lms.get(`/School/GetLessons?gradeId=${gradeId}` , {
                 headers: {
                     authorization: `Bearer ${token}`
@@ -560,57 +475,24 @@ export const getLessons = (token,gradeId) => async dispatch => {
             return true
     
         } catch (e) {
-    
-            if(e.response)
-            {
-                switch (e.response.status) {
-                    case 401:
-                        dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                        history.push('/')
-                        break;
-        
-                    default:
-                        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-                }
-            }
-    
-            return false
-    
+            dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
 }
 
 export const GetSchool_Grades = (token,studyFId,schoolId = 0) => async dispatch => {
 
     try {
-        dispatch({ type: START })
-        
         const response = await lms.get(`/School/GetSchool_Grades?StudyFieldId=${studyFId}&schoolId=${schoolId}` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.GetSchool_Grades, payload: response.data })
 
         return true
 
     } catch (e) {
-
-        if(e.response)
-        {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
-        }
-    }
-
-        return false
-
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
     }
 }

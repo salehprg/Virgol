@@ -8,18 +8,15 @@ import {START, STOP} from "./workerTypes";
 export const getClassSchedule = (token, classId) => async dispatch => {
 
     try {
-        dispatch({ type: START })
         const response = await lms.get(`/ClassSchedule/getClassSchedule?classId=${classId}`,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.getClassSchedule, payload: response.data });
 
     } catch (e) {
-        dispatch({ type: STOP })
         dispatch(alert.error("خطا در اتصال"))
     }
 }
@@ -27,18 +24,15 @@ export const getClassSchedule = (token, classId) => async dispatch => {
 export const getClassLessons = (token, classId) => async dispatch => {
 
     try {
-        dispatch({ type: START })
         const response = await lms.get(`/ClassSchedule/getClassLessons?classId=${classId}`,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
 
-        dispatch({ type: STOP })
         dispatch({ type: Type.getClassLessons, payload: response.data });
 
     } catch (e) {
-        dispatch({ type: STOP })
         dispatch(alert.error("خطا در اتصال"))
     }
 }
@@ -65,19 +59,20 @@ export const getTeacherSchedule = (token) => async dispatch => {
 export const AddClassSchedule = (token, formValues) => async dispatch => {
 
     try {
-        console.log(formValues)
+        dispatch({ type: START })
         const response = await lms.put("/ClassSchedule/AddClassSchedule", formValues ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
-        dispatch(alert.success("ساعت درسی با موفقیت اضافه شد"))
+        dispatch({ type: STOP })
+        dispatch(alert.success("ساعت درسی با موفقیت اضافه شد. لطفا رفرش کنید"))
         dispatch({ type: Type.AddClassSchedule, payload: response.data });
 
     } catch (e) {
-        console.log(e.response)
-        dispatch(alert.error("خطا در افرودن ساعت درسی"))
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
     }
 
 }
@@ -122,8 +117,6 @@ export const DeleteClassSchedule = (token, classId) => async dispatch => {
     }
 
 }
-
-
 
 // export const wipeCatInfo = () => {
 //     return { type: Type.WIPE_CAT_INFO }

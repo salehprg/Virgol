@@ -26,9 +26,9 @@ class AddClass extends React.Component {
     render() {
         return (
             <Modal cancel={this.props.cancel}>
-                <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
+                <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-500 bg-bold-blue px-4 py-16 flex flex-col items-center">
                     <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
-                    <input onChange={this.handleChange} value={this.state.className} ></input>
+                        <input dir="rtl" placeholder="نام کلاس" className="px-4 py-2 text-white bg-transparent focus:outline-none focus:shadow-outline border-2 border-dark-blue rounded-lg" onChange={this.handleChange} value={this.state.className} />
                     </div>
                     <div className="flex mt-8 flex-row items-center">
                         <button onClick={this.addClass} className="px-6 py-1 mx-1 border-2 border-transparent rounded-lg bg-greenish text-white">
