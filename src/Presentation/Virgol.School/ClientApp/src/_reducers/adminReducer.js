@@ -34,6 +34,9 @@ export default ( state = INITIAL_STATE, action ) => {
         case Type.getDashboardInfo: 
             return { ...state, dashboardInfo: action.payload}
 
+        case Type.RedirectAdmin: 
+            return { ...state, managerInfo: action.payload}
+
         case LOGOUT: 
             return INITIAL_STATE
             

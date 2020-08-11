@@ -6,7 +6,7 @@ import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
 import {GetSchoolInfo  , GetSchool_Grades , GetSchool_StudyFields 
         , getLessons , EditSchool , AddBaseToSchool  , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool} from "../../../../_actions/schoolActions"
-import {EditManager} from '../../../../_actions/adminActions'
+import {EditManager , RedirectAdmin} from '../../../../_actions/adminActions'
 import {Link} from "react-router-dom";
 import Modal from "../../../modals/Modal";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
@@ -90,6 +90,10 @@ class SchoolInfo extends React.Component {
 
     selectCourse = (id) => {
         this.setState({ selectedCourse: id })
+    }
+
+    redirect = async () => {
+        await this.props.RedirectAdmin(this.props.user.token , parseInt(this.props.match.params.id))
     }
 
     renderInputs = ({ input, meta, dir, type, placeholder }) => {
@@ -248,7 +252,7 @@ class SchoolInfo extends React.Component {
                         </div>
                         <div>
                             <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>
-                            <button className="px-6 py-1 mx-2 rounded-lg border-2 border-greenish text-greenish">ورود به عنوان مدیر مدرسه</button>
+                            <button onClick={this.redirect} className="px-6 py-1 mx-2 rounded-lg border-2 border-greenish text-greenish">ورود به عنوان مدیر مدرسه</button>
                         </div>
                     </div>
                     <div className="mt-8 overflow-auto">
@@ -306,5 +310,5 @@ const formWrapped = reduxForm({
     enableReinitialize : true
 }, mapStateToProps)(SchoolInfo)
 
-export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , 
+export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , RedirectAdmin, 
                                         GetSchool_Grades , getLessons , EditManager , EditSchool , AddBaseToSchool , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool})(formWrapped);

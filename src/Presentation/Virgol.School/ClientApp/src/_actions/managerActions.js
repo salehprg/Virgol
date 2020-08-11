@@ -112,17 +112,25 @@ export const getStudentsClass = (token , classId) => async dispatch => {
 
 }
 
-export const AssignUserToClass = (token , classId , userIds) => async dispatch => {
+export const AssignUserToClass = (token , classId , excelData) => async dispatch => {
 
     try {
-        const response = await lms.post(`/Manager/AssignUserToClass?classId=${classId}` , userIds, {
+        const formData = new FormData();
+        formData.append('file', excelData);
+
+        dispatch({ type: START })
+
+        const response = await lms.post(`/Manager/AssignUserToClass?classId=${classId}` , formData, {
             headers: {
+                'Content-Type': 'multipart/form-data',
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP })
         dispatch({ type: Type.AssignUserToClass, payload: response.data });
     } catch (e) {
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا"))
     }
 
@@ -182,16 +190,20 @@ export const addBulkUser = (token, excel) => async dispatch => {
     try {
         const data = new FormData()
         data.append('Files', excel)
+
+        dispatch({ type: START })
         const response = await lms.post("/Manager/AddBulkUser", data, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP })
         dispatch({ type: Type.ADD_BULK_USER });
         history.push("/m/dashboard")
         dispatch(alert.success("فایل آپلود شد"))
     } catch (e) {
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا"))
     }
 
@@ -202,17 +214,21 @@ export const addBulkTeacher = (token, excel) => async dispatch => {
     try {
         const data = new FormData()
         data.append('Files', excel)
+
+        dispatch({ type: START })
         const response = await lms.post("/Manager/AddBulkTeacher", data, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP })
         dispatch({ type: Type.ADD_BULK_TEACHER });
         history.push("/m/dashboard")
         dispatch(alert.success("فایل اپلود شد"))
 
     } catch (e) {
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا"))
     }
 

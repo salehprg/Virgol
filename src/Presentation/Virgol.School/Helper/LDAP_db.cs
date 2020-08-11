@@ -36,7 +36,7 @@ namespace lms_with_moodle.Helper
                 bool hasMail = false;
                 string uniqueMailId = "";
 
-                if(user.userDetail.LatinFirstname != null && user.userDetail.LatinFirstname != null)
+                if(user.userDetail.LatinFirstname != null && user.userDetail.LatinLastname != null)
                 {
                     uniqueMailId = string.Format("{0}.{1}.{2}" , user.userDetail.LatinFirstname 
                                                                             , user.userDetail.LatinLastname 

@@ -212,21 +212,27 @@ namespace lms_with_moodle.Helper
                 string FunctionName = "enrol_manual_enrol_users";
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
 
-                string information = "";
+                
 
-                for (int i = 0; i < _users.Count; i++)
+                int count = (_users.Count / 10) + 1;
+
+                for(int j = 0 ; j < count; j++)
                 {
-                    information += "&enrolments["+i+"][userid]=" + _users[i].UserId;
-                    information += "&enrolments["+i+"][courseid]=" + _users[i].lessonId;
-                    information += "&enrolments["+i+"][roleid]=" + _users[i].RoleId;
+                    string information = "";
+                    for (int i = j * 10; i < (j + 1)* 10; i++)
+                    {
+                        if(i < _users.Count)
+                        {
+                            information += "&enrolments["+i+"][userid]=" + _users[i].UserId;
+                            information += "&enrolments["+i+"][courseid]=" + _users[i].lessonId;
+                            information += "&enrolments["+i+"][roleid]=" + _users[i].RoleId;
+                        }
+                    }
+
+                    HttpResponseModel Response = await sendData(data + information);
                 }
                 
-                data += information;
-                
-                HttpResponseModel Response = await sendData(data);
-                string result = JsonConvert.DeserializeObject <string> (Response.Message); 
-
-                return (Response.Code == HttpStatusCode.OK ? true : false);
+                return true;
             }
             catch(Exception ex)
             {

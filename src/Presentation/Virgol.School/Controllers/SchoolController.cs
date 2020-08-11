@@ -204,7 +204,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                if(!string.IsNullOrEmpty(inputData.SchoolName) && !string.IsNullOrEmpty(inputData.MelliCode) && !string.IsNullOrEmpty(inputData.SchoolIdNumber))
+                if(string.IsNullOrEmpty(inputData.SchoolName) || string.IsNullOrEmpty(inputData.MelliCode) || string.IsNullOrEmpty(inputData.SchoolIdNumber))
                     return BadRequest("اطلاعات وارد شده کافی نیست");
 
 
@@ -489,11 +489,6 @@ namespace lms_with_moodle.Controllers
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
 
                 School_Bases basee = await schoolDataHelper.DeleteBaseFromSchool(baseId);
-                
-                var serializedParent = JsonConvert.SerializeObject(basee); 
-                School_BasesVW basesVW  = JsonConvert.DeserializeObject<School_BasesVW>(serializedParent);
-
-                basesVW.BaseName = appDbContext.Bases.Where(x => x.Id == basee.Base_Id).FirstOrDefault().BaseName;
 
                 return Ok(baseId);
 
@@ -522,7 +517,7 @@ namespace lms_with_moodle.Controllers
                 {
                     int base_id = appDbContext.School_Bases.Where(x => x.Id == BaseId).FirstOrDefault().Base_Id;
 
-                    List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == base_id).Take(15).ToList();
+                    List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == base_id).ToList();
                     return Ok(studies);
                 }
                 
