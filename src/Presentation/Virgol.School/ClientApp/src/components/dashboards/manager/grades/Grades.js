@@ -130,7 +130,6 @@ class Grades extends React.Component {
                                 null
                             )}
                         </div>
-                    </div>
                 </div>
                 )}
             </div>
