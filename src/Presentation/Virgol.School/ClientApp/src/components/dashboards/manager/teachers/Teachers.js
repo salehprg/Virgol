@@ -25,7 +25,7 @@ class Teachers extends React.Component {
     }
 
     deleteTeacher = async () => {
-        await this.props.deleteTeacher(this.props.user.token , this.state.teacherId)
+        await this.props.deleteTeacher(this.props.user.token , [this.state.teacherId])
         this.setState({showDeleteModal : false , teacherId : 0})
     }
 

@@ -28,7 +28,6 @@ class Students extends React.Component {
 
     deleteStudent = async () => {
         const data = [this.state.studentId]
-        console.log(data)
 
         await this.props.DeleteStudents(this.props.user.token , data)
         this.setState({showDeleteModal : false , studentId : 0})
@@ -77,7 +76,7 @@ class Students extends React.Component {
                                                 <td>{x.lastName}</td>
                                                 <td>{x.melliCode}</td>
                                                 <td>{x.moodle_Id}</td>
-                                                <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
+                                                <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>            
                                                 <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">

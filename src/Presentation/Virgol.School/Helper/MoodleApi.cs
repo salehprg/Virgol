@@ -319,7 +319,7 @@ namespace lms_with_moodle.Helper
                 string FunctionName = "core_course_update_courses";
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
                 "&courses[0][id]=" + courseId + 
-                "&ourses[0][visible]=" + visibleCode;
+                "&courses[0][visible]=" + visibleCode;
 
                 HttpResponseModel Response = await sendData(data);
                 var error = JsonConvert.DeserializeObject<warning>(Response.Message); 

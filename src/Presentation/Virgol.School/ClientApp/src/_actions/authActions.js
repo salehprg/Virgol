@@ -84,7 +84,7 @@ export const sendVerificationCode = formValues => async dispatch => {
 export const forgotPassword = (melliCode, verificationCode) => async dispatch => {
 
     try {
-        const response = await lms.post(`/api/Users/SendVerificationCode`, { melliCode, verificationCode });
+        const response = await lms.post(`/Users/ForgotPassword`, { melliCode, verificationCode });
 
         if (response.data) {
             dispatch(alert.success("رمز عبور به کد ملی شما تغییر یافت"));
@@ -95,6 +95,7 @@ export const forgotPassword = (melliCode, verificationCode) => async dispatch =>
         }
 
     } catch (e) {
+        console.log(e.response)
         dispatch(alert.error("خطایی در برقراری ارتباط رخ داد"));
         return false
     }

@@ -215,11 +215,11 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> DeleteClassSchedule(int classId)
+        public async Task<IActionResult> DeleteClassSchedule(int scheduleId)
         {
             try
             {
-                Class_WeeklySchedule classSchedule = appDbContext.ClassWeeklySchedules.Where(x => x.Id == classId).FirstOrDefault();
+                Class_WeeklySchedule classSchedule = appDbContext.ClassWeeklySchedules.Where(x => x.Id == scheduleId).FirstOrDefault();
 
                 if(classSchedule.Id != 0)
                 {
@@ -235,13 +235,18 @@ namespace lms_with_moodle.Controllers
                         appDbContext.ClassWeeklySchedules.Remove(classSchedule);
                         appDbContext.SaveChanges();
 
-                        return Ok(classId);
+                        if(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId && x.LessonId == classSchedule.LessonId).FirstOrDefault() == null)
+                        {
+                            await moodleApi.setCourseVisible(lessonMoodleId , false);
+                        }
+
+                        return Ok(scheduleId);
                     }
 
                     return BadRequest("لطفا بعدا تلاش کنید");
                 }
 
-                return BadRequest("کلاسی انتخاب نشده است");
+                return BadRequest("ساعتی انتخاب نشده است");
             }
             catch(Exception ex)
             {
