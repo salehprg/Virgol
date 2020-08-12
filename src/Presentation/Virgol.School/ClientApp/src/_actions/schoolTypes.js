@@ -2,6 +2,7 @@
 export const GetSchoolInfo = 'GetSchoolInfo';
 export const GetSchools = 'GetSchools';
 export const CreateSchool = 'CreateSchool';
+export const AddBulkSchool = 'AddBulkSchool';
 export const EditSchool = 'EditSchool';
 export const RemoveSchool = 'RemoveSchool';
 

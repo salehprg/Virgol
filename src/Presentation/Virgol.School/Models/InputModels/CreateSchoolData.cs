@@ -3,5 +3,6 @@ public class CreateSchoolData : SchoolModel {
         public string LastName {get; set;}
         public string MelliCode {get; set;}
         public string personalIdNumber {get; set;}
+        public string managerPhoneNumber {get; set;}
     
 }

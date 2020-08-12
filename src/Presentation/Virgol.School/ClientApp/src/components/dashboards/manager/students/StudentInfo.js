@@ -52,7 +52,7 @@ class StudentInfo extends React.Component {
         return (
             <div>
                 <Add 
-                    onCancel={() => history.push('/m/teachers')}
+                    onCancel={() => history.push('/m/students')}
                     title={"اطلاعات دانش آموز"}
                 >
                     <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
@@ -119,14 +119,14 @@ const mapStateToProps = state => {
     return {
         user: state.auth.userInfo , 
         initialValues: {
-            firstName: state.managerData.userInfo ? state.managerData.userInfo.userModel.firstName : null,
-            lastName: state.managerData.userInfo ? state.managerData.userInfo.userModel.lastName : null,
-            melliCode: state.managerData.userInfo ? state.managerData.userInfo.userModel.melliCode : null,
-            phoneNumber: state.managerData.userInfo ? state.managerData.userInfo.userModel.phoneNumber : null,
-            fatherName: state.managerData.userInfo ? state.managerData.userInfo.studentDetail.fatherName : null,
-            fatherPhoneNumber: state.managerData.userInfo ? state.managerData.userInfo.studentDetail.fatherPhoneNumber : null,
-            latinFirstname: state.managerData.userInfo ? state.managerData.userInfo.studentDetail.latinFirstname : null,
-            latinLastname: state.managerData.userInfo ? state.managerData.userInfo.studentDetail.latinLastname : null
+            firstName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.firstName : null,
+            lastName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.lastName : null,
+            melliCode: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.melliCode : null,
+            phoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.phoneNumber : null,
+            fatherName: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.fatherName : null,
+            fatherPhoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.fatherPhoneNumber : null,
+            latinFirstname: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.latinFirstname : null,
+            latinLastname: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.latinLastname : null
         }
     }
 }

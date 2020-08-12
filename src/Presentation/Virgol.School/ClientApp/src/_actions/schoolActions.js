@@ -72,6 +72,32 @@ export const CreateSchool = (token ,formvalue) => async dispatch => {
 
 }
 
+export const AddBulkSchool = (token, excel) => async dispatch => {
+
+    try {
+        const data = new FormData()
+        data.append('Files', excel)
+
+        dispatch({ type: START })
+        const response = await lms.post("/School/AddBulkSchool", data, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.AddBulkSchool });
+        history.push("/a/schools")
+        dispatch(alert.success("فایل اپلود شد"))
+
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
+
 export const EditSchool = (token ,formvalue) => async dispatch => {
 
     try {

@@ -127,7 +127,7 @@ namespace lms_with_moodle.Controllers
                 string idNumber = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault().SchoolId;
 
-                UserModel userModel = appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Student && user.SchoolId == schoolId && user.Id == userId).FirstOrDefault();
+                UserModel userModel = appDbContext.Users.Where(user => user.SchoolId == schoolId && user.Id == userId).FirstOrDefault();
 
                 if(userModel.userTypeId == (int)UserType.Student)
                 {
@@ -236,8 +236,8 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    string idNumber = userManager.GetUserId(User);
-                    int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+                    string userName = userManager.GetUserId(User);
+                    int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
                     var errors = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
                     return Ok(errors);
@@ -327,8 +327,8 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    string idNumber = userManager.GetUserId(User);
-                    int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+                    string userName = userManager.GetUserId(User);
+                    int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
                     var users = await CreateBulkUser((int)UserType.Teacher , Files.Files[0].FileName , schoolId);
 
@@ -723,8 +723,8 @@ namespace lms_with_moodle.Controllers
                 int schoolId = 0;
                 if(FileOk)
                 {
-                    string idNumber = userManager.GetUserId(User);
-                    schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+                    string userName = userManager.GetUserId(User);
+                    schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
                     userModels = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
                 }

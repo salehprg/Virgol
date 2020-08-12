@@ -200,7 +200,7 @@ namespace lms_with_moodle.Controllers
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<string>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddBulkSchool([FromForm]IFormCollection Files , int CategoryId = -1)
+        public async Task<IActionResult> AddBulkSchool([FromForm]IFormCollection Files )
         {
             try
             {
@@ -215,12 +215,16 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    string idNumber = userManager.GetUserId(User);
-                    int adminId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().Id;
+                    string userName = userManager.GetUserId(User);
+                    int adminId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
                     int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault().SchoolsType;
 
                     var errors = await CreateBulkSchool(Files.Files[0].FileName , schoolType);
-                    return Ok(errors);
+
+                    if(errors)
+                        return Ok(errors);
+
+                    return BadRequest("اطلاعات فایل اکسل به درستی وارد نشده است");
                 }
 
                 return BadRequest("آپلود فایل با مشکل مواجه شد");
@@ -245,7 +249,9 @@ namespace lms_with_moodle.Controllers
 
 
                 string idNumberAdmin = userManager.GetUserId(User);
-                int adminId = appDbContext.Users.Where(x => x.UserName == idNumberAdmin).FirstOrDefault().Id;
+                UserModel adminModel = appDbContext.Users.Where(x => x.UserName == idNumberAdmin).FirstOrDefault();
+                int adminId = adminModel.Id;
+
                 AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault();
                 int schoolType = adminDetail.SchoolsType;
 
@@ -297,7 +303,7 @@ namespace lms_with_moodle.Controllers
                         appDbContext.Schools.Update(schoolResult);
                         appDbContext.SaveChanges();
                         
-                        SMSApi.SendSchoolData(adminUser.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
+                        SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                         
                         return Ok(new{
                             manager.MelliCode,
@@ -838,7 +844,17 @@ namespace lms_with_moodle.Controllers
                 int managerId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().Id;
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
-                return Ok(appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Grade_Id == gradeId));
+                List<School_Class> classes = new List<School_Class>();
+                if(gradeId != -1)
+                {
+                    classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Grade_Id == gradeId).ToList();
+                }
+                else
+                {
+                    classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList();
+                }
+
+                return Ok();
             }
             catch(Exception ex)
             {
@@ -1050,6 +1066,7 @@ namespace lms_with_moodle.Controllers
                         UserModel manager = new UserModel();
                         manager.FirstName = schoolData.FirstName;
                         manager.LastName = schoolData.LastName;
+                        manager.PhoneNumber = schoolData.managerPhoneNumber;
                         manager.MelliCode = schoolData.MelliCode;
                         manager.UserName = schoolData.MelliCode;
                         manager.SchoolId = schoolResult.Id;
@@ -1077,6 +1094,8 @@ namespace lms_with_moodle.Controllers
 
                             appDbContext.Schools.Update(schoolResult);
                             appDbContext.SaveChanges();
+
+                            SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
                             
                             return true;
                         }
