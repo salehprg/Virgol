@@ -24,7 +24,7 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
-using static SchoolDataHelper;
+using lms_with_moodle.Helper;
 using ExcelDataReader;
 using Newtonsoft.Json;
 
@@ -192,6 +192,42 @@ namespace lms_with_moodle.Controllers
             catch(Exception ex)
             {
                 //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddBulkSchool([FromForm]IFormCollection Files , int CategoryId = -1)
+        {
+            try
+            {
+                //Username and password Default is MelliCode
+
+                //1 - Read data from excel
+                //2 - Check valid data
+                //3 - Add user to Database
+                //3.1 - don't add duplicate username 
+
+                bool FileOk = await FileController.UploadFile(Files.Files[0] , Files.Files[0].FileName);
+
+                if(FileOk)
+                {
+                    string idNumber = userManager.GetUserId(User);
+                    int adminId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().Id;
+                    int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault().SchoolsType;
+
+                    var errors = await CreateBulkSchool(Files.Files[0].FileName , schoolType);
+                    return Ok(errors);
+                }
+
+                return BadRequest("آپلود فایل با مشکل مواجه شد");
+                
+            }
+            catch(Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -972,5 +1008,87 @@ namespace lms_with_moodle.Controllers
 
 #endregion    
    
+
+#region Functions
+
+        ///<param name="CategoryId">
+        ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
+        ///</param>
+        ///<param name="userTypeId">
+        ///Set userTypeId from UserType class Teacher,Student,...
+        ///</param>
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<bool> CreateBulkSchool(string fileName , int schoolType)
+        {
+            try
+            {
+                //Username and password Default is MelliCode
+
+                //1 - Read data from excel
+                //2 - Check valid data
+                //3 - Add user to Database
+                //3.1 - don't add duplicate username 
+
+                List<CreateSchoolData> createSchoolDatas = FileController.excelReader_School(fileName).schoolData;
+
+                foreach (var schoolData in createSchoolDatas)
+                {
+                    SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                    UserModel user = appDbContext.Users.Where(x => x.UserName == schoolData.MelliCode).FirstOrDefault();
+                    bool duplicateManager = (user != null);
+
+                    if(!duplicateManager)
+                    {
+                        schoolData.SchoolType = schoolType;
+
+                        SchoolModel schoolResult = await schoolDataHelper.CreateSchool(schoolData);
+                        
+                        UserModel manager = new UserModel();
+                        manager.FirstName = schoolData.FirstName;
+                        manager.LastName = schoolData.LastName;
+                        manager.MelliCode = schoolData.MelliCode;
+                        manager.UserName = schoolData.MelliCode;
+                        manager.SchoolId = schoolResult.Id;
+                        manager.userTypeId = (int)UserType.Manager;
+                        manager.ConfirmedAcc = true;
+
+                        string password = RandomPassword.GeneratePassword(true , true , true , 10);
+
+                        bool resultManager = userManager.CreateAsync(manager , password).Result.Succeeded;
+
+                        if(resultManager)
+                        {
+                            await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
+                            
+                            int managerId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+
+                            ManagerDetail managerDetail = new ManagerDetail();
+                            managerDetail.personalIdNumber = schoolData.personalIdNumber;
+                            managerDetail.UserId = managerId;
+
+                            appDbContext.ManagerDetails.Add(managerDetail);
+                            appDbContext.SaveChanges();
+
+                            schoolResult.ManagerId = managerId;
+
+                            appDbContext.Schools.Update(schoolResult);
+                            appDbContext.SaveChanges();
+                            
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return false;
+            }
+        }
+
+#endregion
     }
 }

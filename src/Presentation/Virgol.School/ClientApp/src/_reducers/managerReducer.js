@@ -32,6 +32,9 @@ export default (state = INITIAL_STATE, action) => {
 
 //#endregion
 
+    if (action.type === Type.DeleteStudents)
+        return { ...state, students: state.students.filter(element => !action.payload.includes(element.id)) };
+     
     if (action.type === Type.GET_ALL_TEACHERS)
         return { ...state, teachers: action.payload };
 

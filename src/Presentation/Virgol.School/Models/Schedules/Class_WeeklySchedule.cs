@@ -13,6 +13,12 @@ public class Class_WeeklySchedule {
     public int TeacherId {get; set;}
     public float StartHour {get; set;}
     public float EndHour {get; set;}
+    ///<summary>
+    ///0 = everyWeek
+    ///1 = zojWeek
+    ///2 = fardWeek
+    ///</sumary>
+    public int weekly {get; set;}
 
 
 

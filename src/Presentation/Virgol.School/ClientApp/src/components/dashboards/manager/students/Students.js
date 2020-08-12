@@ -1,13 +1,14 @@
 import React from "react";
 import PlusTable from "../../tables/PlusTable";
-import {edit, loading} from "../../../../assets/icons";
+import {edit, loading, trash} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
-import {getAllStudents , addBulkUser} from "../../../../_actions/managerActions"
+import {getAllStudents , addBulkUser , DeleteStudents} from "../../../../_actions/managerActions"
+import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class Students extends React.Component {
 
-    state = { loading: false, query: '' }
+    state = { loading: false, query: '' , showDeleteModal : false , studentId : 0}
 
     componentDidMount = async () => {
         if (this.props.history.action === 'POP' || this.props.students.length == 0 ) {
@@ -21,6 +22,17 @@ class Students extends React.Component {
         this.setState({ query })
     }
 
+    showDelete = (id) => {
+        this.setState({showDeleteModal : true , studentId : id})
+    }
+
+    deleteStudent = async () => {
+        const data = [this.state.studentId]
+
+        await this.props.DeleteStudents(this.props.user.token , data)
+        this.setState({showDeleteModal : false , studentId : 0})
+    }
+
     submitExcel = async (excel) => {
         await this.props.addBulkUser(this.props.user.token , excel)
     }
@@ -29,6 +41,15 @@ class Students extends React.Component {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
             <div className="w-full mt-10">
+                {this.state.showDeleteModal ? 
+                <DeleteConfirm
+                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                    confirm={this.deleteStudent}
+                    cancel={() => this.setState({ showDeleteModal: false, teacherId: null })}
+                /> 
+                : 
+                null
+                }
                 <PlusTable
                     title="لیست معلمان"
                     isLoading={this.state.loading}
@@ -58,6 +79,9 @@ class Students extends React.Component {
                                                 <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>            
+                                                <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                    {trash('w-6 text-white ')}
+                                                </td>
                                             </tr>
                                             )
                                         }
@@ -77,4 +101,4 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , students: state.managerData.students}
 }
 
-export default connect(mapStateToProps, { getAllStudents , addBulkUser })(Students);
+export default connect(mapStateToProps, { getAllStudents , addBulkUser , DeleteStudents })(Students);

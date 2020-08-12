@@ -1,13 +1,14 @@
 import React from "react";
 import PlusTable from "../../tables/PlusTable";
-import {edit, loading} from "../../../../assets/icons";
+import {edit, loading, trash} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
-import {getAllTeachers , addBulkTeacher} from "../../../../_actions/managerActions"
+import {getAllTeachers , addBulkTeacher , deleteTeacher} from "../../../../_actions/managerActions"
+import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class Teachers extends React.Component {
 
-    state = { loading: false, query: '' }
+    state = { loading: false, query: '' , showDeleteModal : false}
 
     componentDidMount = async () => {
         this.setState({ loading: true })
@@ -19,6 +20,16 @@ class Teachers extends React.Component {
         this.setState({ query })
     }
 
+    showDelete = (id) => {
+        this.setState({showDeleteModal : true , teacherId : id})
+    }
+
+    deleteTeacher = async () => {
+        await this.props.deleteTeacher(this.props.user.token , this.state.teacherId)
+        this.setState({showDeleteModal : false , teacherId : 0})
+    }
+
+
     submitExcel = async (excel) => {
         await this.props.addBulkTeacher(this.props.user.token , excel)
     }
@@ -27,6 +38,15 @@ class Teachers extends React.Component {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
             <div className="w-full mt-10">
+                {this.state.showDeleteModal ? 
+                <DeleteConfirm
+                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                    confirm={this.deleteTeacher}
+                    cancel={() => this.setState({ showDeleteModal: false, teacherId: null })}
+                /> 
+                : 
+                null
+                }
                 <PlusTable
                     title="لیست معلمان"
                     isLoading={this.state.loading}
@@ -55,7 +75,10 @@ class Teachers extends React.Component {
                                                 <td>{x.moodle_Id}</td>
                                                 <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}
-                                                </td>            
+                                                </td>           
+                                                <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                    {trash('w-6 text-white ')}
+                                                </td> 
                                             </tr>
                                             )
                                         }
@@ -75,4 +98,4 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , teachers: state.managerData.teachers}
 }
 
-export default connect(mapStateToProps, { getAllTeachers , addBulkTeacher })(Teachers);
+export default connect(mapStateToProps, { getAllTeachers , addBulkTeacher , deleteTeacher })(Teachers);

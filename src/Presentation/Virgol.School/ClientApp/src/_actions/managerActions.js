@@ -62,21 +62,8 @@ export const getManagerDashboardInfo = token => async dispatch => {
 
 }
 
-export const getAllTeachers = token => async dispatch => {
+//#region Students
 
-    try {
-        const response = await lms.get("/Manager/TeacherList", {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
-
-        dispatch({ type: Type.GET_ALL_TEACHERS, payload: response.data });
-    } catch (e) {
-        dispatch(alert.error("خطا"))
-    }
-
-}
 
 export const getAllStudents = token => async dispatch => {
 
@@ -90,6 +77,53 @@ export const getAllStudents = token => async dispatch => {
         dispatch({ type: Type.GET_ALL_STUDENTS, payload: response.data });
     } catch (e) {
         dispatch(alert.error("خطا"))
+    }
+
+}
+
+export const addBulkUser = (token, excel) => async dispatch => {
+
+    try {
+        const data = new FormData()
+        data.append('Files', excel)
+
+        dispatch({ type: START })
+        const response = await lms.post("/Manager/AddBulkUser", data, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.ADD_BULK_USER });
+        history.push("/m/dashboard")
+        dispatch(alert.success("فایل آپلود شد"))
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
+export const DeleteStudents = (token, ids) => async dispatch => {
+
+    try {
+        console.log(token)
+        dispatch({ type: START })
+        const response = await lms.delete(`/Manager/DeleteStudents?studentIds=${ids}` ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.DeleteStudents, payload: ids})
+        dispatch(alert.success("دانش آموز حذف شد"))
+
+    } catch (e) {
+        console.log(e.response)
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطا در حذف معلم"))
     }
 
 }
@@ -155,6 +189,24 @@ export const UnAssignUserFromClass = (token , classId , userIds) => async dispat
 
 //#endregion
 
+//#region Teacher
+
+export const getAllTeachers = token => async dispatch => {
+
+    try {
+        const response = await lms.get("/Manager/TeacherList", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.GET_ALL_TEACHERS, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
 export const addNewTeacher = (token, formValues) => async dispatch => {
 
     const values = {
@@ -182,30 +234,6 @@ export const addNewTeacher = (token, formValues) => async dispatch => {
     } catch (e) {
         console.log(e.response)
         dispatch(alert.error("خطا در افرودن معلم"))
-    }
-
-}
-
-export const addBulkUser = (token, excel) => async dispatch => {
-
-    try {
-        const data = new FormData()
-        data.append('Files', excel)
-
-        dispatch({ type: START })
-        const response = await lms.post("/Manager/AddBulkUser", data, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
-
-        dispatch({ type: STOP })
-        dispatch({ type: Type.ADD_BULK_USER });
-        history.push("/m/dashboard")
-        dispatch(alert.success("فایل آپلود شد"))
-    } catch (e) {
-        dispatch({ type: STOP })
-        dispatch(alert.error("خطا"))
     }
 
 }
@@ -276,6 +304,8 @@ export const editTeacher = (token, values) => async dispatch => {
     }
 
 }
+
+//#endregion
 
 export const wipeCatInfo = () => {
     return { type: Type.WIPE_CAT_INFO }

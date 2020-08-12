@@ -131,20 +131,40 @@ namespace lms_with_moodle.Controllers
                 {
                     //Check for interupt class Schedule
                     object result = CheckInteruptSchedule(classSchedule);
-                    bool interupt = false;
+                    bool noInterupt = false;
 
-                    try{interupt = (bool)result;}catch{}
+                    try{noInterupt = (bool)result;}catch{}
 
-                    if(interupt)
+                    if(noInterupt)
                     {
                         int lessonMoodle_Id = appDbContext.School_Lessons.Where(x => x.classId == classSchedule.ClassId && x.Lesson_Id == classSchedule.LessonId).FirstOrDefault().Moodle_Id;
+
+                        List<EnrolUser> enrolUsers = new List<EnrolUser>();
+
                         EnrolUser teacher = new EnrolUser();
                         teacher.lessonId = lessonMoodle_Id;
                         teacher.RoleId = 3;
                         teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
 
-                        bool teacherMoodle = await moodleApi.AssignUsersToCourse(new List<EnrolUser>{teacher});
-                        if(teacherMoodle)
+                        enrolUsers.Add(teacher);
+
+                        //Get students in class for assign lesson
+                        List<School_studentClass> studentClass = appDbContext.School_StudentClasses.Where(x => x.ClassId == classSchedule.ClassId).ToList();
+                        foreach (var student in studentClass)
+                        {
+                            int userMoodleId = appDbContext.Users.Where(x => x.Id == student.UserId).FirstOrDefault().Moodle_Id;
+
+                            EnrolUser enrolInfo = new EnrolUser();
+                            enrolInfo.lessonId = lessonMoodle_Id;
+                            enrolInfo.RoleId = 5;
+                            enrolInfo.UserId = userMoodleId;
+
+                            enrolUsers.Add(enrolInfo);
+                        }
+                        List<UserModel> users = new List<UserModel>();
+
+                        bool enrolMent = await moodleApi.AssignUsersToCourse(enrolUsers);
+                        if(enrolMent)
                         {
                             appDbContext.ClassWeeklySchedules.Add(classSchedule);
                             appDbContext.SaveChanges();
