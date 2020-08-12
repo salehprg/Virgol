@@ -4,23 +4,17 @@ import CounterCard from "../../admin/home/CounterCard";
 import {home, key, user, users} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import { connect } from "react-redux";
-import {GetIncommingNews , GetMyNews} from "../../../../_actions/newsActions"
+import {GetIncommingNews } from "../../../../_actions/newsActions"
 
 class Home extends React.Component {
 
     state = {loading : false}
 
-    // componentDidMount = async () =>{
-    //     if (this.props.history.action === 'POP' || this.props.myNews.length == 0 || this.props.inNews.length == 0 || !this.props.dashboardInfo) {
-
-    //         this.setState({loading: true})
-    //         await this.props.getManagerDashboardInfo(this.props.user.token);
-    //         await this.props.GetIncommingNews(this.props.user.token);
-    //         await this.props.GetMyNews(this.props.user.token);
-    //         this.setState({loading: false})
-
-    //     }
-    // }
+    componentDidMount = async () =>{
+            this.setState({loading: true})
+            await this.props.GetIncommingNews(this.props.user.token);
+            this.setState({loading: false})
+    }
     
     render() {
         if(this.state.loading) return "درحال بارگداری اطلاعات ..."
@@ -73,4 +67,4 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , inNews : state.newsData.incomeNews , myNews : state.newsData.myNews , dashboardInfo : state.managerData.dashboardInfo}
 }
 
-export default connect(mapStateToProps, { GetIncommingNews , GetMyNews })(Home);
+export default connect(mapStateToProps, { GetIncommingNews  })(Home);
