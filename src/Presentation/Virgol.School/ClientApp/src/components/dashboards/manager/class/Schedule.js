@@ -5,6 +5,8 @@ import GridLayout from 'react-grid-layout';
 import '../../../../../node_modules/react-grid-layout/css/styles.css'
 import '../../../../../node_modules/react-resizable/css/styles.css'
 import LessonInfoModal from './LessonInfoModal';
+import {colors} from "@material-ui/core";
+import getColor from "../../../../assets/colors";
 
 class Schedule extends React.Component {
 
@@ -43,7 +45,7 @@ class Schedule extends React.Component {
             {
                 (day.map(lesson => {
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
-                    c: "bg-purplish", x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2, 
+                    c: `bg-${getColor(lesson.id % 4)} border-none cursor-pointer`, x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
                     h: 1 , startHour : lesson.startHour , endHour : lesson.endHour, static: true})
                 }))
             }
@@ -53,6 +55,7 @@ class Schedule extends React.Component {
     }
 
     showLessonInfo = (id) => {
+        if (!this.state.lessons.find(el => el.i === id)) return;
         this.setState({ lessonInfo: this.state.lessons.find(el => el.i === id) , showLessonInfo : true})
     }
 
@@ -77,9 +80,9 @@ class Schedule extends React.Component {
                 <GridLayout className="layout" layout={layout} cols={32} rowHeight={50} width={1800}>
                     {layout.map(x => {
                         return (
-                            <button onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
+                            <div onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
                                 <p className="centerize">{x.name}</p>
-                            </button>
+                            </div>
                         );
                     })}
                 </GridLayout>
