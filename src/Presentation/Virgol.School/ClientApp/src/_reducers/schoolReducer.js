@@ -30,7 +30,7 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, classes: action.payload };
 
         case Type.AddNewClass:
-            return { ...state, classes: [...state.classes, action.payload]};
+            return { ...state, classes: [...state.classes, action.payload] , allClass: [...state.allClass, action.payload]};
 
         case Type.EditClass:
             return { ...state, classes: state.classes.map(el => el.id === action.payload.id ? action.payload : el) }
