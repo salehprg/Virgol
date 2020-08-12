@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Schedule from './Schedule'
 import {AddClassSchedule , DeleteClassSchedule , getClassSchedule} from '../../../../_actions/classScheduleActions'
 import {getStudentsClass , AssignUserToClass } from '../../../../_actions/managerActions'
-import {deleteClass} from '../../../../_actions/schoolActions'
+import {deleteClass , editClass} from '../../../../_actions/schoolActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
 import {edit, plus, x} from "../../../../assets/icons";
@@ -12,7 +12,7 @@ import DeleteConfirm from '../../../modals/DeleteConfirm'
 
 class ClassInfo extends React.Component {
 
-    state = {lessons : [], addLesson: false, loading: false , classDetail : {}, showAdd: false}
+    state = {lessons : [], addLesson: false, loading: false , classDetail : {}, showAdd: false , className : ""}
 
     addVariant = {
         open: {
@@ -71,6 +71,10 @@ class ClassInfo extends React.Component {
         await this.props.DeleteClassSchedule(this.props.user.token , id)
         this.componentDidMount()
         this.render()
+    }
+
+    onEdit = async () =>{
+        await this.props.editClass(this.props.user.token , parseInt(this.props.match.params.id) , this.state.className)
     }
 
     render() {
@@ -204,4 +208,4 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
                                         DeleteClassSchedule , getClassSchedule , 
-                                        AssignUserToClass , deleteClass})(ClassInfo);
+                                        AssignUserToClass , deleteClass , editClass})(ClassInfo);
