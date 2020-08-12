@@ -28,6 +28,7 @@ class Students extends React.Component {
 
     deleteStudent = async () => {
         const data = [this.state.studentId]
+        console.log(data)
 
         await this.props.DeleteStudents(this.props.user.token , data)
         this.setState({showDeleteModal : false , studentId : 0})
@@ -51,7 +52,7 @@ class Students extends React.Component {
                 null
                 }
                 <PlusTable
-                    title="لیست معلمان"
+                    title="لیست دانش آموزان"
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}

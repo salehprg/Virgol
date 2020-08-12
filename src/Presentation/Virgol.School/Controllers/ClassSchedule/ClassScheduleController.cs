@@ -148,23 +148,10 @@ namespace lms_with_moodle.Controllers
 
                         enrolUsers.Add(teacher);
 
-                        //Get students in class for assign lesson
-                        List<School_studentClass> studentClass = appDbContext.School_StudentClasses.Where(x => x.ClassId == classSchedule.ClassId).ToList();
-                        foreach (var student in studentClass)
-                        {
-                            int userMoodleId = appDbContext.Users.Where(x => x.Id == student.UserId).FirstOrDefault().Moodle_Id;
-
-                            EnrolUser enrolInfo = new EnrolUser();
-                            enrolInfo.lessonId = lessonMoodle_Id;
-                            enrolInfo.RoleId = 5;
-                            enrolInfo.UserId = userMoodleId;
-
-                            enrolUsers.Add(enrolInfo);
-                        }
                         List<UserModel> users = new List<UserModel>();
 
-                        bool enrolMent = await moodleApi.AssignUsersToCourse(enrolUsers);
-                        if(enrolMent)
+                        bool enrolment = await moodleApi.AssignUsersToCourse(enrolUsers);
+                        if(enrolment)
                         {
                             appDbContext.ClassWeeklySchedules.Add(classSchedule);
                             appDbContext.SaveChanges();
@@ -173,6 +160,7 @@ namespace lms_with_moodle.Controllers
 
                             ClassScheduleView scheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == classScheduleId).FirstOrDefault();
 
+                            await moodleApi.setCourseVisible(lessonMoodle_Id , true);
                             return Ok(scheduleView);
                         }
 
