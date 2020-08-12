@@ -66,3 +66,38 @@ export const logout = () => {
     history.push('/')
     return { type: Type.LOGOUT }
 }
+
+export const sendVerificationCode = formValues => async dispatch => {
+
+    try {
+        const response = await lms.post(`/Users/SendVerificationCode?IdNumer=${formValues.IdNumer}`);
+
+        return true
+
+    } catch (e) {
+        dispatch(alert.error("کد ملی وجود ندارد"))
+        return false
+    }
+
+}
+
+export const forgotPassword = (melliCode, verificationCode) => async dispatch => {
+
+    try {
+        const response = await lms.post(`/api/Users/SendVerificationCode`, { melliCode, verificationCode });
+
+        if (response.data) {
+            dispatch(alert.success("رمز عبور به کد ملی شما تغییر یافت"));
+            return true
+        } else {
+            dispatch(alert.error("کد وارد شده اشتباه است"));
+            return false
+        }
+
+    } catch (e) {
+        dispatch(alert.error("خطایی در برقراری ارتباط رخ داد"));
+        return false
+    }
+
+}
+
