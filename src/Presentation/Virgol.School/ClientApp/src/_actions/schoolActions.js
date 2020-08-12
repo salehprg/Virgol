@@ -459,11 +459,11 @@ export const addNewClass = (token, formValues,schoolId = 0) => async dispatch =>
 
 }
 
-export const editClass = (token, values) => async dispatch => {
+export const editClass = (token, classId , className) => async dispatch => {
 
     try {
         dispatch({ type: START })
-        const response = await lms.post('/School/EditClass', values,{
+        const response = await lms.post(`/School/EditClass?classId=${classId}&className=${className}`,{
             headers: {
                 authorization: `Bearer ${token}`
             }

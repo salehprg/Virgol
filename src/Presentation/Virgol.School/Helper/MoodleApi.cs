@@ -544,7 +544,9 @@ namespace lms_with_moodle.Helper
             try
             {
                 string FunctionName = "core_course_update_categories";
-                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&categories[0][id]=" + _category.Id + "&categories[0][name]=" + _category.Name + "&categories[0][parent]=" + _category.ParentCategory;
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
+                "&categories[0][id]=" + _category.Id + 
+                "&categories[0][name]=" + _category.Name;
 
                 HttpResponseModel Response = await sendData(data);
                 string error = JsonConvert.DeserializeObject<string>(Response.Message); 
