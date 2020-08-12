@@ -130,47 +130,11 @@ class Grades extends React.Component {
                                 null
                             )}
                         </div>
+                    </div>
                 </div>
                 )}
             </div>
-        );
-        // return (
-        //     <div className="w-full mt-10">
-        //         <PlusTable
-        //             title="لیست معلمان"
-        //             isLoading={this.state.loading}
-        //             query={this.state.query}
-        //             changeQuery={this.changeQuery}
-        //             button={() => {
-        //                 return (
-        //                     <button className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">دانش آموزان جدید</button>
-        //                 );
-        //             }}
-        //             headers={['نام پایه']}
-        //             body={() => {
-        //                 return (
-        //                     <React.Fragment>
-        //                         {
-        //                             this.props.grades.map(x => {
-        //                                 if(x.gradeName.includes(this.state.query))
-        //                                 {
-        //                                     return(
-        //                                     <tr>
-        //                                         <td className="py-4">{x.gradeName}</td>
-        //                                         <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
-        //                                             {edit('w-6 text-white')}
-        //                                         </td>            
-        //                                     </tr>
-        //                                     )
-        //                                 }
-        //                             })
-        //                         }
-        //                     </React.Fragment>
-        //                 );
-        //             }}
-        //         />
-        //     </div>
-        // );
+        )
     }
 
 }
