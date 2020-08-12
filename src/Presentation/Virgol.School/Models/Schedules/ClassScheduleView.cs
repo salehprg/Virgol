@@ -10,6 +10,7 @@ public class ClassScheduleView {
     public int DayType {get; set;}
     public int LessonId {get; set;}
     public int TeacherId {get; set;}
+    public int weekly {get; set;}
     public float StartHour {get; set;}
     public float EndHour {get; set;}
     public string FirstName {get; set;}

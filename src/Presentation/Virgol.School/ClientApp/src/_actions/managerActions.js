@@ -108,9 +108,9 @@ export const addBulkUser = (token, excel) => async dispatch => {
 export const DeleteStudents = (token, ids) => async dispatch => {
 
     try {
-        console.log(token)
+        
         dispatch({ type: START })
-        const response = await lms.delete(`/Manager/DeleteStudents?studentIds=${ids}` ,{
+        const response = await lms.post(`/Manager/DeleteStudents` , ids ,{
             headers: {
                 authorization: `Bearer ${token}`
             }

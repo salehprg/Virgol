@@ -442,7 +442,7 @@ export const deleteClass = (token, classId) => async dispatch => {
 
     try {
         dispatch({ type: START })
-        const response = await lms.post("/School/DeleteClass", { classId } ,{
+        const response = await lms.delete(`/School/DeleteClass?classId=${classId}` ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -454,7 +454,7 @@ export const deleteClass = (token, classId) => async dispatch => {
 
     } catch (e) {
         dispatch({ type: STOP })
-        dispatch(alert.error("خطا در حذف مقطع"))
+        dispatch(alert.error("خطا در حذف کلاس"))
     }
 
 }
