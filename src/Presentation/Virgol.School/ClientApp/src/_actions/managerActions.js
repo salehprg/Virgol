@@ -207,6 +207,22 @@ export const getAllTeachers = token => async dispatch => {
 
 }
 
+export const GetUserInfo = (token,userId) => async dispatch => {
+
+    try {
+        const response = await lms.get(`/Manager/GetUserInfo?userId=${userId}`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.GetUserInfo, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
 export const addNewTeacher = (token, formValues) => async dispatch => {
 
     const values = {
@@ -295,7 +311,7 @@ export const editTeacher = (token, values) => async dispatch => {
             }
         });
 
-        history.push("/m/dashboard");
+        history.push("/m/teachers");
         dispatch(alert.success("معلم ویرایش گردید"))
         dispatch({ type: Type.EDIT_TEACHER, payload: response.data})
 
@@ -305,6 +321,24 @@ export const editTeacher = (token, values) => async dispatch => {
 
 }
 
+export const EditStudent = (token, values) => async dispatch => {
+
+    try {
+        const response = await lms.post('/Manager/EditStudent', values,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        history.push("/m/students");
+        dispatch(alert.success("دانش آموز ویرایش گردید"))
+        dispatch({ type: Type.EditStudent, payload: response.data})
+
+    } catch (e) {
+        dispatch(alert.error("خطا در ویرایش دانس آموز"))
+    }
+
+}
 //#endregion
 
 export const wipeCatInfo = () => {

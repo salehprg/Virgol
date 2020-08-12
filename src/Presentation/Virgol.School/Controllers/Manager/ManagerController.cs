@@ -117,6 +117,36 @@ namespace lms_with_moodle.Controllers
 
 #region UserAction
 
+        [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetUserInfo(int userId)
+        {
+            try
+            {
+                string idNumber = userManager.GetUserId(User);
+                int schoolId = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault().SchoolId;
+
+                UserModel userModel = appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Student && user.SchoolId == schoolId && user.Id == userId).FirstOrDefault();
+
+                if(userModel.userTypeId == (int)UserType.Student)
+                {
+                    StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userId).FirstOrDefault();
+
+                     return Ok(new{
+                         userModel,
+                         studentDetail = studentDetail
+                     });
+                }
+
+                return Ok(userModel);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
@@ -129,8 +159,20 @@ namespace lms_with_moodle.Controllers
                 int schoolId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().SchoolId;
 
                 List<UserModel> AllStudent = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Student && x.ConfirmedAcc && x.SchoolId == schoolId).ToList();
+                List<UserDataModel> users = new List<UserDataModel>();
 
-                return Ok(AllStudent);
+                foreach (var student in AllStudent)
+                {
+                    UserDataModel userDataModel = new UserDataModel();
+
+                    var serialized = JsonConvert.SerializeObject(student);
+                    userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+                    userDataModel.userDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+
+                    users.Add(userDataModel);
+                }
+
+                return Ok(users);
             }
             catch(Exception ex)
             {
@@ -209,6 +251,44 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult EditStudent([FromBody]UserDataModel student)
+        {
+            try
+            {
+                // var serializedParent = JsonConvert.SerializeObject(input); 
+                // UserDataModel student = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == student.Id).FirstOrDefault();
+                userModel.FirstName = student.FirstName;
+                userModel.LastName = student.LastName;
+                userModel.PhoneNumber = student.PhoneNumber;
+                 
+                StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+                studentDetail.LatinFirstname = student.userDetail.LatinFirstname;
+                studentDetail.LatinLastname = student.userDetail.LatinLastname;
+                studentDetail.FatherName = student.userDetail.FatherName;
+                studentDetail.FatherPhoneNumber = student.userDetail.FatherPhoneNumber;
+
+                appDbContext.Users.Update(userModel);
+                appDbContext.StudentDetails.Update(studentDetail);
+                appDbContext.SaveChanges();
+
+                var serializedParent = JsonConvert.SerializeObject(userModel); 
+                student = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+                student.userDetail = studentDetail;
+
+                return Ok(student);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
 
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]

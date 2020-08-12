@@ -345,7 +345,7 @@ namespace lms_with_moodle.Controllers
             {
                 string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);// Make new Verification code
                 //bool SmsResult = SMSApi.SendForgotSms(user.PhoneNumber , Code);
-                bool SmsResult = SMSApi.SendSms(new string[] {user.PhoneNumber} , Code);
+                bool SmsResult = SMSApi.SendForgotSms(user.PhoneNumber , user.FirstName + " " + user.LastName , Code);
 
                 if(SmsResult)
                 {

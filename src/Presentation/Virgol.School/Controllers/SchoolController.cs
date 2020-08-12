@@ -256,8 +256,8 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("شما حداکثر تعداد مدارس خود را ثبت کردید");
 
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                UserModel user = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault();
-                bool duplicateManager = user != null;
+                UserModel adminUser = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault();
+                bool duplicateManager = adminUser != null;
 
                 if(!duplicateManager)
                 {
@@ -296,6 +296,8 @@ namespace lms_with_moodle.Controllers
 
                         appDbContext.Schools.Update(schoolResult);
                         appDbContext.SaveChanges();
+                        
+                        SMSApi.SendSchoolData(adminUser.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                         
                         return Ok(new{
                             manager.MelliCode,

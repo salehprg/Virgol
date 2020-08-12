@@ -57,56 +57,20 @@ namespace lms_with_moodle.Helper
             }
 
             return result;
-            // WebRequest request = WebRequest.Create(BaseUrl);
-
-            // string postData = Data;
-            // byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-            // request.Method = "POST";
-            // request.ContentType = "application/json";
-            // request.ContentLength = byteArray.Length;
-
-            // Stream dataStream = request.GetRequestStream();
-            // dataStream.Write(byteArray, 0, byteArray.Length);
-            // dataStream.Close();
-
-            // WebResponse response = request.GetResponse();
-            // dataStream = response.GetResponseStream();
-
-            // StreamReader reader = new StreamReader(dataStream);
-
-            // string responseFromServer = reader.ReadToEnd();
-            // Console.WriteLine(responseFromServer);
-
-            // string[] Splited = responseFromServer.Split(',');
-
-            // string code = Splited[0].Remove(0 , 1);
-
-            // string Message = Splited[1].Remove(0 , 1);
-            // Message = Message.Remove(Message.Length - 2 , 2);
-
-            // reader.Close();
-            // dataStream.Close();
-            // response.Close();
-
-            // if(OutMessage)
-            // {
-            //     return Message;
-            // }
-            // else
-            // {
-            //     return code;
-            // }
 		
         }
-        public bool SendForgotSms(string Number , string Message)
+        public bool SendForgotSms(string Number , string userName , string code)
         {
-            SendPatternModel patternModel = new SendPatternModel();
+            ForgotPassword forgotPassword = new ForgotPassword();
+            forgotPassword.verificationCode = code;
+            forgotPassword.userName = userName;
 
-            patternModel.pattern_code = "ar6ffp1nbg";
+            SendPatternModel<ForgotPassword> patternModel = new SendPatternModel<ForgotPassword>();
+
+            patternModel.pattern_code = "5qhnalxjc0";
             patternModel.originator = FromNumber;
             patternModel.recipient = Number;
-            patternModel.values = new PatternValue(){verificationcode = Message};
+            patternModel.values = forgotPassword;
 
             string json = JsonConvert.SerializeObject(patternModel);
 
@@ -114,6 +78,29 @@ namespace lms_with_moodle.Helper
 
             return SendData(json , "/v1/messages/patterns/send");
         }
+
+        public bool SendSchoolData(string Number , string schoolName , string userName , string password)
+        {
+            SchoolDataSMS schoolDataSMS = new SchoolDataSMS();
+            schoolDataSMS.schoolName = schoolName;
+            schoolDataSMS.userName = userName;
+            schoolDataSMS.password = password;
+
+            SendPatternModel<SchoolDataSMS> patternModel = new SendPatternModel<SchoolDataSMS>();
+
+            patternModel.pattern_code = "9zgw29uffx";
+            patternModel.originator = FromNumber;
+            patternModel.recipient = Number;
+            patternModel.values = schoolDataSMS;
+
+            string json = JsonConvert.SerializeObject(patternModel);
+
+            // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
+
+            return SendData(json , "/v1/messages/patterns/send");
+        }
+
+
 
         public bool SendSms(string[] Numbers , string Message)
         {
