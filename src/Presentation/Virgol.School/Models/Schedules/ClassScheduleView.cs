@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class ClassScheduleView {
     //we set name data in database for having better performance
@@ -16,5 +17,8 @@ public class ClassScheduleView {
     public string FirstName {get; set;}
     public string LastName {get; set;}
     public string OrgLessonName {get; set;}
+
+    [NotMapped]
+    public string moodleUrl {get;set;}
 
 }

@@ -46,7 +46,24 @@ class Schedule extends React.Component {
                 (day.map(lesson => {
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
                     c: `bg-${getColor(lesson.id % 4)} border-none cursor-pointer`, x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
-                    h: 1 , startHour : lesson.startHour , endHour : lesson.endHour, static: true})
+                    h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , static: true})
+                }))
+            }
+        })
+
+        this.setState({lessons : lessons})
+    }
+    
+    componentWillReceiveProps() {
+        const lessons = [];
+        
+        this.props.lessons.map(day => {
+            if(day && day.length > 0)
+            {
+                (day.map(lesson => {
+                    lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
+                    c: `bg-${getColor(lesson.id % 4)} border-none cursor-pointer`, x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
+                    h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , static: true})
                 }))
             }
         })
@@ -63,6 +80,11 @@ class Schedule extends React.Component {
         this.setState({ lessonInfo: null , showLessonInfo : false})
     }
 
+    deleteLesson () {
+        this.props.deleteSchedule(parseInt(this.state.lessonInfo.i))
+        this.setState({showLessonInfo : false})
+    }
+
     render() {
         const layout = this.state.layout.concat(this.state.lessons);
         return (
@@ -72,7 +94,7 @@ class Schedule extends React.Component {
                     lessonInfo={this.state.lessonInfo}
                     cancel={() => this.onCancel()}
                     canEdit={this.props.editable}
-                    onDelete={() => this.props.deleteSchedule(parseInt(this.state.lessonInfo.i))}
+                    onDelete={() => this.deleteLesson()}
                 /> 
                 : 
                 null

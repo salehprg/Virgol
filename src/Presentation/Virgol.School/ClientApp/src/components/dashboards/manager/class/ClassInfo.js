@@ -55,16 +55,22 @@ class ClassInfo extends React.Component {
 
     handleExcel = async excel => {
         await this.props.AssignUserToClass(this.props.user.token , this.props.match.params.id , excel)
+        this.componentDidMount()
+        this.render()
     }
 
     addLesson = async (classSchedule) => {
         this.setState({ addLesson: false })
         await this.props.AddClassSchedule(this.props.user.token, classSchedule)
+        this.componentDidMount()
+        this.render()
     }
 
     deleteLesson = async (id) => {
 
         await this.props.DeleteClassSchedule(this.props.user.token , id)
+        this.componentDidMount()
+        this.render()
     }
 
     render() {
@@ -170,7 +176,7 @@ class ClassInfo extends React.Component {
                     <div className="my-8">
                         <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2">افزودن درس</button>
                         <div className="border-2 border-dark-blue overflow-auto">
-                            {this.props.schedules ?
+                            {!this.props.loading ?
                                 <Schedule
                                     editable={true}
                                     lessons={this.props.schedules}

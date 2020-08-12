@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../../../modals/Modal';
 import DeleteConfirm from '../../../modals/DeleteConfirm';
-import { trash } from '../../../../assets/icons';
+import { edit, external_link, trash } from '../../../../assets/icons';
 
 class LessonInfoModal extends React.Component {
 
@@ -89,7 +89,9 @@ class LessonInfoModal extends React.Component {
                                     {trash('w-6 text-white centerize')}
                                 </div>
                                 :
-                                null
+                                <a href={this.props.lessonInfo.moodleUrl} target="_blank" className="relative w-full bg-redish rounded-full cursor-pointer">
+                                    {external_link('w-6 text-white centerize')}
+                                </a>
                         )}
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}
