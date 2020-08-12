@@ -54,7 +54,7 @@ class Teachers extends React.Component {
                     changeQuery={this.changeQuery}
                     button={() => {
                         return (
-                            <button className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
+                            <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
                         );
                     }}
                     excel="آپلود اکسل معلمان"
