@@ -16,6 +16,7 @@ export const getManagerDashboardInfo = 'getManagerDashboardInfo';
 
 export const GET_ALL_STUDENTS = 'GET_ALL_STUDENTS';
 export const ADD_BULK_USER = 'ADD_BULK_USER';
+export const AddNewStudent = 'AddNewStudent';
 export const DeleteStudents = 'DeleteStudents';
 
 export const ADD_NEW_CATEGORY = 'ADD_NEW_CATEGORY';

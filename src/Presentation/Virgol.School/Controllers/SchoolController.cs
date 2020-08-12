@@ -854,7 +854,7 @@ namespace lms_with_moodle.Controllers
                     classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList();
                 }
 
-                return Ok();
+                return Ok(classes);
             }
             catch(Exception ex)
             {

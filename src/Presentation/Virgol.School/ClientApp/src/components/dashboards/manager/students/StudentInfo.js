@@ -124,9 +124,9 @@ const mapStateToProps = state => {
             melliCode: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.melliCode : null,
             phoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.phoneNumber : null,
             fatherName: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.fatherName : null,
-            fatherPhoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.fatherPhoneNumber : null,
-            latinFirstname: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.latinFirstname : null,
-            latinLastname: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.latinLastname : null
+            fatherPhoneNumber: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.fatherPhoneNumber : null,
+            latinFirstname: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.latinFirstname : null,
+            latinLastname: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.latinLastname : null
         }
     }
 }

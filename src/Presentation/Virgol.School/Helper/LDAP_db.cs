@@ -39,10 +39,9 @@ namespace lms_with_moodle.Helper
                 if(user.userDetail.LatinFirstname != null && user.userDetail.LatinLastname != null)
                 {
                     uniqueMailId = string.Format("{0}.{1}.{2}" , user.userDetail.LatinFirstname 
-                                                                            , user.userDetail.LatinLastname 
-                                                                            , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
+                                                                , user.userDetail.LatinLastname 
+                                                                , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
 
-                    hasMail = true;
                 }
                 
 
@@ -71,8 +70,7 @@ namespace lms_with_moodle.Helper
                 attributeSet.Add( new LdapAttribute("cn", user.FirstName));
                 attributeSet.Add( new LdapAttribute("sn", user.LastName));
 
-                if(hasMail)
-                    attributeSet.Add( new LdapAttribute("mail", mailAddress));
+                attributeSet.Add( new LdapAttribute("mail", mailAddress));
 
                 attributeSet.Add( new LdapAttribute("givenName", user.FirstName));
                 attributeSet.Add( new LdapAttribute("employeeNumber", user.MelliCode));
@@ -85,17 +83,8 @@ namespace lms_with_moodle.Helper
                 attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
                 attributeSet.Add( new LdapAttribute("title", title));
                 attributeSet.Add( new LdapAttribute("userPassword", user.MelliCode));
-                if(hasMail)
-                {
-                    attributeSet.Add( new LdapAttribute("uniqueIdentifier", new string[]{ user.MelliCode , uniqueMailId }));
-                }
-                else
-                {
-                    attributeSet.Add( new LdapAttribute("uniqueIdentifier", user.MelliCode));
-                }
+                attributeSet.Add( new LdapAttribute("uniqueIdentifier", new string[]{ user.MelliCode , uniqueMailId }));
                 
-
-
                 // DN of the entry to be added
                 string dn = "uniqueIdentifier=" + user.MelliCode + "," + containerName;      
                 LdapEntry newEntry = new LdapEntry( dn, attributeSet );

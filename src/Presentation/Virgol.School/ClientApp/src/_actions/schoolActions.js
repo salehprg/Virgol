@@ -407,6 +407,22 @@ export const getAllGrades = token => async dispatch => {
 
 }
 
+export const getAllClass = (token) => async dispatch => {
+
+    try {
+        const response = await lms.get("/School/ClassList?gradeId=-1", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.getAllClass, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا دربرقراری اتصال"))
+    }
+
+}
+
 export const getClassList = (token,gradeId) => async dispatch => {
 
     try {

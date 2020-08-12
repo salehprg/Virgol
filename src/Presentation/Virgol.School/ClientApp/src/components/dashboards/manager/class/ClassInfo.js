@@ -34,7 +34,7 @@ class ClassInfo extends React.Component {
         await this.props.getStudentsClass(this.props.user.token , this.props.match.params.id)
         this.setState({loading : false})
 
-        const classDetail = this.props.classes.filter(x => x.id == parseInt(this.props.match.params.id))
+        const classDetail = this.props.allClass.filter(x => x.id == parseInt(this.props.match.params.id))
 
         console.log(parseInt(this.props.match.params.id))
 
@@ -150,7 +150,9 @@ class ClassInfo extends React.Component {
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
                     <div className="flex flex-row-reverse justify-between">
                         <div className="flex flex-row-reverse justify-between">
+                            {(this.state.classDetail ?
                             <p className="text-right text-white text-2xl">{this.state.classDetail.className}</p>
+                            : null)}
                             {/*{(this.props.classDetail ?*/}
                             {/*    <React.Fragment>*/}
                             {/*        <p className="text-right text-white text-2xl">{this.state.classDetail.className}</p>*/}
@@ -191,7 +193,7 @@ class ClassInfo extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user : state.auth.userInfo , classes :  state.schoolData.classes , schedules : state.schedules.classSchedules , students : state.managerData.studentsInClass}
+    return {user : state.auth.userInfo  , allClass : state.schoolData.allClass , schedules : state.schedules.classSchedules , students : state.managerData.studentsInClass}
 }
 
 export default connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 

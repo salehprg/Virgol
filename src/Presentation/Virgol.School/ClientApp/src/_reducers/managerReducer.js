@@ -7,11 +7,14 @@ const INITIAL_STATE = {
     myNews: [],
     schoolLessonInfo : null,
     studentsInClass : null,
+    userInfo : {
+        userModel : null,
+        studentDetail : null
+    },
     'accessRoleIds': [],
     grades: [],
     'classes': [],
     teachers : [],
-    userInfo : null,
     students : [],
     'catInfo': [],
     dashboardInfo : {}
@@ -32,6 +35,9 @@ export default (state = INITIAL_STATE, action) => {
 
 
 //#endregion
+
+    if (action.type === Type.AddNewStudent)
+        return { ...state, students: [...state.students, action.payload] };
 
     if (action.type === Type.DeleteStudents)
         return { ...state, students: state.students.filter(element => !action.payload.includes(element.id)) };

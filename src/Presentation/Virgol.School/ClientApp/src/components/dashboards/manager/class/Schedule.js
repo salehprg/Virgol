@@ -41,7 +41,7 @@ class Schedule extends React.Component {
         const lessons = [];
 
         this.props.lessons.map(day => {
-            if(day)
+            if(day && day.length > 0)
             {
                 (day.map(lesson => {
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 

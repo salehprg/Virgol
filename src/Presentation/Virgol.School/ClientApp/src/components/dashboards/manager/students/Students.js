@@ -11,11 +11,9 @@ class Students extends React.Component {
     state = { loading: false, query: '' , showDeleteModal : false , studentId : 0}
 
     componentDidMount = async () => {
-        if (this.props.history.action === 'POP' || this.props.students.length == 0 ) {
-            this.setState({ loading: true })
-            await this.props.getAllStudents(this.props.user.token);
-            this.setState({ loading: false })
-        }
+        this.setState({ loading: true })
+        await this.props.getAllStudents(this.props.user.token);
+        this.setState({ loading: false })
     }
 
     changeQuery = query => {

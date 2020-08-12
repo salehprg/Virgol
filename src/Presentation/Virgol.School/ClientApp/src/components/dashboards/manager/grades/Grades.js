@@ -6,7 +6,7 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
 
-import {GetSchoolInfo , addNewClass , getClassList , GetSchool_Grades , GetSchool_StudyFields , getLessons } from "../../../../_actions/schoolActions"
+import {GetSchoolInfo , addNewClass , getClassList , getAllClass, GetSchool_Grades , GetSchool_StudyFields , getLessons } from "../../../../_actions/schoolActions"
 import history from "../../../../history";
 import { Link } from "react-router-dom";
 import SelectableCard from "../../baseManager/SelectableCard";
@@ -16,11 +16,10 @@ class Grades extends React.Component {
     state = { loading: false, query: '' }
 
     componentDidMount = async () => {
-        if (this.props.history.action === 'POP' || !this.props.schoolLessonInfo ) {
-            this.setState({ loading: true })
-            await this.props.GetSchoolInfo(this.props.user.token);
-            this.setState({ loading: false })
-        }
+        this.setState({ loading: true })
+        await this.props.GetSchoolInfo(this.props.user.token);
+        await this.props.getAllClass(this.props.user.token);
+        this.setState({ loading: false })
     }
 
     onAdd = async (status , data) => {
@@ -115,13 +114,21 @@ class Grades extends React.Component {
                         />
 
                         <div className="w-full mt-8 p-4 h-64 bg-dark-blue rounded-xl">
-                            <p className="text-right text-white">لیست کل مدارس</p>
-
-                            <SelectableCard
-                                id={23}
-                                title="101"
-                                select={(id) => history.push(`/class/${id}`)}
-                            />
+                            <p className="text-right text-white">لیست کل کلاس ها</p>
+                            {(this.props.allClass ? 
+                                this.props.allClass.map(x => {
+                                    return(
+                                        <SelectableCard
+                                            id={x.id}
+                                            title={x.className}
+                                            select={(id) => history.push(`/class/${id}`)}
+                                        />
+                                    )
+                                })
+                                
+                                :
+                                null
+                            )}
                         </div>
                     </div>
                 </div>
@@ -172,8 +179,9 @@ class Grades extends React.Component {
 const mapStateToProps = state => {
     return {user: state.auth.userInfo , schoolLessonInfo: state.schoolData.schoolLessonInfo ,
                                     newSchoolInfo: state.schoolData.newSchoolInfo ,
-                                    classes :  state.schoolData.classes}
+                                    classes :  state.schoolData.classes,
+                                    allClass : state.schoolData.allClass}
 }
 
 export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , 
-                                            GetSchool_Grades , getLessons , getClassList , addNewClass})(Grades);
+                                            GetSchool_Grades , getLessons , getClassList , getAllClass , addNewClass})(Grades);

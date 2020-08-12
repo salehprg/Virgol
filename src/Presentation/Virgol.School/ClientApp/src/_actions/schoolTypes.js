@@ -21,7 +21,9 @@ export const GetGrade = 'GetGrade';
 export const GetLessons = 'GetLessons';
 
 export const getGrades = 'getGrades';
+
 export const ClassList = 'ClassList';
+export const getAllClass = 'getAllClass';
 export const AddNewClass = 'AddNewClass';
 export const EditClass = 'EditClass';
 export const DeleteClass = 'DeleteClass';
