@@ -9,6 +9,7 @@ import BaseManager from "../../baseManager/BaseManager";
 import {GetSchoolInfo , addNewClass , getClassList , GetSchool_Grades , GetSchool_StudyFields , getLessons } from "../../../../_actions/schoolActions"
 import history from "../../../../history";
 import { Link } from "react-router-dom";
+import SelectableCard from "../../baseManager/SelectableCard";
 
 class Grades extends React.Component {
 
@@ -87,9 +88,8 @@ class Grades extends React.Component {
                 }
 
                 {(!this.props.schoolLessonInfo ? "... درحال بارگذاری اطلاعات" :
-                <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
+                <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1">
                     <div className="mt-8 overflow-auto">
-                        
                         <BaseManager
                             schoolId={this.props.match.params.id}
                             editable={false}
@@ -113,7 +113,16 @@ class Grades extends React.Component {
                             selectClass={this.selectClass}
                             loadingClasses={this.state.loadingClasses}
                         />
-                        
+
+                        <div className="w-full mt-8 p-4 h-64 bg-dark-blue rounded-xl">
+                            <p className="text-right text-white">لیست کل مدارس</p>
+
+                            <SelectableCard
+                                id={23}
+                                title="101"
+                                select={(id) => history.push(`/class/${id}`)}
+                            />
+                        </div>
                     </div>
                 </div>
                 )}

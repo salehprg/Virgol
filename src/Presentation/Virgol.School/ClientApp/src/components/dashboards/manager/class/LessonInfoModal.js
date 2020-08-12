@@ -73,23 +73,24 @@ class LessonInfoModal extends React.Component {
                 null
                 }
                 <Modal cancel={this.props.cancel}>
-                    <div onClick={(e) => e.stopPropagation()} className="w-11/12 max-w-500 bg-dark-blue px-4 py-6">
+                    <div onClick={(e) => e.stopPropagation()} className="w-11/12 max-w-500 rounded-lg bg-dark-blue px-4 py-6">
                         <div>
-                            <h2 className="text-center text-white my-4">جزییات ساعت درسی</h2> 
-                            {(this.props.canEdit ? 
-                                <p onClick={() => this.showDelete()} className="cursor-pointer">
-                                    {trash('w-6 text-white ')}
-                                </p>
-                                :
-                                null
-                            )}
+                            <h2 className="text-center text-white my-4 text-2xl">جزییات ساعت درسی</h2>
                         </div>
                       
-                        <p className="text-center text-white my-4">{this.props.lessonInfo.name}</p> 
+                        <p className="text-center text-white my-4">{this.props.lessonInfo.name}</p>
                         <p className="text-center text-white my-4">{this.props.lessonInfo.teachername}</p> 
                         <p className="text-center text-white my-4">
-                            {`${this.props.lessonInfo.endHour} ${this.options.find(x => x.value == this.props.lessonInfo.h).label} از ساعت ${this.props.lessonInfo.startHour} تا ساعت `}
-                        </p> 
+                            {`${this.props.lessonInfo.endHour} ${this.options.find(x => x.value === this.props.lessonInfo.h).label} از ساعت ${this.props.lessonInfo.startHour} تا ساعت `}
+                        </p>
+
+                        {(this.props.canEdit ?
+                                <div onClick={() => this.showDelete()} className="w-12 h-12 relative bg-redish rounded-full cursor-pointer">
+                                    {trash('w-6 text-white centerize')}
+                                </div>
+                                :
+                                null
+                        )}
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}
                         {/*<input type="number" name="startMin" placeholder="دقیقه" onChange={this.onHandleInput} value={this.state.startMin} />*/}
