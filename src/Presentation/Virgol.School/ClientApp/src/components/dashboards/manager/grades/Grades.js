@@ -113,8 +113,8 @@ class Grades extends React.Component {
                             selectClass={this.selectClass}
                             loadingClasses={this.state.loadingClasses}
                         />
-
-                        <div className="w-full mt-8 p-4 h-64 bg-dark-blue rounded-xl">
+                    </div>
+                    <div className="w-full mt-8 p-4 h-64 bg-dark-blue rounded-xl">
                             <p className="text-right text-white">لیست کل مدارس</p>
 
                             <SelectableCard
@@ -123,7 +123,6 @@ class Grades extends React.Component {
                                 select={(id) => history.push(`/class/${id}`)}
                             />
                         </div>
-                    </div>
                 </div>
                 )}
             </div>
