@@ -105,12 +105,35 @@ export const addBulkUser = (token, excel) => async dispatch => {
 
 }
 
+export const AddNewStudent = (token, formValues) => async dispatch => {
+
+    try {
+        dispatch({type : START})
+        const response = await lms.put("/Manager/AddNewStudent", formValues ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        dispatch({type : STOP})
+
+        history.push("/m/students");
+        dispatch(alert.success("دانش آموز با موفقیت اضافه شد"))
+        dispatch({ type: Type.AddNewStudent, payload: response.data });
+
+    } catch (e) {
+        dispatch({type : STOP})
+        console.log(e.response)
+        dispatch(alert.error("خطا در افرودن دانش آموز"))
+    }
+
+}
+
 export const DeleteStudents = (token, ids) => async dispatch => {
 
     try {
-        console.log(token)
+        
         dispatch({ type: START })
-        const response = await lms.delete(`/Manager/DeleteStudents?studentIds=${ids}` ,{
+        const response = await lms.post(`/Manager/DeleteStudents` , ids ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -207,6 +230,22 @@ export const getAllTeachers = token => async dispatch => {
 
 }
 
+export const GetUserInfo = (token,userId) => async dispatch => {
+
+    try {
+        const response = await lms.get(`/Manager/GetUserInfo?userId=${userId}`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.GetUserInfo, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
 export const addNewTeacher = (token, formValues) => async dispatch => {
 
     const values = {
@@ -221,17 +260,22 @@ export const addNewTeacher = (token, formValues) => async dispatch => {
     }
 
     try {
+        dispatch({type : START})
+
         const response = await lms.put("/Manager/AddNewTeacher", values ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({type : STOP})
+
         history.push("/m/dashboard");
         dispatch(alert.success("معلم با موفقیت اضافه شد"))
         dispatch({ type: Type.ADD_NEW_TEACHER, payload: response.data });
 
     } catch (e) {
+        dispatch({type : STOP})
         console.log(e.response)
         dispatch(alert.error("خطا در افرودن معلم"))
     }
@@ -289,22 +333,46 @@ export const deleteTeacher = (token, ids) => async dispatch => {
 export const editTeacher = (token, values) => async dispatch => {
 
     try {
+        dispatch({type : START})
         const response = await lms.post('/Manager/EditTeacher', values,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
+        dispatch({type : STOP})
 
-        history.push("/m/dashboard");
+        history.push("/m/teachers");
         dispatch(alert.success("معلم ویرایش گردید"))
         dispatch({ type: Type.EDIT_TEACHER, payload: response.data})
 
     } catch (e) {
+        dispatch({type : STOP})
         dispatch(alert.error("خطا در ویرایش معلم"))
     }
 
 }
 
+export const EditStudent = (token, values) => async dispatch => {
+
+    try {
+        dispatch({type : START})
+        const response = await lms.post('/Manager/EditStudent', values,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        dispatch({type : STOP})
+
+        history.push("/m/students");
+        dispatch(alert.success("دانش آموز ویرایش گردید"))
+        dispatch({ type: Type.EditStudent, payload: response.data})
+
+    } catch (e) {
+        dispatch({type : STOP})
+        dispatch(alert.error("خطا در ویرایش دانس آموز"))
+    }
+
+}
 //#endregion
 
 export const wipeCatInfo = () => {

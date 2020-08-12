@@ -278,15 +278,21 @@ namespace lms_with_moodle.Helper
         //-------Courses---------
         #region Courses
 
-        public async Task<int> CreateCourse(string CourseName , string displayName , int CategoryId = 1)
+        public async Task<int> CreateCourse(string CourseName , string displayName , int CategoryId = 1 , bool visible = false)
         {
             try
             {
+                int visibleCode = 0;
+
+                if(visible)
+                    visibleCode = 1;
+
                 string FunctionName = "core_course_create_courses";
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
                 "&courses[0][fullname]=" + displayName + 
                 "&courses[0][shortname]=" + CourseName + 
-                "&courses[0][categoryid]=" + CategoryId;
+                "&courses[0][categoryid]=" + CategoryId+
+                "&courses[0][visible]=" + visibleCode;
                 //"&courses[0][idnumber]=" + schoolMoodleId ;
 
                 HttpResponseModel Response = await sendData(data);
@@ -301,6 +307,41 @@ namespace lms_with_moodle.Helper
                 return -1;
             }
         }
+        public async Task<string> setCourseVisible(int courseId , bool visible)
+        {
+            try
+            {
+                int visibleCode = 0;
+
+                if(visible)
+                    visibleCode = 1;
+
+                string FunctionName = "core_course_update_courses";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + 
+                "&courses[0][id]=" + courseId + 
+                "&courses[0][visible]=" + visibleCode;
+
+                HttpResponseModel Response = await sendData(data);
+                var error = JsonConvert.DeserializeObject<warning>(Response.Message); 
+
+                if(error.warnings.Count > 0)
+                {
+                    Console.WriteLine(error.warnings[0].message);
+                    return error.warnings[0].message;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return ex.Message;
+            }
+        }
+        
         public async Task<string> EditCourse(CourseDetail _course)
         {
             try

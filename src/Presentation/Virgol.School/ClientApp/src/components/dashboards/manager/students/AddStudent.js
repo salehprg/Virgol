@@ -4,14 +4,10 @@ import Add from '../../../field/Add';
 import Fieldish from '../../../field/Fieldish';
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
-import {GetUserInfo , EditStudent} from "../../../../_actions/managerActions"
+import {AddNewStudent } from "../../../../_actions/managerActions"
 
 
-class StudentInfo extends React.Component {
-
-    componentDidMount = async () => {
-        await this.props.GetUserInfo(this.props.user.token , parseInt(this.props.match.params.id))
-    }
+class AddStudent extends React.Component {
 
     renderInputs = ({ input, meta, type, placeholder , extra }) => {
         return (
@@ -28,35 +24,29 @@ class StudentInfo extends React.Component {
 
     onSubmit = async (formValues) => {
         
-        let data = {
-            id : parseInt(this.props.match.params.id),
-            firstName : formValues.firstName,
-            lastName : formValues.lastName,
-            phoneNumber : formValues.phoneNumber,
+        let data = formValues;
+
+        data.userDetail = {
+            latinLastname : formValues.latinLastname,
+            latinFirstname : formValues.latinFirstname,
             fatherName : formValues.fatherName,
-            fatherPhoneNumber : formValues.fatherPhoneNumber,
-            userDetail : {
-                latinLastname : formValues.latinLastname,
-                latinFirstname : formValues.latinFirstname,
-                fatherName : formValues.fatherName,
-                fatherPhoneNumber : formValues.fatherPhoneNumber
-            }
+            fatherPhoneNumber : formValues.fatherPhoneNumber
         }
 
         console.log(data)
         
-        await this.props.EditStudent(this.props.user.token , data)
+        await this.props.AddNewStudent(this.props.user.token , data)
     }
 
     render() {
         return (
             <div>
-                <Add 
+                <Add
                     onCancel={() => history.push('/m/students')}
                     title={"اطلاعات دانش آموز"}
                 >
                     <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                        <Field
+                    <Field
                             name="firstName"
                             type="text"
                             placeholder="نام"
@@ -92,11 +82,18 @@ class StudentInfo extends React.Component {
                             extra={"w-full my-4 mx-2"}
                         />
                         <Field
+                            name="melliCode"
+                            type="text"
+                            placeholder="کد ملی"
+                            component={this.renderInputs}
+                            extra={"w-full my-4 mx-2"}
+                        />
+                        <Field
                             name="fatherName"
                             type="text"
                             placeholder="نام پدر"
                             component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
+                            extra={"w-40 my-4"}
                         />
                         <Field
                             name="fatherPhoneNumber"
@@ -117,23 +114,12 @@ class StudentInfo extends React.Component {
 const mapStateToProps = state => {
     console.log(state)
     return {
-        user: state.auth.userInfo , 
-        initialValues: {
-            firstName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.firstName : null,
-            lastName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.lastName : null,
-            melliCode: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.melliCode : null,
-            phoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.phoneNumber : null,
-            fatherName: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.fatherName : null,
-            fatherPhoneNumber: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.fatherPhoneNumber : null,
-            latinFirstname: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.latinFirstname : null,
-            latinLastname: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.latinLastname : null
-        }
+        user: state.auth.userInfo 
     }
 }
 
 const formWrapped = reduxForm({
-    form: 'editStudent',
-    enableReinitialize : true
-})(StudentInfo)
+    form: 'addStudent'
+})(AddStudent)
 
-export default connect(mapStateToProps , {EditStudent , GetUserInfo})(formWrapped);
+export default connect(mapStateToProps , {AddNewStudent })(formWrapped);

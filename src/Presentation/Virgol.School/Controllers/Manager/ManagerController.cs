@@ -114,10 +114,7 @@ namespace lms_with_moodle.Controllers
     
 #endregion
 
-
-#region UserAction
-
-
+#region Students
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -129,8 +126,216 @@ namespace lms_with_moodle.Controllers
                 int schoolId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().SchoolId;
 
                 List<UserModel> AllStudent = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Student && x.ConfirmedAcc && x.SchoolId == schoolId).ToList();
+                List<UserDataModel> users = new List<UserDataModel>();
 
-                return Ok(AllStudent);
+                foreach (var student in AllStudent)
+                {
+                    UserDataModel userDataModel = new UserDataModel();
+
+                    var serialized = JsonConvert.SerializeObject(student);
+                    userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+                    userDataModel.userDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+
+                    users.Add(userDataModel);
+                }
+
+                return Ok(users);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(UserModel), 200)]
+        [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
+        public async Task<IActionResult> AddNewStudent([FromBody]UserDataModel student)
+        {
+            try
+            {
+                string userNameManager = userManager.GetUserId(User);
+                int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
+
+                student.SchoolId = schoolId;
+                student.UserName = student.MelliCode;
+                student.userTypeId = (int)UserType.Student;
+                student.ConfirmedAcc = true;
+                
+                IdentityResult resultCreate = userManager.CreateAsync(student , student.MelliCode).Result;
+
+                if(resultCreate.Succeeded)
+                {
+                    bool resultAddRUser = userManager.AddToRoleAsync(student , "User").Result.Succeeded;
+
+                    int userId = userManager.FindByNameAsync(student.MelliCode).Result.Id;
+
+                    StudentDetail userDetail = new StudentDetail();
+                    userDetail = student.userDetail;
+
+                    if(userDetail != null)
+                    {
+                        userDetail.UserId = userId;
+                        appDbContext.StudentDetails.Add(userDetail);
+                    }
+
+                    bool ldapUser = ldap.AddUserToLDAP(student);
+
+                    bool userToMoodle = false;
+
+                    if(ldapUser)
+                    {
+                        userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {student});
+                    }
+
+                    if(userToMoodle)
+                    {
+                        int userMoodle_id = await moodleApi.GetUserId(student.MelliCode);
+                        student.Moodle_Id = userMoodle_id;
+                        appDbContext.Users.Update(student);
+
+                        appDbContext.SaveChanges();
+
+                        return Ok(appDbContext.Users.Where(x => x.MelliCode == student.MelliCode).FirstOrDefault());
+                    }
+                    
+                    return BadRequest("مشکلی در ثبت دانش آموز بوجود آمد");
+                    
+                }
+
+                return BadRequest(resultCreate.Errors);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
+        [HttpPost]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddBulkUser([FromForm]IFormCollection Files , int CategoryId = -1)
+        {
+            try
+            {
+                //Username and password Default is MelliCode
+
+                //1 - Read data from excel
+                //2 - Check valid data
+                //3 - Add user to Database
+                //3.1 - don't add duplicate username 
+
+                bool FileOk = await FileController.UploadFile(Files.Files[0] , Files.Files[0].FileName);
+
+                if(FileOk)
+                {
+                    string userName = userManager.GetUserId(User);
+                    int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
+
+                    var errors = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
+                    return Ok(errors);
+                }
+
+                return BadRequest("آپلود فایل با مشکل مواجه شد");
+                
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult EditStudent([FromBody]UserDataModel student)
+        {
+            try
+            {
+                // var serializedParent = JsonConvert.SerializeObject(input); 
+                // UserDataModel student = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == student.Id).FirstOrDefault();
+                userModel.FirstName = student.FirstName;
+                userModel.LastName = student.LastName;
+                userModel.PhoneNumber = student.PhoneNumber;
+                 
+                StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+                studentDetail.LatinFirstname = student.userDetail.LatinFirstname;
+                studentDetail.LatinLastname = student.userDetail.LatinLastname;
+                studentDetail.FatherName = student.userDetail.FatherName;
+                studentDetail.FatherPhoneNumber = student.userDetail.FatherPhoneNumber;
+
+                appDbContext.Users.Update(userModel);
+                appDbContext.StudentDetails.Update(studentDetail);
+                appDbContext.SaveChanges();
+
+                var serializedParent = JsonConvert.SerializeObject(userModel); 
+                student = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+                student.userDetail = studentDetail;
+
+                return Ok(student);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> DeleteStudents([FromBody]int[] studentIds)
+        {
+            try
+            {
+                MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
+
+                foreach (int studentId in studentIds)
+                {
+                    UserModel student = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
+
+                    await myUserManager.DeleteUser(student);
+                    
+                }
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+#endregion
+
+#region UserAction
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetUserInfo(int userId)
+        {
+            try
+            {
+                string idNumber = userManager.GetUserId(User);
+                int schoolId = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault().SchoolId;
+
+                UserModel userModel = appDbContext.Users.Where(user => user.SchoolId == schoolId && user.Id == userId).FirstOrDefault();
+
+                if(userModel.userTypeId == (int)UserType.Student)
+                {
+                    StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userId).FirstOrDefault();
+
+                     return Ok(new{
+                         userModel,
+                         studentDetail = studentDetail
+                     });
+                }
+
+                return Ok(userModel);
             }
             catch(Exception ex)
             {
@@ -174,95 +379,6 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
-    
-
-        [HttpPost]
-        [ProducesResponseType(typeof(List<string>), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddBulkUser([FromForm]IFormCollection Files , int CategoryId = -1)
-        {
-            try
-            {
-                //Username and password Default is MelliCode
-
-                //1 - Read data from excel
-                //2 - Check valid data
-                //3 - Add user to Database
-                //3.1 - don't add duplicate username 
-
-                bool FileOk = await FileController.UploadFile(Files.Files[0] , Files.Files[0].FileName);
-
-                if(FileOk)
-                {
-                    string idNumber = userManager.GetUserId(User);
-                    int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
-
-                    var errors = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
-                    return Ok(errors);
-                }
-
-                return BadRequest("آپلود فایل با مشکل مواجه شد");
-                
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> DeleteStudents(List<int> studentIds)
-        {
-            try
-            {
-                MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
-
-                foreach (int studentId in studentIds)
-                {
-                    UserModel student = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
-
-                    await myUserManager.DeleteUser(student);
-                    
-                }
-
-                return Ok(true);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpPost]
-        [ProducesResponseType(typeof(List<string>), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddBulkTeacher([FromForm]IFormCollection Files)
-        {
-            try
-            {
-                bool FileOk = await FileController.UploadFile(Files.Files[0] , Files.Files[0].FileName);
-
-                if(FileOk)
-                {
-                    string idNumber = userManager.GetUserId(User);
-                    int schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
-
-                    var users = await CreateBulkUser((int)UserType.Teacher , Files.Files[0].FileName , schoolId);
-
-                    return Ok(users);
-                }
-                return BadRequest("آپلود فایل با مشکل مواجه شد");
-                
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
 
         public class InputId
         {
@@ -464,6 +580,33 @@ namespace lms_with_moodle.Controllers
 
 #region Teacher
 
+        [HttpPost]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddBulkTeacher([FromForm]IFormCollection Files)
+        {
+            try
+            {
+                bool FileOk = await FileController.UploadFile(Files.Files[0] , Files.Files[0].FileName);
+
+                if(FileOk)
+                {
+                    string userName = userManager.GetUserId(User);
+                    int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
+
+                    var users = await CreateBulkUser((int)UserType.Teacher , Files.Files[0].FileName , schoolId);
+
+                    return Ok(users);
+                }
+                return BadRequest("آپلود فایل با مشکل مواجه شد");
+                
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -506,15 +649,6 @@ namespace lms_with_moodle.Controllers
 
                     int userId = userManager.FindByNameAsync(teacher.MelliCode).Result.Id;
 
-                    StudentDetail userDetail = new StudentDetail();
-                    userDetail = teacher.userDetail;
-
-                    if(userDetail != null)
-                    {
-                        userDetail.UserId = userId;
-                        appDbContext.StudentDetails.Add(userDetail);
-                    }
-
                     bool ldapUser = ldap.AddUserToLDAP(teacher);
 
                     bool userToMoodle = false;
@@ -535,6 +669,8 @@ namespace lms_with_moodle.Controllers
                         return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
                     }
                     
+                    //if we arrive this point it means error occured and revert any databse actio
+                    await userManager.DeleteAsync(teacher);
                     return BadRequest("مشکلی در ثبت معلم بوجود آمد");
                     
                 }
@@ -572,7 +708,7 @@ namespace lms_with_moodle.Controllers
             }
         }
     
-        [HttpDelete]
+        [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> DeleteTeacher([FromBody]List<int> teacherIds)
@@ -643,8 +779,8 @@ namespace lms_with_moodle.Controllers
                 int schoolId = 0;
                 if(FileOk)
                 {
-                    string idNumber = userManager.GetUserId(User);
-                    schoolId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().SchoolId;
+                    string userName = userManager.GetUserId(User);
+                    schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
                     userModels = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
                 }

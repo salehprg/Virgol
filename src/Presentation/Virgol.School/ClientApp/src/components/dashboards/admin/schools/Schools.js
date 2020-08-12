@@ -2,7 +2,7 @@ import React from "react";
 import PlusTable from "../../tables/PlusTable";
 import {edit, external_link, loading, trash} from "../../../../assets/icons";
 import history from "../../../../history";
-import {getSchools , RemoveSchool} from "../../../../_actions/schoolActions"
+import {getSchools , RemoveSchool , AddBulkSchool} from "../../../../_actions/schoolActions"
 import {RedirectAdmin } from "../../../../_actions/adminActions"
 import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
 import { connect } from "react-redux";
@@ -35,8 +35,8 @@ class Schools extends React.Component {
         this.setState({ query })
     }
 
-    submitExcel = excel => {
-        
+    submitExcel = async excel => {
+        await this.props.AddBulkSchool(this.props.user.token , excel)
     }
 
     render() {
@@ -107,4 +107,4 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , schools: state.schoolData.schools}
 }
 
-export default connect(mapStateToProps, { getSchools , RemoveSchool , RedirectAdmin })(Schools);
+export default connect(mapStateToProps, { getSchools , RemoveSchool , RedirectAdmin , AddBulkSchool })(Schools);

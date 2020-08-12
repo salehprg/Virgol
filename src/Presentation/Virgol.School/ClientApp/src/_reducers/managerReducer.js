@@ -7,6 +7,10 @@ const INITIAL_STATE = {
     myNews: [],
     schoolLessonInfo : null,
     studentsInClass : null,
+    userInfo : {
+        userModel : null,
+        studentDetail : null
+    },
     'accessRoleIds': [],
     grades: [],
     'classes': [],
@@ -32,6 +36,9 @@ export default (state = INITIAL_STATE, action) => {
 
 //#endregion
 
+    if (action.type === Type.AddNewStudent)
+        return { ...state, students: [...state.students, action.payload] };
+
     if (action.type === Type.DeleteStudents)
         return { ...state, students: state.students.filter(element => !action.payload.includes(element.id)) };
      
@@ -53,6 +60,9 @@ export default (state = INITIAL_STATE, action) => {
     if (action.type === Type.ADD_NEW_TEACHER)
         return { ...state, teachers: [...state.teachers, action.payload]};
 
+    if (action.type === Type.GetUserInfo)
+        return { ...state, userInfo: action.payload};
+
     if (action.type === 'DELETE_CATEGORY')
         return { ...state, categories: state.categories.filter(element => element.id !== action.payload) }
 
@@ -61,6 +71,9 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === Type.EDIT_TEACHER)
         return { ...state, teachers: state.teachers.map(el => el.id === action.payload.id ? action.payload : el) }
+
+    if (action.type === Type.EditStudent)
+        return { ...state, students: state.students.map(el => el.id === action.payload.id ? action.payload : el) }
 
     if (action.type === Type.WIPE_CAT_INFO)
         return { ...state, catInfo: null }

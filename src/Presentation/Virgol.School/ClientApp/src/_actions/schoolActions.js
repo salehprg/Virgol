@@ -72,6 +72,32 @@ export const CreateSchool = (token ,formvalue) => async dispatch => {
 
 }
 
+export const AddBulkSchool = (token, excel) => async dispatch => {
+
+    try {
+        const data = new FormData()
+        data.append('Files', excel)
+
+        dispatch({ type: START })
+        const response = await lms.post("/School/AddBulkSchool", data, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.AddBulkSchool });
+        history.push("/a/schools")
+        dispatch(alert.success("فایل اپلود شد"))
+
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
+
 export const EditSchool = (token ,formvalue) => async dispatch => {
 
     try {
@@ -381,6 +407,22 @@ export const getAllGrades = token => async dispatch => {
 
 }
 
+export const getAllClass = (token) => async dispatch => {
+
+    try {
+        const response = await lms.get("/School/ClassList?gradeId=-1", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.getAllClass, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا دربرقراری اتصال"))
+    }
+
+}
+
 export const getClassList = (token,gradeId) => async dispatch => {
 
     try {
@@ -442,7 +484,7 @@ export const deleteClass = (token, classId) => async dispatch => {
 
     try {
         dispatch({ type: START })
-        const response = await lms.post("/School/DeleteClass", { classId } ,{
+        const response = await lms.delete(`/School/DeleteClass?classId=${classId}` ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -454,7 +496,7 @@ export const deleteClass = (token, classId) => async dispatch => {
 
     } catch (e) {
         dispatch({ type: STOP })
-        dispatch(alert.error("خطا در حذف مقطع"))
+        dispatch(alert.error("خطا در حذف کلاس"))
     }
 
 }

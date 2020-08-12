@@ -23,6 +23,9 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, grades: action.payload };
             
 //#region Class
+        case Type.getAllClass:
+            return { ...state, allClass: action.payload };
+
         case Type.ClassList:
             return { ...state, classes: action.payload };
 

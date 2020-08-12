@@ -200,7 +200,7 @@ namespace lms_with_moodle.Controllers
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<string>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddBulkSchool([FromForm]IFormCollection Files , int CategoryId = -1)
+        public async Task<IActionResult> AddBulkSchool([FromForm]IFormCollection Files )
         {
             try
             {
@@ -215,12 +215,16 @@ namespace lms_with_moodle.Controllers
 
                 if(FileOk)
                 {
-                    string idNumber = userManager.GetUserId(User);
-                    int adminId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().Id;
+                    string userName = userManager.GetUserId(User);
+                    int adminId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
                     int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault().SchoolsType;
 
                     var errors = await CreateBulkSchool(Files.Files[0].FileName , schoolType);
-                    return Ok(errors);
+
+                    if(errors)
+                        return Ok(errors);
+
+                    return BadRequest("اطلاعات فایل اکسل به درستی وارد نشده است");
                 }
 
                 return BadRequest("آپلود فایل با مشکل مواجه شد");
@@ -245,7 +249,9 @@ namespace lms_with_moodle.Controllers
 
 
                 string idNumberAdmin = userManager.GetUserId(User);
-                int adminId = appDbContext.Users.Where(x => x.UserName == idNumberAdmin).FirstOrDefault().Id;
+                UserModel adminModel = appDbContext.Users.Where(x => x.UserName == idNumberAdmin).FirstOrDefault();
+                int adminId = adminModel.Id;
+
                 AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault();
                 int schoolType = adminDetail.SchoolsType;
 
@@ -256,8 +262,8 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("شما حداکثر تعداد مدارس خود را ثبت کردید");
 
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                UserModel user = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault();
-                bool duplicateManager = user != null;
+                UserModel adminUser = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault();
+                bool duplicateManager = adminUser != null;
 
                 if(!duplicateManager)
                 {
@@ -296,6 +302,8 @@ namespace lms_with_moodle.Controllers
 
                         appDbContext.Schools.Update(schoolResult);
                         appDbContext.SaveChanges();
+                        
+                        SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                         
                         return Ok(new{
                             manager.MelliCode,
@@ -836,7 +844,17 @@ namespace lms_with_moodle.Controllers
                 int managerId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().Id;
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
-                return Ok(appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Grade_Id == gradeId));
+                List<School_Class> classes = new List<School_Class>();
+                if(gradeId != -1)
+                {
+                    classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Grade_Id == gradeId).ToList();
+                }
+                else
+                {
+                    classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList();
+                }
+
+                return Ok(classes);
             }
             catch(Exception ex)
             {
@@ -995,7 +1013,9 @@ namespace lms_with_moodle.Controllers
                 await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
 
                 appDbContext.School_Classes.Remove(schoolClass);
-                appDbContext.School_Lessons.RemoveRange(appDbContext.School_Lessons.Where(x => x.classId == schoolClass.Id).ToList());
+                appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList());
+                appDbContext.School_Lessons.RemoveRange(appDbContext.School_Lessons.Where(x => x.classId == classId).ToList());
+                appDbContext.School_StudentClasses.RemoveRange(appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList());
                 appDbContext.SaveChanges();
 
                 return Ok(classId);
@@ -1046,6 +1066,7 @@ namespace lms_with_moodle.Controllers
                         UserModel manager = new UserModel();
                         manager.FirstName = schoolData.FirstName;
                         manager.LastName = schoolData.LastName;
+                        manager.PhoneNumber = schoolData.managerPhoneNumber;
                         manager.MelliCode = schoolData.MelliCode;
                         manager.UserName = schoolData.MelliCode;
                         manager.SchoolId = schoolResult.Id;
@@ -1073,6 +1094,8 @@ namespace lms_with_moodle.Controllers
 
                             appDbContext.Schools.Update(schoolResult);
                             appDbContext.SaveChanges();
+
+                            SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
                             
                             return true;
                         }

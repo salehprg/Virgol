@@ -4,15 +4,10 @@ import Add from '../../../field/Add';
 import Fieldish from '../../../field/Fieldish';
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
-import {GetUserInfo , editTeacher} from "../../../../_actions/managerActions"
+import {addNewTeacher } from "../../../../_actions/managerActions"
 
 
-class TeacherInfo extends React.Component {
-
-
-    componentDidMount = async () => {
-        await this.props.GetUserInfo(this.props.user.token , parseInt(this.props.match.params.id))
-    }
+class AddTeacher extends React.Component {
 
     renderInputs = ({ input, meta, type, placeholder }) => {
         return (
@@ -29,41 +24,67 @@ class TeacherInfo extends React.Component {
 
     onSubmit = async (formValues) => {
         
-        formValues.id = parseInt(this.props.match.params.id)
-        await this.props.editTeacher(this.props.user.token , formValues)
+        let data = formValues;
+
+        data.userDetail = {
+            latinLastname : formValues.latinLastname,
+            latinFirstname : formValues.latinFirstname
+        }
+
+        console.log(data)
+        
+        await this.props.addNewTeacher(this.props.user.token , data)
     }
 
     render() {
         return (
             <div>
-                <Add 
+                <Add
                     onCancel={() => history.push('/m/teachers')}
                     title={"اطلاعات معلم"}
                 >
                     <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                        <Field
+                    <Field
                             name="firstName"
                             type="text"
                             placeholder="نام"
                             component={this.renderInputs}
+                            extra={"w-40 my-4 mx-2"}
                         />
                         <Field
                             name="lastName"
                             type="text"
                             placeholder="نام خانوادگی"
                             component={this.renderInputs}
+                            extra={"w-40 my-4"}
                         />
                         <Field
-                            name="melliCode"
+                            name="latinFirstname"
                             type="text"
-                            placeholder="کد ملی"
+                            placeholder="نام لاتین"
                             component={this.renderInputs}
+                            extra={"w-40 my-4 mx-2"}
+                        />
+                        <Field
+                            name="latinLastname"
+                            type="text"
+                            placeholder="نام خانوادگی لاتین"
+                            component={this.renderInputs}
+                            extra={"w-40 my-4"}
                         />
                         <Field
                             name="phoneNumber"
                             type="text"
                             placeholder="شماره همراه"
                             component={this.renderInputs}
+                            extra={"w-full my-4 mx-2"}
+                        />
+                        <Field
+                            name="melliCode"
+                            type="text"
+                            placeholder="کد ملی"
+                            component={this.renderInputs}
+                            extra={"w-full my-4 mx-2"}
                         />
 
                         <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
@@ -76,20 +97,14 @@ class TeacherInfo extends React.Component {
 }
 
 const mapStateToProps = state => {
+    console.log(state)
     return {
-        user: state.auth.userInfo , 
-        initialValues: {
-            firstName: state.managerData.userInfo ? state.managerData.userInfo.firstName : null,
-            lastName: state.managerData.userInfo ? state.managerData.userInfo.lastName : null,
-            melliCode: state.managerData.userInfo ? state.managerData.userInfo.melliCode : null,
-            phoneNumber: state.managerData.userInfo ? state.managerData.userInfo.phoneNumber : null
-        }
+        user: state.auth.userInfo 
     }
 }
 
 const formWrapped = reduxForm({
-    form: 'editTeacher',
-    enableReinitialize : true
-}, mapStateToProps)(TeacherInfo)
+    form: 'addTeacher'
+})(AddTeacher)
 
-export default connect(mapStateToProps , {editTeacher , GetUserInfo})(formWrapped);
+export default connect(mapStateToProps , {addNewTeacher})(formWrapped);

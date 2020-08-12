@@ -66,12 +66,13 @@ public class FileController {
                             {
                                 CreateSchoolData schoolData = new CreateSchoolData
                                 {
-                                    SchoolName = excelData.GetValue(1).ToString(),
-                                    SchoolIdNumber = ConvertToPersian.PersianToEnglish(excelData.GetValue(2).ToString()),
-                                    FirstName = excelData.GetValue(3).ToString(),
-                                    LastName = excelData.GetValue(4).ToString(),
-                                    MelliCode = ConvertToPersian.PersianToEnglish(excelData.GetValue(5).ToString()),
-                                    personalIdNumber = ConvertToPersian.PersianToEnglish(excelData.GetValue(6).ToString())
+                                    SchoolName = excelData.GetValue(0).ToString(),
+                                    SchoolIdNumber = ConvertToPersian.PersianToEnglish(excelData.GetValue(1).ToString()),
+                                    FirstName = excelData.GetValue(2).ToString(),
+                                    LastName = excelData.GetValue(3).ToString(),
+                                    MelliCode = ConvertToPersian.PersianToEnglish(excelData.GetValue(4).ToString()),
+                                    personalIdNumber = ConvertToPersian.PersianToEnglish(excelData.GetValue(5).ToString()),
+                                    managerPhoneNumber =  ConvertToPersian.PersianToEnglish(excelData.GetValue(6).ToString())
                                 };
 
                                 excelSchools.Add(schoolData);
@@ -136,10 +137,9 @@ public class FileController {
                                     LastName = excelData.GetValue(1).ToString(),
                                     MelliCode = excelData.GetValue(2).ToString(),
                                     PhoneNumber = excelData.GetValue(3).ToString(),
-                                    Email = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : ""),
                                     userDetail = new StudentDetail(){
-                                        LatinFirstname = excelData.GetValue(5).ToString(),
-                                        LatinLastname = excelData.GetValue(6).ToString()
+                                        LatinFirstname = (excelData.GetValue(4) != null ? excelData.GetValue(5).ToString() : null),
+                                        LatinLastname = (excelData.GetValue(5) != null ? excelData.GetValue(6).ToString() : null)
                                     }
                                 };
 

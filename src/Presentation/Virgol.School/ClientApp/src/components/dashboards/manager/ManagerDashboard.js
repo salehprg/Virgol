@@ -53,7 +53,7 @@ class ManagerDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="bases"
-                        title="گرایش ها"
+                        title="مدیریت کلاس"
                         icon={layout}
                         changeActive={this.changeActive}
                     />

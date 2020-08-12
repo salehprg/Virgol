@@ -9,9 +9,7 @@ namespace Models.User
         public int Id {get; set;}
         public int UserId {get; set;}
         
-        [Required]
         public string LatinFirstname {get; set;}
-        [Required]
         public string LatinLastname {get; set;}
         public string ShDocument {get; set;}
         public string Document2 {get; set;}

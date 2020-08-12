@@ -6,6 +6,7 @@ import SidebarCard from "../sidebar/SidebarCard";
 import {layout} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
+import Classes from "./classes/Classes";
 
 class StudentDashboard extends React.Component {
 
@@ -49,7 +50,7 @@ class StudentDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
-                        code="lessosn"
+                        code="classes"
                         title="کلاس ها"
                         icon={layout}
                         changeActive={this.changeActive}
@@ -61,6 +62,7 @@ class StudentDashboard extends React.Component {
 
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
+                        <Route path={this.props.match.url + "/classes"} component={Classes}/>
                     </Switch>
                 </div>
             </div>

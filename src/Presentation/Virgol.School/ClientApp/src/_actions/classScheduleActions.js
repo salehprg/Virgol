@@ -95,19 +95,19 @@ export const EditClassSchedule = (token, values) => async dispatch => {
 
 }
 
-export const DeleteClassSchedule = (token, classId) => async dispatch => {
+export const DeleteClassSchedule = (token, scheduleId) => async dispatch => {
 
     try {
 
         dispatch({ type: START })
-        const response = await lms.post(`/Manager/DeleteClassSchedule?classId=${classId}` ,{
+        const response = await lms.delete(`/ClassSchedule/DeleteClassSchedule?scheduleId=${scheduleId}` ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
         dispatch({ type: STOP })
-        dispatch({ type: Type.DeleteClassSchedule, payload: classId})
+        dispatch({ type: Type.DeleteClassSchedule, payload: scheduleId})
         dispatch(alert.success("ساعت درسی حذف شد"))
 
     } catch (e) {

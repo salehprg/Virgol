@@ -2,6 +2,7 @@
 export const GetSchoolInfo = 'GetSchoolInfo';
 export const GetSchools = 'GetSchools';
 export const CreateSchool = 'CreateSchool';
+export const AddBulkSchool = 'AddBulkSchool';
 export const EditSchool = 'EditSchool';
 export const RemoveSchool = 'RemoveSchool';
 
@@ -20,7 +21,9 @@ export const GetGrade = 'GetGrade';
 export const GetLessons = 'GetLessons';
 
 export const getGrades = 'getGrades';
+
 export const ClassList = 'ClassList';
+export const getAllClass = 'getAllClass';
 export const AddNewClass = 'AddNewClass';
 export const EditClass = 'EditClass';
 export const DeleteClass = 'DeleteClass';
