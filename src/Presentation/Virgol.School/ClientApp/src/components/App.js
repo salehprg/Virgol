@@ -13,6 +13,8 @@ import ManagerDashboard from './dashboards/manager/ManagerDashboard';
 import AddSchool from './dashboards/admin/schools/addSchool/AddSchool';
 import StudentDashboard from './dashboards/student/Dashboard';
 import ClassInfo from './dashboards/manager/class/ClassInfo';
+import TeacherInfo from './dashboards/manager/teachers/TeacherInfo';
+import StudentInfo from './dashboards/manager/students/StudentInfo';
 
 class App extends React.Component {
 
@@ -40,6 +42,8 @@ class App extends React.Component {
                         <Route path="/class/:id" component={ClassInfo} />
                         <Route path="/newSchool" component={AddSchool} />
                         <Route path="/m" component={ManagerDashboard} />
+                        <Route path="/teacher/:id" component={TeacherInfo} />
+                        <Route path="/student/:id" component={StudentInfo} />
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="" component={NoFound} />
                     </Switch>
