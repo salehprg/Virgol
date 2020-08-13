@@ -81,7 +81,7 @@ class LessonInfoModal extends React.Component {
                         <p className="text-center text-white my-4">{this.props.lessonInfo.name}</p>
                         <p className="text-center text-white my-4">{this.props.lessonInfo.teachername}</p> 
                         <p className="text-center text-white my-4">
-                            {`${this.props.lessonInfo.endHour} ${this.options.find(x => x.value === this.props.lessonInfo.h).label} از ساعت ${this.props.lessonInfo.startHour} تا ساعت `}
+                            {`${this.props.lessonInfo.endHour} ${this.options.find(x => x.value === this.props.lessonInfo.y).label} از ساعت ${this.props.lessonInfo.startHour} تا ساعت `}
                         </p>
 
                         {(this.props.canEdit ?
