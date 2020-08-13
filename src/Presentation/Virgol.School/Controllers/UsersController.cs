@@ -60,7 +60,7 @@ namespace lms_with_moodle.Controllers
         
 
 //Get data fro Enrolled User from Moodle 
-#region User->indexPage
+#region UserActions
         
         [HttpGet]
         [Authorize(Roles = "User")]
@@ -126,6 +126,191 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Roles="User")]
+        public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber , int type , string verificationCode)
+        {
+            try
+            {
+                //Type  0 => send verificationCode => data = phonenumber
+                //Type  1 => check verificationCode => data = verificationCode
+
+                string idNumber = userManager.GetUserId(User);
+                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+                user.PhoneNumber = phoneNumber;
+
+                if(type == 0)
+                {
+                    UserModel userPhonenumber = appDbContext.Users.Where(x => x.PhoneNumber.Contains(phoneNumber)).FirstOrDefault();
+
+                    if(userPhonenumber.Id != user.Id)
+                        return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
+
+                    //Every user can get just 3 Verification code in last 30 minutes
+                    if(checkUserAttempts(user))
+                    {
+                        bool result = await SendCode(user);
+                        if(result)
+                        {
+                            return Ok("پیامک تایید با موفقیت ارسال شد");
+                        }
+                        else
+                        {
+                            return BadRequest("مشکلی در ارسال پیامک بوجود آمد");
+                        }
+                    }
+                    
+                    return BadRequest("در هر 30 دقیقه 3 بار مجاز به ارسال پیامک هستید");
+
+                }
+                else if(type == 1)
+                {
+                    if(await CheckVerificationCode(verificationCode , user))
+                    {
+                        user.PhoneNumber = phoneNumber;
+                        user.PhoneNumberConfirmed = true;
+                        appDbContext.Users.Update(user);
+                        appDbContext.SaveChanges();
+                        return Ok(true);
+                    }
+                    return Ok(false);
+                }
+
+                return BadRequest("مشکلی بوجود آمده");
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPWDCode(string idNumber , int type , string verificationCode = "")
+        {
+            try
+            {
+                //Type  0 => send verificationCode
+                //Type  1 => check verificationCode
+
+                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+
+                if(type == 0)
+                {
+                    //Every user can get just 3 Verification code in last 30 minutes
+                    if(user.PhoneNumber != null)
+                    {
+                        if(checkUserAttempts(user))
+                        {
+                            bool result = await SendCode(user);
+                            if(result)
+                            {
+                                return Ok("پیامک تایید با موفقیت ارسال شد");
+                            }
+                            else
+                            {
+                                return BadRequest("مشکلی در ارسال پیامک بوجود آمد");
+                            }
+                        }
+                        
+                        return BadRequest("در هر 30 دقیقه 3 بار مجاز به ارسال پیامک هستید");
+                    }
+                     return BadRequest("شما هنوز حساب کاربری خودرا تکمیل نکرده اید");
+
+                }
+                else if(type == 1)
+                {
+                    if(await CheckVerificationCode(verificationCode , user))
+                    {
+                        string token = await userManager.GeneratePasswordResetTokenAsync(user);
+                        await userManager.ResetPasswordAsync(user , token , user.MelliCode);
+                        return Ok(true);
+                    }
+                }
+
+                return Ok(true);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles="User")]
+        public async Task<IActionResult> CompleteStudentProfile([FromBody]UserDataModel userDataModel)
+        {
+            try
+            {
+                string idNumber = userManager.GetUserId(User);
+                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+
+                if(user.LatinFirstname != null && user.LatinLastname != null)
+                    return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
+ 
+                StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
+
+                studentDetail.BirthDate = userDataModel.userDetail.BirthDate;
+                studentDetail.cityBirth = userDataModel.userDetail.cityBirth;
+                
+                appDbContext.StudentDetails.Update(studentDetail);
+
+                user.LatinFirstname = userDataModel.LatinFirstname;
+                user.LatinLastname = userDataModel.LatinLastname;
+
+                appDbContext.Users.Update(user);
+                appDbContext.SaveChanges();
+
+                ldap.AddMail(user);
+
+                return Ok(true);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles="Teacher")]
+        public async Task<IActionResult> CompleteTeacherProfile([FromBody]UserDataModel userDataModel)
+        {
+            try
+            {
+                string idNumber = userManager.GetUserId(User);
+                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+
+                if(user.LatinFirstname != null && user.LatinLastname != null)
+                    return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
+
+                bool duplicatePersonalIdNumber = appDbContext.TeacherDetails.Where(x => x.personalIdNUmber == userDataModel.teacherDetail.personalIdNUmber).FirstOrDefault() != null;
+                                           
+                if(duplicatePersonalIdNumber)
+                    return BadRequest("کد پرسنلی وارد شده تکراریست");
+ 
+                TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault();
+
+                teacherDetail.birthDate = userDataModel.teacherDetail.birthDate;
+                teacherDetail.cityBirth = userDataModel.teacherDetail.cityBirth;
+                teacherDetail.personalIdNUmber = userDataModel.teacherDetail.personalIdNUmber;
+                
+                appDbContext.TeacherDetails.Add(teacherDetail);
+
+                user.LatinFirstname = userDataModel.LatinFirstname;
+                user.LatinLastname = userDataModel.LatinLastname;
+
+                appDbContext.Users.Update(user);
+                appDbContext.SaveChanges();
+
+                ldap.AddMail(user);
+
+                return Ok(true);
+
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+            }
+        }
 #endregion
 
 
@@ -170,7 +355,7 @@ namespace lms_with_moodle.Controllers
                         break;
 
                     case (int)UserType.Teacher:
-                        userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
                         break;
 
                     case (int)UserType.Admin:
@@ -232,17 +417,21 @@ namespace lms_with_moodle.Controllers
 
                 StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
                 int baseId = (studentDetail != null ? studentDetail.BaseId : -1);
+
                 CategoryDetail category = new CategoryDetail();
                 if(baseId != -1)
                 {
                     category = await moodleApi.getCategoryDetail(baseId);
                 }
 
+                bool completedProfile = userInformation.LatinFirstname != null && userInformation.LatinFirstname != null;
+                
                 //Get userTypeId information from UserType Class
                 return Ok(new
                 {
                     UserType = userInformation.userTypeId,
                     category,
+                    completedProfile,
                     BaseId = baseId,
                     userInformation,
                     userDetail,
@@ -334,119 +523,6 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-    #region ForgotPassword
-        async Task<bool> SendCode(UserModel user)
-        {
-            try
-            {
-                string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);// Make new Verification code
-                //bool SmsResult = SMSApi.SendForgotSms(user.PhoneNumber , Code);
-                bool SmsResult = SMSApi.SendForgotSms(user.PhoneNumber , user.FirstName + " " + user.LastName , Code);
-
-                if(SmsResult)
-                {
-                    VerificationCodeModel verification = new VerificationCodeModel();
-                    verification.LastSend = DateTime.Now;
-                    verification.UserId = user.Id;
-                    verification.VerificationCode = Code;
-
-                    appDbContext.VerificationCodes.Add(verification);
-                    appDbContext.SaveChanges();
-
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-        }
-        
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        public async Task<IActionResult> SendVerificationCode(string IdNumer)
-        {
-            UserModel user = appDbContext.Users.Where(x => x.MelliCode == IdNumer).FirstOrDefault();
-
-
-            //Every user can get just 3 Verification code in last 30 minutes
-            List<VerificationCodeModel> lastestCodeInfo = new List<VerificationCodeModel>();
-            lastestCodeInfo = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
-                                                            .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList();
-            
-            if(lastestCodeInfo.Count != 3 && lastestCodeInfo.Count > 0) // Rich limit Send sms
-            {
-                if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
-                {   
-                    bool sendCodeResult = await SendCode(user);
-                    return Ok(sendCodeResult);
-                }
-                else
-                {
-                    //return Ok("Limit Reached");
-                    return Ok(false);
-                }
-            }
-            else if(lastestCodeInfo.Count == 0)
-            {
-                return Ok(await SendCode(user));
-            }
-            else
-            {
-                return Ok(false);
-            }
-            
-            
-        }
-
-
-        public class VerificationInput
-        {
-            public string MelliCode {get; set;}
-            public string VerificationCode {get; set;}
-        }
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        public async Task<IActionResult> ForgotPassword([FromBody]VerificationInput _input)
-        {
-            UserModel user = appDbContext.Users.Where(x => x.MelliCode == _input.MelliCode).FirstOrDefault();
-
-            string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);
-
-            bool resultVerify = (Code == _input.VerificationCode);
-
-            if(resultVerify)
-            {
-                string token = await userManager.GeneratePasswordResetTokenAsync(user);
-                await userManager.ResetPasswordAsync(user , token , user.MelliCode);
-                return Ok(true);
-            }
-            else
-            {
-                //Check verification if user Reach limit Code by Check last sent Code 
-
-                VerificationCodeModel lastVerifyCode = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
-                                                            .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList()[0];
-                string LastCode = lastVerifyCode.VerificationCode;
-                
-                if(LastCode == _input.VerificationCode)
-                {
-                    string token = await userManager.GeneratePasswordResetTokenAsync(user);
-                    await userManager.ResetPasswordAsync(user , token , user.MelliCode);
-                    return Ok(true);
-                }
-
-                return Ok(false);
-            }
-        }
-
-    #endregion
-        
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> UploadDocuments([FromForm]IFormCollection Files , string Mellicode)
@@ -517,6 +593,99 @@ namespace lms_with_moodle.Controllers
 
 #endregion
     
+
+#region SMS
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public bool checkUserAttempts(UserModel user)
+        {
+            List<VerificationCodeModel> lastestCodeInfo = new List<VerificationCodeModel>();
+            lastestCodeInfo = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
+                                                            .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList();
+            
+            if(lastestCodeInfo.Count != 3 && lastestCodeInfo.Count > 0) // Rich limit Send sms
+            {
+                if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
+                {   
+                    return true;
+                }
+                else
+                {
+                    //return Ok("Limit Reached");
+                    return false;
+                }
+            }
+            else if(lastestCodeInfo.Count == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        async Task<bool> SendCode(UserModel user)
+        {
+            try
+            {
+                string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);// Make new Verification code
+                //bool SmsResult = SMSApi.SendForgotSms(user.PhoneNumber , Code);
+                bool SmsResult = SMSApi.SendVerifySms(user.PhoneNumber , user.FirstName + " " + user.LastName , Code);
+
+                if(SmsResult)
+                {
+                    VerificationCodeModel verification = new VerificationCodeModel();
+                    verification.LastSend = DateTime.Now;
+                    verification.UserId = user.Id;
+                    verification.VerificationCode = Code;
+
+                    appDbContext.VerificationCodes.Add(verification);
+                    appDbContext.SaveChanges();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+        
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<bool> CheckVerificationCode(string verifyCode , UserModel user)
+        {
+            string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);
+
+            bool resultVerify = (Code == verifyCode);
+
+            if(resultVerify)
+            {
+                return true;
+            }
+            else
+            {
+                //Check verification if user Reach limit Code by Check last sent Code 
+
+                VerificationCodeModel lastVerifyCode = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
+                                                            .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList()[0];
+                string LastCode = lastVerifyCode.VerificationCode;
+                
+                if(LastCode == verifyCode)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+#endregion
     }
 }
 

@@ -70,7 +70,7 @@ export const logout = () => {
 export const sendVerificationCode = formValues => async dispatch => {
 
     try {
-        const response = await lms.post(`/Users/SendVerificationCode?IdNumer=${formValues.IdNumer}`);
+        const response = await lms.post(`/Users/ForgotPWDCode?IdNumer=${formValues.IdNumer}&type=0`);
 
         return true
 
@@ -84,13 +84,48 @@ export const sendVerificationCode = formValues => async dispatch => {
 export const forgotPassword = (melliCode, verificationCode) => async dispatch => {
 
     try {
-        const response = await lms.post(`/Users/ForgotPassword`, { melliCode, verificationCode });
+        const response = await lms.post(`/Users/ForgotPWDCode?IdNumer=${melliCode}&type=1&verificationCode=${verificationCode}`);
 
         if (response.data) {
             dispatch(alert.success("رمز عبور به کد ملی شما تغییر یافت"));
             return true
         } else {
             dispatch(alert.error("کد وارد شده اشتباه است"));
+            return false
+        }
+
+    } catch (e) {
+        console.log(e.response)
+        dispatch(alert.error("خطایی در برقراری ارتباط رخ داد"));
+        return false
+    }
+
+}
+
+export const SendVerifyPhoneNumber = phoneNumber => async dispatch => {
+
+    try {
+        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0`);
+
+        return true
+
+    } catch (e) {
+        dispatch(alert.error(e.response.data))
+        return false
+    }
+
+}
+
+export const CheckVerifyPhoneNumber = (phoneNumber, verificationCode) => async dispatch => {
+
+    try {
+        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0&verificationCode=${verificationCode}`);
+
+        if (response.data) {
+            dispatch(alert.success("شماره تلفن با موفقیت ثبت شد"));
+            return true
+        } else {
+            dispatch(alert.error("کد وارد شده صحیح نمیباشد"));
             return false
         }
 

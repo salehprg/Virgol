@@ -836,13 +836,16 @@ namespace lms_with_moodle.Controllers
                 bool FileOk = await FileController.UploadFile(Files.Files[0] , Files.Files[0].FileName);
 
                 List<UserDataModel> userModels = new List<UserDataModel>();
+                BulkData data = new BulkData();
+
                 int schoolId = 0;
                 if(FileOk)
                 {
                     string userName = userManager.GetUserId(User);
                     schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
-                    userModels = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
+                    data = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
+                    userModels = data.usersData;
                 }
 
                 int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
@@ -886,7 +889,7 @@ namespace lms_with_moodle.Controllers
                 appDbContext.School_StudentClasses.AddRange(studentClasses);
                 appDbContext.SaveChanges();
 
-                return Ok(true);
+                return Ok(data);
             }
             catch(Exception ex)
             {
@@ -1344,7 +1347,7 @@ namespace lms_with_moodle.Controllers
         ///Set userTypeId from UserType class Teacher,Student,...
         ///</param>
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<List<UserDataModel>> CreateBulkUser(int userTypeId , string fileName , int schoolId)
+        public async Task<BulkData> CreateBulkUser(int userTypeId , string fileName , int schoolId)
         {
             try
             {
@@ -1419,7 +1422,7 @@ namespace lms_with_moodle.Controllers
 
                         appDbContext.StudentDetails.Add(studentDetail);
                     }
-                    else if(userTypeId == (int)UserType.Student)
+                    else if(userTypeId == (int)UserType.Teacher)
                     {
                         TeacherDetail teacherDetail = new TeacherDetail();
                         teacherDetail.TeacherId = userId;
@@ -1444,7 +1447,15 @@ namespace lms_with_moodle.Controllers
                 }
                 
                 appDbContext.SaveChanges();
-                return excelUsers;
+
+                BulkData bulkData = new BulkData();
+                bulkData.allCount = excelUsers.Count;
+                bulkData.duplicateCount = excelUsers.Count - newUsers.Count;
+                bulkData.newCount = excelUsers.Count;
+                bulkData.usersData = excelUsers;
+                bulkData.errors = errors;
+
+                return bulkData;
             }
             catch (Exception ex)
             {

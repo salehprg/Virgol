@@ -11,5 +11,6 @@ namespace Models.InputModel
         //     this.FirstName
         // }
         public StudentDetail userDetail {get; set;}
+        public TeacherDetail teacherDetail {get; set;}
     }
 }
