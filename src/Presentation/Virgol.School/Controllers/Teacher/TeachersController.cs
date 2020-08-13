@@ -54,31 +54,6 @@ namespace lms_with_moodle.Controllers
 
         }
 
-#region News
-        [HttpGet]
-        [ProducesResponseType(typeof(NewsModel), 200)]
-        public IActionResult GetIncommingNews()
-        {
-            string userName = userManager.GetUserId(User);
-            int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
-
-            int teacherRoleId = roleManager.FindByNameAsync("Teacher").Result.Id;
-            int adminRoleId = roleManager.FindByNameAsync("Admin").Result.Id;
-
-            int mangerId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().ManagerId;
-
-            //Check first Teacher has access to news
-            //Then check for authur , newsAuthur should be manager of School that teacher assign to
-            //Third check for authur , if authur admin this is allowed news
-            List<NewsModel> allowedNews = appDbContext.News.Where(x => x.AccessRoleId.Contains(teacherRoleId.ToString()) && 
-                                                                        (x.AutherId == mangerId || x.AccessRoleId.Contains(teacherRoleId.ToString())))
-                                                                        .ToList();
-
-            return Ok(allowedNews);
-        }
-
-#endregion
-
 #region Meeting
 
         [HttpGet]

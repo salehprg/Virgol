@@ -36,10 +36,10 @@ namespace lms_with_moodle.Helper
                 bool hasMail = false;
                 string uniqueMailId = user.MelliCode;
 
-                if(user.userDetail.LatinFirstname != null && user.userDetail.LatinLastname != null)
+                if(user.LatinFirstname != null && user.LatinLastname != null)
                 {
-                    uniqueMailId = string.Format("{0}.{1}.{2}" , user.userDetail.LatinFirstname 
-                                                                , user.userDetail.LatinLastname 
+                    uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
+                                                                , user.LatinLastname 
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
 
                 }
@@ -118,10 +118,10 @@ namespace lms_with_moodle.Helper
                 List<LdapModification> mods = new List<LdapModification>();
                 string uniqueMailId = user.MelliCode;
 
-                if(user.userDetail.LatinFirstname != null && user.userDetail.LatinLastname != null)
+                if(user.LatinFirstname != null && user.LatinLastname != null)
                 {
-                    uniqueMailId = string.Format("{0}.{1}.{2}" , user.userDetail.LatinFirstname 
-                                                                , user.userDetail.LatinLastname 
+                    uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
+                                                                , user.LatinLastname 
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
                 }
                 string mailAddress = uniqueMailId + "@legace.ir";

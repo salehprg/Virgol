@@ -13,7 +13,7 @@ using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using lms_with_moodle.Helper;
 using Microsoft.Extensions.Options;
-using Models.Teacher;
+using Models.Users.Teacher;
 using Microsoft.AspNetCore.Http;
 using Models.InputModel;
 using Newtonsoft.Json;
@@ -261,8 +261,6 @@ namespace lms_with_moodle.Controllers
                 userModel.PhoneNumber = student.PhoneNumber;
                  
                 StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
-                studentDetail.LatinFirstname = student.userDetail.LatinFirstname;
-                studentDetail.LatinLastname = student.userDetail.LatinLastname;
                 studentDetail.FatherName = student.userDetail.FatherName;
                 studentDetail.FatherPhoneNumber = student.userDetail.FatherPhoneNumber;
 
@@ -617,7 +615,19 @@ namespace lms_with_moodle.Controllers
                 string idNumber = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault().SchoolId;
 
-                return Ok(appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Teacher && user.SchoolId == schoolId).ToList());
+                List<UserModel> allTeachers = appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Teacher).ToList();
+                List<UserModel> result = new List<UserModel>();
+
+                foreach (var teacher in allTeachers)
+                {
+                    string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault().SchoolsId;
+                    if(schoolIds.Split(',').Where(x => x == schoolId.ToString()).FirstOrDefault() != null)
+                    {
+                        result.Add(teacher);
+                    }
+                }
+
+                return Ok(result);
             }
             catch(Exception ex)
             {
@@ -647,7 +657,7 @@ namespace lms_with_moodle.Controllers
                     bool resultAddRTeacher = userManager.AddToRoleAsync(teacher , "Teacher").Result.Succeeded;
                     bool resultAddRUser = userManager.AddToRoleAsync(teacher , "User").Result.Succeeded;
 
-                    int userId = userManager.FindByNameAsync(teacher.MelliCode).Result.Id;
+                    int teacherId = userManager.FindByNameAsync(teacher.MelliCode).Result.Id;
 
                     bool ldapUser = ldap.AddUserToLDAP(teacher);
 
@@ -662,8 +672,13 @@ namespace lms_with_moodle.Controllers
                     {
                         int userMoodle_id = await moodleApi.GetUserId(teacher.MelliCode);
                         teacher.Moodle_Id = userMoodle_id;
-                        appDbContext.Users.Update(teacher);
 
+                        TeacherDetail teacherDetail = new TeacherDetail();
+                        teacherDetail.TeacherId = teacherId;
+                        teacherDetail.SchoolsId = schoolId.ToString() + ',';
+
+                        appDbContext.Users.Update(teacher);
+                        appDbContext.TeacherDetails.Add(teacherDetail);
                         appDbContext.SaveChanges();
 
                         return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
@@ -690,16 +705,22 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                if(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault() != null)
+                    return BadRequest("معلم با کد ملی وارد شده وجود دارد");
+
                 UserModel userModel = appDbContext.Users.Where(x => x.Id == teacher.Id).FirstOrDefault();
                 userModel.FirstName = teacher.FirstName;
                 userModel.LastName = teacher.LastName;
                 userModel.MelliCode = teacher.MelliCode;
+                teacher.UserName = teacher.MelliCode;
                 userModel.PhoneNumber = teacher.PhoneNumber;
 
                 appDbContext.Users.Update(userModel);
                 appDbContext.SaveChanges();
 
                 UserModel editedTeacher = appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault();
+                userManager.UpdateNormalizedUserNameAsync(editedTeacher);
+
                 return Ok(editedTeacher);
             }
             catch(Exception ex)
@@ -715,15 +736,39 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                string userNameManager = userManager.GetUserId(User);
+                int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
+
                 MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
 
                 foreach (int teacherId in teacherIds)
                 {
                     UserModel teacher = appDbContext.Users.Where(x => x.Id == teacherId).FirstOrDefault();
+                    TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
+                    teacherDetail.SchoolsId = teacherDetail.SchoolsId.Replace(schoolId.ToString() + "," , "");
 
-                    await myUserManager.DeleteUser(teacher);
+                    List<EnrolUser> unEnrolData = new List<EnrolUser>();
+                    foreach (var lesoon in appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == teacherId))
+                    {
+                        School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == lesoon.ClassId).FirstOrDefault();
+                        int teacheSchoolId = schoolClass.School_Id;
 
-                    appDbContext.TeacherCourse.RemoveRange(appDbContext.TeacherCourse.Where(x => x.TeacherId == teacher.Id));
+                        if(teacheSchoolId != 0)
+                        {
+                            EnrolUser unEnrol = new EnrolUser();
+                            unEnrol.UserId = teacher.Moodle_Id;
+                            unEnrol.lessonId = appDbContext.School_Lessons.Where(x => x.School_Id == schoolId && x.classId == schoolClass.Id && x.Lesson_Id == lesoon.LessonId).FirstOrDefault().Moodle_Id;
+
+                            unEnrolData.Add(unEnrol);
+                        }
+                    }
+
+                    await moodleApi.UnAssignUsersFromCourse(unEnrolData);
+                    // await myUserManager.DeleteUser(teacher);
+
+                    // appDbContext.TeacherCourse.RemoveRange(appDbContext.TeacherCourse.Where(x => x.TeacherId == teacher.Id));
+
+                    appDbContext.TeacherDetails.Update(teacherDetail);
                     appDbContext.SaveChanges();
                     
                 }
@@ -1277,7 +1322,6 @@ namespace lms_with_moodle.Controllers
 #region Functions
 
         
-
         ///<param name="CategoryId">
         ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
         ///</param>
@@ -1298,6 +1342,7 @@ namespace lms_with_moodle.Controllers
 
                 List<UserDataModel> excelUsers = FileController.excelReader_Users(fileName).usersData;
                 List<UserDataModel> newUsers = new List<UserDataModel>();
+                List<UserDataModel> duplicateTeacher = new List<UserDataModel>();
 
                 List<UserModel> usersMoodle = new List<UserModel>();
                 List<string> errors = new List<string>();
@@ -1316,6 +1361,10 @@ namespace lms_with_moodle.Controllers
                     }
                     else
                     {
+                        if(userTypeId == (int)UserType.Teacher)
+                        {
+                            duplicateTeacher.Add(selectedUser);
+                        }
                         errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
                     }
 
@@ -1347,15 +1396,21 @@ namespace lms_with_moodle.Controllers
 
                 foreach(var user in newUsers)
                 {
+                    int userId = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault().Id;
                     if(userTypeId == (int)UserType.Student)
                     {
-                        int userId = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault().Id;
                         StudentDetail studentDetail = new StudentDetail();
                         studentDetail.UserId = userId;
-                        studentDetail.LatinFirstname = user.userDetail.LatinFirstname;
-                        studentDetail.LatinLastname = user.userDetail.LatinLastname;
 
                         appDbContext.StudentDetails.Add(studentDetail);
+                    }
+                    else if(userTypeId == (int)UserType.Student)
+                    {
+                        TeacherDetail teacherDetail = new TeacherDetail();
+                        teacherDetail.TeacherId = userId;
+                        teacherDetail.SchoolsId = schoolId.ToString() + ',';
+
+                        appDbContext.TeacherDetails.Add(teacherDetail);
                     }
 
                     int userMoodle_id = await moodleApi.GetUserId(user.MelliCode);
@@ -1365,8 +1420,15 @@ namespace lms_with_moodle.Controllers
                     
                 }
 
-                appDbContext.SaveChanges();
+                foreach (var teacher in duplicateTeacher)
+                {
+                    int teacherId = appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault().Id;
 
+                    TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
+                    teacherDetail.SchoolsId += schoolId + ',';
+                }
+                
+                appDbContext.SaveChanges();
                 return excelUsers;
             }
             catch (Exception ex)

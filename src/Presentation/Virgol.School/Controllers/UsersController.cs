@@ -316,8 +316,6 @@ namespace lms_with_moodle.Controllers
                         FatherName = _model.userDetail.FatherName,
                         FatherPhoneNumber = _model.userDetail.FatherPhoneNumber,
                         MotherName = _model.userDetail.MotherName,
-                        LatinFirstname = _model.userDetail.LatinFirstname,
-                        LatinLastname = _model.userDetail.LatinLastname,
                         UserId = userId
                     };
 

@@ -13,7 +13,7 @@ using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using lms_with_moodle.Helper;
 using Microsoft.Extensions.Options;
-using Models.Teacher;
+using Models.Users.Teacher;
 using Microsoft.AspNetCore.Http;
 using Models.InputModel;
 

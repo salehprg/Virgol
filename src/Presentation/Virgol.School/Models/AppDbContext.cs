@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Models.Teacher;
 using Models.User;
+using Models.Users.Teacher;
 
 namespace Models
 {
@@ -35,6 +35,7 @@ namespace Models
         public DbSet<AdminDetail> AdminDetails {get; set;}
         public DbSet<ManagerDetail> ManagerDetails {get; set;}
         public DbSet<StudentDetail> StudentDetails {get; set;}
+        public DbSet<TeacherDetail> TeacherDetails {get; set;}
         public DbSet<Class_WeeklySchedule> ClassWeeklySchedules {get; set;}
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}
         

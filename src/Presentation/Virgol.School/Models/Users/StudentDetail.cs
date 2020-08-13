@@ -8,9 +8,6 @@ namespace Models.User
     public class StudentDetail {
         public int Id {get; set;}
         public int UserId {get; set;}
-        
-        public string LatinFirstname {get; set;}
-        public string LatinLastname {get; set;}
         public string ShDocument {get; set;}
         public string Document2 {get; set;}
         public string FatherName {get; set;}

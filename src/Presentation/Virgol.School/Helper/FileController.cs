@@ -137,10 +137,8 @@ public class FileController {
                                     LastName = excelData.GetValue(1).ToString(),
                                     MelliCode = excelData.GetValue(2).ToString(),
                                     PhoneNumber = excelData.GetValue(3).ToString(),
-                                    userDetail = new StudentDetail(){
-                                        LatinFirstname = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : null),
-                                        LatinLastname = (excelData.GetValue(5) != null ? excelData.GetValue(5).ToString() : null)
-                                    }
+                                    LatinFirstname = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : null),
+                                    LatinLastname = (excelData.GetValue(5) != null ? excelData.GetValue(5).ToString() : null)
                                 };
 
                                 excelStudents.Add(selectedUser);

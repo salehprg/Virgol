@@ -253,10 +253,8 @@ export const addNewTeacher = (token, formValues) => async dispatch => {
         lastName: formValues.lastName,
         melliCode: formValues.melliCode,
         phoneNumber: formValues.phoneNumber,
-        userDetail: {
-            latinFirstName: formValues.latinFirstName,
-            latinLastName: formValues.latinLastName
-        }
+        latinFirstName: formValues.latinFirstName,
+        latinLastName: formValues.latinLastName
     }
 
     try {

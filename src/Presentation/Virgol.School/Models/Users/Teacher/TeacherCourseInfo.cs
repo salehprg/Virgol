@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace Models.Teacher
+namespace Models.Users.Teacher
 {
     public class TeacherCourseInfo {
 
