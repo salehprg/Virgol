@@ -645,7 +645,6 @@ namespace lms_with_moodle.Controllers
                 string userNameManager = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
 
-                teacher.SchoolId = schoolId;
                 teacher.UserName = teacher.MelliCode;
                 teacher.userTypeId = (int)UserType.Teacher;
                 teacher.ConfirmedAcc = true;
@@ -688,6 +687,19 @@ namespace lms_with_moodle.Controllers
                     await userManager.DeleteAsync(teacher);
                     return BadRequest("مشکلی در ثبت معلم بوجود آمد");
                     
+                }
+                else if(userManager.FindByNameAsync(teacher.MelliCode).Result != null)//this Teacher exist in database
+                {
+                    int teacherId = userManager.FindByNameAsync(teacher.MelliCode).Result.Id;
+
+                    TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
+                    teacherDetail.TeacherId = teacherId;
+                    teacherDetail.SchoolsId += schoolId.ToString() + ',';
+
+                    appDbContext.TeacherDetails.Update(teacherDetail);
+                    appDbContext.SaveChanges();
+
+                    return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
                 }
 
                 return BadRequest(resultCreate.Errors);
@@ -749,18 +761,20 @@ namespace lms_with_moodle.Controllers
                     teacherDetail.SchoolsId = teacherDetail.SchoolsId.Replace(schoolId.ToString() + "," , "");
 
                     List<EnrolUser> unEnrolData = new List<EnrolUser>();
-                    foreach (var lesoon in appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == teacherId))
+                    List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == teacherId).ToList();
+                    foreach (var schedule in schedules)
                     {
-                        School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == lesoon.ClassId).FirstOrDefault();
-                        int teacheSchoolId = schoolClass.School_Id;
+                        School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
+                        int teacherSchoolId = schoolClass.School_Id;
 
-                        if(teacheSchoolId != 0)
+                        if(teacherSchoolId == schoolId)
                         {
                             EnrolUser unEnrol = new EnrolUser();
                             unEnrol.UserId = teacher.Moodle_Id;
-                            unEnrol.lessonId = appDbContext.School_Lessons.Where(x => x.School_Id == schoolId && x.classId == schoolClass.Id && x.Lesson_Id == lesoon.LessonId).FirstOrDefault().Moodle_Id;
+                            unEnrol.lessonId = appDbContext.School_Lessons.Where(x => x.School_Id == schoolId && x.classId == schoolClass.Id && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
 
                             unEnrolData.Add(unEnrol);
+                            appDbContext.ClassWeeklySchedules.Remove(schedule);
                         }
                     }
 

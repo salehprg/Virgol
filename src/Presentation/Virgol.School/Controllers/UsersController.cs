@@ -312,10 +312,8 @@ namespace lms_with_moodle.Controllers
                         BaseId = _model.userDetail.BaseId,
                         BirthDate = _model.userDetail.BirthDate,
                         FatherMelliCode = _model.userDetail.FatherMelliCode,
-                        MotherMelliCode = _model.userDetail.MotherMelliCode,
                         FatherName = _model.userDetail.FatherName,
                         FatherPhoneNumber = _model.userDetail.FatherPhoneNumber,
-                        MotherName = _model.userDetail.MotherName,
                         UserId = userId
                     };
 
