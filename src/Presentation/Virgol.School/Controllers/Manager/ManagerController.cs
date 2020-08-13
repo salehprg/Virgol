@@ -705,10 +705,11 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                if(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault() != null)
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == teacher.Id).FirstOrDefault();
+
+                if(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault() != null && userModel.MelliCode != teacher.MelliCode)
                     return BadRequest("معلم با کد ملی وارد شده وجود دارد");
 
-                UserModel userModel = appDbContext.Users.Where(x => x.Id == teacher.Id).FirstOrDefault();
                 userModel.FirstName = teacher.FirstName;
                 userModel.LastName = teacher.LastName;
                 userModel.MelliCode = teacher.MelliCode;
