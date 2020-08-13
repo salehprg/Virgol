@@ -41,7 +41,7 @@ class Schedule extends React.Component {
         const lessons = [];
 
         this.props.lessons.map(day => {
-            if(day && day.length > 0)
+            if(day.length > 1)
             {
                 (day.map(lesson => {
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
@@ -49,27 +49,16 @@ class Schedule extends React.Component {
                     h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , static: true})
                 }))
             }
-        })
-
-        this.setState({lessons : lessons})
-    }
-    
-    componentWillReceiveProps() {
-        const lessons = [];
-        
-        this.props.lessons.map(day => {
-            if(day && day.length > 0)
-            {
-                (day.map(lesson => {
-                    lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
-                    c: `bg-${getColor(lesson.id % 4)} border-none cursor-pointer`, x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
-                    h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , static: true})
-                }))
+            else{
+                lessons.push({i: day.id + '', name: day.orgLessonName, teachername: day.firstName + " " + day.lastName, 
+                    c: `bg-${getColor(day.id % 4)} border-none cursor-pointer`, x: (day.startHour - 8) * 2 + 2, y: day.dayType, w: (day.endHour - day.startHour) * 2,
+                    h: 1 , startHour : day.startHour , endHour : day.endHour , moodleUrl : day.moodleUrl , static: true})
             }
         })
 
         this.setState({lessons : lessons})
     }
+
 
     showLessonInfo = (id) => {
         if (!this.state.lessons.find(el => el.i === id)) return;

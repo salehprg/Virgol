@@ -20,5 +20,9 @@ public class ClassScheduleView {
 
     [NotMapped]
     public string moodleUrl {get;set;}
+    [NotMapped]
+    public string className {get;set;}
+    [NotMapped]
+    public string schoolName {get;set;}
 
 }

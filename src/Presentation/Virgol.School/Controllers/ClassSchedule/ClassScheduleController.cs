@@ -65,11 +65,11 @@ namespace lms_with_moodle.Controllers
 
                 if(classId != -1)
                 {
-                    //We set IdNumber as userId in Token
                     classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == classId).ToList();
                 }
                 else
                 {
+                    //We set IdNumber as userId in Token
                     string idNumber = userManager.GetUserId(User);
                     int userId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().Id;
                     int userClassId = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault().ClassId;
@@ -103,11 +103,16 @@ namespace lms_with_moodle.Controllers
         {
             try
             {   
-                string userName = userManager.GetUserName(User);
+                string userName = userManager.GetUserId(User);
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
                 //We set IdNumber as userId in Token
+                
                 List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId).ToList();
-
+                foreach (var schedule in classScheduleViews)
+                {
+                    int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
+                }
                 return Ok(classScheduleViews);
             }
             catch(Exception ex)

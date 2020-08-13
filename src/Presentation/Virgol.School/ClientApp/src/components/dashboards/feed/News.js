@@ -9,13 +9,17 @@ const News = ({ text, tags, time }) => {
             <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-grayish text-sm">{time}</span>
                 <div className="w-3/4 flex flex-wrap flex-row-reverse justify-start items-center">
-                    {tags.map((tag, i) => {
+                    {(tags 
+                    ? 
+                    tags.map((tag, i) => {
                         return (
                             <div className={`px-6 py-1 ml-2 mb-2 rounded-full text-white bg-${getColor(i)}`}>
                                 {tag}
                             </div>
                         );
-                    })}
+                    })
+                    : 
+                    null)}
                 </div>
             </div>
         </div>

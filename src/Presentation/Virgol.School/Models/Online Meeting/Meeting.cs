@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class Meeting {
     public int Id {get; set;}
@@ -10,6 +11,16 @@ public class Meeting {
     public int CheckCount {get; set;} //How many CheckAttendeJob , check for Absense/Present Student
     public DateTime StartTime {get; set;}
     public DateTime EndTime {get; set;}
-    public int ModeretorId {get; set;}// Moderator moodle_id
+    public int TeacherId {get; set;}
+    ///<summary>
+    ///school Lesson Id
+    ///</summary>
+    public int LessonId {get; set;}
+
+    [NotMapped]
+    public string className {get; set;}
+    [NotMapped]
+    public string schoolName {get; set;}
+
 
 }
