@@ -73,8 +73,8 @@ class Students extends React.Component {
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
                                                 <td>{x.melliCode}</td>
-                                                <td>{x.userDetail.fatherName}</td>
-                                                <td>{x.userDetail.fatherPhoneNumber}</td>
+                                                <td>{(x.userDetail ? x.userDetail.fatherName : "")}</td>
+                                                <td>{(x.userDetail ? x.userDetail.fatherPhoneNumber : "")}</td>
                                                 <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>            

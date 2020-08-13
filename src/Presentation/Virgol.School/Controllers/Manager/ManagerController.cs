@@ -1443,7 +1443,7 @@ namespace lms_with_moodle.Controllers
                     int teacherId = appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault().Id;
 
                     TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
-                    teacherDetail.SchoolsId += schoolId + ',';
+                    teacherDetail.SchoolsId += schoolId.ToString() + ',';
                 }
                 
                 appDbContext.SaveChanges();
@@ -1451,7 +1451,7 @@ namespace lms_with_moodle.Controllers
                 BulkData bulkData = new BulkData();
                 bulkData.allCount = excelUsers.Count;
                 bulkData.duplicateCount = excelUsers.Count - newUsers.Count;
-                bulkData.newCount = excelUsers.Count;
+                bulkData.newCount = newUsers.Count;
                 bulkData.usersData = excelUsers;
                 bulkData.errors = errors;
 

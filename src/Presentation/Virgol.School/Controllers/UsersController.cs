@@ -350,7 +350,15 @@ namespace lms_with_moodle.Controllers
                 switch(userInformation.userTypeId)
                 {
                     case (int)UserType.Student:
-                        userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        SchoolModel school = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
+                        School_studentClass classs = appDbContext.School_StudentClasses.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        School_Class classDetail = appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault();
+                        GradeModel grade = appDbContext.Grades.Where(x => x.Id == classDetail.Grade_Id).FirstOrDefault();
+                        userDetail = new {
+                            school,
+                            classDetail.ClassName,
+                            grade.GradeName
+                        };
                         
                         break;
 

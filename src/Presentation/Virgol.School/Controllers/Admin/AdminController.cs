@@ -74,13 +74,26 @@ namespace lms_with_moodle.Controllers
                 int schoolCount = schools.Count;
                 int limitCount = adminModel.SchoolLimit - schoolCount;
                 int studentsCount = 0;
-                int teacherCount = 0;
+
+                List<UserModel> teachers = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Teacher).ToList();
+
+                List<UserModel> resultTeacher = new List<UserModel>();
 
                 foreach (var school in schools)
                 {
                     studentsCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && (x.userTypeId == (int)UserType.Student)).Count();
-                    teacherCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Teacher).Count();
+                    foreach (var teacher in teachers)
+                    {
+                        TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
+                        if(teacherDetail.SchoolsId.Contains(school.Id.ToString() + ","))
+                        {
+                            resultTeacher.Add(teacher);
+                        }
+                    }
                 }
+
+                resultTeacher.Distinct();
+                int teacherCount = resultTeacher.Count;
 
                 return Ok(new{
                     adminDetail = adminModel,
@@ -379,6 +392,72 @@ namespace lms_with_moodle.Controllers
 
 #endregion
 
+        [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetAllTeachers()
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                int adminId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault().SchoolsType;
+
+                List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
+                List<UserModel> teachers = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Teacher).ToList();
+
+                List<UserModel> result = new List<UserModel>();
+
+                foreach (var school in schools)
+                {
+                    int schoolId = school.Id;
+                    foreach (var teacher in teachers)
+                    {
+                        TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
+                        if(teacherDetail.SchoolsId.Contains(schoolId.ToString() + ","))
+                        {
+                            result.Add(teacher);
+                        }
+                    }
+                }
+
+                return Ok(result.Distinct());
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetAllStudents()
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                int adminId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault().SchoolsType;
+
+                List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
+
+                List<UserModel> result = new List<UserModel>();
+
+                foreach (var school in schools)
+                {
+                    result.AddRange(appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Student).ToList());
+                }
+
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

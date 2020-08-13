@@ -7,6 +7,8 @@ import {layout, loading, open_book} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from "./home/Home";
 import Schools from "./schools/Schools";
+import adminTeachers from "./Teachers/adminTeachers";
+import adminStudents from "./Students/adminStudents";
 import { connect } from "react-redux";
 import protectedAdmin from "../../protectedRoutes/protectedAdmin";
 
@@ -57,6 +59,20 @@ class Dashboard extends React.Component {
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="teachers"
+                        title="معلم ها"
+                        icon={open_book}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="students"
+                        title="دانش آموزان"
+                        icon={open_book}
+                        changeActive={this.changeActive}
+                    />
                 </Sidebar>
 
                 <div className="lg:w-5/6 px-6 w-full min-h-screen bg-bold-blue">
@@ -64,6 +80,8 @@ class Dashboard extends React.Component {
 
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
+                        <Route path={this.props.match.url + "/teachers"} component={adminTeachers}/>
+                        <Route path={this.props.match.url + "/students"} component={adminStudents}/>
                         <Route path={this.props.match.url + "/schools"} component={Schools} />
                     </Switch>
                 </div>

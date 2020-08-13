@@ -96,8 +96,8 @@ export const addBulkUser = (token, excel) => async dispatch => {
 
         dispatch({ type: STOP })
         dispatch({ type: Type.ADD_BULK_USER });
-        history.push("/m/dashboard")
-        dispatch(alert.success("فایل آپلود شد"))
+        history.push("/m/students")
+        dispatch(alert.success(`لیست معلمان اضافه شد \n : تعداد کل ${response.data.allCount} \n جدید : ${response.data.newCount} \n تکراری : ${response.data.duplicateCount}`))
     } catch (e) {
         dispatch({ type: STOP })
         dispatch(alert.error("خطا"))
@@ -185,7 +185,10 @@ export const AssignUserToClass = (token , classId , excelData) => async dispatch
         });
 
         dispatch({ type: STOP })
-        dispatch(alert.success("لیست دانش آموزان به کلاس اضافه شد"))
+        console.log(response.data)
+
+        dispatch(alert.success(`لیست دانش آموزان به کلاس اضافه شد \n : تعداد کل ${response.data.allCount} \n جدید : ${response.data.newCount} \n تکراری : ${response.data.duplicateCount}`
+        ))
         dispatch({ type: Type.AssignUserToClass, payload: response.data });
     } catch (e) {
         dispatch({ type: STOP })
@@ -295,8 +298,8 @@ export const addBulkTeacher = (token, excel) => async dispatch => {
 
         dispatch({ type: STOP })
         dispatch({ type: Type.ADD_BULK_TEACHER });
-        history.push("/m/dashboard")
-        dispatch(alert.success("فایل اپلود شد"))
+        history.push("/m/teachers")
+        dispatch(alert.success(`لیست معلمان اضافه شد \n : تعداد کل ${response.data.allCount} \n جدید : ${response.data.newCount} \n تکراری : ${response.data.duplicateCount}`))
 
     } catch (e) {
         dispatch({ type: STOP })

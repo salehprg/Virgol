@@ -84,7 +84,54 @@ namespace lms_with_moodle.Helper
 
         }
         
+        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId)
+        {
+            try
+            {
+                string FunctionName = string.Format("create?name={0}&meetingID={1}&moderatorPW={2}&attendeePW={3}" , name , meetingId , "mp" , "ap");
+                string data = FunctionName;
 
+                string _response = await sendData(data);
+
+                var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
+
+                return meetingsInfo;
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+
+                return null;
+            }
+
+        }
+        
+         public async Task<MeetingsResponse> JoinRoom(bool teacher , string meetingId , string fullname)
+        {
+            try
+            {
+                string password = (teacher ? "password=mp" : "password=ap");
+
+                string FunctionName = string.Format("join?meetingID={0}&{1}&fullName={2}" , meetingId , password , fullname);
+                string data = FunctionName;
+
+                string _response = await sendData(data);
+
+                var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
+
+                return meetingsInfo;
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+
+                return null;
+            }
+
+        }
+        
 #endregion
     }
 }
