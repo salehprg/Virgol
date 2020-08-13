@@ -7,12 +7,13 @@ import {getStudentsClass , AssignUserToClass } from '../../../../_actions/manage
 import {deleteClass , editClass} from '../../../../_actions/schoolActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
-import {edit, plus, x} from "../../../../assets/icons";
+import {plus, x} from "../../../../assets/icons";
 import DeleteConfirm from '../../../modals/DeleteConfirm'
+import PencilText from '../../../field/PencilText';
 
 class ClassInfo extends React.Component {
 
-    state = {lessons : [], addLesson: false, loading: false , classDetail : {}, showAdd: false , className : ""}
+    state = {lessons : [], addLesson: false, loading: false , showChangeName: false, classDetail : {}, showAdd: false , className : ""}
 
     addVariant = {
         open: {
@@ -42,7 +43,7 @@ class ClassInfo extends React.Component {
         
     }
 
-    showDelete = (id) => {
+    showDelete = () => {
         this.setState({showDeleteModal : true})
     }
 
@@ -74,12 +75,13 @@ class ClassInfo extends React.Component {
     }
 
     onEdit = async () =>{
+        this.setState({ showChangeName: false })
         await this.props.editClass(this.props.user.token , parseInt(this.props.match.params.id) , this.state.className)
     }
 
     render() {
         return (
-            <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+            <div onClick={() => this.setState({ showChangeName: false })} className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
@@ -161,7 +163,15 @@ class ClassInfo extends React.Component {
                     <div className="flex flex-row-reverse justify-between">
                         <div className="flex flex-row-reverse justify-between">
                             {(this.state.classDetail ?
-                            <p className="text-right text-white text-2xl">{this.state.classDetail.className}</p>
+                            <PencilText 
+                                text={this.state.classDetail.className} 
+                                className="text-right text-white text-2xl" 
+                                show={this.state.showChangeName}
+                                showBox={() => this.setState({ showChangeName: true })}
+                                value={this.state.className}
+                                changeValue={(className) => this.setState({ className })}
+                                submit={this.onEdit}
+                            />
                             : null)}
                             {/*{(this.props.classDetail ?*/}
                             {/*    <React.Fragment>*/}

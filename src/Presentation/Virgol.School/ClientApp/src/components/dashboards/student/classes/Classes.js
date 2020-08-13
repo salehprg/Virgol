@@ -2,14 +2,24 @@ import React from 'react';
 import Schedule from '../../manager/class/Schedule'
 import {getClassSchedule } from '../../../../_actions/classScheduleActions'
 import { connect } from 'react-redux';
+import { loading } from '../../../../assets/icons'
 
 class Classes extends React.Component {
 
-    componentDidMount = async () =>{
+    state = { loading: false }
+
+    componentDidMount = async () => {
+        this.setState({ loading: true })
         await this.props.getClassSchedule(this.props.user.token , -1)
+        this.setState({ loading: false })
     }
 
     render() {
+        if (this.state.loading) return (
+            <>
+                {loading('w-10 text-white centerize')}
+            </>
+        );
         return (
             <div className="overflow-auto">
                 <Schedule
