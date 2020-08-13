@@ -688,6 +688,10 @@ video {
   transform: translate(-50%, -50%);
 }
 
+.bottomize {
+  top: 100%;
+}
+
 .toggle-pass-vis {
   top: 50%;
   right: 10px;

@@ -4,15 +4,16 @@ import { motion } from "framer-motion";
 import Schedule from './Schedule'
 import {AddClassSchedule , DeleteClassSchedule , getClassSchedule} from '../../../../_actions/classScheduleActions'
 import {getStudentsClass , AssignUserToClass } from '../../../../_actions/managerActions'
-import {deleteClass} from '../../../../_actions/schoolActions'
+import {deleteClass , editClass} from '../../../../_actions/schoolActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
-import {edit, plus, x} from "../../../../assets/icons";
+import {plus, x} from "../../../../assets/icons";
 import DeleteConfirm from '../../../modals/DeleteConfirm'
+import PencilText from '../../../field/PencilText';
 
 class ClassInfo extends React.Component {
 
-    state = {lessons : [], addLesson: false, loading: false , classDetail : {}, showAdd: false}
+    state = {lessons : [], addLesson: false, loading: false , showChangeName: false, classDetail : {}, showAdd: false , className : ""}
 
     addVariant = {
         open: {
@@ -42,7 +43,7 @@ class ClassInfo extends React.Component {
         
     }
 
-    showDelete = (id) => {
+    showDelete = () => {
         this.setState({showDeleteModal : true})
     }
 
@@ -55,21 +56,32 @@ class ClassInfo extends React.Component {
 
     handleExcel = async excel => {
         await this.props.AssignUserToClass(this.props.user.token , this.props.match.params.id , excel)
+        this.componentDidMount()
+        this.render()
     }
 
     addLesson = async (classSchedule) => {
         this.setState({ addLesson: false })
         await this.props.AddClassSchedule(this.props.user.token, classSchedule)
+        this.componentDidMount()
+        this.render()
     }
 
     deleteLesson = async (id) => {
 
         await this.props.DeleteClassSchedule(this.props.user.token , id)
+        this.componentDidMount()
+        this.render()
+    }
+
+    onEdit = async () =>{
+        this.setState({ showChangeName: false })
+        await this.props.editClass(this.props.user.token , parseInt(this.props.match.params.id) , this.state.className)
     }
 
     render() {
         return (
-            <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+            <div onClick={() => this.setState({ showChangeName: false })} className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
@@ -151,7 +163,15 @@ class ClassInfo extends React.Component {
                     <div className="flex flex-row-reverse justify-between">
                         <div className="flex flex-row-reverse justify-between">
                             {(this.state.classDetail ?
-                            <p className="text-right text-white text-2xl">{this.state.classDetail.className}</p>
+                            <PencilText 
+                                text={this.state.classDetail.className} 
+                                className="text-right text-white text-2xl" 
+                                show={this.state.showChangeName}
+                                showBox={() => this.setState({ showChangeName: true })}
+                                value={this.state.className}
+                                changeValue={(className) => this.setState({ className })}
+                                submit={this.onEdit}
+                            />
                             : null)}
                             {/*{(this.props.classDetail ?*/}
                             {/*    <React.Fragment>*/}
@@ -170,7 +190,7 @@ class ClassInfo extends React.Component {
                     <div className="my-8">
                         <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2">افزودن درس</button>
                         <div className="border-2 border-dark-blue overflow-auto">
-                            {this.props.schedules ?
+                            {!this.props.loading ?
                                 <Schedule
                                     editable={true}
                                     lessons={this.props.schedules}
@@ -198,4 +218,4 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
                                         DeleteClassSchedule , getClassSchedule , 
-                                        AssignUserToClass , deleteClass})(ClassInfo);
+                                        AssignUserToClass , deleteClass , editClass})(ClassInfo);

@@ -270,7 +270,7 @@ export const addNewTeacher = (token, formValues) => async dispatch => {
 
         dispatch({type : STOP})
 
-        history.push("/m/dashboard");
+        history.push("/m/teachers");
         dispatch(alert.success("معلم با موفقیت اضافه شد"))
         dispatch({ type: Type.ADD_NEW_TEACHER, payload: response.data });
 

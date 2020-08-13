@@ -64,7 +64,15 @@ namespace lms_with_moodle.Controllers
         {
             string userName = userManager.GetUserId(User);
             UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
-            string roleName = userManager.GetRolesAsync(userModel).Result.Where(x => x != "User").FirstOrDefault();
+            string roleName ="";
+            if(userModel.userTypeId != (int)UserType.Student)
+            {
+                roleName = userManager.GetRolesAsync(userModel).Result.Where(x => x != "User").FirstOrDefault();
+            }
+            else
+            {
+                roleName = "User";
+            }
 
             int managerRoleId = roleManager.FindByNameAsync(roleName).Result.Id;
 
