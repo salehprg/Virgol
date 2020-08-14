@@ -32,7 +32,7 @@ class RecentClass extends React.Component {
                         })
                     )
                     :
-                    "درحال بارگذاری ..."
+                    <span className="text-2xl text-grayish block text-center">هیچ کلاسی وجود ندارد</span> 
                 )
                 }
             

@@ -1,4 +1,4 @@
-import * as Type from "../_actions/teacherTypes";
+import * as Type from "../_actions/meetingTypes";
 import {LOGOUT} from "../_actions/authTypes";
 
 const INITIAL_STATE = {

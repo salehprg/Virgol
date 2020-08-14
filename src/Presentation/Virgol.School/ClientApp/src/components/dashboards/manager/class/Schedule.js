@@ -37,20 +37,22 @@ class Schedule extends React.Component {
     lessonInfo: null , showLessonInfo : false , lessons : []
     }
 
-    // componentDidMount() {
-    //     const lessons = [];
+    componentDidMount() {
+        const lessons = [];
 
-    //     this.props.lessons.map(day => {
-            
-    //         (day.map(lesson => {
-    //             lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
-    //             c: `bg-${getColor(lesson.id % 4)} border-none cursor-pointer`, x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
-    //             h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , static: true})
-    //         }))
-    //     })
+        this.props.lessons.map(day => {
+            if(day && day.length > 0)
+            {
+                (day.map(lesson => {
+                    lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
+                    c: `bg-${getColor(lesson.id % 4)} border-none cursor-pointer`, x: (lesson.startHour - 8) * 2 + 2, y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
+                    h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , static: true})
+                }))
+            }
+        })
 
-    //     this.setState({lessons : lessons})
-    // }
+        this.setState({lessons : lessons})
+    }
 
     componentWillReceiveProps(){
         const lessons = [];

@@ -143,11 +143,11 @@ namespace lms_with_moodle.Controllers
                 {
                     UserModel userPhonenumber = appDbContext.Users.Where(x => x.PhoneNumber.Contains(phoneNumber)).FirstOrDefault();
 
-                    if(userPhonenumber.Id != user.Id)
+                    if(userPhonenumber != null && userPhonenumber.Id != user.Id)
                         return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
 
                     //Every user can get just 3 Verification code in last 30 minutes
-                    if(checkUserAttempts(user))
+                    if(checkUserAttempts(user , true))
                     {
                         bool result = await SendCode(user);
                         if(result)
@@ -178,9 +178,9 @@ namespace lms_with_moodle.Controllers
 
                 return BadRequest("مشکلی بوجود آمده");
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -604,7 +604,7 @@ namespace lms_with_moodle.Controllers
 
 #region SMS
         [ApiExplorerSettings(IgnoreApi = true)]
-        public bool checkUserAttempts(UserModel user)
+        public bool checkUserAttempts(UserModel user , bool verify = false)
         {
             List<VerificationCodeModel> lastestCodeInfo = new List<VerificationCodeModel>();
             lastestCodeInfo = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
@@ -612,6 +612,10 @@ namespace lms_with_moodle.Controllers
             
             if(lastestCodeInfo.Count != 3 && lastestCodeInfo.Count > 0) // Rich limit Send sms
             {
+                if(verify)
+                {
+                    return true;
+                }
                 if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
                 {   
                     return true;

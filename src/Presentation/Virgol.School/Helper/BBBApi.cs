@@ -125,14 +125,14 @@ namespace lms_with_moodle.Helper
 
         }
         
-         public async Task<string> JoinRoom(bool teacher , string meetingId , string fullname)
+         public async Task<string> JoinRoom(bool teacher , string meetingId , string fullname ,string userId)
         {
             try
             {
                 string password = (teacher ? "password=mp" : "password=ap");
                 fullname = HttpUtility.UrlEncode(fullname).ToUpper();
 
-                string FunctionName = string.Format("join?meetingID={0}&{1}&fullName={2}&redirect=true" , meetingId , password , fullname);
+                string FunctionName = string.Format("join?meetingID={0}&{1}&fullName={2}&redirect=true&userID={3}" , meetingId , password , fullname , userId);
                 string data = FunctionName;
 
                 string url = await sendData(data , true);

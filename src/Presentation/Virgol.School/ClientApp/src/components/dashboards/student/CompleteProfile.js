@@ -13,10 +13,12 @@ class CompleteProfile extends React.Component {
 
     state = {birthDate : moment() , 
         verifyPhone : false , 
+        verifiedPhone : false , 
         phoneNumber : "" , 
         verifyCodePhoneNumber : "" , 
         verifyFatherPhone : false ,  
-        fatherPhone : "" ,
+        verifiedFatherPhone : false , 
+        fatherPhoneNumber : "" ,
         verifyCodeFatherPhoneNumber : "" }
 
     renderInputs = ({ input, meta, type, placeholder,extra }) => {
@@ -37,10 +39,16 @@ class CompleteProfile extends React.Component {
         this.sendVerifyPhone();
     }
     sendVerifyPhone = async () => {
-        await this.props.SendVerifyPhoneNumber(this.state.phoneNumber);
+        const result = await this.props.SendVerifyPhoneNumber(this.state.phoneNumber , this.props.user.token);
+        
+        if(!result)
+        {
+            this.setState({verifyPhone : false});
+        }
     }
     onCheckVerifyPhone = async () => {
-        await this.props.CheckVerifyPhoneNumber(this.state.phoneNumber , this.state.verifyCodePhoneNumber);
+        const result = await this.props.CheckVerifyPhoneNumber(this.state.phoneNumber , this.state.verifyCodePhoneNumber , this.props.user.token);
+        this.setState({verifiedPhone : true})
     }
 
 
@@ -50,10 +58,15 @@ class CompleteProfile extends React.Component {
         this.sendVerifyFatherPhone();
     }
     sendVerifyFatherPhone = async () => {
-        await this.props.SendVerifyPhoneNumber(this.state.fatherPhone);
+        const result = await this.props.SendVerifyPhoneNumber(this.state.fatherPhoneNumber , this.props.user.token);
+        if(!result)
+        {
+            this.setState({verifyFatherPhone : false});
+        }
     }
     onCheckVerifyFatherPhone = async () => {
-        await this.props.CheckVerifyPhoneNumber(this.state.fatherPhone , this.verifyCodeFatherPhoneNumber);
+        const result = await this.props.CheckVerifyPhoneNumber(this.state.fatherPhone , this.verifyCodeFatherPhoneNumber , this.props.user.token);
+        this.setState({verifiedFatherPhone : true})
     }
 
     onSubmit = async (formValues) => {
@@ -94,42 +107,18 @@ class CompleteProfile extends React.Component {
                             component={this.renderInputs}
                             extra={"w-40 my-4"}
                         />
-                        {(!this.state.verifyFatherPhone ? 
+                        {(this.state.verifiedPhone ? <p className="text-right text-white mb-6 text-xl"> شماره تلفن : {this.state.phoneNumber} </p> :
+                            (!this.state.verifyPhone ? 
                             <>
                             <Field
                                 name="phoneNumber"
                                 type="text"
                                 onChange={(e) => this.setState({phoneNumber : e.target.value})}
-                                placeholder="شماره همراه ولی"
-                                component={this.renderInputs}
-                                extra={"w-3/4 my-4"}
-                            />
-                            <button type="button" onClick={() => this.onSendPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ارسال کد</button>
-                            </>
-                            :
-                            <>
-                                <Field
-                                name="verifyCodePhone"
-                                type="text"
-                                onChange={(e) => this.setState({verifyCodeFatherPhoneNumber : e.target.value})}
-                                placeholder="کد ارسال شده را وارد نمایید"
-                                component={this.renderInputs}
-                                extra={"w-3/4 my-4"}
-                                />
-                                <button type="button" onClick={() => this.onCheckVerifyFatherPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت</button>
-                            </>
-                        )}
-                        {(!this.state.verifyPhone ? 
-                            <>
-                            <Field
-                                name="fatherPhoneNumber"
-                                type="text"
-                                onChange={(e) => this.setState({fatherPhoneNumber : e.target.value})}
                                 placeholder="شماره همراه"
                                 component={this.renderInputs}
                                 extra={"w-3/4 my-4"}
                             />
-                            <button type="button" onClick={() => this.onSendFatherPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ارسال کد</button>
+                            <button type="button" onClick={() => this.onSendPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ارسال کد</button>
                             </>
                             :
                             <>
@@ -143,6 +132,35 @@ class CompleteProfile extends React.Component {
                                 />
                                 <button type="button" onClick={() => this.onCheckVerifyPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت</button>
                             </>
+                            )
+                        )}
+
+                        {(this.state.verifiedFatherPhone ? <p className="text-right text-white mb-6 text-xl">  شماره تلفن ولی : {this.state.fatherPhoneNumber} </p> :
+                            (!this.state.verifyFatherPhone ? 
+                                <>
+                                <Field
+                                    name="fatherPhoneNumber"
+                                    type="text"
+                                    onChange={(e) => this.setState({fatherPhoneNumber : e.target.value})}
+                                    placeholder="شماره همراه ولی"
+                                    component={this.renderInputs}
+                                    extra={"w-3/4 my-4"}
+                                />
+                                <button type="button" onClick={() => this.onSendFatherPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ارسال کد</button>
+                                </>
+                                :
+                                <>
+                                    <Field
+                                    name="verifyCodeFatherPhoneNumber"
+                                    type="text"
+                                    onChange={(e) => this.setState({verifyCodeFatherPhoneNumber : e.target.value})}
+                                    placeholder="کد ارسال شده را وارد نمایید"
+                                    component={this.renderInputs}
+                                    extra={"w-3/4 my-4"}
+                                    />
+                                    <button type="button" onClick={() => this.onCheckVerifyFatherPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت</button>
+                                </>
+                            )
                         )}
                         <Field
                             name="cityBirth"
@@ -182,7 +200,6 @@ const validate = formValues => {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         user: state.auth.userInfo ,
         initialValues: {

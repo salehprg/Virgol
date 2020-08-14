@@ -136,7 +136,7 @@ public class FileController {
                                     FirstName = excelData.GetValue(0).ToString(),
                                     LastName = excelData.GetValue(1).ToString(),
                                     MelliCode = excelData.GetValue(2).ToString(),
-                                    PhoneNumber = excelData.GetValue(3).ToString(),
+                                    PhoneNumber = (excelData.GetValue(4) != null ? excelData.GetValue(3).ToString() : null),
                                     LatinFirstname = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : null),
                                     LatinLastname = (excelData.GetValue(5) != null ? excelData.GetValue(5).ToString() : null)
                                 };
