@@ -57,6 +57,10 @@ namespace lms_with_moodle.Helper
                     case (int)UserType.Teacher:
                         title = "Teacher";
                         break;
+
+                     case (int)UserType.Manager:
+                        title = "Teacher";
+                        break;
                 }
                 //Creates the List attributes of the entry and add them to attribute set 
                 LdapAttributeSet attributeSet = new LdapAttributeSet();

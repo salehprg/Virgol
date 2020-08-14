@@ -286,11 +286,13 @@ namespace lms_with_moodle.Controllers
 
                 studentDetail.BirthDate = userDataModel.userDetail.BirthDate;
                 studentDetail.cityBirth = userDataModel.userDetail.cityBirth;
+                studentDetail.FatherPhoneNumber = userDataModel.userDetail.FatherPhoneNumber;
                 
                 appDbContext.StudentDetails.Update(studentDetail);
 
                 user.LatinFirstname = userDataModel.LatinFirstname;
                 user.LatinLastname = userDataModel.LatinLastname;
+                user.PhoneNumber = userDataModel.PhoneNumber;
 
                 appDbContext.Users.Update(user);
                 appDbContext.SaveChanges();

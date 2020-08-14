@@ -1113,24 +1113,41 @@ namespace lms_with_moodle.Controllers
                         if(resultManager)
                         {
                             await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
-                            
-                            int managerId = userManager.FindByNameAsync(manager.UserName).Result.Id;
 
-                            ManagerDetail managerDetail = new ManagerDetail();
-                            managerDetail.personalIdNumber = schoolData.personalIdNumber;
-                            managerDetail.UserId = managerId;
+                            int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+                            manager.Id = userId;
 
-                            appDbContext.ManagerDetails.Add(managerDetail);
-                            appDbContext.SaveChanges();
+                            bool ldapUser = ldap.AddUserToLDAP(manager , password);
 
-                            schoolResult.ManagerId = managerId;
+                            bool userToMoodle = false;
+                            if(ldapUser)
+                            {
+                                userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
+                            }
 
-                            appDbContext.Schools.Update(schoolResult);
-                            appDbContext.SaveChanges();
+                            if(userToMoodle)
+                            {
+                                int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
+                                manager.Moodle_Id = userMoodle_id;
 
-                            SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
-                            
-                            return true;
+                                appDbContext.Users.Update(manager);
+
+                                ManagerDetail managerDetail = new ManagerDetail();
+                                managerDetail.personalIdNumber = schoolData.personalIdNumber;
+                                managerDetail.UserId = manager.Id;
+
+                                appDbContext.ManagerDetails.Add(managerDetail);
+                                appDbContext.SaveChanges();
+
+                                schoolResult.ManagerId = manager.Id;
+
+                                appDbContext.Schools.Update(schoolResult);
+                                appDbContext.SaveChanges();
+
+                                SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
+                                
+                                return true;
+                            }
                         }
                     }
                 }

@@ -1,6 +1,6 @@
 import React from "react";
 import PlusTable from "../../tables/PlusTable";
-import {edit, loading, trash} from "../../../../assets/icons";
+import {edit, loading , check_circle, trash } from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {GetAllTeachers} from "../../../../_actions/adminActions"
@@ -33,20 +33,22 @@ class adminTeachers extends React.Component {
                     button={() => {}}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'واحد تدریس']}
+                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'شماره تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
                     body={() => {
                         return (
                             <React.Fragment>
                                 {(this.props.allTeachers ?
-                                    this.props.allTeachers.map(x => {
-                                        if(x.firstName.includes(this.state.query))
+                                    this.props.allTeachers.map(teacher => {
+                                        if(teacher.firstName.includes(this.state.query))
                                         {
                                             return(
                                             <tr>
-                                                <td className="py-4">{x.firstName}</td>
-                                                <td>{x.lastName}</td>
-                                                <td>{x.melliCode}</td>
-                                                <td>{x.moodle_Id}</td>
+                                                <td className="py-4">{teacher.firstName}</td>
+                                                <td>{teacher.lastName}</td>
+                                                <td>{teacher.melliCode}</td>
+                                                <td>{teacher.phoneNumber}</td>
+                                                <td>{teacher.teacherDetail.personalIdNUmber}</td>
+                                                <td><span className="text-center">{teacher.completed ? check_circle('w-8 text-greenish') : null}</span></td>
                                             </tr>
                                             )
                                         }

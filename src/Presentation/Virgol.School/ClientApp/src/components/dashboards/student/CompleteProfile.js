@@ -48,7 +48,15 @@ class CompleteProfile extends React.Component {
     }
     onCheckVerifyPhone = async () => {
         const result = await this.props.CheckVerifyPhoneNumber(this.state.phoneNumber , this.state.verifyCodePhoneNumber , this.props.user.token);
-        this.setState({verifiedPhone : true})
+        if(result)
+        {
+            this.setState({verifiedPhone : true})
+        }
+        else
+        {
+            this.setState({verifiedPhone : false})
+        }
+        
     }
 
 
@@ -65,8 +73,15 @@ class CompleteProfile extends React.Component {
         }
     }
     onCheckVerifyFatherPhone = async () => {
-        const result = await this.props.CheckVerifyPhoneNumber(this.state.fatherPhone , this.verifyCodeFatherPhoneNumber , this.props.user.token);
-        this.setState({verifiedFatherPhone : true})
+        const result = await this.props.CheckVerifyPhoneNumber(this.state.fatherPhoneNumber , this.state.verifyCodeFatherPhoneNumber , this.props.user.token);
+        if(result)
+        {
+            this.setState({verifiedFatherPhone : true})
+        }
+        else
+        {
+            this.setState({verifiedFatherPhone : false})
+        }
     }
 
     onSubmit = async (formValues) => {

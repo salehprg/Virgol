@@ -72,15 +72,21 @@ namespace lms_with_moodle.Controllers
                     //We set IdNumber as userId in Token
                     string idNumber = userManager.GetUserId(User);
                     int userId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().Id;
-                    int userClassId = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault().ClassId;
+                    School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault();
 
-                    classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == userClassId).ToList();
-
-                    foreach (var schedule in classScheduleViews)
+                    if(school_Student != null)
                     {
-                        int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
-                        schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
+                        int userClassId = school_Student.ClassId;
+
+                        classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == userClassId).ToList();
+
+                        foreach (var schedule in classScheduleViews)
+                        {
+                            int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                            schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
+                        }
                     }
+                    
                 }
 
                 var groupedSchedule = classScheduleViews

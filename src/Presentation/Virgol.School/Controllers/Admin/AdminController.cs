@@ -466,7 +466,7 @@ namespace lms_with_moodle.Controllers
 
                 List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
 
-                List<UserModel> result = new List<UserModel>();
+                List<UserDataModel> result = new List<UserDataModel>();
 
                 foreach (var school in schools)
                 {

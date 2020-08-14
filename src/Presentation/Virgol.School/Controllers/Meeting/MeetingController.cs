@@ -184,21 +184,25 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    int userClass = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault().ClassId;
-                    List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.ClassId == userClass).ToList();
-                    List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => !x.Finished).ToList();
-                    
-                    foreach (var schedule in classes)
+                    School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault();
+                    if(school_Student != null)
                     {
-                        Meeting meeting = activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault();
-                        if(meeting != null)
+                        int userClass = school_Student.ClassId;
+                        List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.ClassId == userClass).ToList();
+                        List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => !x.Finished).ToList();
+                        
+                        foreach (var schedule in classes)
                         {
-                            School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
-                            meeting.className = classInfo.ClassName;
-                            SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
-                            meeting.schoolName = schoolInfo.SchoolName;
+                            Meeting meeting = activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault();
+                            if(meeting != null)
+                            {
+                                School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
+                                meeting.className = classInfo.ClassName;
+                                SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
+                                meeting.schoolName = schoolInfo.SchoolName;
 
-                            resultMeeting.Add(meeting);
+                                resultMeeting.Add(meeting);
+                            }
                         }
                     }
 
