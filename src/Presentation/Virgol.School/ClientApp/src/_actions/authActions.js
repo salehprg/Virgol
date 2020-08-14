@@ -128,12 +128,12 @@ export const CompleteStudentProfile = (token,formValues) => async dispatch => {
 export const sendVerificationCode = formValues => async dispatch => {
 
     try {
-        const response = await lms.post(`/Users/ForgotPWDCode?IdNumer=${formValues.IdNumer}&type=0`);
+        const response = await lms.post(`/Users/ForgotPWDCode?idNumber=${formValues.IdNumer}&type=0`);
 
         return true
 
     } catch (e) {
-        dispatch(alert.error("کد ملی وجود ندارد"))
+        dispatch(alert.error(e.response.data))
         return false
     }
 
@@ -149,6 +149,27 @@ export const forgotPassword = (melliCode, verificationCode) => async dispatch =>
             return true
         } else {
             dispatch(alert.error("کد وارد شده اشتباه است"));
+            return false
+        }
+
+    } catch (e) {
+        console.log(e.response)
+        dispatch(alert.error("خطایی در برقراری ارتباط رخ داد"));
+        return false
+    }
+
+}
+
+export const ChangePassword = (melliCode, verificationCode , newPassword) => async dispatch => {
+
+    try {
+        const response = await lms.post(`/Users/ChangePassword?idNumber=${melliCode}&verificationCode=${verificationCode}&newPassword=${newPassword}`);
+
+        if (response.data) {
+            dispatch(alert.success("رمز عبور با موفقیت تغییر یافت"));
+            return true
+        } else {
+            dispatch(alert.error("کد تایید اشتباه است"));
             return false
         }
 

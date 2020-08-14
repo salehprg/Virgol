@@ -42,6 +42,7 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
 
         MoodleApi moodleApi;
+        LDAP_db ldap;
         FarazSmsApi SMSApi;
         public SchoolController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -57,6 +58,7 @@ namespace lms_with_moodle.Controllers
 
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
+            ldap = new LDAP_db(appSettings);
         }
 
         [HttpGet]
@@ -286,31 +288,51 @@ namespace lms_with_moodle.Controllers
                     bool resultManager = userManager.CreateAsync(manager , password).Result.Succeeded;
 
                     if(resultManager)
-                    {
+                    {    
                         await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
-                        
-                        int managerId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+                        int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+                        manager.Id = userId;
 
-                        ManagerDetail managerDetail = new ManagerDetail();
-                        managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(inputData.personalIdNumber);
-                        managerDetail.UserId = managerId;
+                        bool ldapUser = ldap.AddUserToLDAP(manager , password);
 
-                        appDbContext.ManagerDetails.Add(managerDetail);
-                        appDbContext.SaveChanges();
+                        bool userToMoodle = false;
+                        if(ldapUser)
+                        {
+                            userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
+                        }
 
-                        schoolResult.ManagerId = managerId;
+                        if(userToMoodle)
+                        {
+                            int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
+                            manager.Moodle_Id = userMoodle_id;
 
-                        appDbContext.Schools.Update(schoolResult);
-                        appDbContext.SaveChanges();
-                        
-                        SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
-                        
-                        return Ok(new{
-                            manager.MelliCode,
-                            password,
-                            schoolId = schoolResult.Id
-                        });
+                            appDbContext.Users.Update(manager);
+
+                            ManagerDetail managerDetail = new ManagerDetail();
+                            managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(inputData.personalIdNumber);
+                            managerDetail.UserId = manager.Id;
+
+                            appDbContext.ManagerDetails.Add(managerDetail);
+                            appDbContext.SaveChanges();
+
+                            schoolResult.ManagerId = manager.Id;
+
+                            appDbContext.Schools.Update(schoolResult);
+                            appDbContext.SaveChanges();
+                            
+                            SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
+                            
+                            return Ok(new{
+                                manager.MelliCode,
+                                password,
+                                schoolId = schoolResult.Id
+                            });
+                        }
                     }
+
+                    MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
+                    await myUserManager.DeleteUser(manager);
+                    return BadRequest("ثبت مدیر با مشکل مواجه شد");
                 }
 
                 return BadRequest("اطلاعات مدیر وارد شده تکراریست");
@@ -438,6 +460,27 @@ namespace lms_with_moodle.Controllers
                     appDbContext.School_StudyFields.RemoveRange(appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_Classes.RemoveRange(appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList());
+
+                    List<UserModel> students = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Student && x.SchoolId == school.Id).ToList();
+                    MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
+
+                    foreach (var student in students)
+                    {
+                        try
+                        {
+                            await myUserManager.DeleteUser(student);
+                            
+                            School_studentClass stdClass = appDbContext.School_StudentClasses.Where(x => x.UserId == student.Id).FirstOrDefault();
+                            StudentDetail stdDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+                            ParticipantInfo participant = appDbContext.ParticipantInfos.Where(x => x.Moodle_Id == student.Id).FirstOrDefault();
+
+                            appDbContext.ParticipantInfos.Remove(participant);
+                            appDbContext.StudentDetails.Remove(stdDetail);
+                            appDbContext.School_StudentClasses.Remove(stdClass);
+                            
+                        }catch{}
+                    }
+                    appDbContext.Users.RemoveRange(appDbContext.Users.Where(x => x.SchoolId == school.Id));
                     appDbContext.Schools.Remove(school);
 
                     appDbContext.SaveChanges();
@@ -926,6 +969,21 @@ namespace lms_with_moodle.Controllers
                     appDbContext.School_Lessons.AddRange(schoolLessons);
                     appDbContext.SaveChanges();
 
+                    int managerMoodleId = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault().Moodle_Id;
+                    
+                    List<EnrolUser> enrolsManager = new List<EnrolUser>();
+                    foreach (var lesson in schoolLessons)
+                    {
+                        EnrolUser enrol = new EnrolUser();
+                        enrol.lessonId = lesson.Moodle_Id;
+                        enrol.UserId = managerMoodleId;
+                        enrol.RoleId = 3;
+
+                        enrolsManager.Add(enrol);
+                    }
+
+                    await moodleApi.AssignUsersToCourse(enrolsManager);
+
                     schoolClass.Id = appDbContext.School_Classes.OrderByDescending(x => x.Id).FirstOrDefault().Id;
 
                     return Ok(schoolClass);
@@ -1055,24 +1113,41 @@ namespace lms_with_moodle.Controllers
                         if(resultManager)
                         {
                             await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
-                            
-                            int managerId = userManager.FindByNameAsync(manager.UserName).Result.Id;
 
-                            ManagerDetail managerDetail = new ManagerDetail();
-                            managerDetail.personalIdNumber = schoolData.personalIdNumber;
-                            managerDetail.UserId = managerId;
+                            int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+                            manager.Id = userId;
 
-                            appDbContext.ManagerDetails.Add(managerDetail);
-                            appDbContext.SaveChanges();
+                            bool ldapUser = ldap.AddUserToLDAP(manager , password);
 
-                            schoolResult.ManagerId = managerId;
+                            bool userToMoodle = false;
+                            if(ldapUser)
+                            {
+                                userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
+                            }
 
-                            appDbContext.Schools.Update(schoolResult);
-                            appDbContext.SaveChanges();
+                            if(userToMoodle)
+                            {
+                                int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
+                                manager.Moodle_Id = userMoodle_id;
 
-                            SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
-                            
-                            return true;
+                                appDbContext.Users.Update(manager);
+
+                                ManagerDetail managerDetail = new ManagerDetail();
+                                managerDetail.personalIdNumber = schoolData.personalIdNumber;
+                                managerDetail.UserId = manager.Id;
+
+                                appDbContext.ManagerDetails.Add(managerDetail);
+                                appDbContext.SaveChanges();
+
+                                schoolResult.ManagerId = manager.Id;
+
+                                appDbContext.Schools.Update(schoolResult);
+                                appDbContext.SaveChanges();
+
+                                SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
+                                
+                                return true;
+                            }
                         }
                     }
                 }

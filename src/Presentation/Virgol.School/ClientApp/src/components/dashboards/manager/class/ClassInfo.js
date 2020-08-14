@@ -37,8 +37,6 @@ class ClassInfo extends React.Component {
 
         const classDetail = this.props.allClass.filter(x => x.id == parseInt(this.props.match.params.id))
 
-        console.log(parseInt(this.props.match.params.id))
-
         this.setState({classDetail : classDetail[0]})
         
     }

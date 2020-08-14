@@ -103,7 +103,7 @@ public class FileController {
             }
         }
 
-        public static BulkData excelReader_Users(string fileName)
+        public static BulkData excelReader_Users(string fileName , bool isTeacher)
         {
             try
             {
@@ -125,23 +125,84 @@ public class FileController {
                 {
                     using (var excelData = ExcelReaderFactory.CreateReader(stream))
                     {
+                        if(!isTeacher)
+                        {
+                            excelData.Read(); //Ignore column header name
+                            excelData.Read(); //Ignore column header name
+                        }
                         excelData.Read(); //Ignore column header name
 
+                        int firstNameId = -1;
+                        int lastNameId = -1;
+                        int phoneNumberId = -1;
+                        int fatherNameId = -1;
+                        int melliCodeId = -1;
+
+                        for(int i = 0;i < 5;i++)
+                        {
+                            object value = excelData.GetValue(i);
+
+                            if(value != null)
+                            {
+                                if((string)value == "نام")
+                                {
+                                    firstNameId = i;
+                                }
+                                if((string)value == "نام خانوادگی")
+                                {
+                                    lastNameId = i;
+                                }
+                                if(((string)value).Contains("تلفن همراه") || ((string)value).Contains("شماره موبایل"))
+                                {
+                                    phoneNumberId = i;
+                                }
+                                if(((string)value).Contains("کد ملی"))
+                                {
+                                    melliCodeId = i;
+                                }
+                                if(((string)value).Contains("نام پدر"))
+                                {
+                                    fatherNameId = i;
+                                }
+                            }
+                        }
+
+                        int count = excelData.RowCount;
                         while (excelData.Read()) //Each row of the file
                         {
                             try
                             {
-                                UserDataModel selectedUser = new UserDataModel
+                                bool reachEnd = false;
+                                if(excelData.MergeCells != null)
                                 {
-                                    FirstName = excelData.GetValue(0).ToString(),
-                                    LastName = excelData.GetValue(1).ToString(),
-                                    MelliCode = excelData.GetValue(2).ToString(),
-                                    PhoneNumber = (excelData.GetValue(4) != null ? excelData.GetValue(3).ToString() : null),
-                                    LatinFirstname = (excelData.GetValue(4) != null ? excelData.GetValue(4).ToString() : null),
-                                    LatinLastname = (excelData.GetValue(5) != null ? excelData.GetValue(5).ToString() : null)
-                                };
+                                    if(excelData.MergeCells[0].ToRow == excelData.Depth)
+                                    {
+                                        reachEnd = true;
+                                    }
+                                }
+                                if(!reachEnd)
+                                {
+                                    UserDataModel selectedUser = new UserDataModel
+                                    {
+                                        FirstName = excelData.GetValue(firstNameId).ToString(),
+                                        LastName = excelData.GetValue(lastNameId).ToString(),
+                                        MelliCode = excelData.GetValue(melliCodeId).ToString(),
+                                        PhoneNumber = (phoneNumberId != -1 ? 
+                                                        (excelData.GetValue(phoneNumberId) != null ? excelData.GetValue(phoneNumberId).ToString() : null) 
+                                                        : null)
+                                    };
 
-                                excelStudents.Add(selectedUser);
+                                    if(!isTeacher)
+                                    {
+                                        selectedUser.userDetail = new StudentDetail();
+                                        selectedUser.userDetail.FatherName = (fatherNameId != -1 ? 
+                                                                                (excelData.GetValue(fatherNameId) != null ? excelData.GetValue(fatherNameId).ToString() : null)
+                                                                                : null);
+                                    }
+
+
+                                    excelStudents.Add(selectedUser);
+                                }
                             }
                             catch(Exception ex)
                             {

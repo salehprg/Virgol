@@ -296,7 +296,7 @@ const mapStateToProps = state => {
         initialValues: {
             firstName: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.firstName : null,
             lastName: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.lastName : null,
-            personalIdNumber: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerDetail.personalIdNumber : null,
+            personalIdNumber: state.schoolData.schoolLessonInfo ? (state.schoolData.schoolLessonInfo.managerDetail ? state.schoolData.schoolLessonInfo.managerDetail.personalIdNumber : null) : null,
             melliCode: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.melliCode : null,
             phoneNumber: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.phoneNumber : null,
         }

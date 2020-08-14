@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -15,6 +16,11 @@ namespace Models.User
         public bool ConfirmedAcc {get; set;}
         public int userTypeId {get; set;}
         public int Moodle_Id {get; set;}
+        //0 = Boy , 1 = Girl
+        public int Sexuality {get; set;}
+
+        [NotMapped]
+        public bool completed {get;set;}
     }
 
 }

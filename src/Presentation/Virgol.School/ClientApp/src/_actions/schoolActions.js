@@ -93,7 +93,7 @@ export const AddBulkSchool = (token, excel) => async dispatch => {
 
     } catch (e) {
         dispatch({ type: STOP })
-        dispatch(alert.error("خطا"))
+        dispatch(alert.error(e.response.data))
     }
 
 }
@@ -156,6 +156,7 @@ export const RemoveSchool = (token ,formvalue) => async dispatch => {
 
     } catch (e) {
 
+        dispatch({ type: STOP })
         if(e.response)
         {
             switch (e.response.status) {

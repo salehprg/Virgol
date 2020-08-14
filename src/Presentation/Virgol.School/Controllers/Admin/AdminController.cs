@@ -41,6 +41,7 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
 
+        LDAP_db ldap;
         MoodleApi moodleApi;
         FarazSmsApi SMSApi;
         public AdminController(UserManager<UserModel> _userManager 
@@ -57,6 +58,7 @@ namespace lms_with_moodle.Controllers
 
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
+            ldap = new LDAP_db(appSettings);
         }
 
         [HttpGet]
@@ -259,21 +261,38 @@ namespace lms_with_moodle.Controllers
                     await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
                     
                     int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+                    manager.Id = userId;
 
-                    ManagerDetail managerDetail = new ManagerDetail();
-                    managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(model.personalIdNumber);
-                    managerDetail.UserId = userId;
+                    bool ldapUser = ldap.AddUserToLDAP(manager);
 
-                    appDbContext.ManagerDetails.Add(managerDetail);
-                    appDbContext.SaveChanges();
-                    
-                    SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
-
-                    if(school != null)
+                    bool userToMoodle = false;
+                    if(ldapUser)
                     {
-                        school.ManagerId = userId;
-                        appDbContext.Schools.Update(school);
+                        userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
+                    }
+
+                    if(userToMoodle)
+                    {
+                        int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
+                        manager.Moodle_Id = userMoodle_id;
+
+                        appDbContext.Users.Update(manager);
+
+                        ManagerDetail managerDetail = new ManagerDetail();
+                        managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(model.personalIdNumber);
+                        managerDetail.UserId = userId;
+
+                        appDbContext.ManagerDetails.Add(managerDetail);
                         appDbContext.SaveChanges();
+                        
+                        SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
+
+                        if(school != null)
+                        {
+                            school.ManagerId = userId;
+                            appDbContext.Schools.Update(school);
+                            appDbContext.SaveChanges();
+                        }
                     }
                 }
 
@@ -406,17 +425,21 @@ namespace lms_with_moodle.Controllers
                 List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
                 List<UserModel> teachers = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Teacher).ToList();
 
-                List<UserModel> result = new List<UserModel>();
+                List<UserDataModel> result = new List<UserDataModel>();
 
                 foreach (var school in schools)
                 {
                     int schoolId = school.Id;
                     foreach (var teacher in teachers)
                     {
+                        var serializedParent = JsonConvert.SerializeObject(teacher); 
+                        UserDataModel teacherVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+
                         TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
                         if(teacherDetail.SchoolsId.Contains(schoolId.ToString() + ","))
                         {
-                            result.Add(teacher);
+                            teacherVW.teacherDetail = teacherDetail;
+                            result.Add(teacherVW);
                         }
                     }
                 }
@@ -443,11 +466,25 @@ namespace lms_with_moodle.Controllers
 
                 List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
 
-                List<UserModel> result = new List<UserModel>();
+                List<UserDataModel> result = new List<UserDataModel>();
 
                 foreach (var school in schools)
                 {
-                    result.AddRange(appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Student).ToList());
+                    List<UserModel> students = appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Student).ToList();
+                    foreach (var student in students)
+                    {
+                        var serializedParent = JsonConvert.SerializeObject(student); 
+                        UserDataModel studentVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+
+                        StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+                        if(student.LatinFirstname != null)
+                        {
+                            studentVW.completed = true;
+                        }
+                        studentVW.userDetail = studentDetail;
+
+                        result.Add(studentVW);
+                    }
                 }
 
                 return Ok(result);

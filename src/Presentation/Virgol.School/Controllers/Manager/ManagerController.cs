@@ -1371,8 +1371,9 @@ namespace lms_with_moodle.Controllers
                 //2 - Check valid data
                 //3 - Add user to Database
                 //3.1 - don't add duplicate username 
+                int sexuality = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().sexuality;
 
-                List<UserDataModel> excelUsers = FileController.excelReader_Users(fileName).usersData;
+                List<UserDataModel> excelUsers = FileController.excelReader_Users(fileName , (userTypeId == (int)UserType.Teacher)).usersData;
                 List<UserDataModel> newUsers = new List<UserDataModel>();
                 List<UserDataModel> duplicateTeacher = new List<UserDataModel>();
 
@@ -1385,6 +1386,7 @@ namespace lms_with_moodle.Controllers
                     selectedUser.ConfirmedAcc = true;
                     selectedUser.UserName = selectedUser.MelliCode;
                     selectedUser.userTypeId = userTypeId;
+                    selectedUser.Sexuality = sexuality;
                     selectedUser.SchoolId = schoolId;
 
                     if(await userManager.FindByNameAsync(selectedUser.UserName) == null)//Check for duplicate Username
@@ -1433,7 +1435,11 @@ namespace lms_with_moodle.Controllers
                     {
                         StudentDetail studentDetail = new StudentDetail();
                         studentDetail.UserId = userId;
-
+                        if(user.userDetail.FatherName != null)
+                        {
+                            studentDetail.FatherName = user.userDetail.FatherName;
+                        }
+                        
                         appDbContext.StudentDetails.Add(studentDetail);
                     }
                     else if(userTypeId == (int)UserType.Teacher)
@@ -1441,6 +1447,10 @@ namespace lms_with_moodle.Controllers
                         TeacherDetail teacherDetail = new TeacherDetail();
                         teacherDetail.TeacherId = userId;
                         teacherDetail.SchoolsId = schoolId.ToString() + ',';
+                        if(user.userDetail != null)
+                        {
+                            teacherDetail.personalIdNUmber = user.teacherDetail.personalIdNUmber;
+                        }
 
                         appDbContext.TeacherDetails.Add(teacherDetail);
                     }

@@ -194,6 +194,9 @@ namespace lms_with_moodle.Controllers
 
                 UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
 
+                if(user == null)
+                    return BadRequest("کدملی وارد شده وجود ندارد");
+
                 if(type == 0)
                 {
                     //Every user can get just 3 Verification code in last 30 minutes
@@ -221,17 +224,49 @@ namespace lms_with_moodle.Controllers
                 {
                     if(await CheckVerificationCode(verificationCode , user))
                     {
-                        string token = await userManager.GeneratePasswordResetTokenAsync(user);
-                        await userManager.ResetPasswordAsync(user , token , user.MelliCode);
                         return Ok(true);
                     }
                 }
 
                 return Ok(true);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string idNumber , string verificationCode , string newPassword)
+        {
+            try
+            {
+                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+                bool verify = await CheckVerificationCode(verificationCode , user);
+                if(verify)
+                {
+                    string token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    IdentityResult chngPassword = await userManager.ResetPasswordAsync(user , token , newPassword);
+                    if(chngPassword.Succeeded)
+                    {
+                        ldap.EditEntry(user.UserName , "userPassword" , newPassword);
+
+                        return Ok(true);
+                    }
+                    else
+                    {
+                        return BadRequest(chngPassword.Errors);
+                    }
+
+                    
+                }
+
+                return Ok(false);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
             }
         }
 
@@ -251,11 +286,13 @@ namespace lms_with_moodle.Controllers
 
                 studentDetail.BirthDate = userDataModel.userDetail.BirthDate;
                 studentDetail.cityBirth = userDataModel.userDetail.cityBirth;
+                studentDetail.FatherPhoneNumber = userDataModel.userDetail.FatherPhoneNumber;
                 
                 appDbContext.StudentDetails.Update(studentDetail);
 
                 user.LatinFirstname = userDataModel.LatinFirstname;
                 user.LatinLastname = userDataModel.LatinLastname;
+                user.PhoneNumber = userDataModel.PhoneNumber;
 
                 appDbContext.Users.Update(user);
                 appDbContext.SaveChanges();
@@ -352,8 +389,11 @@ namespace lms_with_moodle.Controllers
                     case (int)UserType.Student:
                         SchoolModel school = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
                         School_studentClass classs = appDbContext.School_StudentClasses.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                        School_Class classDetail = appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault();
-                        GradeModel grade = appDbContext.Grades.Where(x => x.Id == classDetail.Grade_Id).FirstOrDefault();
+                        School_Class classDetail = new School_Class();
+                        classDetail = (classs != null ? appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault() : classDetail);
+
+                        GradeModel grade = (classDetail.Grade_Id != 0 ? appDbContext.Grades.Where(x => x.Id == classDetail.Grade_Id).FirstOrDefault() : new GradeModel());
+
                         userDetail = new {
                             school,
                             classDetail.ClassName,

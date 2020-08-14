@@ -59,7 +59,7 @@ class Teachers extends React.Component {
                     }}
                     excel="آپلود اکسل معلمان"
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'واحد تدریس']}
+                    headers={['نام', 'نام خانوادگی', 'کد ملی']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -72,7 +72,7 @@ class Teachers extends React.Component {
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
                                                 <td>{x.melliCode}</td>
-                                                <td>{x.moodle_Id}</td>
+                                                {/* <td>{x.moodle_Id}</td> */}
                                                 <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>           
