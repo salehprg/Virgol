@@ -34,19 +34,15 @@ public class MyUserManager {
         try
         {
             if(ldap.DeleteEntry(user.MelliCode))
-            {
                 await moodleApi.DeleteUser(user.Moodle_Id);
 
-                await userManager.RemoveFromRoleAsync(user , "User");
-                await userManager.RemoveFromRoleAsync(user , "Teacher");
-                await userManager.RemoveFromRoleAsync(user , "Admin");
-                await userManager.RemoveFromRoleAsync(user , "Manager");
-                await userManager.DeleteAsync(user);
+            await userManager.RemoveFromRoleAsync(user , "User");
+            await userManager.RemoveFromRoleAsync(user , "Teacher");
+            await userManager.RemoveFromRoleAsync(user , "Admin");
+            await userManager.RemoveFromRoleAsync(user , "Manager");
+            await userManager.DeleteAsync(user);
 
-                return true;
-            }
-
-            return false;
+            return true;
         }
         catch
         {

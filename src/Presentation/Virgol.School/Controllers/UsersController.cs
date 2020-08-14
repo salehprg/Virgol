@@ -249,7 +249,7 @@ namespace lms_with_moodle.Controllers
                     IdentityResult chngPassword = await userManager.ResetPasswordAsync(user , token , newPassword);
                     if(chngPassword.Succeeded)
                     {
-                        ldap.EditEntry(user.MelliCode , "userPassword" , newPassword);
+                        ldap.EditEntry(user.UserName , "userPassword" , newPassword);
 
                         return Ok(true);
                     }

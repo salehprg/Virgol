@@ -24,7 +24,7 @@ namespace lms_with_moodle.Helper
             
         }
 
-        public bool AddUserToLDAP(UserDataModel user)
+        public bool AddUserToLDAP(UserModel user , string password = "")
         {
             try
             {
@@ -82,7 +82,7 @@ namespace lms_with_moodle.Helper
                 attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
                 attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
                 attributeSet.Add( new LdapAttribute("title", title));
-                attributeSet.Add( new LdapAttribute("userPassword", user.MelliCode));
+                attributeSet.Add( new LdapAttribute("userPassword", (password != "" ? password : user.MelliCode)));
                 attributeSet.Add( new LdapAttribute("uniqueIdentifier", new string[]{ user.MelliCode , uniqueMailId }));
                 
                 // DN of the entry to be added

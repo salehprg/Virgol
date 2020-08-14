@@ -173,7 +173,7 @@ public class FileController {
                             try
                             {
                                 bool reachEnd = false;
-                                if(excelData.MergeCells.Length > 0)
+                                if(excelData.MergeCells != null)
                                 {
                                     if(excelData.MergeCells[0].ToRow == excelData.Depth)
                                     {

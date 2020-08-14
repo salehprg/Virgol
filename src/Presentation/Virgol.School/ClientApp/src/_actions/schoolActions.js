@@ -156,6 +156,7 @@ export const RemoveSchool = (token ,formvalue) => async dispatch => {
 
     } catch (e) {
 
+        dispatch({ type: STOP })
         if(e.response)
         {
             switch (e.response.status) {

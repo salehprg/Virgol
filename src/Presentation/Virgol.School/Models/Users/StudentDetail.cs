@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace Models.User
         public string cityBirth {get; set;}
         public int BaseId {get; set;}
         public DateTime BirthDate {get; set;}
+
     }
 
 }
