@@ -6,12 +6,15 @@ import { loading } from '../../../../assets/icons'
 
 class Classes extends React.Component {
 
-    state = { loading: false }
+    state = { loading: false , finished : true }
 
     componentDidMount = async () => {
         this.setState({ loading: true })
         await this.props.getTeacherSchedule(this.props.user.token )
         this.setState({ loading: false })
+
+        this.setState({finished : true})
+        this.render()
     }
 
     render() {

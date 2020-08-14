@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
-import { login, logout, sendVerificationCode, forgotPassword } from "../../_actions/authActions";
+import { login, logout, sendVerificationCode, forgotPassword  , ChangePassword} from "../../_actions/authActions";
 import {loading, logo} from "../../assets/icons";
 import {Field, reduxForm} from "redux-form";
 import Fieldish from "../field/Fieldish";
@@ -69,7 +69,7 @@ class Login extends React.Component {
 
     confirm = async formValues => {
         this.setState({reseting: true})
-        const success = await this.props.forgotPassword(this.state.IdNumer, formValues.code)
+        const success = await this.props.ChangePassword(this.state.IdNumer, formValues.code , formValues.newPassword)
         this.setState({reseting: false})
         if (success) {
             this.setState({panel: 'login'})
@@ -133,6 +133,19 @@ class Login extends React.Component {
                             placeholder="کد ارسال شده"
                             component={this.renderInputs}
                         />
+                        <Field
+                            name="newPassword"
+                            type="text"
+                            placeholder="رمز عبور جدید"
+                            component={this.renderInputs}
+                        />
+                        <Field
+                            name="confirmPassword"
+                            type="text"
+                            placeholder="تکرار رمز"
+                            component={this.renderInputs}
+                        />
+
                         <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
                             {this.state.reseting ? loading('w-6 text-white') : 'تایید'}
                         </button>
@@ -172,6 +185,7 @@ const validate = formValues => {
     if (!formValues.password) errors.password = true
     if (!formValues.IdNumer) errors.IdNumer = true
     if (!formValues.code) errors.code = true
+    if (formValues.newPassword != formValues.confirmPassword || !formValues.newPassword) errors.newPassword = true
     return errors
 }
 
@@ -180,4 +194,4 @@ const formWrapped = reduxForm({
     validate
 })(Login);
 
-export default connect(null, { login, logout, sendVerificationCode, forgotPassword })(formWrapped);
+export default connect(null, { login, logout, sendVerificationCode, forgotPassword , ChangePassword })(formWrapped);

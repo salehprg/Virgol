@@ -113,7 +113,13 @@ namespace lms_with_moodle.Controllers
                     int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
                     schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
                 }
-                return Ok(classScheduleViews);
+
+                var groupedSchedule = classScheduleViews
+                    .GroupBy(x => x.DayType)
+                    .Select(grp => grp.ToList())
+                    .ToList();
+
+                return Ok(groupedSchedule);
             }
             catch(Exception ex)
             {
@@ -148,6 +154,9 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                if(classSchedule.EndHour <= classSchedule.StartHour)
+                    return BadRequest("ساعت درس به درستی انتخاب نشده است");
+                    
                 if(classSchedule.TeacherId == 0)
                     return BadRequest("معلمی انتخاب شده است");
                     

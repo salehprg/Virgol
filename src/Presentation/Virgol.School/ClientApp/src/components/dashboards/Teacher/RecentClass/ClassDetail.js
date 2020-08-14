@@ -5,7 +5,10 @@ const RecentClassDetail = ({ text, startTime , endTime , schoolName , className 
 
     return (
         <div className="w-full py-2 mt-6 border-b border-grayish">
-            <p className="text-white mb-4">{text}</p>
+            <div className="w-full flex flex-row justify-between items-center">
+                <span className="w-1/4 text-white mb-4">از {startTime} تا {endTime}</span>
+                <span className="w-3/4 text-white mb-4">{text}</span>
+            </div>
             <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-grayish text-sm">{schoolName} ({className})</span>
                 
