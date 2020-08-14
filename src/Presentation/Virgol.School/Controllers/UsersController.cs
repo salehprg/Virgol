@@ -293,7 +293,7 @@ namespace lms_with_moodle.Controllers
                 teacherDetail.cityBirth = userDataModel.teacherDetail.cityBirth;
                 teacherDetail.personalIdNUmber = userDataModel.teacherDetail.personalIdNUmber;
                 
-                appDbContext.TeacherDetails.Add(teacherDetail);
+                appDbContext.TeacherDetails.Update(teacherDetail);
 
                 user.LatinFirstname = userDataModel.LatinFirstname;
                 user.LatinLastname = userDataModel.LatinLastname;

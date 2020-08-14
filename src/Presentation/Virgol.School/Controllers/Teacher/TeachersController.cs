@@ -139,7 +139,10 @@ namespace lms_with_moodle.Controllers
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
                 int currentHour = DateTime.Now.Hour;
-                List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId && x.StartHour >= currentHour).ToList();
+                int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
+                dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
+
+                List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId && x.StartHour >= currentHour && x.DayType == dayOfWeek ).ToList();
                 List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => x.TeacherId == teacherId && !x.Finished).ToList();
 
                 List<ClassScheduleView> result = new List<ClassScheduleView>();

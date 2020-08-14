@@ -68,7 +68,21 @@ namespace lms_with_moodle.Controllers
 
                 int classCount = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).Count();
                 int studentsCount = appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Student).Count();
-                int teacherCount = appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Teacher).Count();
+
+                List<UserModel> allTeachers = appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Teacher).ToList();
+                List<UserModel> result = new List<UserModel>();
+
+                foreach (var teacher in allTeachers)
+                {
+                    string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault().SchoolsId;
+                    if(schoolIds.Split(',').Where(x => x == school.Id.ToString()).FirstOrDefault() != null)
+                    {
+                        result.Add(teacher);
+                    }
+                }
+
+                int teacherCount = result.Count;
+
                 int onlineClass = 0;
 
                 return Ok(new{

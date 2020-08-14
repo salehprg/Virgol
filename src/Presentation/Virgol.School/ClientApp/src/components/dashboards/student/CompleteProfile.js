@@ -1,0 +1,201 @@
+import React from 'react';
+import DatePicker from 'react-datepicker2';
+import history from '../../../history'
+import Add from '../../field/Add';
+import Fieldish from '../../field/Fieldish';
+import { reduxForm, Field, formValues } from 'redux-form'
+import { connect } from 'react-redux';
+import { CompleteStudentProfile , SendVerifyPhoneNumber , CheckVerifyPhoneNumber} from "../../../_actions/authActions"
+import moment from 'moment-jalaali'
+import {validator} from '../../../assets/validator'
+
+class CompleteProfile extends React.Component {
+
+    state = {birthDate : moment() , 
+        verifyPhone : false , 
+        phoneNumber : "" , 
+        verifyCodePhoneNumber : "" , 
+        verifyFatherPhone : false ,  
+        fatherPhone : "" ,
+        verifyCodeFatherPhoneNumber : "" }
+
+    renderInputs = ({ input, meta, type, placeholder,extra }) => {
+        return (
+            <Fieldish
+                input={input}
+                redCondition={meta.touched && meta.error}
+                type={type}
+                dir="rtl"
+                placeholder={placeholder}
+                extra={`${extra}`}
+            />
+        );
+    }
+
+    onSendPhoneVerify () {
+        this.setState({verifyPhone : true});
+        this.sendVerifyPhone();
+    }
+    sendVerifyPhone = async () => {
+        await this.props.SendVerifyPhoneNumber(this.state.phoneNumber);
+    }
+    onCheckVerifyPhone = async () => {
+        await this.props.CheckVerifyPhoneNumber(this.state.phoneNumber , this.state.verifyCodePhoneNumber);
+    }
+
+
+
+    onSendFatherPhoneVerify () {
+        this.setState({verifyFatherPhone : true});
+        this.sendVerifyFatherPhone();
+    }
+    sendVerifyFatherPhone = async () => {
+        await this.props.SendVerifyPhoneNumber(this.state.fatherPhone);
+    }
+    onCheckVerifyFatherPhone = async () => {
+        await this.props.CheckVerifyPhoneNumber(this.state.fatherPhone , this.verifyCodeFatherPhoneNumber);
+    }
+
+    onSubmit = async (formValues) => {
+        
+        let data = formValues;
+
+        data.userDetail = {
+            fatherPhoneNumber : formValues.fatherPhoneNumber,
+            birthDate : (this.state.birthDate ? this.state.birthDate._d : null),
+            cityBirth: formValues.cityBirth
+        }
+
+        console.log(data)
+        
+        await this.props.CompleteStudentProfile(this.props.user.token , data)
+    }
+
+    render() {
+        return (
+            <div>
+                <Add
+                    onCancel={() => history.push('/')}
+                    title={"لطفا اطلاعات پروفایل خودرا تکمیل نمایید"}
+                >
+                    <form className="w-full text-right " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                        <p className="text-right text-white mb-6 text-xl">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</p>
+                        <Field
+                            name="latinFirstname"
+                            type="text"
+                            placeholder="نام لاتین"
+                            component={this.renderInputs}
+                            extra={"w-40 my-4 mx-2"}
+                        />
+                        <Field
+                            name="latinLastname"
+                            type="text"
+                            placeholder="نام خانوادگی لاتین"
+                            component={this.renderInputs}
+                            extra={"w-40 my-4"}
+                        />
+                        {(!this.state.verifyFatherPhone ? 
+                            <>
+                            <Field
+                                name="phoneNumber"
+                                type="text"
+                                onChange={(e) => this.setState({phoneNumber : e.target.value})}
+                                placeholder="شماره همراه ولی"
+                                component={this.renderInputs}
+                                extra={"w-3/4 my-4"}
+                            />
+                            <button type="button" onClick={() => this.onSendPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ارسال کد</button>
+                            </>
+                            :
+                            <>
+                                <Field
+                                name="verifyCodePhone"
+                                type="text"
+                                onChange={(e) => this.setState({verifyCodeFatherPhoneNumber : e.target.value})}
+                                placeholder="کد ارسال شده را وارد نمایید"
+                                component={this.renderInputs}
+                                extra={"w-3/4 my-4"}
+                                />
+                                <button type="button" onClick={() => this.onCheckVerifyFatherPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت</button>
+                            </>
+                        )}
+                        {(!this.state.verifyPhone ? 
+                            <>
+                            <Field
+                                name="fatherPhoneNumber"
+                                type="text"
+                                onChange={(e) => this.setState({fatherPhoneNumber : e.target.value})}
+                                placeholder="شماره همراه"
+                                component={this.renderInputs}
+                                extra={"w-3/4 my-4"}
+                            />
+                            <button type="button" onClick={() => this.onSendFatherPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ارسال کد</button>
+                            </>
+                            :
+                            <>
+                                <Field
+                                name="verifyCodePhone"
+                                type="text"
+                                onChange={(e) => this.setState({verifyCodePhoneNumber : e.target.value})}
+                                placeholder="کد ارسال شده را وارد نمایید"
+                                component={this.renderInputs}
+                                extra={"w-3/4 my-4"}
+                                />
+                                <button type="button" onClick={() => this.onCheckVerifyPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت</button>
+                            </>
+                        )}
+                        <Field
+                            name="cityBirth"
+                            type="text"
+                            placeholder="شهر محل تولد"
+                            component={this.renderInputs}
+                            extra={"w-full my-4 mx-2"}
+                        />
+                        <p className="text-right text-white mb-4 text-xl">تاریخ تولد : </p>
+                        <DatePicker
+                            timePicker={false}
+                            isGregorian={false}
+                            value={this.state.birthDate}
+                            onChange={value => this.setState({ birthDate : value })}
+                        ></DatePicker>
+                        
+
+                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
+                    </form>
+                </Add>
+            </div>
+        );
+    }
+
+}
+
+const validate = formValues => {
+    const errors = {}
+
+    if (!formValues.latinFirstname) errors.latinFirstname = true
+    if (!formValues.latinLastname) errors.latinLastname = true
+    if (!formValues.phoneNumber) errors.phoneNumber = true
+    if (!formValues.fatherPhoneNumber) errors.fatherPhoneNumber = true
+    if (!formValues.cityBirth) errors.cityBirth = true
+
+    return errors;
+}
+
+const mapStateToProps = state => {
+    console.log(state)
+    return {
+        user: state.auth.userInfo ,
+        initialValues: {
+            firstName: state.auth.userInfo.userInformation ? state.auth.userInfo.userInformation.firstName : null,
+            lastName: state.auth.userInfo.userInformation ? state.auth.userInfo.userInformation.lastName : null
+        }
+    }
+}
+
+const formWrapped = reduxForm({
+    form: 'teacherProfile',
+    enableReinitialize : true,
+    validate
+})(CompleteProfile)
+
+export default connect(mapStateToProps , {CompleteStudentProfile , SendVerifyPhoneNumber , CheckVerifyPhoneNumber})(formWrapped);

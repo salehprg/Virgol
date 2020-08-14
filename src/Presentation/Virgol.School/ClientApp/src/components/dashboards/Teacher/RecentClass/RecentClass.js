@@ -11,11 +11,11 @@ class RecentClass extends React.Component {
         return (
             <div className={`${pos} w-full h-full px-6 py-4 text-right bg-dark-blue rounded-xl`}>
                 <p className="text-white">{title}</p>
-                {
+                {(this.props.class ? 
                     (
-                        !this.props.class 
+                        this.props.class.length === 0 
                         ? 
-                        <span className="text-2xl text-grayish block text-center">هیچ اخباری وجود ندارد</span> 
+                        <span className="text-2xl text-grayish block text-center">هیچ کلاسی وجود ندارد</span> 
                         :
                         this.props.class.map(x => {
                             return (
@@ -31,6 +31,9 @@ class RecentClass extends React.Component {
                             );
                         })
                     )
+                    :
+                    "درحال بارگذاری ..."
+                )
                 }
             
             </div>

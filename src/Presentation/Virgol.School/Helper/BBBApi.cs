@@ -23,7 +23,7 @@ namespace lms_with_moodle.Helper
             token = _appsetting.Token_moodle;
         }       
 
-        async Task<string> sendData (string data)
+        async Task<string> sendData (string data , bool joinRoom = false)
         {
             //data should like this
             //getMeetings
@@ -46,11 +46,15 @@ namespace lms_with_moodle.Helper
             checkSum = SHA1Creator.sha1Creator(data + appSettings.BBBSecret);
 
             Uri uri = new Uri (BaseUrl + modifiedData + "checksum=" + checkSum.ToLower() );
+
+            if(joinRoom)
+                return uri.AbsoluteUri;
+
             HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
             
             try
             {
-                 if (response.IsSuccessStatusCode)  
+                if (response.IsSuccessStatusCode)  
                 {  
                     XmlDocument xmlResponse = new XmlDocument();
                     xmlResponse.Load(await response.Content.ReadAsStreamAsync());
@@ -64,9 +68,10 @@ namespace lms_with_moodle.Helper
                     return "";
                 } 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return response.RequestMessage.RequestUri.AbsoluteUri;
+                Console.WriteLine(ex.Message);
+                return null;
             }
             
         }
@@ -130,9 +135,9 @@ namespace lms_with_moodle.Helper
                 string FunctionName = string.Format("join?meetingID={0}&{1}&fullName={2}&redirect=true" , meetingId , password , fullname);
                 string data = FunctionName;
 
-                string _response = await sendData(data);
+                string url = await sendData(data , true);
 
-                return _response;
+                return url;
             }
             catch(Exception ex)
             {
