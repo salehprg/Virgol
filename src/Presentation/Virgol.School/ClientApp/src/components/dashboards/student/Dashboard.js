@@ -51,7 +51,7 @@ class StudentDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="classes"
-                        title="کلاس ها"
+                        title="برنامه کلاسی"
                         icon={layout}
                         changeActive={this.changeActive}
                     />

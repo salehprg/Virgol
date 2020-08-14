@@ -160,16 +160,21 @@ export const forgotPassword = (melliCode, verificationCode) => async dispatch =>
 
 }
 
-export const SendVerifyPhoneNumber = phoneNumber => async dispatch => {
+export const SendVerifyPhoneNumber = (phoneNumber,token) => async dispatch => {
 
     try {
         dispatch({ type: START })
-        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0`);
+        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0` , null , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
         dispatch({ type: STOP })
         dispatch(alert.success("کد تایید با موفقیت ارسال شد"))
         return true
 
     } catch (e) {
+        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
         return false
@@ -177,11 +182,15 @@ export const SendVerifyPhoneNumber = phoneNumber => async dispatch => {
 
 }
 
-export const CheckVerifyPhoneNumber = (phoneNumber, verificationCode) => async dispatch => {
+export const CheckVerifyPhoneNumber = (phoneNumber, verificationCode , token) => async dispatch => {
 
     try {
         dispatch({ type: START })
-        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0&verificationCode=${verificationCode}`);
+        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=1&verificationCode=${verificationCode}` , null , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
         dispatch({ type: STOP })
 
         if (response.data) {

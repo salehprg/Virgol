@@ -1,7 +1,7 @@
 import lms from "../apis/lms";
 import history from "../history";
 import { alert } from "./alertActions";
-import * as Type from './teacherTypes'
+import * as Type from './meetingTypes'
 import * as authType from './authTypes'
 import { worker } from "./workerActions";
 import {START, STOP} from "./workerTypes";
@@ -13,7 +13,7 @@ export const GetMeetingList = token => async dispatch => {
 
     try {
         
-        const response = await lms.get('/Teacher/GetMeetingList' , {
+        const response = await lms.get('/Meeting/GetMeetingList' , {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -37,7 +37,7 @@ export const GetMeetingDetail = (token,MeetingId) => async dispatch => {
 
     try {
         
-        const response = await lms.get(`/Teacher/GetMeetingDetail?MeetingId=${MeetingId}` , {
+        const response = await lms.get(`/Meeting/GetMeetingDetail?MeetingId=${MeetingId}` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -61,7 +61,7 @@ export const GetRecentClass = token => async dispatch => {
 
     try {
         
-        const response = await lms.get('/Teacher/GetRecentClass' , {
+        const response = await lms.get('/Meeting/GetRecentClass' , {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -73,6 +73,7 @@ export const GetRecentClass = token => async dispatch => {
 
     } catch (e) {
 
+        console.log(e)
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
 
         return false
@@ -86,7 +87,7 @@ export const StartMeeting = (token,lessonId) => async dispatch => {
     try {
         
         dispatch({ type: START })
-        const response = await lms.post(`/Teacher/StartMeeting?lessonId=${lessonId}` , null , {
+        const response = await lms.post(`/Meeting/StartMeeting?lessonId=${lessonId}` , null , {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -115,7 +116,7 @@ export const JoinMeeting = (token,meetingId) => async dispatch => {
     try {
         
         dispatch({ type: START })
-        const response = await lms.post(`/Teacher/JoinMeeting?meetingId=${meetingId}` , null , {
+        const response = await lms.post(`/Meeting/JoinMeeting?meetingId=${meetingId}` , null , {
             headers: {
                 authorization: `Bearer ${token}`
             }
