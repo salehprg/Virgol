@@ -90,7 +90,8 @@ class AddLesson extends React.Component {
         { value: 3, label: 'دوشنبه' },
         { value: 4, label: 'سه شنبه' },
         { value: 5, label: 'چهار شنبه' },
-        { value: 6, label: 'پنجشنبه' }
+        { value: 6, label: 'پنجشنبه' },
+        { value: 7, label: 'جمعه' }
     ];
 
     times = [

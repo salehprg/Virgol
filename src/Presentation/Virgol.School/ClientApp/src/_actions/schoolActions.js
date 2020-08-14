@@ -5,6 +5,7 @@ import * as Type from './schoolTypes'
 import * as authType from './authTypes'
 import { worker } from "./workerActions";
 import { START, STOP } from "./workerTypes";
+import { config } from "../config";
 
 //#region Schools
 
@@ -463,7 +464,7 @@ export const editClass = (token, classId , className) => async dispatch => {
 
     try {
         dispatch({ type: START })
-        const response = await lms.post(`/School/EditClass?classId=${classId}&className=${className}`,{
+        const response = await lms.post(`/School/EditClass?classId=${classId}&className=${className}` , null , {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -474,6 +475,7 @@ export const editClass = (token, classId , className) => async dispatch => {
         dispatch(alert.success("کلاس با موفقیت ویرایش گردید"))
 
     } catch (e) {
+        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error("خطا در ویرایش مقطع"))
     }

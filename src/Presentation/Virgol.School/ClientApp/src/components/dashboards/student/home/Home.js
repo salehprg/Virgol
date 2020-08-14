@@ -23,31 +23,26 @@ class Home extends React.Component {
                 <Hero userInfo={this.props.user.userInformation}
                         userDetail={this.props.user.userDetail}/>
                 <CounterCard
-                    title="مقطع"
+                    isText={true}
+                    title="نام مدرسه"
                     icon={home}
-                    number={this.props.dashboardInfo.classCount}
+                    number={this.props.user.userDetail.school.schoolName}
                     border="border-sky-blue"
                 />
 
                 <CounterCard
-                    title="پایه"
+                    isText={true}
+                    title="مقطع"
                     icon={user}
-                    number={this.props.dashboardInfo.onlineClass}
+                    number={this.props.user.userDetail.gradeName}
                     border="border-purplish"
                 />
 
                 <CounterCard
-                    title="تعداد کل دروس"
-                    icon={key}
-                    number={this.props.dashboardInfo.studentsCount}
-                    border="border-greenish"
-                    pos="row-start-3"
-                />
-
-                <CounterCard
-                    title="معدل"
+                    isText={true}
+                    title="کلاس"
                     icon={users}
-                    number={this.props.dashboardInfo.teacherCount}
+                    number={this.props.user.userDetail.className}
                     border="border-redish"
                     pos="row-start-3"
                 />

@@ -36,10 +36,10 @@ namespace lms_with_moodle.Helper
                 bool hasMail = false;
                 string uniqueMailId = user.MelliCode;
 
-                if(user.userDetail.LatinFirstname != null && user.userDetail.LatinLastname != null)
+                if(user.LatinFirstname != null && user.LatinLastname != null)
                 {
-                    uniqueMailId = string.Format("{0}.{1}.{2}" , user.userDetail.LatinFirstname 
-                                                                , user.userDetail.LatinLastname 
+                    uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
+                                                                , user.LatinLastname 
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
 
                 }
@@ -105,7 +105,7 @@ namespace lms_with_moodle.Helper
             }
         }
 
-        public bool EditEntry(UserDataModel user)
+        public bool AddEntry(string IdNumbr , string attrName , string attrValue)
         {
             try
             {
@@ -116,36 +116,12 @@ namespace lms_with_moodle.Helper
                 ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
 
                 List<LdapModification> mods = new List<LdapModification>();
-                string uniqueMailId = user.MelliCode;
+                LdapAttribute attr =  new LdapAttribute(attrName, attrValue);
 
-                if(user.userDetail.LatinFirstname != null && user.userDetail.LatinLastname != null)
-                {
-                    uniqueMailId = string.Format("{0}.{1}.{2}" , user.userDetail.LatinFirstname 
-                                                                , user.userDetail.LatinLastname 
-                                                                , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
-                }
-                string mailAddress = uniqueMailId + "@legace.ir";
-
-                LdapAttribute cn = new LdapAttribute("cn", user.FirstName);
-                LdapAttribute sn = new LdapAttribute("sn", user.LastName);
-                LdapAttribute mail = new LdapAttribute("mail", mailAddress);
-                LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
-                LdapAttribute mailSrDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
-                LdapAttribute password = new LdapAttribute("userPassword", user.MelliCode);
-                LdapAttribute gName =  new LdapAttribute("givenName", user.FirstName);
-
-                mods.Add(new LdapModification(LdapModification.REPLACE , cn));
-                mods.Add(new LdapModification(LdapModification.REPLACE , sn));
-                mods.Add(new LdapModification(LdapModification.REPLACE , mail));
-                mods.Add(new LdapModification(LdapModification.REPLACE , mailHDir));
-                mods.Add(new LdapModification(LdapModification.REPLACE , mailSrDir));
-                mods.Add(new LdapModification(LdapModification.REPLACE , password));
-                mods.Add(new LdapModification(LdapModification.REPLACE , gName));
-                
+                mods.Add(new LdapModification(LdapModification.ADD , attr));
 
                 // DN of the entry to be added
-                string dn = "uniqueIdentifier=" + user.MelliCode + "," + containerName;      
-
+                string dn = "uniqueIdentifier=" + IdNumbr + "," + containerName;      
 
                 //Add the entry to the directory
                 ldapConn.Modify(dn , mods.ToArray());
@@ -162,7 +138,39 @@ namespace lms_with_moodle.Helper
                 //ldapConn.Disconnect();
             }
         }
+        public bool EditEntry(string IdNumbr , string attrName , string attrValue)
+        {
+            try
+            {
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
 
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute attr =  new LdapAttribute(attrName, attrValue);
+
+                mods.Add(new LdapModification(LdapModification.REPLACE , attr));
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + IdNumbr + "," + containerName;      
+
+                //Edit the entry in the directory
+                ldapConn.Modify(dn , mods.ToArray());
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                //ldapConn.Disconnect();
+            }
+        }
         public bool DeleteEntry(string IdNumber)
         {
             try
@@ -255,5 +263,55 @@ namespace lms_with_moodle.Helper
             }
         }
 
+    
+        public bool AddMail(UserModel user)
+        {
+            try
+            {
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+
+                string uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
+                                                                , user.LatinLastname 
+                                                                , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
+
+
+                string mailAddress = uniqueMailId + "@legace.ir";
+
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute mail = new LdapAttribute("mail", mailAddress);
+                LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
+                LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
+
+                LdapAttribute uniqueId = new LdapAttribute("uniqueIdentifier", uniqueMailId);
+
+                mods.Add(new LdapModification(LdapModification.ADD , mail));
+                mods.Add(new LdapModification(LdapModification.ADD , uniqueId));
+                mods.Add(new LdapModification(LdapModification.REPLACE , mailHDir));
+                mods.Add(new LdapModification(LdapModification.REPLACE , mailSTRDir));
+
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + user.MelliCode + "," + containerName;      
+
+                //Add the entry to the directory
+                ldapConn.Modify(dn , mods.ToArray());
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                //ldapConn.Disconnect();
+            }
+        }
+        
     }
 }

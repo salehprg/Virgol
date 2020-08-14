@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Xml;
 using Newtonsoft.Json;
+using System.Web;
+using System.Net;
 
 namespace lms_with_moodle.Helper
 {
@@ -21,7 +23,7 @@ namespace lms_with_moodle.Helper
             token = _appsetting.Token_moodle;
         }       
 
-        async Task<string> sendData (string data)
+        async Task<string> sendData (string data , bool joinRoom = false)
         {
             //data should like this
             //getMeetings
@@ -39,24 +41,39 @@ namespace lms_with_moodle.Helper
             }
 
             string checkSum = "";
+            data = data.Replace("?" , "");
+            
             checkSum = SHA1Creator.sha1Creator(data + appSettings.BBBSecret);
 
             Uri uri = new Uri (BaseUrl + modifiedData + "checksum=" + checkSum.ToLower() );
+
+            if(joinRoom)
+                return uri.AbsoluteUri;
+
             HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
             
-            if (response.IsSuccessStatusCode)  
-            {  
-                XmlDocument xmlResponse = new XmlDocument();
-                xmlResponse.Load(await response.Content.ReadAsStreamAsync());
-                var jsonObj = JsonConvert.SerializeXmlNode(xmlResponse , Newtonsoft.Json.Formatting.None , true);
+            try
+            {
+                if (response.IsSuccessStatusCode)  
+                {  
+                    XmlDocument xmlResponse = new XmlDocument();
+                    xmlResponse.Load(await response.Content.ReadAsStreamAsync());
+                    var jsonObj = JsonConvert.SerializeXmlNode(xmlResponse , Newtonsoft.Json.Formatting.None , true);
 
-                return jsonObj;
-            }  
-            else  
-            {  
-                Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);  
-                return "";
-            }  
+                    return jsonObj;
+                }  
+                else  
+                {  
+                    Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);  
+                    return "";
+                } 
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            
         }
 
 #region ApiFunctions
@@ -84,7 +101,54 @@ namespace lms_with_moodle.Helper
 
         }
         
+        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId)
+        {
+            try
+            {
+                name = HttpUtility.UrlEncode(name).ToUpper();
+                string FunctionName = string.Format("create?attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}" , name , meetingId );
+                string data = FunctionName;
 
+                string _response = await sendData(data);
+
+                var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
+
+                return meetingsInfo;
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+
+                return null;
+            }
+
+        }
+        
+         public async Task<string> JoinRoom(bool teacher , string meetingId , string fullname)
+        {
+            try
+            {
+                string password = (teacher ? "password=mp" : "password=ap");
+                fullname = HttpUtility.UrlEncode(fullname).ToUpper();
+
+                string FunctionName = string.Format("join?meetingID={0}&{1}&fullName={2}&redirect=true" , meetingId , password , fullname);
+                string data = FunctionName;
+
+                string url = await sendData(data , true);
+
+                return url;
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+
+                return null;
+            }
+
+        }
+        
 #endregion
     }
 }

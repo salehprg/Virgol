@@ -19,6 +19,12 @@ export default ( state = INITIAL_STATE, action ) => {
 
     switch (action.type) {
 
+        case Type.GetAllStudents: 
+            return { ...state, allStudents: action.payload}
+
+        case Type.GetAllTeachers: 
+            return { ...state, allTeachers: action.payload}
+
         case Type.GetManagers: 
             return { ...state, managers: action.payload}
 

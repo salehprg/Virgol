@@ -912,7 +912,7 @@ namespace lms_with_moodle.Controllers
 
                     foreach (var lesson in lessons)
                     {
-                        int moodleId = await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + classMoodleId + ")", lesson.LessonName , classMoodleId);
+                        int moodleId = await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + classMoodleId + ")", lesson.LessonName + " (" + school.SchoolName + "-" + classModel.ClassName + ")" , classMoodleId);
 
                         School_Lessons schoolLesson = new School_Lessons();
                         schoolLesson.Lesson_Id = lesson.Id;

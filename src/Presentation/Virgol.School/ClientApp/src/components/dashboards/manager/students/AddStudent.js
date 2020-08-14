@@ -5,11 +5,11 @@ import Fieldish from '../../../field/Fieldish';
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
 import {AddNewStudent } from "../../../../_actions/managerActions"
-
+import { validator } from '../../../../assets/validator'
 
 class AddStudent extends React.Component {
 
-    renderInputs = ({ input, meta, type, placeholder , extra }) => {
+    renderInputs = ({ input, meta, type, placeholder }) => {
         return (
             <Fieldish
                 input={input}
@@ -17,7 +17,7 @@ class AddStudent extends React.Component {
                 type={type}
                 dir="rtl"
                 placeholder={placeholder}
-                extra={extra}
+                extra="w-full my-4"
             />
         );
     }
@@ -40,75 +40,54 @@ class AddStudent extends React.Component {
 
     render() {
         return (
-            <div>
-                <Add
+            <Add
                     onCancel={() => history.push('/m/students')}
                     title={"اطلاعات دانش آموز"}
                 >
                     <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                    <Field
+                        <Field
                             name="firstName"
                             type="text"
                             placeholder="نام"
                             component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
                         />
                         <Field
                             name="lastName"
                             type="text"
                             placeholder="نام خانوادگی"
                             component={this.renderInputs}
-                            extra={"w-40 my-4"}
-                        />
-                        <Field
-                            name="latinFirstname"
-                            type="text"
-                            placeholder="نام لاتین"
-                            component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
-                        />
-                        <Field
-                            name="latinLastname"
-                            type="text"
-                            placeholder="نام خانوادگی لاتین"
-                            component={this.renderInputs}
-                            extra={"w-40 my-4"}
-                        />
-                        <Field
-                            name="phoneNumber"
-                            type="text"
-                            placeholder="شماره همراه"
-                            component={this.renderInputs}
-                            extra={"w-full my-4 mx-2"}
                         />
                         <Field
                             name="melliCode"
                             type="text"
                             placeholder="کد ملی"
                             component={this.renderInputs}
-                            extra={"w-full my-4 mx-2"}
                         />
                         <Field
                             name="fatherName"
                             type="text"
                             placeholder="نام پدر"
                             component={this.renderInputs}
-                            extra={"w-40 my-4"}
                         />
-                        <Field
-                            name="fatherPhoneNumber"
-                            type="text"
-                            placeholder="شماره همراه پدر"
-                            component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
-                        />
+                    
                         <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
                     </form>
                 </Add>
-            </div>
         );
     }
 
+}
+
+const validate = formValues => {
+    const errors = {}
+
+    const { firstName, lastName, melliCode, fatherName } = formValues
+    if (!firstName || !validator.checkPersian(firstName)) errors.firstName = true
+    if (!lastName || !validator.checkPersian(lastName)) errors.lastName = true
+    if (!melliCode || !validator.checkMelliCode(melliCode)) errors.melliCode = true
+    if (!fatherName || !validator.checkPersian(fatherName)) errors.fatherName = true
+    
+    return errors
 }
 
 const mapStateToProps = state => {

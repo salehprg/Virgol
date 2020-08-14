@@ -21,7 +21,8 @@ class LessonInfoModal extends React.Component {
         { value: 3, label: 'دوشنبه' },
         { value: 4, label: 'سه شنبه' },
         { value: 5, label: 'چهار شنبه' },
-        { value: 6, label: 'پنجشنبه' }
+        { value: 6, label: 'پنجشنبه' },
+        { value: 7, label: 'جمعه' }
     ];
 
     times = [
@@ -89,9 +90,11 @@ class LessonInfoModal extends React.Component {
                                     {trash('w-6 text-white centerize')}
                                 </div>
                                 :
-                                <a href={this.props.lessonInfo.moodleUrl} target="_blank" className="relative w-full bg-redish rounded-full cursor-pointer">
-                                    {external_link('w-6 text-white centerize')}
-                                </a>
+                                <p className="text-center text-white my-4">
+                                    <a href={this.props.lessonInfo.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
+                                        ورود به کلاس درس
+                                    </a>
+                                </p>
                         )}
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}

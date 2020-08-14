@@ -2,10 +2,10 @@ import React from 'react';
 import history from '../../../../history'
 import Add from '../../../field/Add';
 import Fieldish from '../../../field/Fieldish';
-import { reduxForm, Field } from 'redux-form'
+import { reduxForm, Field, formValues } from 'redux-form'
 import { connect } from 'react-redux';
 import {addNewTeacher } from "../../../../_actions/managerActions"
-
+import {validator} from '../../../../assets/validator'
 
 class AddTeacher extends React.Component {
 
@@ -44,21 +44,21 @@ class AddTeacher extends React.Component {
                     title={"اطلاعات معلم"}
                 >
                     <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                    <Field
+                        <Field
                             name="firstName"
                             type="text"
                             placeholder="نام"
                             component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
+                            extra={"my-4 mx-2"}
                         />
                         <Field
                             name="lastName"
                             type="text"
                             placeholder="نام خانوادگی"
                             component={this.renderInputs}
-                            extra={"w-40 my-4"}
+                            extra={"my-4 mx-2"}
                         />
-                        <Field
+                        {/* <Field
                             name="latinFirstname"
                             type="text"
                             placeholder="نام لاتین"
@@ -71,18 +71,19 @@ class AddTeacher extends React.Component {
                             placeholder="نام خانوادگی لاتین"
                             component={this.renderInputs}
                             extra={"w-40 my-4"}
-                        />
-                        <Field
-                            name="phoneNumber"
-                            type="text"
-                            placeholder="شماره همراه"
-                            component={this.renderInputs}
-                            extra={"w-full my-4 mx-2"}
-                        />
+                        /> */}
                         <Field
                             name="melliCode"
                             type="text"
                             placeholder="کد ملی"
+                            component={this.renderInputs}
+                            extra={"w-full my-4 mx-2"}
+                        />
+
+                        <Field
+                            name="phoneNumber"
+                            type="text"
+                            placeholder="شماره همراه"
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />
@@ -96,6 +97,14 @@ class AddTeacher extends React.Component {
 
 }
 
+const validate = formValues => {
+    const errors = {}
+
+    if (!formValues.firstName || !validator.checkPersian(formValues.firstName)) errors.firstName = true
+
+    return errors;
+}
+
 const mapStateToProps = state => {
     console.log(state)
     return {
@@ -104,7 +113,8 @@ const mapStateToProps = state => {
 }
 
 const formWrapped = reduxForm({
-    form: 'addTeacher'
+    form: 'addTeacher',
+    validate
 })(AddTeacher)
 
 export default connect(mapStateToProps , {addNewTeacher})(formWrapped);

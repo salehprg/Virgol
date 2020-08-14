@@ -8,6 +8,8 @@ namespace Models.User
         
         public string FirstName {get; set;}
         public string LastName {get; set;}
+        public string LatinFirstname {get; set;}
+        public string LatinLastname {get; set;}
         public int SchoolId {get; set;}
         public string MelliCode {get; set;}    
         public bool ConfirmedAcc {get; set;}

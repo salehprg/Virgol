@@ -159,6 +159,51 @@ export const RemoveManager = (token ,formvalue) => async dispatch => {
 
 //#endregion
 
+export const GetAllTeachers = token => async dispatch => {
+
+    try {
+        const response = await lms.get('/Admin/GetAllTeachers' , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.GetAllTeachers, payload: response.data })
+
+        return true
+
+    } catch (e) {
+        console.log(e)
+
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        return false
+
+    }
+
+}
+
+export const GetAllStudents = token => async dispatch => {
+
+    try {
+        const response = await lms.get('/Admin/GetAllStudents' , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.GetAllStudents, payload: response.data })
+
+        return true
+
+    } catch (e) {
+
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        return false
+
+    }
+
+}
+
 export const getDashboardInfo = token => async dispatch => {
 
     try {

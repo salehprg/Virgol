@@ -59,7 +59,7 @@ namespace lms_with_moodle.Helper
             return result;
 		
         }
-        public bool SendForgotSms(string Number , string userName , string code)
+        public bool SendVerifySms(string Number , string userName , string code)
         {
             ForgotPassword forgotPassword = new ForgotPassword();
             forgotPassword.verificationCode = code;

@@ -7,6 +7,7 @@ public class Meetings{
 }
 public class MeetingsResponse {
     public string returncode { get; set; }
+    public string url { get; set; }
     public Meetings meetings { get; set; }
 
     
