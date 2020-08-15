@@ -48,7 +48,7 @@ namespace lms_with_moodle.Controllers
             appSettings = _appsetting.Value;
 
             moodleApi = new MoodleApi(appSettings);
-            ldap = new LDAP_db(appSettings);
+            ldap = new LDAP_db(appSettings , appDbContext);
 
             
         }

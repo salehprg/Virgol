@@ -58,7 +58,7 @@ namespace lms_with_moodle.Controllers
 
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
-            ldap = new LDAP_db(appSettings);
+            ldap = new LDAP_db(appSettings , appDbContext);
         }
 
         [HttpGet]

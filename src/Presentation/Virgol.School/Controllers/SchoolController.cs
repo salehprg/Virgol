@@ -58,7 +58,7 @@ namespace lms_with_moodle.Controllers
 
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
-            ldap = new LDAP_db(appSettings);
+            ldap = new LDAP_db(appSettings , appDbContext);
         }
 
         [HttpGet]
@@ -358,8 +358,9 @@ namespace lms_with_moodle.Controllers
                 SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == inputData.Id).FirstOrDefault();
 
                 schoolInfo.SchoolName = (!String.IsNullOrEmpty(inputData.SchoolName) ? inputData.SchoolName : schoolInfo.SchoolName);
+                schoolInfo.SchoolIdNumber = (!String.IsNullOrEmpty(inputData.SchoolIdNumber) ? inputData.SchoolIdNumber : schoolInfo.SchoolIdNumber);
                 schoolInfo.SchoolType = (inputData.SchoolType != 0 ? inputData.SchoolType : schoolInfo.SchoolType);
-                schoolInfo.SelfSign = inputData.SelfSign;
+                //schoolInfo.SelfSign = inputData.SelfSign;
 
                 appDbContext.Schools.Update(schoolInfo);
                 // List<School_Bases> previousBases = appDbContext.School_Bases.Where(x => x.School_Id == schoolInfo.Id).ToList();

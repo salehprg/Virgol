@@ -167,7 +167,7 @@ class ClassInfo extends React.Component {
                                 show={this.state.showChangeName}
                                 showBox={() => this.setState({ showChangeName: true })}
                                 value={this.state.className}
-                                changeValue={(className) => this.setState({ className })}
+                                changeValue={(className) => this.setState({ className  })}
                                 submit={this.onEdit}
                             />
                             : null)}

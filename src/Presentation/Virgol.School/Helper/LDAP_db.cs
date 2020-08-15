@@ -5,18 +5,21 @@ using Models.User;
 using Models.InputModel;
 using Novell.Directory.Ldap;
 using System.Collections.Generic;
+using Models;
 
 namespace lms_with_moodle.Helper
 {
     public class LDAP_db {
         LdapConnection ldapConn;
+        AppDbContext appDbContext;
         private readonly AppSettings appSettings;
 
         string containerName = "ou=people,dc=legace,dc=ir";
-        public LDAP_db (AppSettings _appsetting)
+        public LDAP_db (AppSettings _appsetting , AppDbContext _appDbContext)
         {
             
             appSettings = _appsetting;
+            appDbContext = _appDbContext;
 
             // Creating an LdapConnection instance 
             ldapConn= new LdapConnection();
@@ -303,6 +306,10 @@ namespace lms_with_moodle.Helper
 
                 //Add the entry to the directory
                 ldapConn.Modify(dn , mods.ToArray());
+
+                user.Email = mailAddress;
+                appDbContext.Users.Update(user);
+                appDbContext.SaveChanges();
 
                 return true;
             }

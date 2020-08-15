@@ -47,7 +47,7 @@ namespace lms_with_moodle.Controllers
             appSettings = _appsetting.Value;
 
             moodleApi = new MoodleApi(appSettings);
-            ldap = new LDAP_db(appSettings);
+            ldap = new LDAP_db(appSettings , appDbContext);
 
             
         }
@@ -66,6 +66,11 @@ namespace lms_with_moodle.Controllers
                 if(classId != -1)
                 {
                     classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == classId).ToList();
+                    foreach (var schedule in classScheduleViews)
+                    {
+                        int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                        schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
+                    }
                 }
                 else
                 {
