@@ -222,6 +222,7 @@ export const AddBaseToSchool = (token ,formvalue) => async dispatch => {
 
     } catch (e) {
 
+        dispatch({ type: STOP })
         if(e.response)
         {
             switch (e.response.status) {
@@ -231,7 +232,7 @@ export const AddBaseToSchool = (token ,formvalue) => async dispatch => {
                     break;
 
                 default:
-                    dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+                    dispatch(alert.error(e.response.data))
             }
         }
 
@@ -343,9 +344,9 @@ export const AddStudyFToSchool = (token ,formvalue) => async dispatch => {
         return true
 
     } catch (e) {
-
-        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+        
 
     }
 

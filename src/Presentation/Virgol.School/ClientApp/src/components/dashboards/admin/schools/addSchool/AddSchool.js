@@ -13,7 +13,7 @@ class AddSchool extends React.Component {
 
     state = { showManagerInfo: true }
 
-    renderInputs = ({ input, meta, type, placeholder }) => {
+    renderInputs = ({ input, meta, type, placeholder , extra }) => {
         return (
             <Fieldish
                 input={input}
@@ -21,7 +21,7 @@ class AddSchool extends React.Component {
                 type={type}
                 dir="rtl"
                 placeholder={placeholder}
-                extra="w-full my-4"
+                extra={extra + " my-4"}
             />
         );
     }
@@ -39,41 +39,54 @@ class AddSchool extends React.Component {
                 title="افزودن مدرسه"
             >
                 {this.state.showManagerInfo || !this.props.managerInfo ? 
-                <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                <form className="w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
                 <Field
                     name="schoolName"
                     type="text"
                     placeholder="نام مدرسه"
+                    extra={"w-full my-4 mx-2"}
                     component={this.renderInputs}
                 />
                 <Field
                     name="schoolIdNumber"
                     type="text"
                     placeholder="کد مدرسه"
+                    extra={"w-full my-4 mx-2"}
                     component={this.renderInputs}
                 />
                 <Field
                     name="firstName"
                     type="text"
                     placeholder="نام مدیر"
+                    extra={"w-40 my-4"}
                     component={this.renderInputs}
                 />
                 <Field
                     name="lastName"
                     type="text"
+                    extra={"w-40 my-4"}
                     placeholder="نام خانوادگی مدیر"
+                    component={this.renderInputs}
+                />
+                <Field
+                    name="managerPhoneNumber"
+                    type="text"
+                    extra={"w-full my-4 mx-2"}
+                    placeholder="شماره همراه مدیر"
                     component={this.renderInputs}
                 />
                 <Field
                     name="melliCode"
                     type="text"
                     placeholder="کدملی مدیر"
+                    extra={"w-full my-4 mx-2"}
                     component={this.renderInputs}
                 />
                 <Field
                     name="personalIdNumber"
                     type="text"
                     placeholder="کد پرسنلی مدیر"
+                    extra={"w-full my-4 mx-2"}
                     component={this.renderInputs}
                 />
 

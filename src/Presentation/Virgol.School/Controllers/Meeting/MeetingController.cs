@@ -24,6 +24,7 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.MoodleApiResponse.Activity_Grade_Info;
+using Newtonsoft.Json;
 
 namespace lms_with_moodle.Controllers
 {
@@ -156,8 +157,7 @@ namespace lms_with_moodle.Controllers
                 int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
-                List<ClassScheduleView> result = new List<ClassScheduleView>();
-                List<Meeting> resultMeeting = new List<Meeting>();
+                List<MeetingVW> meetingVWs = new List<MeetingVW>();
 
                 if(isTeacher)
                 {
@@ -169,18 +169,22 @@ namespace lms_with_moodle.Controllers
                     {
                         if(activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault() == null)
                         {
-                            School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
-                            schedule.className = classInfo.ClassName;
-                            SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
-                            schedule.schoolName = schoolInfo.SchoolName;
+                            MeetingVW meetingVW = new MeetingVW();
 
-                            result.Add(schedule);
+                            School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
+                            meetingVW.className = classInfo.ClassName;
+                            SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
+                            meetingVW.schoolName = schoolInfo.SchoolName;
+
+                            meetingVW.meetingDetail = schedule;
+
+                            meetingVWs.Add(meetingVW);
                         }
                     }
 
-                    result = result.OrderBy(x => x.StartHour).Take(5).ToList();
+                    meetingVWs = meetingVWs.OrderBy(x => x.meetingDetail.StartHour).Take(5).ToList();
 
-                    return Ok(result);
+                    return Ok(meetingVWs);
                 }
                 else
                 {
@@ -193,20 +197,26 @@ namespace lms_with_moodle.Controllers
                         
                         foreach (var schedule in classes)
                         {
+                            MeetingVW meetingVW = new MeetingVW();
                             Meeting meeting = activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault();
                             if(meeting != null)
                             {
-                                School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
-                                meeting.className = classInfo.ClassName;
-                                SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
-                                meeting.schoolName = schoolInfo.SchoolName;
+                                var serialized = JsonConvert.SerializeObject(meeting);
+                                meetingVW = JsonConvert.DeserializeObject<MeetingVW>(serialized);
 
-                                resultMeeting.Add(meeting);
+                                School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
+                                meetingVW.className = classInfo.ClassName;
+                                SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
+                                meetingVW.schoolName = schoolInfo.SchoolName;
+
+                                meetingVW.meetingDetail = schedule;
+
+                                meetingVWs.Add(meetingVW);
                             }
                         }
                     }
 
-                    return  Ok(resultMeeting);
+                    return  Ok(meetingVWs);
                 }
 
                
@@ -228,20 +238,29 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
+                List<MeetingVW> meetingVWs = new List<MeetingVW>();
                 List<Meeting> Meetings = appDbContext.Meetings.Where(x => x.TeacherId == teacherId && !x.Finished).ToList();
 
                 foreach (var meeting in Meetings)
                 {
-                    ClassScheduleView classs = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.LessonId).FirstOrDefault();
+                    MeetingVW meetingVW = new MeetingVW();
+                    var serialized = JsonConvert.SerializeObject(meeting);
+                    meetingVW = JsonConvert.DeserializeObject<MeetingVW>(serialized);
 
+                    ClassScheduleView classs = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.LessonId).FirstOrDefault();
+                    
                     School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault();
-                    meeting.className = classInfo.ClassName;
+                    meetingVW.className = classInfo.ClassName;
                     SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
-                    meeting.schoolName = schoolInfo.SchoolName;
+                    meetingVW.schoolName = schoolInfo.SchoolName;
+
+                    meetingVW.meetingDetail = classs;
+
+                    meetingVWs.Add(meetingVW);
 
                 }
 
-                return Ok(Meetings);
+                return Ok(meetingVWs);
             }
             catch(Exception ex)
             {

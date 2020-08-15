@@ -93,12 +93,23 @@ export const EditManager = (token ,formvalue) => async dispatch => {
         });
 
         dispatch({ type: STOP })
+
+        if(response.data.errors)
+        {
+            if(response.data.errors.length > 0)
+            {
+                dispatch(alert.success("\n اطلاعات مدیر با موفقیت ویرایش شد ولی در تعویض پسورد مشکلی بوجودآمد" + response.data.errors[0].description))
+                return true
+
+            }
+        }
         dispatch(alert.success("اطلاعات مدیر با موفقیت ویرایش شد"))
-        dispatch({ type: Type.EditManager, payload: response.data })
+        dispatch({ type: Type.EditManager, payload: response.data.manager })
 
         return true
 
     } catch (e) {
+        dispatch({ type: STOP })
 
         if(e.response)
         {

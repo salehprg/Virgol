@@ -348,7 +348,7 @@ export const editTeacher = (token, values) => async dispatch => {
 
     } catch (e) {
         dispatch({type : STOP})
-        dispatch(alert.error("خطا در ویرایش معلم"))
+        dispatch(alert.error(e.response.data))
     }
 
 }
@@ -370,7 +370,7 @@ export const EditStudent = (token, values) => async dispatch => {
 
     } catch (e) {
         dispatch({type : STOP})
-        dispatch(alert.error("خطا در ویرایش دانس آموز"))
+        dispatch(alert.error(e.response.data))
     }
 
 }

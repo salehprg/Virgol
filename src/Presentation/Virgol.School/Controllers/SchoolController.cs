@@ -279,6 +279,7 @@ namespace lms_with_moodle.Controllers
                     manager.LastName = inputData.LastName;
                     manager.MelliCode = ConvertToPersian.PersianToEnglish(inputData.MelliCode);
                     manager.UserName = inputData.MelliCode;
+                    manager.PhoneNumber = inputData.managerPhoneNumber;
                     manager.SchoolId = schoolResult.Id;
                     manager.userTypeId = (int)UserType.Manager;
                     manager.ConfirmedAcc = true;
@@ -542,6 +543,9 @@ namespace lms_with_moodle.Controllers
                     }
                 }
 
+                if(result.Count == 0)
+                    return BadRequest("مقطع(مقاطع) انتخاب شده تکراریست");
+
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
 
                 List<School_Bases> schoolBases = await schoolDataHelper.AddBaseToSchool(result);
@@ -696,6 +700,9 @@ namespace lms_with_moodle.Controllers
                         result.Add(data);
                     }
                 }
+
+                if(result.Count == 0)
+                    return BadRequest("رشته(های) انتخاب شده تکراریست");
 
                 List<School_StudyFields> schoolStudies = await schoolDataHelper.AddStudyFieldToSchool(result);
 

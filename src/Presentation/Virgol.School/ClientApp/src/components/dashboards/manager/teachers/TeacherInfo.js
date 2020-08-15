@@ -40,7 +40,7 @@ class TeacherInfo extends React.Component {
                     onCancel={() => history.push('/m/teachers')}
                     title={"اطلاعات معلم"}
                 >
-                    <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                    <form className="w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         <Field
                             name="firstName"
                             type="text"

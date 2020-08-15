@@ -333,13 +333,14 @@ namespace lms_with_moodle.Controllers
                 model.MelliCode = ConvertToPersian.PersianToEnglish(model.MelliCode);
 
                 UserModel manager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
+                IdentityResult chngPass = new IdentityResult();
                 if(manager != null)
                 {
                     
                     if(!string.IsNullOrEmpty(model.password))
                     {
                         string token = await userManager.GeneratePasswordResetTokenAsync(manager);
-                        await userManager.ResetPasswordAsync(manager , token , model.password);
+                        chngPass = await userManager.ResetPasswordAsync(manager , token , model.password);
                     }
                     manager.FirstName = model.FirstName;
                     manager.LastName = model.LastName;
@@ -366,7 +367,11 @@ namespace lms_with_moodle.Controllers
                     await userManager.ResetPasswordAsync(newManager , token , model.password);
                 }
 
-                return Ok(manager);
+                List<IdentityError> errors = chngPass.Errors.ToList();
+                return Ok(new{
+                    manager,
+                    errors
+                });
             }
             catch(Exception ex)
             {

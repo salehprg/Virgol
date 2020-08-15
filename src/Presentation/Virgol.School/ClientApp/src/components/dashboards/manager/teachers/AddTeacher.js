@@ -30,9 +30,7 @@ class AddTeacher extends React.Component {
             latinLastname : formValues.latinLastname,
             latinFirstname : formValues.latinFirstname
         }
-
-        console.log(data)
-        
+      
         await this.props.addNewTeacher(this.props.user.token , data)
     }
 
@@ -106,7 +104,6 @@ const validate = formValues => {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         user: state.auth.userInfo 
     }

@@ -42,6 +42,7 @@ class Home extends React.Component {
                 <RecentClass
                     onStart={(id) => this.StatrMeeting(id)}
                     joinList={false}
+                    teacher={true}
                     class={this.props.recentClass}
                     title="کلاس های پیش رو"
                     pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
@@ -49,6 +50,7 @@ class Home extends React.Component {
                 <RecentClass
                     onStart={(id) => this.JoinMeeting(id)}
                     joinList={true}
+                    teacher={true}
                     class={this.props.meetingList}
                     title="کلاس های فعال"
                     pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
