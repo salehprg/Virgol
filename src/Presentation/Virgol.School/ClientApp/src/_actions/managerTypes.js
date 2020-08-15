@@ -10,6 +10,7 @@ export const GET_NEW_USERS = 'GET_NEW_USERS';
 export const getStudentsClass = 'getStudentsClass';
 
 export const AssignUserToClass = 'AssignUserToClass';
+export const AssignUserListToClass = 'AssignUserListToClass';
 export const UnAssignUserFromClass = 'UnAssignUserFromClass';
 
 export const getManagerDashboardInfo = 'getManagerDashboardInfo';

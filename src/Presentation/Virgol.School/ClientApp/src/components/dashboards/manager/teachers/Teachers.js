@@ -1,6 +1,6 @@
 import React from "react";
 import PlusTable from "../../tables/PlusTable";
-import {edit, loading, trash} from "../../../../assets/icons";
+import {edit, loading, trash , check_circle} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {getAllTeachers , addBulkTeacher , deleteTeacher} from "../../../../_actions/managerActions"
@@ -59,7 +59,7 @@ class Teachers extends React.Component {
                     }}
                     excel="آپلود اکسل معلمان"
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی']}
+                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'شماره تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -72,7 +72,10 @@ class Teachers extends React.Component {
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
                                                 <td>{x.melliCode}</td>
-                                                {/* <td>{x.moodle_Id}</td> */}
+                                                <td>{x.phoneNumber}</td>
+                                                <td>{x.teacherDetail.personalIdNUmber}</td>
+                                                <td><span className="text-center">{x.completed ? check_circle('w-8 text-greenish') : null}</span></td>
+                                            
                                                 <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>           

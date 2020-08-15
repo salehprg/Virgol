@@ -51,6 +51,9 @@ export default (state = INITIAL_STATE, action) => {
     if (action.type === Type.getStudentsClass)
         return { ...state, studentsInClass: action.payload };
 
+    if (action.type === Type.AssignUserListToClass)
+        return { ...state, assigned: action.payload };
+
     if (action.type === Type.AssignUserToClass)
         return { ...state, assigned: action.payload };
 

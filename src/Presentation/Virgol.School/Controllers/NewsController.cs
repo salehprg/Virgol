@@ -64,6 +64,7 @@ namespace lms_with_moodle.Controllers
         {
             string userName = userManager.GetUserId(User);
             UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+            
             string roleName ="";
             if(userModel.userTypeId != (int)UserType.Student)
             {
@@ -74,18 +75,71 @@ namespace lms_with_moodle.Controllers
                 roleName = "User";
             }
 
-            int managerRoleId = roleManager.FindByNameAsync(roleName).Result.Id;
+            int userRoleId = roleManager.FindByNameAsync(roleName).Result.Id;
 
-            List<NewsModel> allowedNews = appDbContext.News.Where(x => x.AccessRoleId.Contains(managerRoleId.ToString())).ToList();
+            List<NewsModel> allowedNews = appDbContext.News.Where(x => x.AccessRoleId.Contains(userRoleId.ToString() + ",")).ToList();
+            List<NewsModel> result = new List<NewsModel>();
 
             foreach (var news in allowedNews)
             {
-                List<string> tags = news.Tags.Split(",").ToList();
+                int autherId = news.AutherId;
+                UserModel auther = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault();
+
+                if(auther.userTypeId == (int)UserType.Manager)
+                {
+                    int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
+                    if(userModel.userTypeId == (int)UserType.Student)
+                    {
+                        if(userModel.SchoolId == schoolId)
+                        {
+                            result.Add(news);
+                        }
+                    }
+                    else if(userModel.userTypeId == (int)UserType.Teacher)
+                    {
+                        string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
+                        if(schoolIds.Contains(schoolId + ","))
+                        {
+                            result.Add(news);
+                        }
+                    }
+                }
+                else if(auther.userTypeId == (int)UserType.Admin)
+                {
+                    int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == auther.Id).FirstOrDefault().SchoolsType;
+                    List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
+                    foreach (var school in schools)
+                    {
+                        if(userModel.userTypeId == (int)UserType.Teacher)
+                        {
+                            string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
+                            if(schoolIds.Contains(school.Id + ","))
+                            {
+                                result.Add(news);
+                            }
+                        }
+                        else
+                        {
+                            if(userModel.SchoolId == school.Id)
+                            {
+                                result.Add(news);
+                            }
+                        }
+                    }
+                    
+                }
+                
+                List<string> tags = new List<string>();
+
+                if(news.Tags != null)
+                {
+                    tags = news.Tags.Split(",").ToList();
+                }
 
                 news.tagsStr = tags;
             }
 
-            return Ok(allowedNews);
+            return Ok(result.OrderByDescending(x => x.CreateTime));
         }
 
         [HttpGet]
@@ -99,12 +153,17 @@ namespace lms_with_moodle.Controllers
 
             foreach (var news in myNews)
             {
-                List<string> tags = news.Tags.Split(",").ToList();
+                List<string> tags = new List<string>();
+
+                if(news.Tags != null)
+                {
+                    tags = news.Tags.Split(",").ToList();
+                }
 
                 news.tagsStr = tags;
             }
 
-            return Ok(myNews);
+            return Ok(myNews.OrderByDescending(x => x.CreateTime));
         }
 
         [HttpGet]
@@ -183,7 +242,8 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                NewsModel newsModel = model;
+
+                NewsModel newsModel = appDbContext.News.Where(x => x.Id == model.Id).FirstOrDefault();
 
                 string accessStr = "";
                 foreach (var access in model.AccessRoleIdList)
@@ -192,11 +252,13 @@ namespace lms_with_moodle.Controllers
                 }
 
                 newsModel.AccessRoleId = accessStr;
+                newsModel.Message = model.Message;
+                newsModel.Tags = model.Tags;
 
                 appDbContext.News.Update(newsModel);
                 appDbContext.SaveChanges();
 
-                return BadRequest("رشته ای انتخاب نشده است");
+                return Ok("خبر با موفقیت ویرایش شد");
             }
             catch(Exception ex)
             {
@@ -208,7 +270,7 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> RemoveNews([FromBody]int newsId)
+        public async Task<IActionResult> RemoveNews(int newsId)
         {
             try
             {
@@ -216,7 +278,7 @@ namespace lms_with_moodle.Controllers
                 appDbContext.News.Remove(news);
                 await appDbContext.SaveChangesAsync();
 
-                return Ok(true);
+                return Ok(newsId);
             }
             catch(Exception ex)
             {

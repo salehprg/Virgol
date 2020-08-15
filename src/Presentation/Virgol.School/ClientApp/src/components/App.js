@@ -20,6 +20,11 @@ import TeacherInfo from './dashboards/manager/teachers/TeacherInfo';
 import StudentInfo from './dashboards/manager/students/StudentInfo';
 import AddTeacher from "./dashboards/manager/teachers/AddTeacher";
 import AddStudent from "./dashboards/manager/students/AddStudent";
+import AddNews from './dashboards/admin/News/AddNews';
+import NewsInfo from './dashboards/admin/News/NewsInfo';
+
+import AddNewsManager from './dashboards/manager/News/AddNews';
+import ManagerNewsInfo from './dashboards/manager/News/NewsInfo';
 
 class App extends React.Component {
 
@@ -43,16 +48,24 @@ class App extends React.Component {
                     <Switch>
                         <Route path="/" exact component={Login} />
                         <Route path="/a" component={AdminDashboard} />
-                        <Route path="/school/:id" component={SchoolInfo} />
-                        <Route path="/class/:id" component={ClassInfo} />
+                        <Route path="/addNews" component={AddNews} />
+                        <Route path="/news/:id" component={NewsInfo} />
                         <Route path="/newSchool" component={AddSchool} />
+                        <Route path="/school/:id" component={SchoolInfo} />
+
+                        <Route path="/class/:id" component={ClassInfo} />
+                        
                         <Route path="/m" component={ManagerDashboard} />
-                        <Route path="/newTeacher" component={AddTeacher} />
+                        <Route path="/addNewsManager" component={AddNewsManager} />
+                        <Route path="/managerNews/:id" component={ManagerNewsInfo} />
                         <Route path="/teacher/:id" component={TeacherInfo} />
-                        <Route path="/newStudent" component={AddStudent} />
+                        <Route path="/newTeacher" component={AddTeacher} />
                         <Route path="/student/:id" component={StudentInfo} />
+                        <Route path="/newStudent" component={AddStudent} />
+                        
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
+
                         <Route path="/t" component={TeacherDashboard} />
                         <Route path="/teacherCompleteProfile" component={TeacherCompleteProfile} />
                         <Route path="" component={NoFound} />

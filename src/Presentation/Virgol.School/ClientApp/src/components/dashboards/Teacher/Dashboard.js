@@ -3,10 +3,11 @@ import { Switch, Route } from 'react-router-dom';
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout} from "../../../assets/icons";
+import {layout , bell , open_book} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Classes from "./classes/Classes";
+import News from "./News";
 
 class TeacherDashboard extends React.Component {
 
@@ -52,7 +53,14 @@ class TeacherDashboard extends React.Component {
                         active={this.state.active}
                         code="classes"
                         title="برنامه درسی"
-                        icon={layout}
+                        icon={bell}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="news"
+                        title="اخبار"
+                        icon={open_book}
                         changeActive={this.changeActive}
                     />
                 </Sidebar>
@@ -63,6 +71,7 @@ class TeacherDashboard extends React.Component {
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/classes"} component={Classes}/>
+                        <Route path={this.props.match.url + "/news"} component={News}/>
                     </Switch>
                 </div>
             </div>

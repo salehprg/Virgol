@@ -3,9 +3,13 @@ import News from "./News";
 import { connect } from "react-redux";
 import protectedAdmin from "../../protectedRoutes/protectedAdmin";
 import {getNews} from "../../../_actions/adminActions"
+import ReactPaginate from 'react-paginate';
 
 class Feed extends React.Component {
 
+    handlePageClick = () =>{
+
+    }
 
     render() {
         const { title, pos } = this.props
@@ -24,12 +28,13 @@ class Feed extends React.Component {
                                 <News
                                     text={x.message}
                                     tags={x.tagsStr}
-                                    time={x.createTime}
+                                    time={new Date(x.createTime).toLocaleDateString('fa-IR')}
                                 />
                             );
                         })
                     )
                 }
+                
             
             </div>
         );

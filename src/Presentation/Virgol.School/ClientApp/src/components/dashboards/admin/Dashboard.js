@@ -3,10 +3,11 @@ import { Switch, Route } from 'react-router-dom';
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, loading, open_book} from "../../../assets/icons";
+import {layout, loading, open_book , users , bell} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from "./home/Home";
 import Schools from "./schools/Schools";
+import News from "./News/News";
 import adminTeachers from "./Teachers/adminTeachers";
 import adminStudents from "./Students/adminStudents";
 import { connect } from "react-redux";
@@ -63,14 +64,21 @@ class Dashboard extends React.Component {
                         active={this.state.active}
                         code="teachers"
                         title="معلم ها"
-                        icon={open_book}
+                        icon={users}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="students"
                         title="دانش آموزان"
-                        icon={open_book}
+                        icon={users}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="news"
+                        title="اخبار"
+                        icon={bell}
                         changeActive={this.changeActive}
                     />
                 </Sidebar>
@@ -83,6 +91,7 @@ class Dashboard extends React.Component {
                         <Route path={this.props.match.url + "/teachers"} component={adminTeachers}/>
                         <Route path={this.props.match.url + "/students"} component={adminStudents}/>
                         <Route path={this.props.match.url + "/schools"} component={Schools} />
+                        <Route path={this.props.match.url + "/news"} component={News} />
                     </Switch>
                 </div>
             </div>

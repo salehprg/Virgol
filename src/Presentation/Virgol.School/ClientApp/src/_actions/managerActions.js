@@ -169,6 +169,31 @@ export const getStudentsClass = (token , classId) => async dispatch => {
 
 }
 
+export const AssignUserListToClass = (token , formValue , classId ) => async dispatch => {
+
+    try {
+
+        dispatch({ type: START })
+
+        const response = await lms.post(`/Manager/AssignUserListToClass?classId=${classId}` , formValue, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+
+
+        dispatch(alert.success(`لیست دانش آموزان به کلاس اضافه شد `))
+        dispatch({ type: Type.AssignUserListToClass, payload: response.data });
+    } catch (e) {
+        console.log(e.response)
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
 export const AssignUserToClass = (token , classId , excelData) => async dispatch => {
 
     try {
