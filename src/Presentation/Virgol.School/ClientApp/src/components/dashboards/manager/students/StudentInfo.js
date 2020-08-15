@@ -42,8 +42,6 @@ class StudentInfo extends React.Component {
                 fatherPhoneNumber : formValues.fatherPhoneNumber
             }
         }
-
-        console.log(data)
         
         await this.props.EditStudent(this.props.user.token , data)
     }
@@ -55,7 +53,7 @@ class StudentInfo extends React.Component {
                     onCancel={() => history.push('/m/students')}
                     title={"اطلاعات دانش آموز"}
                 >
-                    <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                    <form className="w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         <Field
                             name="firstName"
                             type="text"
@@ -96,7 +94,7 @@ class StudentInfo extends React.Component {
                             type="text"
                             placeholder="نام پدر"
                             component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
+                            extra={"w-40 my-4"}
                         />
                         <Field
                             name="fatherPhoneNumber"
@@ -115,7 +113,6 @@ class StudentInfo extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         user: state.auth.userInfo , 
         initialValues: {

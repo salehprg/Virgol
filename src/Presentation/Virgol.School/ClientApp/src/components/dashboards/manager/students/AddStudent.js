@@ -32,8 +32,6 @@ class AddStudent extends React.Component {
             fatherName : formValues.fatherName,
             fatherPhoneNumber : formValues.fatherPhoneNumber
         }
-
-        console.log(data)
         
         await this.props.AddNewStudent(this.props.user.token , data)
     }
@@ -44,7 +42,7 @@ class AddStudent extends React.Component {
                     onCancel={() => history.push('/m/students')}
                     title={"اطلاعات دانش آموز"}
                 >
-                    <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                    <form className="w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         <Field
                             name="firstName"
                             type="text"
@@ -91,7 +89,6 @@ const validate = formValues => {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         user: state.auth.userInfo 
     }

@@ -288,6 +288,18 @@ class SchoolInfo extends React.Component {
 
 }
 
+const validate = formValues => {
+    const errors = {}
+
+    if (formValues.password) {
+        if(formValues.password != formValues.passwordagain) errors.password = true
+    }
+    if (!formValues.latinLastname) errors.latinLastname = true
+    if (!formValues.personalIdNUmber) errors.personalIdNUmber = true
+
+    return errors;
+}
+
 const mapStateToProps = state => {
     return {
         user: state.auth.userInfo , 
@@ -305,7 +317,8 @@ const mapStateToProps = state => {
 
 const formWrapped = reduxForm({
     form: 'editSchoolManager',
-    enableReinitialize : true
+    enableReinitialize : true,
+    validate
 }, mapStateToProps)(SchoolInfo)
 
 export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , RedirectAdmin, 

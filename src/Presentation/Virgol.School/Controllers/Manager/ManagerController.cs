@@ -336,6 +336,20 @@ namespace lms_with_moodle.Controllers
                 int schoolId = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault().SchoolId;
 
                 UserModel userModel = appDbContext.Users.Where(user => user.SchoolId == schoolId && user.Id == userId).FirstOrDefault();
+                UserModel teacherModel = appDbContext.Users.Where(user => user.Id == userId).FirstOrDefault();
+
+                if(teacherModel.userTypeId == (int)UserType.Teacher)
+                {
+                    TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherModel.Id).FirstOrDefault();
+                    if(teacherDetail.SchoolsId.Contains(schoolId + ","))
+                    {
+                        userModel = teacherModel;
+                    }
+                    else
+                    {
+                        return BadRequest("شما اجازه ویرایش این معلم را ندارید");
+                    }
+                }
 
                 if(userModel.userTypeId == (int)UserType.Student)
                 {
