@@ -3,12 +3,16 @@ import {LOGOUT} from "../_actions/authTypes";
 
 const INITIAL_STATE = {
     myNews : [],
+    newsDetail : {},
     incomeNews : []
 }
 
 export default ( state = INITIAL_STATE, action ) => {
 
     switch (action.type) {
+
+        case Type.GetNewsDetail: 
+            return { ...state, newsDetail: action.payload}
 
         case Type.GetMyNews: 
             return { ...state, myNews: action.payload}
@@ -26,7 +30,7 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, myNews: state.myNews.map(el => el.id === action.payload.id ? action.payload : el) }
 
         case Type.RemoveNews: 
-            return { ...state, myNews: state.myNews.filter(element => !action.payload.includes(element.id)) }
+            return { ...state, myNews: state.myNews.filter(element => action.payload != element.id) }
 
         case LOGOUT: 
             return INITIAL_STATE

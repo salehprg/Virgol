@@ -140,20 +140,26 @@ namespace lms_with_moodle.Controllers
                 int schoolId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().SchoolId;
 
                 List<UserModel> AllStudent = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Student && x.ConfirmedAcc && x.SchoolId == schoolId).ToList();
-                List<UserDataModel> users = new List<UserDataModel>();
+                List<UserDataModel> result = new List<UserDataModel>();
 
                 foreach (var student in AllStudent)
                 {
                     UserDataModel userDataModel = new UserDataModel();
 
-                    var serialized = JsonConvert.SerializeObject(student);
-                    userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
-                    userDataModel.userDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+                    var serializedParent = JsonConvert.SerializeObject(student); 
+                    UserDataModel studentVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
 
-                    users.Add(userDataModel);
+                    StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+                    if(student.LatinFirstname != null)
+                    {
+                        studentVW.completed = true;
+                    }
+                    studentVW.userDetail = studentDetail;
+
+                    result.Add(studentVW);
                 }
 
-                return Ok(users);
+                return Ok(result);
             }
             catch(Exception ex)
             {
@@ -643,15 +649,23 @@ namespace lms_with_moodle.Controllers
                 string idNumber = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault().SchoolId;
 
+                List<UserDataModel> result = new List<UserDataModel>();
                 List<UserModel> allTeachers = appDbContext.Users.Where(user => user.userTypeId == (int)UserType.Teacher).ToList();
-                List<UserModel> result = new List<UserModel>();
 
                 foreach (var teacher in allTeachers)
                 {
-                    string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault().SchoolsId;
-                    if(schoolIds.Split(',').Where(x => x == schoolId.ToString()).FirstOrDefault() != null)
+                    var serializedParent = JsonConvert.SerializeObject(teacher); 
+                    UserDataModel teacherVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+
+                    TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
+                    if(teacherDetail.SchoolsId.Contains(schoolId.ToString() + ","))
                     {
-                        result.Add(teacher);
+                        if(teacher.LatinFirstname != null)
+                        {
+                            teacherVW.completed = true;
+                        }
+                        teacherVW.teacherDetail = teacherDetail;
+                        result.Add(teacherVW);
                     }
                 }
 
@@ -853,6 +867,81 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(List<UserModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AssignUserListToClass([FromBody]List<int> studentIds , int classId)
+        {
+            try
+            {   
+                int schoolId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().School_Id;
+
+                List<UserDataModel> userModels = new List<UserDataModel>();
+                List<UserModel> result = new List<UserModel>();
+                BulkData data = new BulkData();
+
+                foreach(var studentId in studentIds)
+                {
+                    UserModel studentModel = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
+                    var serialized = JsonConvert.SerializeObject(studentModel);
+                    UserDataModel dataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+
+                    dataModel.userDetail = appDbContext.StudentDetails.Where(x => x.UserId == studentId).FirstOrDefault();
+                    
+                    userModels.Add(dataModel);
+                    result.Add(studentModel);
+                }
+
+                int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
+
+                List<School_studentClass> studentClasses = new List<School_studentClass>();
+                List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
+                List<EnrolUser> enrolsData = new List<EnrolUser>();
+
+                foreach (var user in userModels)
+                {
+                    
+                    UserModel student = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault();
+                    int userid = student.Id;
+
+                    School_studentClass studentClass = new School_studentClass();
+
+                    studentClass.ClassId = classId;
+                    studentClass.UserId = userid;
+
+                    if(appDbContext.School_StudentClasses.Where(x => x.UserId == userid && x.ClassId == classId).FirstOrDefault() == null)
+                    {
+                        if(appDbContext.Users.Where(x => x.Id == studentClass.UserId && x.SchoolId == schoolId).FirstOrDefault() != null)
+                        {
+                            studentClasses.Add(studentClass);
+                        }
+                    }
+
+                    foreach(var course in courses)
+                    {
+                        EnrolUser enrolInfo = new EnrolUser();
+                        enrolInfo.lessonId = course.id;
+                        enrolInfo.RoleId = 5;
+                        enrolInfo.UserId = student.Moodle_Id;
+
+                        enrolsData.Add(enrolInfo);
+                    }  
+                }
+
+                await moodleApi.AssignUsersToCourse(enrolsData);
+
+                appDbContext.School_StudentClasses.AddRange(studentClasses);
+                appDbContext.SaveChanges();
+
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPost]
         [ProducesResponseType(typeof(List<UserModel>), 200)]

@@ -3,17 +3,19 @@ import { Link } from 'react-router-dom'
 import { motion } from "framer-motion";
 import Schedule from './Schedule'
 import {AddClassSchedule , DeleteClassSchedule , getClassSchedule} from '../../../../_actions/classScheduleActions'
-import {getStudentsClass , AssignUserToClass } from '../../../../_actions/managerActions'
+import {getStudentsClass , AssignUserToClass , AssignUserListToClass } from '../../../../_actions/managerActions'
 import {deleteClass , editClass} from '../../../../_actions/schoolActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
 import {plus, x} from "../../../../assets/icons";
 import DeleteConfirm from '../../../modals/DeleteConfirm'
 import PencilText from '../../../field/PencilText';
+import AddStudent from './AddStudent'
 
 class ClassInfo extends React.Component {
 
-    state = {lessons : [], addLesson: false, loading: false , showChangeName: false, classDetail : {}, showAdd: false , className : ""}
+    state = {lessons : [], addLesson: false, loading: false , showChangeName: false, 
+        classDetail : {}, showAdd: false , className : "" , addStudent : false}
 
     addVariant = {
         open: {
@@ -65,6 +67,13 @@ class ClassInfo extends React.Component {
         this.render()
     }
 
+    onAddStudent = async(userIds) =>{
+        console.log(userIds)
+        await this.props.AssignUserListToClass(this.props.user.token , userIds , parseInt(this.props.match.params.id));
+        this.componentDidMount()
+        this.render()
+    }
+
     deleteLesson = async (id) => {
 
         await this.props.DeleteClassSchedule(this.props.user.token , id)
@@ -79,7 +88,8 @@ class ClassInfo extends React.Component {
 
     render() {
         return (
-            <div onClick={() => this.setState({ showChangeName: false })} className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+            <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+                {this.state.addStudent ? <AddStudent onAddStudent={(dataIds) => this.onAddStudent(dataIds)} cancel={() => this.setState({addStudent : false})} /> : null}
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
@@ -151,7 +161,7 @@ class ClassInfo extends React.Component {
                                     accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                                 />
 
-                                <button className="w-5/6 cursor-pointer mt-4 py-1 border-2 border-purplish text-purplish rounded-lg">افزودن تکی</button>
+                                <button onClick={() => this.setState({addStudent : true})} className="w-5/6 cursor-pointer mt-4 py-1 border-2 border-purplish text-purplish rounded-lg">افزودن تکی</button>
                             </motion.div>
                         </div>
                     </div>
@@ -216,4 +226,4 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
                                         DeleteClassSchedule , getClassSchedule , 
-                                        AssignUserToClass , deleteClass , editClass})(ClassInfo);
+                                        AssignUserToClass , AssignUserListToClass , deleteClass , editClass})(ClassInfo);

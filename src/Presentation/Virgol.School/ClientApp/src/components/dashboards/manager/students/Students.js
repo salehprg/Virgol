@@ -1,6 +1,6 @@
 import React from "react";
 import PlusTable from "../../tables/PlusTable";
-import {edit, loading, trash} from "../../../../assets/icons";
+import {edit, loading, trash , check_circle} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {getAllStudents , addBulkUser , DeleteStudents} from "../../../../_actions/managerActions"
@@ -60,7 +60,7 @@ class Students extends React.Component {
                     }}
                     excel="آپلود اکسل دانش آموزان"
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی',  'کد ملی', 'نام پدر' , 'شماره ولی', '']}
+                    headers={['نام', 'نام خانوادگی', 'شماره همراه', 'کد ملی', 'نام پدر' , 'شماره ولی' , 'حساب تکمیل شده']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -72,9 +72,11 @@ class Students extends React.Component {
                                             <tr>
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
+                                                <td>{x.phoneNumber}</td>
                                                 <td>{x.melliCode}</td>
                                                 <td>{(x.userDetail ? x.userDetail.fatherName : "")}</td>
                                                 <td>{(x.userDetail ? x.userDetail.fatherPhoneNumber : "")}</td>
+                                                <td><span className="text-center">{x.completed ? check_circle('w-8 text-greenish') : null}</span></td>
                                                 <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>            

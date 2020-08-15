@@ -3,12 +3,13 @@ import { Switch, Route } from 'react-router-dom';
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, open_book} from "../../../assets/icons";
+import {layout, loading, open_book , users , bell} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Teachers from "./teachers/Teachers";
 import Students from "./students/Students";
 import Grades from "./grades/Grades";
+import News from "./News/News";
 
 class ManagerDashboard extends React.Component {
 
@@ -54,21 +55,28 @@ class ManagerDashboard extends React.Component {
                         active={this.state.active}
                         code="bases"
                         title="مدیریت کلاس"
-                        icon={layout}
+                        icon={bell}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="teachers"
                         title="معلمان"
-                        icon={layout}
+                        icon={users}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="students"
                         title="دانش آموزان"
-                        icon={layout}
+                        icon={users}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="news"
+                        title="اخبار من"
+                        icon={open_book}
                         changeActive={this.changeActive}
                     />
                 </Sidebar>
@@ -81,6 +89,7 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/teachers"} component={Teachers}/>
                         <Route path={this.props.match.url + "/bases"} component={Grades}/>
                         <Route path={this.props.match.url + "/students"} component={Students}/>
+                        <Route path={this.props.match.url + "/news"} component={News}/>
                     </Switch>
                 </div>
             </div>

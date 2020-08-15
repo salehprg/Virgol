@@ -443,6 +443,10 @@ namespace lms_with_moodle.Controllers
                         TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
                         if(teacherDetail.SchoolsId.Contains(schoolId.ToString() + ","))
                         {
+                            if(teacher.LatinFirstname != null)
+                            {
+                                teacherVW.completed = true;
+                            }
                             teacherVW.teacherDetail = teacherDetail;
                             result.Add(teacherVW);
                         }
