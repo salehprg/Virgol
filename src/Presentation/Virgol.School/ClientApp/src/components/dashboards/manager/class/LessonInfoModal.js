@@ -90,12 +90,13 @@ class LessonInfoModal extends React.Component {
                                     {trash('w-6 text-white centerize')}
                                 </div>
                                 :
-                                <p className="text-center text-white my-4">
-                                    <a href={this.props.lessonInfo.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
-                                        ورود به کلاس درس
-                                    </a>
-                                </p>
+                            null
                         )}
+                        <p className="text-center text-white my-4">
+                            <a href={this.props.lessonInfo.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
+                                ورود به کلاس درس
+                            </a>
+                        </p>
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}
                         {/*<input type="number" name="startMin" placeholder="دقیقه" onChange={this.onHandleInput} value={this.state.startMin} />*/}

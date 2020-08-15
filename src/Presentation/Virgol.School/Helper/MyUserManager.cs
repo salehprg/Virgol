@@ -15,7 +15,7 @@ public class MyUserManager {
         userManager = _userManager;
 
         moodleApi = new MoodleApi(appSettings);
-        ldap = new LDAP_db(appSettings);
+        ldap = new LDAP_db(appSettings , null);
     }
     public bool CreateUser()
     {

@@ -117,7 +117,7 @@ export const EditSchool = (token ,formvalue) => async dispatch => {
         return true
 
     } catch (e) {
-
+        dispatch({ type: STOP })
         if(e.response)
         {
         switch (e.response.status) {

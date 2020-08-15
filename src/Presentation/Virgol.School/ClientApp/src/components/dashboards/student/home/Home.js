@@ -31,7 +31,8 @@ class Home extends React.Component {
         return (
             <div className="grid sm:grid-cols-4 grid-cols-2 gap-4 py-6">
                 <Hero userInfo={this.props.user.userInformation}
-                        userDetail={this.props.user.userDetail}/>
+                        userDetail={this.props.user.userDetail}
+                        title={this.props.user.userInformation.email + " : ایمیل شما" }/>
                 <RecentClass
                     onStart={(id) => this.JoinMeeting(id)}
                     student={true}

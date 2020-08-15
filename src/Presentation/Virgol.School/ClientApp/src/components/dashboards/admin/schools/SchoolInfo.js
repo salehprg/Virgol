@@ -10,6 +10,7 @@ import {EditManager , RedirectAdmin} from '../../../../_actions/adminActions'
 import {Link} from "react-router-dom";
 import Modal from "../../../modals/Modal";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
+import PencilText from '../../../field/PencilText';
 
 class SchoolInfo extends React.Component {
 
@@ -63,6 +64,15 @@ class SchoolInfo extends React.Component {
     //     if (!this.state.selectedGrade) return null
     //     return this.state.courses.find(el => (el.fieldId === -1 || el.fieldId === this.state.selectedField) && el.gradeId === this.state.selectedGrade).courses
     // }
+
+    onEditSchool = async() =>{
+        const data = {
+            id : parseInt(this.props.match.params.id),
+            schoolName : this.state.schoolName,
+            schoolIdNumber : this.state.schoolCode
+        }
+        await this.props.EditSchool(this.props.user.token , data)
+    }
 
     selectCat = async (id) => {
         this.setState({ selectedCat: id, selectedField: null, selectedGrade: null, selectedCourse: null })
@@ -245,8 +255,18 @@ class SchoolInfo extends React.Component {
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
                     <div className="flex flex-row-reverse justify-between">
                         <div>
-                            <p className="text-right text-white text-2xl">{this.props.schoolLessonInfo.schoolModel.schoolName}</p>
-                            <p className="text-right text-white">#{this.props.schoolLessonInfo.schoolModel.schoolIdNumber}</p>
+                            <PencilText 
+                                text={this.props.schoolLessonInfo.schoolModel.schoolName} 
+                                className="text-right text-white text-2xl" 
+                                show={this.state.showChangeName}
+                                showBox={() => this.setState({ showChangeName: true })}
+                                value={this.state.className}
+                                changeValue={(schoolName) => this.setState({ schoolName })}
+                                ChangeCode={(code) => this.setState({ schoolCode : code })}
+                                submit={this.onEditSchool}
+                                schoolData={true}
+                                schoolCode={this.props.schoolLessonInfo.schoolModel.schoolIdNumber}
+                            />
                         </div>
                         <div>
                             <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>
