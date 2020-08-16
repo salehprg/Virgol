@@ -74,6 +74,7 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
+                    //It means Student send request
                     //We set IdNumber as userId in Token
                     string idNumber = userManager.GetUserId(User);
                     int userId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().Id;
@@ -89,7 +90,25 @@ namespace lms_with_moodle.Controllers
                         {
                             int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
                             schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
+
+                            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.LessonId == schedule.Id).ToList();
+                            int absenceCount = 0;
+
+                            foreach (var meeting in meetings)
+                            {
+                                int checkCount = meeting.CheckCount;
+                                int presentCount = appDbContext.ParticipantInfos.Where(x => x.UserId == userId && x.MeetingId == meeting.Id).FirstOrDefault().PresentCount;
+
+                                if(((float)presentCount / (float)checkCount) * 100 < 70)
+                                {
+                                    absenceCount++;
+                                }
+                            }
+
+                            schedule.absenceCount = absenceCount;
+                            
                         }
+                    
                     }
                     
                 }

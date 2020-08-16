@@ -26,6 +26,7 @@ class Classes extends React.Component {
         return (
             <div className="overflow-auto">
                 <Schedule
+                    student={true}
                     editable={false}
                     // lessons={this.props.schedules}
                     lessons={this.props.schedules}           

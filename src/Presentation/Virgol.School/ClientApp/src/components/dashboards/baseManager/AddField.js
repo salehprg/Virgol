@@ -51,10 +51,20 @@ class AddField extends React.Component {
                         changeQuery={(query) => this.setState({ query })}
                     />
                     <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
-                        {this.state.query.length < 3 && this.props.newSchoolInfo.studyFields.length > 10 ? <p className="text-center text-white">حداقل سه حرف برای سرچ الزامیست</p> : ''}
-                        {this.props.newSchoolInfo.studyFields.map(study => {
-                            if (study.studyFieldName.includes(this.state.query)) {
-                                if (this.props.newSchoolInfo.studyFields.length < 10 || (this.state.query.length > 2 && study.studyFieldName.includes(this.state.query))) {
+                        {this.state.query.trim().length == 0 && this.props.newSchoolInfo.studyFields.length > 10 
+                            ? 
+                            this.props.newSchoolInfo.studyFields.slice(0 , 10).map(study => {
+                                return (
+                                    <span onClick={() => this.setCat(study.id)}
+                                            className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                    >
+                                    {study.studyFieldName}
+                                </span>
+                                );
+                            })
+                            :
+                            this.props.newSchoolInfo.studyFields.filter(x => x.studyFieldName.includes(this.state.query)).slice(0 , 10).map(study => {
+                                // if (this.props.newSchoolInfo.studyFields.length < 10 || study.studyFieldName.includes(this.state.query)) {
                                     return (
                                         <span onClick={() => this.setCat(study.id)}
                                               className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
@@ -62,8 +72,7 @@ class AddField extends React.Component {
                                         {study.studyFieldName}
                                     </span>
                                     );
-                                }
-                            }
+                                // }
                         })}
                     </div>
                     <div className="flex mt-8 flex-row items-center">

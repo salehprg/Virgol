@@ -33,6 +33,7 @@ namespace lms_with_moodle.Controllers
         private readonly RoleManager<IdentityRole<int>> roleManager;
 
         MoodleApi moodleApi;
+        MyUserManager myUserManager;
         LDAP_db ldap;
         
         public ManagerController(UserManager<UserModel> _userManager 
@@ -49,6 +50,8 @@ namespace lms_with_moodle.Controllers
 
             moodleApi = new MoodleApi(appSettings);
             ldap = new LDAP_db(appSettings , appDbContext);
+
+            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
 
             
         }
@@ -182,6 +185,14 @@ namespace lms_with_moodle.Controllers
                 student.userTypeId = (int)UserType.Student;
                 student.ConfirmedAcc = true;
                 
+                
+
+                if(myUserManager.CheckPhoneInterupt(student.PhoneNumber))
+                    return BadRequest("شماره همراه دانش آموز قبلا در سیستم ثبت شده است");
+
+                if(myUserManager.CheckPhoneInterupt(student.userDetail.FatherPhoneNumber))
+                    return BadRequest("شماره همراه ولی قبلا در سیستم ثبت شده است");
+
                 IdentityResult resultCreate = userManager.CreateAsync(student , student.MelliCode).Result;
 
                 if(resultCreate.Succeeded)
@@ -223,7 +234,13 @@ namespace lms_with_moodle.Controllers
                     
                 }
 
-                return BadRequest(resultCreate.Errors);
+                if(resultCreate.Errors.ToList()[0].Code == "PasswordTooShort")
+                    return BadRequest("کد ملی به درستی وارد نشده است");
+
+                if(resultCreate.Errors.ToList()[0].Code == "DuplicateUserName")
+                    return BadRequest("کد ملی وارد شده تکراریست");
+
+                return BadRequest(resultCreate.Errors.ToList()[0].Description);
             }
             catch(Exception ex)
             {
@@ -278,10 +295,24 @@ namespace lms_with_moodle.Controllers
                 UserModel userModel = appDbContext.Users.Where(x => x.Id == student.Id).FirstOrDefault();
                 userModel.FirstName = student.FirstName;
                 userModel.LastName = student.LastName;
+
+                if(student.PhoneNumber != userModel.PhoneNumber)
+                {
+                    if(!myUserManager.CheckPhoneInterupt(student.PhoneNumber))
+                        return BadRequest("شماره همراه دانش آموز قبلا در سیستم ثبت شده است");
+                }
+
                 userModel.PhoneNumber = student.PhoneNumber;
                  
                 StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
                 studentDetail.FatherName = student.userDetail.FatherName;
+
+                if(student.userDetail.FatherPhoneNumber != studentDetail.FatherPhoneNumber)
+                {
+                    if(!myUserManager.CheckPhoneInterupt(student.PhoneNumber))
+                        return BadRequest("شماره همراه ولی قبلا در سیستم ثبت شده است");
+                }
+                
                 studentDetail.FatherPhoneNumber = student.userDetail.FatherPhoneNumber;
 
                 appDbContext.Users.Update(userModel);
@@ -691,6 +722,9 @@ namespace lms_with_moodle.Controllers
                 teacher.userTypeId = (int)UserType.Teacher;
                 teacher.ConfirmedAcc = true;
                 
+                if(!myUserManager.CheckPhoneInterupt(teacher.PhoneNumber))
+                    return BadRequest("شماره همراه معلم قبلا در سیستم ثبت شده است");
+
                 IdentityResult resultCreate = userManager.CreateAsync(teacher , teacher.MelliCode).Result;
 
                 if(resultCreate.Succeeded)
@@ -766,8 +800,17 @@ namespace lms_with_moodle.Controllers
 
                 userModel.FirstName = teacher.FirstName;
                 userModel.LastName = teacher.LastName;
+                userModel.UserName = teacher.MelliCode;
+                
+                if(teacher.PhoneNumber != userModel.PhoneNumber)
+                {
+                    if(!myUserManager.CheckPhoneInterupt(userModel.PhoneNumber))
+                        return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
+                }
+
+                ldap.EditEntry(userModel.MelliCode , "uniqueIdentifier" , teacher.MelliCode );
+
                 userModel.MelliCode = teacher.MelliCode;
-                teacher.UserName = teacher.MelliCode;
                 userModel.PhoneNumber = teacher.PhoneNumber;
 
                 appDbContext.Users.Update(userModel);

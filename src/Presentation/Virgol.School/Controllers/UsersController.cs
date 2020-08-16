@@ -39,6 +39,7 @@ namespace lms_with_moodle.Controllers
         private readonly LDAP_db ldap;
 
         MoodleApi moodleApi;
+        MyUserManager myUserManager;
         FarazSmsApi SMSApi;
         public UsersController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -56,6 +57,7 @@ namespace lms_with_moodle.Controllers
             ldap = new LDAP_db(appSettings , appDbContext);
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
+            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
         }
         
 
@@ -135,17 +137,15 @@ namespace lms_with_moodle.Controllers
                 //Type  0 => send verificationCode => data = phonenumber
                 //Type  1 => check verificationCode => data = verificationCode
 
+                if(myUserManager.CheckPhoneInterupt(phoneNumber))
+                    return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
+
                 string idNumber = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
                 user.PhoneNumber = phoneNumber;
 
                 if(type == 0)
                 {
-                    UserModel userPhonenumber = appDbContext.Users.Where(x => x.PhoneNumber.Contains(phoneNumber)).FirstOrDefault();
-
-                    if(userPhonenumber != null && userPhonenumber.Id != user.Id)
-                        return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
-
                     //Every user can get just 3 Verification code in last 30 minutes
                     if(checkUserAttempts(user , true))
                     {
@@ -241,6 +241,9 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                if(newPassword.Length < 8)
+                    return BadRequest("ظول پسورد باید حداقل 8 عدد باشد");
+
                 UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
                 bool verify = await CheckVerificationCode(verificationCode , user);
                 if(verify)
@@ -408,27 +411,6 @@ namespace lms_with_moodle.Controllers
 
                     case (int)UserType.Admin:
                         userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-
-                        string schooltypeName = "";
-                        if (((AdminDetail)userDetail).SchoolsType == SchoolType.Sampad)
-                        {
-                            schooltypeName = "استعداد های درخشان";
-                        }
-                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.AmoozeshRahDor)
-                        {
-                            schooltypeName = "آموزش از راه دور";
-                        }
-                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.Gheyrdolati)
-                        {
-                            schooltypeName = "غیر دولتی";
-                        }
-                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.Dolati)
-                        {
-                            schooltypeName = "دولتی";
-                        }
-
-                        userDetail = new {userDetail , schooltypeName };
-                        
                         break;
 
                     case (int)UserType.Manager:
@@ -436,6 +418,38 @@ namespace lms_with_moodle.Controllers
                         break;
                     
                 }
+
+                SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
+
+                int schoolType = (schoolModel != null ? schoolModel.SchoolType : 0);
+
+                if(schoolType == 0)
+                {
+                    try{
+                        schoolType = ((AdminDetail)userDetail).SchoolsType; 
+                    }catch{}
+                }
+
+
+                string schooltypeName = "";
+                if (schoolType == SchoolType.Sampad)
+                {
+                    schooltypeName = "استعداد های درخشان";
+                }
+                else if (schoolType == SchoolType.AmoozeshRahDor)
+                {
+                    schooltypeName = "آموزش از راه دور";
+                }
+                else if (schoolType == SchoolType.Gheyrdolati)
+                {
+                    schooltypeName = "غیر دولتی";
+                }
+                else if (schoolType == SchoolType.Dolati)
+                {
+                    schooltypeName = "دولتی";
+                }
+
+                userDetail = new {userDetail , schooltypeName };
 
                 var userRoleNames = new List<string>();
 

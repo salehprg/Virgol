@@ -30,7 +30,8 @@ class Home extends React.Component {
                 {(this.props.dashboardInfo.school
                 ?
                 <Hero userInfo={this.props.user.userInformation}
-                    title={`مدیر مدرسه ${this.props.dashboardInfo.school.schoolName}`}/>
+                    managerTitle={`مدیر مدرسه ${this.props.dashboardInfo.school.schoolName}`}
+                    adminTitle={`نوع مدرسه : ${this.props.user.userDetail.schooltypeName} `}/>
                     :
                 <Hero userInfo="درحال بارگذاری ..."
                     title="درحال بارگذاری ..." />

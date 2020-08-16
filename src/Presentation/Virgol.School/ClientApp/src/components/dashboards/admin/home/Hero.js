@@ -35,10 +35,14 @@ const Hero = (props) => {
         <div className="relative sm:col-span-4 col-span-2 w-full text-right rounded-xl bg-pinkish py-4 px-6">
             <Particles className="absolute top-0 bottom-0 right-0 left-0" params={particles} />
             <p className="text-3xl text-white my-2">{props.userInfo.firstName} {props.userInfo.lastName}</p>
-            {(props.title ?
-                <p className="text-white my-2">{props.title}</p>
-                : ""
-                )}
+            {(props.adminTitle ?
+                <p className="text-white my-2">{props.adminTitle}</p>
+            : ""
+            )}
+
+            {(props.managerTitle ?
+                <p className="text-white my-2">{props.managerTitle}</p> : "")}
+                
             
         </div>
     );

@@ -200,6 +200,7 @@ class ClassInfo extends React.Component {
                         <div className="border-2 border-dark-blue overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
+                                    student={false}
                                     editable={true}
                                     lessons={this.props.schedules}
                                     deleteSchedule={(id)  => this.deleteLesson(id)}

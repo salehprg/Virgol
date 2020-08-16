@@ -71,10 +71,10 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, newSchoolInfo : {...state.newSchoolInfo , studyFields : action.payload}}
 
         case Type.GetSchool_StudyFields: 
-            return { ...state, schoolLessonInfo : {...state.schoolLessonInfo , studyFields : action.payload}}
+            return { ...state, schoolLessonInfo : {...state.schoolLessonInfo , studyFields : action.payload , grades : []}}
 
         case Type.AddStudyFToSchool: 
-            return { ...state, schoolLessonInfo: {...state.schoolLessonInfo , studyFields : action.payload}};
+            return { ...state, schoolLessonInfo: {...state.schoolLessonInfo , studyFields : action.payload , grades : []}};
 
         case Type.RemoveStudyFFromSchool: 
             return { ...state, schoolLessonInfo: {...state.schoolLessonInfo, studyFields: state.schoolLessonInfo.studyFields.filter(element => element.id !== action.payload)}};

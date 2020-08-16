@@ -50,7 +50,7 @@ namespace Schedule
                         {
                             foreach(var attendee in newMeeting.attendees.attendee.Where(x => x.role != "MODERATOR")) // Participant present in Online Course
                             {
-                                ParticipantInfo participantInfo = dbContext.ParticipantInfos.Where(x => x.MeetingId == oldMeeting.Id && x.Moodle_Id == attendee.userID).FirstOrDefault();
+                                ParticipantInfo participantInfo = dbContext.ParticipantInfos.Where(x => x.MeetingId == oldMeeting.Id && x.UserId == attendee.userID).FirstOrDefault();
                                 if(participantInfo != null)
                                 {
                                     participantInfo.PresentCount++;
@@ -60,7 +60,7 @@ namespace Schedule
                                 {
                                     ParticipantInfo newAttendee = new ParticipantInfo();
                                     newAttendee.MeetingId = oldMeeting.Id;
-                                    newAttendee.Moodle_Id = attendee.userID;
+                                    newAttendee.UserId = attendee.userID;
                                     newAttendee.PresentCount = 1;
 
                                     dbContext.ParticipantInfos.Add(newAttendee);

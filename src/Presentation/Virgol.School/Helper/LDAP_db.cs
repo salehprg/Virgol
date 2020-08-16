@@ -45,6 +45,8 @@ namespace lms_with_moodle.Helper
                                                                 , user.LatinLastname 
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
 
+                    hasMail = true;
+
                 }
                 
 
@@ -98,6 +100,13 @@ namespace lms_with_moodle.Helper
 
                 //Add the entry to the directory
                 ldapConn.Add( newEntry );
+
+                if(hasMail)
+                {
+                    user.Email = mailAddress;
+                    appDbContext.Users.Update(user);
+                    appDbContext.SaveChanges();
+                }
 
                 return true;
             }
@@ -297,6 +306,59 @@ namespace lms_with_moodle.Helper
 
                 mods.Add(new LdapModification(LdapModification.ADD , mail));
                 mods.Add(new LdapModification(LdapModification.ADD , uniqueId));
+                mods.Add(new LdapModification(LdapModification.REPLACE , mailHDir));
+                mods.Add(new LdapModification(LdapModification.REPLACE , mailSTRDir));
+
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + user.MelliCode + "," + containerName;      
+
+                //Add the entry to the directory
+                ldapConn.Modify(dn , mods.ToArray());
+
+                user.Email = mailAddress;
+                appDbContext.Users.Update(user);
+                appDbContext.SaveChanges();
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                //ldapConn.Disconnect();
+            }
+        }
+        
+        public bool EditMail(UserModel user)
+        {
+            try
+            {
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+
+                string uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
+                                                                , user.LatinLastname 
+                                                                , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
+
+
+                string mailAddress = uniqueMailId + "@legace.ir";
+
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute mail = new LdapAttribute("mail", mailAddress);
+                LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
+                LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
+
+                LdapAttribute uniqueId = new LdapAttribute("uniqueIdentifier", uniqueMailId);
+
+                mods.Add(new LdapModification(LdapModification.REPLACE , mail));
+                mods.Add(new LdapModification(LdapModification.REPLACE , uniqueId));
                 mods.Add(new LdapModification(LdapModification.REPLACE , mailHDir));
                 mods.Add(new LdapModification(LdapModification.REPLACE , mailSTRDir));
 

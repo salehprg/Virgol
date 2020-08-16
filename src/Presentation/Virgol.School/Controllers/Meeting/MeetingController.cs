@@ -154,6 +154,8 @@ namespace lms_with_moodle.Controllers
                 bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
                 int currentHour = DateTime.Now.Hour;
+                float currentTime = DateTime.Now.Hour + (float)DateTime.Now.Minute / 60;
+                
                 int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
@@ -161,7 +163,7 @@ namespace lms_with_moodle.Controllers
 
                 if(isTeacher)
                 {
-                    List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.TeacherId == userId && x.StartHour >= currentHour && x.DayType == dayOfWeek ).ToList();
+                    List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.TeacherId == userId && x.StartHour >= currentTime && x.DayType == dayOfWeek ).ToList();
                     List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => x.TeacherId == userId && !x.Finished).ToList();
                     
                     //Remove active meeting from all meeting
@@ -281,7 +283,7 @@ namespace lms_with_moodle.Controllers
                 foreach (var attendee in attendees)
                 {
                     Participant_View participant = new Participant_View();
-                    UserModel user = appDbContext.Users.Where(x => x.Moodle_Id == attendee.Moodle_Id).FirstOrDefault();
+                    UserModel user = appDbContext.Users.Where(x => x.Moodle_Id == attendee.UserId).FirstOrDefault();
 
                     participant.FirstName = user.FirstName;
                     participant.LasstName = user.LastName;

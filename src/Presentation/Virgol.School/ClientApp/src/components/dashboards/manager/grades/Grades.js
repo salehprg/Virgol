@@ -141,7 +141,6 @@ class Grades extends React.Component {
 
 const mapStateToProps = state => {
     return {user: state.auth.userInfo , schoolLessonInfo: state.schoolData.schoolLessonInfo ,
-                                    newSchoolInfo: state.schoolData.newSchoolInfo ,
                                     classes :  state.schoolData.classes,
                                     allClass : state.schoolData.allClass}
 }
