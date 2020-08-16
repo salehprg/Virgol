@@ -344,22 +344,35 @@ namespace lms_with_moodle.Controllers
 
                 
                 IdentityResult chngPass = new IdentityResult();
-                if(newManager != null)
+                if(currentManager != null)
                 {
                     
                     if(!string.IsNullOrEmpty(model.password))
                     {
-                        string token = await userManager.GeneratePasswordResetTokenAsync(newManager);
-                        chngPass = await userManager.ResetPasswordAsync(newManager , token , model.password);
+                        string token = await userManager.GeneratePasswordResetTokenAsync(currentManager);
+                        chngPass = await userManager.ResetPasswordAsync(currentManager , token , model.password);
                     }
-                    newManager.FirstName = model.FirstName;
-                    newManager.LatinFirstname = model.LatinFirstname;
-                    newManager.LastName = model.LastName;
-                    newManager.LatinLastname = model.LatinLastname;
-                    newManager.PhoneNumber = (model.PhoneNumber != null ? ConvertToPersian.PersianToEnglish(model.PhoneNumber) : null );
+                    currentManager.FirstName = model.FirstName;
+                    currentManager.LatinFirstname = model.LatinFirstname;
+                    currentManager.LastName = model.LastName;
+                    currentManager.LatinLastname = model.LatinLastname;
 
-                    ldap.EditMail(newManager);
-                    appDbContext.Users.Update(newManager);
+                    if(model.PhoneNumber != null)
+                    {
+                        UserModel userPhonenumber = appDbContext.Users.Where(x => x.PhoneNumber.Contains(model.PhoneNumber)).FirstOrDefault();
+
+                        if(userPhonenumber != null && userPhonenumber.Id != currentManager.Id)
+                            return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
+
+                        currentManager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
+
+                    }
+
+                    if(!string.IsNullOrEmpty(currentManager.LatinFirstname) && !string.IsNullOrEmpty(currentManager.LatinFirstname))
+                    {
+                        ldap.EditMail(currentManager);
+                    }
+                    appDbContext.Users.Update(currentManager);
                     appDbContext.SaveChanges();
                 }
                 else
@@ -369,6 +382,17 @@ namespace lms_with_moodle.Controllers
                     {
                         appDbContext.Users.Remove(oldManager);
                         appDbContext.SaveChanges();
+                    }
+
+                    if(model.PhoneNumber != null)
+                    {
+                        UserModel userPhonenumber = appDbContext.Users.Where(x => x.PhoneNumber.Contains(model.PhoneNumber)).FirstOrDefault();
+
+                        if(userPhonenumber != null && userPhonenumber.Id != newManager.Id)
+                            return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
+
+                        newManager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
+
                     }
 
                     await AddNewManager(model);

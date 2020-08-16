@@ -20,9 +20,9 @@ class RecentClass extends React.Component {
                         this.props.class.map(x => {
                             return (
                                 <RecentClassDetail
-                                    text={(joinList ? x.meetingName : x.orgLessonName)}
-                                    schoolName={(joinList ? x.schoolName : x.meetingDetail.schoolName)}
-                                    className={(joinList ? x.className : x.meetingDetail.className)}
+                                    text={(joinList ? x.meetingName : x.meetingDetail.orgLessonName)}
+                                    schoolName={x.schoolName}
+                                    className={x.className}
                                     onStart={() => this.props.onStart((joinList ? x.bbB_MeetingId : x.meetingDetail.id))}
                                     joinable={joinList}
                                     startTime={`${~~x.meetingDetail.startHour}:${(x.meetingDetail.startHour - ~~x.meetingDetail.startHour) * 60}`}

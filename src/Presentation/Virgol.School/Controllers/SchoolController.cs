@@ -477,7 +477,7 @@ namespace lms_with_moodle.Controllers
                             
                             School_studentClass stdClass = appDbContext.School_StudentClasses.Where(x => x.UserId == student.Id).FirstOrDefault();
                             StudentDetail stdDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
-                            ParticipantInfo participant = appDbContext.ParticipantInfos.Where(x => x.Moodle_Id == student.Id).FirstOrDefault();
+                            ParticipantInfo participant = appDbContext.ParticipantInfos.Where(x => x.UserId == student.Id).FirstOrDefault();
 
                             appDbContext.ParticipantInfos.Remove(participant);
                             appDbContext.StudentDetails.Remove(stdDetail);

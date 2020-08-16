@@ -335,7 +335,8 @@ const validate = formValues => {
     if (formValues.password) {
         if(formValues.password != formValues.passwordagain) errors.password = true
     }
-    if (!formValues.latinLastname) errors.latinLastname = true
+    // if (!formValues.latinLastname) errors.latinLastname = true
+    // if (!formValues.latinFirstname) errors.latinFirstname = true
     if (!formValues.personalIdNUmber) errors.personalIdNUmber = true
 
     return errors;

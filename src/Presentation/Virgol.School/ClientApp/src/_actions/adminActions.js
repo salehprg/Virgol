@@ -64,21 +64,11 @@ export const AddNewManager = (token ,formvalue) => async dispatch => {
 
         if(e.response)
         {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+            dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
-    }
 
         return false
-
     }
-
 }
 
 export const EditManager = (token ,formvalue) => async dispatch => {
@@ -113,16 +103,8 @@ export const EditManager = (token ,formvalue) => async dispatch => {
 
         if(e.response)
         {
-        switch (e.response.status) {
-            case 401:
-                dispatch(alert.error("اجازه دسترسی به این صفحه را ندارید"))
-                history.push('/')
-                break;
-
-            default:
-                dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+            dispatch(alert.error(e.response.data))
         }
-    }
 
         return false
 
