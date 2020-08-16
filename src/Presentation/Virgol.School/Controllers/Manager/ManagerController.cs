@@ -223,7 +223,13 @@ namespace lms_with_moodle.Controllers
                     
                 }
 
-                return BadRequest(resultCreate.Errors);
+                if(resultCreate.Errors.ToList()[0].Code == "PasswordTooShort")
+                    return BadRequest("کد ملی به درستی وارد نشده است");
+
+                if(resultCreate.Errors.ToList()[0].Code == "DuplicateUserName")
+                    return BadRequest("کد ملی وارد شده تکراریست");
+
+                return BadRequest(resultCreate.Errors.ToList()[0].Description);
             }
             catch(Exception ex)
             {

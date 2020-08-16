@@ -35,6 +35,9 @@ class AddSchool extends React.Component {
     render() {
         return (
             <Add 
+                isNews={true}
+                // className="max-w-md"
+                newsClassName={"max-w-md w-11/12 "}
                 onCancel={() => history.push('/a/schools')}
                 title="افزودن مدرسه"
             >
@@ -44,28 +47,43 @@ class AddSchool extends React.Component {
                     name="schoolName"
                     type="text"
                     placeholder="نام مدرسه"
-                    extra={"w-full my-4 mx-2"}
+                    extra={"w-3/4 my-4"}
                     component={this.renderInputs}
                 />
                 <Field
                     name="schoolIdNumber"
                     type="text"
                     placeholder="کد مدرسه"
-                    extra={"w-full my-4 mx-2"}
+                    extra={"w-1/4 my-4"}
                     component={this.renderInputs}
                 />
+                
                 <Field
                     name="firstName"
                     type="text"
                     placeholder="نام مدیر"
+                    extra={"w-40 my-4 mx-2"}
+                    component={this.renderInputs}
+                />
+                <Field
+                    name="latinFirstname"
+                    type="text"
+                    placeholder="نام لاتین"
                     extra={"w-40 my-4"}
                     component={this.renderInputs}
                 />
                 <Field
                     name="lastName"
                     type="text"
-                    extra={"w-40 my-4"}
+                    extra={"w-40 my-4 mx-2"}
                     placeholder="نام خانوادگی مدیر"
+                    component={this.renderInputs}
+                />
+                <Field
+                    name="latinLastname"
+                    type="text"
+                    extra={"w-40 my-4"}
+                    placeholder="نام خانوادگی لاتین "
                     component={this.renderInputs}
                 />
                 <Field
@@ -79,14 +97,14 @@ class AddSchool extends React.Component {
                     name="melliCode"
                     type="text"
                     placeholder="کدملی مدیر"
-                    extra={"w-full my-4 mx-2"}
+                    extra={"w-2/4 my-4"}
                     component={this.renderInputs}
                 />
                 <Field
                     name="personalIdNumber"
                     type="text"
                     placeholder="کد پرسنلی مدیر"
-                    extra={"w-full my-4 mx-2"}
+                    extra={"w-2/4 my-4"}
                     component={this.renderInputs}
                 />
 

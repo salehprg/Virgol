@@ -100,6 +100,26 @@ namespace lms_with_moodle.Helper
             return SendData(json , "/v1/messages/patterns/send");
         }
 
+        public bool SendScheduleNotify(string Number , string userName , string className , string dateTime)
+        {
+            NotifySMSModel notifySMSModel = new NotifySMSModel();
+            notifySMSModel.userName = userName;
+            notifySMSModel.className = className;
+            notifySMSModel.dateTime = dateTime;
+
+            SendPatternModel<NotifySMSModel> patternModel = new SendPatternModel<NotifySMSModel>();
+
+            patternModel.pattern_code = "cwf9r8lirp";
+            patternModel.originator = FromNumber;
+            patternModel.recipient = Number;
+            patternModel.values = notifySMSModel;
+
+            string json = JsonConvert.SerializeObject(patternModel);
+
+            // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
+
+            return SendData(json , "/v1/messages/patterns/send");
+        }
 
 
         public bool SendSms(string[] Numbers , string Message)

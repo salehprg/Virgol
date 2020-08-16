@@ -121,7 +121,7 @@ namespace lms_with_moodle
             services.AddSingleton<SendNotifyJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(SendNotifyJob),
-                cronExpression: "0 */5 * ? * * *"));
+                cronExpression: "0 */1 * ? * * *"));
 
 
             // Add Send Sms Notify job

@@ -332,21 +332,34 @@ namespace lms_with_moodle.Controllers
                 // }
                 model.MelliCode = ConvertToPersian.PersianToEnglish(model.MelliCode);
 
-                UserModel manager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
+                int currentManagerId = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault().ManagerId;
+                UserModel currentManager = appDbContext.Users.Where(x => x.Id == currentManagerId).FirstOrDefault();
+                UserModel newManager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
+
+                if(newManager != null)
+                {
+                    if(newManager.MelliCode != currentManager.MelliCode)
+                        return BadRequest("کد ملی وارد شده تکراریست");
+                }
+
+                
                 IdentityResult chngPass = new IdentityResult();
-                if(manager != null)
+                if(newManager != null)
                 {
                     
                     if(!string.IsNullOrEmpty(model.password))
                     {
-                        string token = await userManager.GeneratePasswordResetTokenAsync(manager);
-                        chngPass = await userManager.ResetPasswordAsync(manager , token , model.password);
+                        string token = await userManager.GeneratePasswordResetTokenAsync(newManager);
+                        chngPass = await userManager.ResetPasswordAsync(newManager , token , model.password);
                     }
-                    manager.FirstName = model.FirstName;
-                    manager.LastName = model.LastName;
-                    manager.PhoneNumber = (model.PhoneNumber != null ? ConvertToPersian.PersianToEnglish(model.PhoneNumber) : null );
+                    newManager.FirstName = model.FirstName;
+                    newManager.LatinFirstname = model.LatinFirstname;
+                    newManager.LastName = model.LastName;
+                    newManager.LatinLastname = model.LatinLastname;
+                    newManager.PhoneNumber = (model.PhoneNumber != null ? ConvertToPersian.PersianToEnglish(model.PhoneNumber) : null );
 
-                    appDbContext.Users.Update(manager);
+                    ldap.EditMail(newManager);
+                    appDbContext.Users.Update(newManager);
                     appDbContext.SaveChanges();
                 }
                 else
@@ -354,14 +367,12 @@ namespace lms_with_moodle.Controllers
                     UserModel oldManager = appDbContext.Users.Where(x => x.SchoolId == model.SchoolId && x.userTypeId == (int)UserType.Manager).FirstOrDefault();
                     if(oldManager != null)
                     {
-                        oldManager.SchoolId = -1;
-
-                        appDbContext.Users.Update(oldManager);
+                        appDbContext.Users.Remove(oldManager);
                         appDbContext.SaveChanges();
                     }
 
                     await AddNewManager(model);
-                    UserModel newManager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
+                    newManager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
 
                     string token = await userManager.GeneratePasswordResetTokenAsync(newManager);
                     await userManager.ResetPasswordAsync(newManager , token , model.password);
@@ -369,7 +380,7 @@ namespace lms_with_moodle.Controllers
 
                 List<IdentityError> errors = chngPass.Errors.ToList();
                 return Ok(new{
-                    manager,
+                    newManager,
                     errors
                 });
             }

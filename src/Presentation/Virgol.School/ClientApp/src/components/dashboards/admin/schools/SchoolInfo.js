@@ -106,7 +106,7 @@ class SchoolInfo extends React.Component {
         await this.props.RedirectAdmin(this.props.user.token , parseInt(this.props.match.params.id))
     }
 
-    renderInputs = ({ input, meta, dir, type, placeholder }) => {
+    renderInputs = ({ input, meta, dir, type, placeholder  , extra }) => {
         return (
             <Fieldish
                 input={input}
@@ -114,7 +114,7 @@ class SchoolInfo extends React.Component {
                 type={type}
                 dir={dir}
                 placeholder={placeholder}
-                extra="w-full max-w-350 my-4 md:mx-4 lg:mx-0 mx-0"
+                extra={extra + "max-w-350 my-4 lg:mx-0 mx-0"}
             />
         );
     }
@@ -187,12 +187,27 @@ class SchoolInfo extends React.Component {
                     {this.state.loadingCats ? loading('w-10 text-grayish centerize')
                     : 
                     <form className="text-center mt-8 w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
-                        <div className="w-full flex flex-row justify-center items-center flex-wrap">
+                        <div className="w-full flex flex-row justify-end items-center flex-wrap">
+                            <Field
+                                name="latinFirstname"
+                                type="text"
+                                placeholder="نام لاتین"
+                                extra={"w-1/2 my-4"}
+                                component={this.renderInputs}
+                            />
                             <Field
                                 name="firstName"
                                 dir="rtl"
                                 type="text"
                                 placeholder="نام"
+                                extra={"w-1/2 my-4"}
+                                component={this.renderInputs}
+                            />
+                            <Field
+                                name="latinLastname"
+                                type="text"
+                                extra={"w-1/2 my-4"}
+                                placeholder="نام خانوادگی لاتین "
                                 component={this.renderInputs}
                             />
                             <Field
@@ -200,6 +215,7 @@ class SchoolInfo extends React.Component {
                                 dir="rtl"
                                 type="text"
                                 placeholder="نام خانوادگی"
+                                extra={"w-1/2 my-4"}
                                 component={this.renderInputs}
                             />
                             <Field
@@ -207,6 +223,7 @@ class SchoolInfo extends React.Component {
                                 dir="ltr"
                                 type="text"
                                 placeholder="شماره پرسنلی"
+                                extra={"w-1/2 my-4"}
                                 component={this.renderInputs}
                             />
                             <Field
@@ -214,6 +231,7 @@ class SchoolInfo extends React.Component {
                                 type="text"
                                 dir="ltr"
                                 placeholder="کد ملی"
+                                extra={"w-1/2 my-4"}
                                 component={this.renderInputs}
                             />
                             <Field
@@ -221,6 +239,7 @@ class SchoolInfo extends React.Component {
                                 type="text"
                                 dir="ltr"
                                 placeholder="شماره همراه"
+                                extra={"w-full my-4"}
                                 component={this.renderInputs}
                             />
                             <Field
@@ -228,6 +247,7 @@ class SchoolInfo extends React.Component {
                                 type="text"
                                 dir="ltr"
                                 placeholder="گذرواژه"
+                                extra={"w-full my-4"}
                                 component={this.renderInputs}
                             />
                             <Field
@@ -235,6 +255,7 @@ class SchoolInfo extends React.Component {
                                 type="text"
                                 dir="ltr"
                                 placeholder="تکرار گذرواژه"
+                                extra={"w-full my-4"}
                                 component={this.renderInputs}
                             />
                         </div>
@@ -327,6 +348,8 @@ const mapStateToProps = state => {
         schoolLessonInfo : state.schoolData.schoolLessonInfo,
         initialValues: {
             firstName: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.firstName : null,
+            latinFirstname: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.latinFirstname : null,
+            latinLastname: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.latinLastname : null,
             lastName: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.lastName : null,
             personalIdNumber: state.schoolData.schoolLessonInfo ? (state.schoolData.schoolLessonInfo.managerDetail ? state.schoolData.schoolLessonInfo.managerDetail.personalIdNumber : null) : null,
             melliCode: state.schoolData.schoolLessonInfo ? state.schoolData.schoolLessonInfo.managerInfo.melliCode : null,

@@ -126,8 +126,8 @@ namespace lms_with_moodle.Controllers
 
                 return Ok(new{
                     bases,
-                    studyFields,
-                    grades,
+                    //studyFields,
+                    //grades,
                     schoolModel,
                     managerInfo,
                     managerDetail
@@ -276,10 +276,12 @@ namespace lms_with_moodle.Controllers
                     
                     UserModel manager = new UserModel();
                     manager.FirstName = inputData.FirstName;
+                    manager.LatinFirstname = inputData.LatinFirstname;
                     manager.LastName = inputData.LastName;
+                    manager.LatinLastname = inputData.LatinLastname;
                     manager.MelliCode = ConvertToPersian.PersianToEnglish(inputData.MelliCode);
                     manager.UserName = inputData.MelliCode;
-                    manager.PhoneNumber = inputData.managerPhoneNumber;
+                    manager.PhoneNumber = ConvertToPersian.PersianToEnglish(inputData.managerPhoneNumber);
                     manager.SchoolId = schoolResult.Id;
                     manager.userTypeId = (int)UserType.Manager;
                     manager.ConfirmedAcc = true;
@@ -322,6 +324,7 @@ namespace lms_with_moodle.Controllers
                             appDbContext.SaveChanges();
                             
                             SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
+                            SMSApi.SendSchoolData(manager.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                             
                             return Ok(new{
                                 manager.MelliCode,
@@ -712,9 +715,9 @@ namespace lms_with_moodle.Controllers
                 //Because all studyField in one base Id 
                 int baseId = appDbContext.StudyFields.Where(x => x.Id == schoolStudies[0].StudyField_Id).FirstOrDefault().Base_Id;
 
-                foreach (var studyF in appDbContext.School_StudyFields.Where(x => x.School_Id == inputData.schoolId ).ToList())
+                foreach (var studyF in schoolStudies)
                 {
-                    if(appDbContext.StudyFields.Where(x => x.Id == schoolStudies[0].StudyField_Id).FirstOrDefault().Base_Id == baseId)
+                    if(appDbContext.StudyFields.Where(x => x.Id == studyF.StudyField_Id).FirstOrDefault().Base_Id == baseId)
                     {
                         var serializedParent = JsonConvert.SerializeObject(studyF); 
                         School_StudyFieldsVW studyField  = JsonConvert.DeserializeObject<School_StudyFieldsVW>(serializedParent);
