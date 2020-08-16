@@ -276,19 +276,11 @@ export const GetUserInfo = (token,userId) => async dispatch => {
 
 export const addNewTeacher = (token, formValues) => async dispatch => {
 
-    const values = {
-        firstName: formValues.firstName,
-        lastName: formValues.lastName,
-        melliCode: formValues.melliCode,
-        phoneNumber: formValues.phoneNumber,
-        latinFirstName: formValues.latinFirstName,
-        latinLastName: formValues.latinLastName
-    }
 
     try {
         dispatch({type : START})
 
-        const response = await lms.put("/Manager/AddNewTeacher", values ,{
+        const response = await lms.put("/Manager/AddNewTeacher", formValues ,{
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -303,7 +295,7 @@ export const addNewTeacher = (token, formValues) => async dispatch => {
     } catch (e) {
         dispatch({type : STOP})
         console.log(e.response)
-        dispatch(alert.error("خطا در افرودن معلم"))
+        dispatch(alert.error(e.response.data))
     }
 
 }
@@ -351,7 +343,7 @@ export const deleteTeacher = (token, ids) => async dispatch => {
     } catch (e) {
         console.log(e.response)
         dispatch({ type: STOP })
-        dispatch(alert.error("خطا در حذف معلم"))
+        dispatch(alert.error(e.response.data))
     }
 
 }

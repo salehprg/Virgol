@@ -301,11 +301,6 @@ namespace lms_with_moodle.Controllers
                 UserModel currentManager = appDbContext.Users.Where(x => x.Id == currentManagerId).FirstOrDefault();
                 UserModel newManager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
 
-                if(newManager != null)
-                {
-                    if(myUserManager.CheckMelliCodeInterupt(newManager.MelliCode , currentManager.Id))
-                        return BadRequest("کد ملی وارد شده تکراریست");
-                }
                 if(newManager != null && currentManager == null)
                 {
                     return BadRequest("کد ملی وارد شده تکراریست");
@@ -315,9 +310,17 @@ namespace lms_with_moodle.Controllers
                 IdentityResult chngPass = new IdentityResult();
                 if(currentManager != null && newManager != null && currentManager.Id == newManager.Id)//It means MelliCode not changed
                 {
-                    if(model.password.Length < 8)
+                    if(!string.IsNullOrEmpty(model.password) && model.password.Length < 8)
                         return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
 
+                    if(model.PhoneNumber != null && model.PhoneNumber != currentManager.PhoneNumber)
+                    {
+                        if(myUserManager.CheckPhoneInterupt(model.PhoneNumber))
+                            return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
+
+                        currentManager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
+                    }
+                    
                     if(!string.IsNullOrEmpty(model.password))
                     {
                         string token = await userManager.GeneratePasswordResetTokenAsync(currentManager);
@@ -329,14 +332,7 @@ namespace lms_with_moodle.Controllers
                     currentManager.LastName = model.LastName;
                     currentManager.LatinLastname = model.LatinLastname;
 
-                    if(model.PhoneNumber != null && model.PhoneNumber != currentManager.PhoneNumber)
-                    {
-                        if(myUserManager.CheckPhoneInterupt(model.PhoneNumber))
-                            return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
-
-                        currentManager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
-
-                    }
+                    
 
                     if(!string.IsNullOrEmpty(currentManager.LatinFirstname) && !string.IsNullOrEmpty(currentManager.LatinFirstname))
                     {
@@ -344,42 +340,57 @@ namespace lms_with_moodle.Controllers
                     }
                     appDbContext.Users.Update(currentManager);
                     appDbContext.SaveChanges();
+
+                    List<IdentityError> errors = chngPass.Errors.ToList();
+                    return Ok(new{
+                        currentManager,
+                        errors
+                    });
                 }
                 
                 if(newManager == null )
                 {
-                    if(model.password.Trim() == null)
+                    if(model.password == null || model.password.Trim() == null)
                         return BadRequest("رمز عبور مدیر جدید به درستی وارد نشده است");
 
                     if(model.password.Length < 8)
                         return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
 
-                    if(currentManager != null)
-                    {
-                        appDbContext.Users.Remove(currentManager);
-                        appDbContext.SaveChanges();
-                    }
-
                     if(myUserManager.CheckPhoneInterupt(ConvertToPersian.PersianToEnglish(model.PhoneNumber)))
                         return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
+
+                    if(currentManager != null)
+                    {
+                        await myUserManager.DeleteUser(currentManager);
+                        // appDbContext.Users.Remove(currentManager);
+                        // appDbContext.SaveChanges();
+                    }
 
                     await AddNewManager(model);
                     newManager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
 
                     string token = await userManager.GeneratePasswordResetTokenAsync(newManager);
                     await userManager.ResetPasswordAsync(newManager , token , model.password);
+
+                    List<IdentityError> errors = chngPass.Errors.ToList();
+                    return Ok(new{
+                        newManager,
+                        errors
+                    });
                 }
 
-                List<IdentityError> errors = chngPass.Errors.ToList();
-                return Ok(new{
-                    newManager,
-                    errors
-                });
+                if(newManager != null)
+                {
+                    if(myUserManager.CheckMelliCodeInterupt(newManager.MelliCode , currentManager.Id))
+                        return BadRequest("کد ملی وارد شده تکراریست");
+                }
+                
+                return BadRequest("اطلاعات وارد شده ناقص میباشد");
             }
             catch(Exception ex)
             {
                 //await userManager.DeleteAsync(newSchool);
-                return BadRequest(ex.Message);
+                return BadRequest("خطای سیستمی رخ داد لطفا بعدا تلاش نمایید");
             }
         }
 

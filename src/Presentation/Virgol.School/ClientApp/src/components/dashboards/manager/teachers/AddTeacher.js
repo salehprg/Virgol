@@ -26,12 +26,12 @@ class AddTeacher extends React.Component {
         
         let data = formValues;
 
-        data.userDetail = {
-            latinLastname : formValues.latinLastname,
-            latinFirstname : formValues.latinFirstname
-        }
+        // data.userDetail = {
+        //     latinLastname : formValues.latinLastname,
+        //     latinFirstname : formValues.latinFirstname
+        // }
       
-        await this.props.addNewTeacher(this.props.user.token , data)
+        await this.props.addNewTeacher(this.props.user.token , formValues)
     }
 
     render() {

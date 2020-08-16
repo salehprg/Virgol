@@ -39,7 +39,7 @@ class CompleteProfile extends React.Component {
         this.sendVerifyPhone();
     }
     sendVerifyPhone = async () => {
-        const result = await this.props.SendVerifyPhoneNumber(this.state.phoneNumber , this.props.user.token);
+        const result = await this.props.SendVerifyPhoneNumber(this.state.phoneNumber , this.props.user.token , 0);
         
         if(!result)
         {
@@ -47,14 +47,14 @@ class CompleteProfile extends React.Component {
         }
     }
     onCheckVerifyPhone = async () => {
-        const result = await this.props.CheckVerifyPhoneNumber(this.state.phoneNumber , this.state.verifyCodePhoneNumber , this.props.user.token);
+        const result = await this.props.CheckVerifyPhoneNumber(this.state.phoneNumber , this.state.verifyCodePhoneNumber , this.props.user.token , 0);
         if(result)
         {
             this.setState({verifiedPhone : true})
         }
         else
         {
-            this.setState({verifiedPhone : false})
+            this.setState({verifiedPhone : false , verifyPhone : false})
         }
         
     }
@@ -66,21 +66,21 @@ class CompleteProfile extends React.Component {
         this.sendVerifyFatherPhone();
     }
     sendVerifyFatherPhone = async () => {
-        const result = await this.props.SendVerifyPhoneNumber(this.state.fatherPhoneNumber , this.props.user.token);
+        const result = await this.props.SendVerifyPhoneNumber(this.state.fatherPhoneNumber , this.props.user.token , 1);
         if(!result)
         {
             this.setState({verifyFatherPhone : false});
         }
     }
     onCheckVerifyFatherPhone = async () => {
-        const result = await this.props.CheckVerifyPhoneNumber(this.state.fatherPhoneNumber , this.state.verifyCodeFatherPhoneNumber , this.props.user.token);
+        const result = await this.props.CheckVerifyPhoneNumber(this.state.fatherPhoneNumber , this.state.verifyCodeFatherPhoneNumber , this.props.user.token , 1);
         if(result)
         {
             this.setState({verifiedFatherPhone : true})
         }
         else
         {
-            this.setState({verifiedFatherPhone : false})
+            this.setState({verifiedFatherPhone : false ,verifyFatherPhone : false})
         }
     }
 
