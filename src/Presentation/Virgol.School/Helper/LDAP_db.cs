@@ -333,6 +333,10 @@ namespace lms_with_moodle.Helper
             }
         }
         
+
+        ///<summary>
+        ///don't change email in Database before call this methode by yourSelf
+        ///</summary>
         public bool EditMail(UserModel user)
         {
             try
@@ -356,9 +360,11 @@ namespace lms_with_moodle.Helper
                 LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
 
                 LdapAttribute uniqueId = new LdapAttribute("uniqueIdentifier", uniqueMailId);
+                LdapAttribute previousEmail = new LdapAttribute("uniqueIdentifier", user.Email.Split("@")[0]);
 
                 mods.Add(new LdapModification(LdapModification.REPLACE , mail));
-                mods.Add(new LdapModification(LdapModification.REPLACE , uniqueId));
+                mods.Add(new LdapModification(LdapModification.DELETE , previousEmail));
+                mods.Add(new LdapModification(LdapModification.ADD , uniqueId));
                 mods.Add(new LdapModification(LdapModification.REPLACE , mailHDir));
                 mods.Add(new LdapModification(LdapModification.REPLACE , mailSTRDir));
 

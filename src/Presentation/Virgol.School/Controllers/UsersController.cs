@@ -130,7 +130,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpPost]
         [Authorize(Roles="User")]
-        public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber , int type , string verificationCode)
+        public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber , int type , string verificationCode , int fatherCode)
         {
             try
             {
@@ -142,14 +142,17 @@ namespace lms_with_moodle.Controllers
 
                 string idNumber = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
-                user.PhoneNumber = phoneNumber;
+
+                //1 = fatherCode , 0 = User
+                bool isFatherCode = (fatherCode == 1);
 
                 if(type == 0)
                 {
                     //Every user can get just 3 Verification code in last 30 minutes
                     if(checkUserAttempts(user , true))
                     {
-                        bool result = await SendCode(user);
+
+                        bool result = await SendCode(user , phoneNumber , isFatherCode);
                         if(result)
                         {
                             return Ok("پیامک تایید با موفقیت ارسال شد");
@@ -165,7 +168,7 @@ namespace lms_with_moodle.Controllers
                 }
                 else if(type == 1)
                 {
-                    if(await CheckVerificationCode(verificationCode , user))
+                    if(await CheckVerificationCode(verificationCode , user , isFatherCode))
                     {
                         user.PhoneNumber = phoneNumber;
                         user.PhoneNumberConfirmed = true;
@@ -204,7 +207,7 @@ namespace lms_with_moodle.Controllers
                     {
                         if(checkUserAttempts(user))
                         {
-                            bool result = await SendCode(user);
+                            bool result = await SendCode(user , user.PhoneNumber);
                             if(result)
                             {
                                 return Ok("پیامک تایید با موفقیت ارسال شد");
@@ -222,7 +225,7 @@ namespace lms_with_moodle.Controllers
                 }
                 else if(type == 1)
                 {
-                    if(await CheckVerificationCode(verificationCode , user))
+                    if(await CheckVerificationCode(verificationCode , user , false))
                     {
                         return Ok(true);
                     }
@@ -245,7 +248,7 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("ظول پسورد باید حداقل 8 عدد باشد");
 
                 UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
-                bool verify = await CheckVerificationCode(verificationCode , user);
+                bool verify = await CheckVerificationCode(verificationCode , user , false);
                 if(verify)
                 {
                     string token = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -660,16 +663,17 @@ namespace lms_with_moodle.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public bool checkUserAttempts(UserModel user , bool verify = false)
         {
+            if(verify)
+            {
+                return true;
+            }
+
             List<VerificationCodeModel> lastestCodeInfo = new List<VerificationCodeModel>();
             lastestCodeInfo = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
                                                             .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList();
             
             if(lastestCodeInfo.Count != 3 && lastestCodeInfo.Count > 0) // Rich limit Send sms
             {
-                if(verify)
-                {
-                    return true;
-                }
                 if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
                 {   
                     return true;
@@ -691,18 +695,20 @@ namespace lms_with_moodle.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        async Task<bool> SendCode(UserModel user)
+        async Task<bool> SendCode(UserModel user , string phoneNumber , bool fatherPhone = false)
         {
             try
             {
-                string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);// Make new Verification code
-                //bool SmsResult = SMSApi.SendForgotSms(user.PhoneNumber , Code);
-                bool SmsResult = SMSApi.SendVerifySms(user.PhoneNumber , user.FirstName + " " + user.LastName , Code);
+                string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , phoneNumber);// Make new Verification code
+
+                bool SmsResult = SMSApi.SendVerifySms(phoneNumber , user.FirstName + " " + user.LastName , Code);
+                //bool SmsResult = true;
 
                 if(SmsResult)
                 {
                     VerificationCodeModel verification = new VerificationCodeModel();
                     verification.LastSend = DateTime.Now;
+                    verification.fatherCode = fatherPhone;
                     verification.UserId = user.Id;
                     verification.VerificationCode = Code;
 
@@ -724,7 +730,7 @@ namespace lms_with_moodle.Controllers
         }
         
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<bool> CheckVerificationCode(string verifyCode , UserModel user)
+        public async Task<bool> CheckVerificationCode(string verifyCode , UserModel user , bool isFatherVerification)
         {
             string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , user.PhoneNumber);
 
@@ -738,7 +744,7 @@ namespace lms_with_moodle.Controllers
             {
                 //Check verification if user Reach limit Code by Check last sent Code 
 
-                VerificationCodeModel lastVerifyCode = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
+                VerificationCodeModel lastVerifyCode = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.fatherCode == isFatherVerification && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
                                                             .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList()[0];
                 string LastCode = lastVerifyCode.VerificationCode;
                 

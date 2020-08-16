@@ -44,6 +44,14 @@ public class MyUserManager {
             await userManager.RemoveFromRoleAsync(user , "Admin");
             await userManager.RemoveFromRoleAsync(user , "Manager");
             await userManager.DeleteAsync(user);
+            
+            if(user.userTypeId == (int)UserType.Manager)
+            {
+                appDbContext.News.RemoveRange(appDbContext.News.Where(x => x.AutherId == user.Id).ToList());
+                appDbContext.ManagerDetails.Remove(appDbContext.ManagerDetails.Where(x => x.UserId == user.Id).FirstOrDefault());
+
+                appDbContext.SaveChanges();
+            }
 
             return true;
         }
@@ -60,14 +68,14 @@ public class MyUserManager {
             UserModel oldPhone = appDbContext.Users.Where(x => x.PhoneNumber.Contains(phoneNumber.ToString())).FirstOrDefault();
 
             if(oldPhone != null)
-                return false;
+                return true;
 
             StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.FatherPhoneNumber.Contains(phoneNumber.ToString())).FirstOrDefault();
             if(studentDetail != null)
-                return false;
+                return true;
         }
 
-        return true;
+        return false;
 
     }
 
@@ -78,10 +86,10 @@ public class MyUserManager {
 
         if(oldUser != null && oldUser.Id != userId)
         {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
 
     }
 

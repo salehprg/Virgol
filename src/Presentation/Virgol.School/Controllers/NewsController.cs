@@ -85,58 +85,61 @@ namespace lms_with_moodle.Controllers
                 int autherId = news.AutherId;
                 UserModel auther = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault();
 
-                if(auther.userTypeId == (int)UserType.Manager)
+                if(auther != null)
                 {
-                    int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
-                    if(userModel.userTypeId == (int)UserType.Student)
+                    if(auther.userTypeId == (int)UserType.Manager)
                     {
-                        if(userModel.SchoolId == schoolId)
+                        int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
+                        if(userModel.userTypeId == (int)UserType.Student)
                         {
-                            result.Add(news);
+                            if(userModel.SchoolId == schoolId)
+                            {
+                                result.Add(news);
+                            }
                         }
-                    }
-                    else if(userModel.userTypeId == (int)UserType.Teacher)
-                    {
-                        string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
-                        if(schoolIds.Contains(schoolId + ","))
-                        {
-                            result.Add(news);
-                        }
-                    }
-                }
-                else if(auther.userTypeId == (int)UserType.Admin)
-                {
-                    int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == auther.Id).FirstOrDefault().SchoolsType;
-                    List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
-                    foreach (var school in schools)
-                    {
-                        if(userModel.userTypeId == (int)UserType.Teacher)
+                        else if(userModel.userTypeId == (int)UserType.Teacher)
                         {
                             string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
-                            if(schoolIds.Contains(school.Id + ","))
-                            {
-                                result.Add(news);
-                            }
-                        }
-                        else
-                        {
-                            if(userModel.SchoolId == school.Id)
+                            if(schoolIds.Contains(schoolId + ","))
                             {
                                 result.Add(news);
                             }
                         }
                     }
+                    else if(auther.userTypeId == (int)UserType.Admin)
+                    {
+                        int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == auther.Id).FirstOrDefault().SchoolsType;
+                        List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
+                        foreach (var school in schools)
+                        {
+                            if(userModel.userTypeId == (int)UserType.Teacher)
+                            {
+                                string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
+                                if(schoolIds.Contains(school.Id + ","))
+                                {
+                                    result.Add(news);
+                                }
+                            }
+                            else
+                            {
+                                if(userModel.SchoolId == school.Id)
+                                {
+                                    result.Add(news);
+                                }
+                            }
+                        }
+                        
+                    }
                     
-                }
-                
-                List<string> tags = new List<string>();
+                    List<string> tags = new List<string>();
 
-                if(news.Tags != null)
-                {
-                    tags = news.Tags.Split(",").ToList();
-                }
+                    if(news.Tags != null)
+                    {
+                        tags = news.Tags.Split(",").ToList();
+                    }
 
-                news.tagsStr = tags;
+                    news.tagsStr = tags;
+                }
             }
 
             return Ok(result.OrderByDescending(x => x.CreateTime));

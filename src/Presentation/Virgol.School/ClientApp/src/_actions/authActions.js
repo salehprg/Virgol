@@ -181,11 +181,11 @@ export const ChangePassword = (melliCode, verificationCode , newPassword) => asy
 
 }
 
-export const SendVerifyPhoneNumber = (phoneNumber,token) => async dispatch => {
+export const SendVerifyPhoneNumber = (phoneNumber,token,IsFatherCode) => async dispatch => {
 
     try {
         dispatch({ type: START })
-        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0` , null , {
+        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0&fatherCode=${IsFatherCode}` , null , {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -203,11 +203,11 @@ export const SendVerifyPhoneNumber = (phoneNumber,token) => async dispatch => {
 
 }
 
-export const CheckVerifyPhoneNumber = (phoneNumber, verificationCode , token) => async dispatch => {
+export const CheckVerifyPhoneNumber = (phoneNumber, verificationCode , token , IsFatherCode) => async dispatch => {
 
     try {
         dispatch({ type: START })
-        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=1&verificationCode=${verificationCode}` , null , {
+        const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=1&verificationCode=${verificationCode}&fatherCode=${IsFatherCode}` , null , {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -225,7 +225,7 @@ export const CheckVerifyPhoneNumber = (phoneNumber, verificationCode , token) =>
     } catch (e) {
         dispatch({ type: STOP })
         console.log(e.response)
-        dispatch(alert.error("خطایی در برقراری ارتباط رخ داد"));
+        dispatch(alert.error(e.response.data));
         return false
     }
 

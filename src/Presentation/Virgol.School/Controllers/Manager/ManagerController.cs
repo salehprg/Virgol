@@ -298,7 +298,7 @@ namespace lms_with_moodle.Controllers
 
                 if(student.PhoneNumber != userModel.PhoneNumber)
                 {
-                    if(!myUserManager.CheckPhoneInterupt(student.PhoneNumber))
+                    if(myUserManager.CheckPhoneInterupt(student.PhoneNumber))
                         return BadRequest("شماره همراه دانش آموز قبلا در سیستم ثبت شده است");
                 }
 
@@ -309,7 +309,7 @@ namespace lms_with_moodle.Controllers
 
                 if(student.userDetail.FatherPhoneNumber != studentDetail.FatherPhoneNumber)
                 {
-                    if(!myUserManager.CheckPhoneInterupt(student.PhoneNumber))
+                    if(myUserManager.CheckPhoneInterupt(student.PhoneNumber))
                         return BadRequest("شماره همراه ولی قبلا در سیستم ثبت شده است");
                 }
                 
@@ -722,8 +722,13 @@ namespace lms_with_moodle.Controllers
                 teacher.userTypeId = (int)UserType.Teacher;
                 teacher.ConfirmedAcc = true;
                 
-                if(!myUserManager.CheckPhoneInterupt(teacher.PhoneNumber))
+                if(myUserManager.CheckPhoneInterupt(teacher.PhoneNumber))
                     return BadRequest("شماره همراه معلم قبلا در سیستم ثبت شده است");
+
+                UserModel newTeacher = userManager.FindByNameAsync(teacher.MelliCode).Result;
+
+                if(newTeacher != null && newTeacher.userTypeId != (int)UserType.Teacher)
+                    return BadRequest("کد ملی وارد شده مربوط به شخص دیگری است");
 
                 IdentityResult resultCreate = userManager.CreateAsync(teacher , teacher.MelliCode).Result;
 
@@ -766,10 +771,9 @@ namespace lms_with_moodle.Controllers
                 }
                 else if(userManager.FindByNameAsync(teacher.MelliCode).Result != null)//this Teacher exist in database
                 {
-                    int teacherId = userManager.FindByNameAsync(teacher.MelliCode).Result.Id;
+                    int teacherId = newTeacher.Id;
 
                     TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
-                    teacherDetail.TeacherId = teacherId;
                     teacherDetail.SchoolsId += schoolId.ToString() + ',';
 
                     appDbContext.TeacherDetails.Update(teacherDetail);
@@ -804,7 +808,7 @@ namespace lms_with_moodle.Controllers
                 
                 if(teacher.PhoneNumber != userModel.PhoneNumber)
                 {
-                    if(!myUserManager.CheckPhoneInterupt(userModel.PhoneNumber))
+                    if(myUserManager.CheckPhoneInterupt(userModel.PhoneNumber))
                         return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
                 }
 
