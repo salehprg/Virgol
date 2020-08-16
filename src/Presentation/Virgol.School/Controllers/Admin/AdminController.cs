@@ -150,7 +150,8 @@ namespace lms_with_moodle.Controllers
             try
             {
                 var userRoleNames = new List<string>();
-                int managerId = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().ManagerId;
+                SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                int managerId = schoolModel.ManagerId;
 
                 UserModel userInformation  = appDbContext.Users.Where(x => x.Id == managerId).FirstOrDefault();
 
@@ -178,49 +179,29 @@ namespace lms_with_moodle.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     ) ;
 
-                object userDetail = null;
+                object userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
 
-                switch(userInformation.userTypeId)
+                int schoolType = schoolModel.SchoolType;
+
+                string schooltypeName = "";
+                if (schoolType == SchoolType.Sampad)
                 {
-                    case (int)UserType.Student:
-                        userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                        
-                        break;
-
-                    case (int)UserType.Teacher:
-                        userDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                        break;
-
-                    case (int)UserType.Admin:
-                        userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-
-                        string schooltypeName = "";
-                        if (((AdminDetail)userDetail).SchoolsType == SchoolType.Sampad)
-                        {
-                            schooltypeName = "استعداد های درخشان";
-                        }
-                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.AmoozeshRahDor)
-                        {
-                            schooltypeName = "آموزش از راه دور";
-                        }
-                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.Gheyrdolati)
-                        {
-                            schooltypeName = "غیر دولتی";
-                        }
-                        else if (((AdminDetail)userDetail).SchoolsType == SchoolType.Dolati)
-                        {
-                            schooltypeName = "دولتی";
-                        }
-
-                        userDetail = new {userDetail , schooltypeName };
-                        
-                        break;
-
-                    case (int)UserType.Manager:
-                        userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                        break;
-                    
+                    schooltypeName = "استعداد های درخشان";
                 }
+                else if (schoolType == SchoolType.AmoozeshRahDor)
+                {
+                    schooltypeName = "آموزش از راه دور";
+                }
+                else if (schoolType == SchoolType.Gheyrdolati)
+                {
+                    schooltypeName = "غیر دولتی";
+                }
+                else if (schoolType == SchoolType.Dolati)
+                {
+                    schooltypeName = "دولتی";
+                }
+
+                userDetail = new {userDetail , schooltypeName };
 
                 //Get userTypeId information from UserType Class
                 return Ok(new
@@ -312,24 +293,8 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                
-                // SchoolModel oldSchool = new SchoolModel();
-                // oldSchool = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
-                
-                // SchoolModel newSchool = new SchoolModel();
-                // newSchool = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
+                MyUserManager myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
 
-                // if(oldSchool != null && model.SchoolId != 0)
-                // {
-                //     oldSchool.ManagerId = -1;
-                //     appDbContext.Schools.Update(oldSchool);
-                // }
-
-                // if(newSchool != null && model.SchoolId != 0)
-                // {
-                //     newSchool.ManagerId = model.Id;
-                //     appDbContext.Schools.Update(newSchool);
-                // }
                 model.MelliCode = ConvertToPersian.PersianToEnglish(model.MelliCode);
 
                 int currentManagerId = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault().ManagerId;
@@ -338,30 +303,35 @@ namespace lms_with_moodle.Controllers
 
                 if(newManager != null)
                 {
-                    if(newManager.MelliCode != currentManager.MelliCode)
+                    if(myUserManager.CheckMelliCodeInterupt(newManager.MelliCode , currentManager.Id))
                         return BadRequest("کد ملی وارد شده تکراریست");
+                }
+                if(newManager != null && currentManager == null)
+                {
+                    return BadRequest("کد ملی وارد شده تکراریست");
                 }
 
                 
                 IdentityResult chngPass = new IdentityResult();
-                if(currentManager != null)
+                if(currentManager != null && newManager != null && currentManager.Id == newManager.Id)//It means MelliCode not changed
                 {
-                    
+                    if(model.password.Length < 8)
+                        return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
+
                     if(!string.IsNullOrEmpty(model.password))
                     {
                         string token = await userManager.GeneratePasswordResetTokenAsync(currentManager);
                         chngPass = await userManager.ResetPasswordAsync(currentManager , token , model.password);
                     }
+                    
                     currentManager.FirstName = model.FirstName;
                     currentManager.LatinFirstname = model.LatinFirstname;
                     currentManager.LastName = model.LastName;
                     currentManager.LatinLastname = model.LatinLastname;
 
-                    if(model.PhoneNumber != null)
+                    if(model.PhoneNumber != null && model.PhoneNumber != currentManager.PhoneNumber)
                     {
-                        UserModel userPhonenumber = appDbContext.Users.Where(x => x.PhoneNumber.Contains(model.PhoneNumber)).FirstOrDefault();
-
-                        if(userPhonenumber != null && userPhonenumber.Id != currentManager.Id)
+                        if(myUserManager.CheckPhoneInterupt(model.PhoneNumber))
                             return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
 
                         currentManager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
@@ -375,25 +345,23 @@ namespace lms_with_moodle.Controllers
                     appDbContext.Users.Update(currentManager);
                     appDbContext.SaveChanges();
                 }
-                else
+                
+                if(newManager == null )
                 {
-                    UserModel oldManager = appDbContext.Users.Where(x => x.SchoolId == model.SchoolId && x.userTypeId == (int)UserType.Manager).FirstOrDefault();
-                    if(oldManager != null)
+                    if(model.password.Trim() == null)
+                        return BadRequest("رمز عبور مدیر جدید به درستی وارد نشده است");
+
+                    if(model.password.Length < 8)
+                        return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
+
+                    if(currentManager != null)
                     {
-                        appDbContext.Users.Remove(oldManager);
+                        appDbContext.Users.Remove(currentManager);
                         appDbContext.SaveChanges();
                     }
 
-                    if(model.PhoneNumber != null)
-                    {
-                        UserModel userPhonenumber = appDbContext.Users.Where(x => x.PhoneNumber.Contains(model.PhoneNumber)).FirstOrDefault();
-
-                        if(userPhonenumber != null && userPhonenumber.Id != newManager.Id)
-                            return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
-
-                        newManager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
-
-                    }
+                    if(myUserManager.CheckPhoneInterupt(ConvertToPersian.PersianToEnglish(model.PhoneNumber)))
+                        return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
 
                     await AddNewManager(model);
                     newManager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
