@@ -18,7 +18,7 @@ class AddStudent extends React.Component {
 
     componentDidMount = async () => {
         this.setState({ loading: true })
-        await this.props.getAllStudents(this.props.user.token)
+        await this.props.getAllStudents(this.props.user.token , 'true')
         this.setState({ loading: false })
     }
 
@@ -45,6 +45,9 @@ class AddStudent extends React.Component {
         return (
             <Modal cancel={this.props.cancel}>
                 <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
+                    <span className={`px-6 py-1 mx-2 my-2 text-white`}>
+                        لیست دانش آموزان بدون کلاس
+                    </span>
                     <Searchish
                         className="mx-auto max-w-350"
                         query={this.state.query}
@@ -57,8 +60,8 @@ class AddStudent extends React.Component {
                                     <span onClick={() => this.setStudent(parseInt(x.id))}
                                             className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedStudents.some(el => el === x.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
                                     >
-                                    {x.firstName} {x.lastName}
-                                </span>
+                                        {x.firstName} {x.lastName}
+                                    </span>
                                 );
                             })
                         :

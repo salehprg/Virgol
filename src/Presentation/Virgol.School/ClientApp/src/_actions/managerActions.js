@@ -65,17 +65,19 @@ export const getManagerDashboardInfo = token => async dispatch => {
 //#region Students
 
 
-export const getAllStudents = token => async dispatch => {
+export const getAllStudents = (token,isForAssign = 'false') => async dispatch => {
 
     try {
-        const response = await lms.get("/Manager/GetAllStudent", {
+        const response = await lms.get(`/Manager/GetAllStudent?IsForAssign=${isForAssign}`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
+        console.log(response)
 
         dispatch({ type: Type.GET_ALL_STUDENTS, payload: response.data });
     } catch (e) {
+        console.log(e)
         dispatch(alert.error("خطا"))
     }
 

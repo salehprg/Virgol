@@ -135,7 +135,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult GetAllStudent() 
+        public IActionResult GetAllStudent(bool IsForAssign) 
         {
             try
             {
@@ -159,7 +159,19 @@ namespace lms_with_moodle.Controllers
                     }
                     studentVW.userDetail = studentDetail;
 
-                    result.Add(studentVW);
+                    if(IsForAssign)
+                    {
+                        if(appDbContext.School_StudentClasses.Where(x => x.UserId == student.Id).FirstOrDefault() == null)
+                        {
+                            result.Add(studentVW);
+                        }
+                    }
+                    else
+                    {
+                        result.Add(studentVW);
+                    }
+
+                    
                 }
 
                 return Ok(result);
