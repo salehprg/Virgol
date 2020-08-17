@@ -39,7 +39,7 @@ class adminTeachers extends React.Component {
                             <React.Fragment>
                                 {(this.props.allTeachers ?
                                     this.props.allTeachers.map(teacher => {
-                                        if(teacher.firstName.includes(this.state.query))
+                                        if (teacher.firstName.includes(this.state.query) || teacher.lastName.includes(this.state.query) || (teacher.firstName + " " + teacher.lastName).includes(this.state.query))
                                         {
                                             return(
                                             <tr>
