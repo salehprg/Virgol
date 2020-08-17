@@ -12,15 +12,11 @@ class Home extends React.Component {
     state = {loading : false}
 
     componentDidMount = async () =>{
-        if (this.props.history.action === 'POP' || this.props.myNews.length == 0 || this.props.inNews.length == 0 || !this.props.dashboardInfo) {
-
             this.setState({loading: true})
             await this.props.getManagerDashboardInfo(this.props.user.token);
             await this.props.GetIncommingNews(this.props.user.token);
             await this.props.GetMyNews(this.props.user.token);
             this.setState({loading: false})
-
-        }
     }
     
     render() {

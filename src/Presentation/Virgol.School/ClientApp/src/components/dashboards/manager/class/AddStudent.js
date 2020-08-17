@@ -51,18 +51,26 @@ class AddStudent extends React.Component {
                         changeQuery={(query) => this.setState({ query })}
                     />
                     <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
-                        {this.state.query.length < 3 && this.props.students.length > 10 ? <p className="text-center text-white">حداقل سه حرف برای سرچ الزامیست</p> : ''}
-                        {this.props.students.map(x => {
+                        {this.state.query.trim().length == 0 && this.props.students.length > 10 ? 
+                            this.props.students.slice(0, 10).map(x => {
+                                return (
+                                    <span onClick={() => this.setStudent(parseInt(x.id))}
+                                            className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedStudents.some(el => el === x.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                    >
+                                    {x.firstName} {x.lastName}
+                                </span>
+                                );
+                            })
+                        :
+                        this.props.students.map(x => {
                             if (x.firstName.includes(this.state.query) || x.lastName.includes(this.state.query) || (x.firstName + " " + x.lastName).includes(this.state.query)) {
-                                if (this.props.students.length < 10 || (this.state.query.length > 2 && x.studyFieldName.includes(this.state.query))) {
-                                    return (
-                                        <span onClick={() => this.setStudent(parseInt(x.id))}
-                                              className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedStudents.some(el => el === x.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
-                                        >
-                                        {x.firstName} {x.lastName}
-                                    </span>
-                                    );
-                                }
+                                return (
+                                    <span onClick={() => this.setStudent(parseInt(x.id))}
+                                            className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedStudents.some(el => el === x.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                    >
+                                    {x.firstName} {x.lastName}
+                                </span>
+                                );
                             }
                         })}
                     </div>

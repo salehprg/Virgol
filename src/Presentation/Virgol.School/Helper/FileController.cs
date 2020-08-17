@@ -125,44 +125,44 @@ public class FileController {
                 {
                     using (var excelData = ExcelReaderFactory.CreateReader(stream))
                     {
-                        if(!isTeacher)
-                        {
-                            excelData.Read(); //Ignore column header name
-                            excelData.Read(); //Ignore column header name
-                        }
-                        excelData.Read(); //Ignore column header name
+                        excelData.Read(); //read column header name
 
                         int firstNameId = -1;
                         int lastNameId = -1;
                         int phoneNumberId = -1;
                         int fatherNameId = -1;
                         int melliCodeId = -1;
+                        int personalIdNumber = -1;
 
-                        for(int i = 0;i < 5;i++)
+                        for(int i = 0;i < excelData.FieldCount;i++)
                         {
                             object value = excelData.GetValue(i);
 
                             if(value != null)
                             {
-                                if((string)value == "نام")
+                                if(((string)value).Trim() == "نام")
                                 {
                                     firstNameId = i;
                                 }
-                                if((string)value == "نام خانوادگی")
+                                if(((string)value).Trim() == "نام خانوادگی".Trim())
                                 {
                                     lastNameId = i;
                                 }
-                                if(((string)value).Contains("تلفن همراه") || ((string)value).Contains("شماره موبایل"))
+                                if(((string)value).Contains("تلفن همراه") || ((string)value).Contains("شماره موبایل") || ((string)value).Contains("شماره تماس"))
                                 {
                                     phoneNumberId = i;
                                 }
-                                if(((string)value).Contains("کد ملی"))
+                                if(((string)value).Contains("کد ملی") || ((string)value).Contains("کدملی"))
                                 {
                                     melliCodeId = i;
                                 }
                                 if(((string)value).Contains("نام پدر"))
                                 {
                                     fatherNameId = i;
+                                }
+                                if(((string)value).Contains("کد پرسنلی"))
+                                {
+                                    personalIdNumber = i;
                                 }
                             }
                         }
@@ -189,7 +189,12 @@ public class FileController {
                                         MelliCode = excelData.GetValue(melliCodeId).ToString(),
                                         PhoneNumber = (phoneNumberId != -1 ? 
                                                         (excelData.GetValue(phoneNumberId) != null ? excelData.GetValue(phoneNumberId).ToString() : null) 
+                                                        : null),
+                                        teacherDetail = new TeacherDetail {
+                                            personalIdNUmber = (personalIdNumber != -1 ? 
+                                                        (excelData.GetValue(personalIdNumber) != null ? excelData.GetValue(personalIdNumber).ToString() : null) 
                                                         : null)
+                                        }
                                     };
 
                                     if(!isTeacher)

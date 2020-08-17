@@ -97,7 +97,7 @@ export const addBulkUser = (token, excel) => async dispatch => {
         dispatch({ type: STOP })
         dispatch({ type: Type.ADD_BULK_USER });
         history.push("/m/students")
-        dispatch(alert.success(`لیست معلمان اضافه شد \n : تعداد کل ${response.data.allCount} \n جدید : ${response.data.newCount} \n تکراری : ${response.data.duplicateCount}`))
+        dispatch(alert.success(`لیست دانش آموزان اضافه شد \n : تعداد کل ${response.data.allCount} \n جدید : ${response.data.newCount} \n تکراری : ${response.data.duplicateCount}`))
     } catch (e) {
         dispatch({ type: STOP })
         dispatch(alert.error("خطا"))

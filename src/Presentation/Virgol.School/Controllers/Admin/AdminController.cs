@@ -80,6 +80,7 @@ namespace lms_with_moodle.Controllers
                 List<UserModel> teachers = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Teacher).ToList();
 
                 List<UserModel> resultTeacher = new List<UserModel>();
+                List<UserModel> nullTeacher = new List<UserModel>();
 
                 foreach (var school in schools)
                 {
@@ -87,9 +88,13 @@ namespace lms_with_moodle.Controllers
                     foreach (var teacher in teachers)
                     {
                         TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
-                        if(teacherDetail.SchoolsId.Contains(school.Id.ToString() + ","))
+                        if(teacherDetail != null && teacherDetail.SchoolsId.Contains(school.Id.ToString() + ","))
                         {
                             resultTeacher.Add(teacher);
+                        }
+                        else if(teacherDetail == null)
+                        {
+                            nullTeacher.Add(teacher);
                         }
                     }
                 }
@@ -455,7 +460,7 @@ namespace lms_with_moodle.Controllers
                         UserDataModel teacherVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
 
                         TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
-                        if(teacherDetail.SchoolsId.Contains(schoolId.ToString() + ","))
+                        if(teacherDetail != null && teacherDetail.SchoolsId.Contains(schoolId.ToString() + ","))
                         {
                             if(teacher.LatinFirstname != null)
                             {

@@ -70,31 +70,66 @@ namespace lms_with_moodle.Helper
             {
                 string FunctionName = "core_user_create_users";
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+                bool result = false;
 
-                string information = "";
+                int count = (users.Count / 10) + 1;
 
-                for (int i = 0; i < users.Count; i++)
+                for(int j = 0 ; j < count; j++)
                 {
-                    information += "&users["+i+"][username]=" + users[i].UserName;
-                    information += "&users["+i+"][auth]=ldap";
-                    information += "&users["+i+"][firstname]=" + users[i].FirstName;
-                    information += "&users["+i+"][lastname]=" + users[i].LastName;
-                    information += "&users["+i+"][email]=" + users[i].MelliCode + "@legace.ir";
-                    information += "&users["+i+"][idnumber]=" + users[i].MelliCode;
+                    string information = "";
+                    for (int i = j * 10; i < (j + 1)* 10; i++)
+                    {
+                        if(i < users.Count)
+                        {
+                            information += "&users["+i+"][username]=" + users[i].UserName;
+                            information += "&users["+i+"][auth]=ldap";
+                            information += "&users["+i+"][firstname]=" + users[i].FirstName;
+                            information += "&users["+i+"][lastname]=" + users[i].LastName;
+                            information += "&users["+i+"][email]=" + users[i].MelliCode + "@legace.ir";
+                            information += "&users["+i+"][idnumber]=" + users[i].MelliCode;
+                        }
+                    }
+                    HttpResponseModel Response = await sendData(data + information);
+                    result = JsonConvert.DeserializeObject <List<UserInfo_moodle>> (Response.Message).Count > 0;
                 }
-                
-                data += information;
 
-                HttpResponseModel _response = await sendData(data);
-                List<UserInfo_moodle> user = JsonConvert.DeserializeObject <List<UserInfo_moodle>> (_response.Message); 
-
-                return (user.Count > 0);
+                return (result);
             }
             catch(Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
                 return false;
+            }
+
+        }
+
+        public async Task<int> CreateUser(UserModel user)
+        {
+            try
+            {
+                string FunctionName = "core_user_create_users";
+                string data = "&wstoken=" + token + "&wsfunction=" + FunctionName;
+
+                string information = "";
+
+                information += "&users[0][username]=" + user.UserName;
+                information += "&users[0][auth]=ldap";
+                information += "&users[0][firstname]=" + user.FirstName;
+                information += "&users[0][lastname]=" + user.LastName;
+                information += "&users[0][email]=" + user.MelliCode + "@legace.ir";
+                information += "&users[0][idnumber]=" + user.MelliCode;
+
+                HttpResponseModel Response = await sendData(data + information);
+                var userId = JsonConvert.DeserializeObject <List<UserInfo_moodle>> (Response.Message)[0].id;
+
+                return (userId);
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                return -1;
             }
 
         }
@@ -132,9 +167,15 @@ namespace lms_with_moodle.Helper
                 string data = "&wstoken=" + token + "&wsfunction=" + FunctionName + "&criteria[0][key]=idnumber&criteria[0][value]=" + idNumber;
 
                 HttpResponseModel _response = await sendData(data);
-                UserInfo_moodle user = JsonConvert.DeserializeObject <UserBase> (_response.Message).users[0]; 
+                List<UserInfo_moodle> users = JsonConvert.DeserializeObject <UserBase> (_response.Message).users; 
 
-                return user.id;
+                if(users.Count > 0)
+                {
+                    return users[0].id;
+                }
+
+                return -1;
+                
             }
             catch(Exception ex)
             {

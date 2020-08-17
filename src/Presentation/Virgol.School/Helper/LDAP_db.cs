@@ -279,7 +279,51 @@ namespace lms_with_moodle.Helper
             }
         }
 
-    
+        public bool CheckUserData(string userName)
+        {
+            if(!ldapConn.Connected)
+                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+
+            //Bind function will Bind the user object Credentials to the Server
+            ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);       
+            
+            string searchFilter = "(uniqueIdentifier=" + userName + ")";
+                                    
+            LdapSearchResults lsc=ldapConn.Search(containerName,LdapConnection.SCOPE_SUB,searchFilter,null,false);
+
+            while(lsc.hasMore())
+            {
+                LdapEntry nextEntry = null;
+                try 
+                {
+                    nextEntry = lsc.next(); 
+                } 
+                catch(LdapException e) 
+                { 
+                    Console.WriteLine("Error: " + e.LdapErrorMessage);
+                    //Exception is thrown, go for next entry
+                    continue; 
+                } 
+
+                LdapAttributeSet attributeSet = nextEntry.getAttributeSet();
+
+                System.Collections.IEnumerator ienum = attributeSet.GetEnumerator();
+
+                string idNumber = "";
+                while(ienum.MoveNext())
+                { 
+                    LdapAttribute attribute = (LdapAttribute)ienum.Current;
+                    if(attribute.Name == "employeeNumber")
+                    {
+                        idNumber = attribute.StringValue;
+                    }
+                }
+
+                return !string.IsNullOrEmpty(idNumber);
+            }
+
+            return false;
+        }
         public bool AddMail(UserModel user)
         {
             try
