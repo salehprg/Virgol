@@ -16,16 +16,16 @@ class Header extends React.Component {
                 <div className="lg:w-3/4 md:w-full sm:w-full mr-4 px-2 py-1 flex flex-row-reverse justify-between items-center border-2 rounded-lg border-dark-blue">
                     <span className="text-white text-right"> {this.props.user.userInformation.email} : {this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName} - ایمیل شما </span>
                     <div className="flex flex-row-reverse items-center">
-                        <div data-tip="سامانه مودل" className="relative mx-1">
-                            <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://moodle.legace.ir">
-                            </a>
-                            {briefcase("w-6 text-white cursor-pointer")}
-                        </div>
-                        <div data-tip="سامانه بیگ بلو" className="relative mx-1">
-                            <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://bbb.legace.ir/b/ldap_signin">
-                            </a>
-                            {video("w-6 text-white cursor-pointer")}
-                        </div>
+                        {/*<div data-tip="سامانه مودل" className="relative mx-1">*/}
+                        {/*    <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://moodle.legace.ir">*/}
+                        {/*    </a>*/}
+                        {/*    {briefcase("w-6 text-white cursor-pointer")}*/}
+                        {/*</div>*/}
+                        {/*<div data-tip="سامانه بیگ بلو" className="relative mx-1">*/}
+                        {/*    <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://bbb.legace.ir/b/ldap_signin">*/}
+                        {/*    </a>*/}
+                        {/*    {video("w-6 text-white cursor-pointer")}*/}
+                        {/*</div>*/}
                         <div data-tip="سامانه وب میل" className="relative mx-1">
                             <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://webmail.legace.ir/">
                             </a>

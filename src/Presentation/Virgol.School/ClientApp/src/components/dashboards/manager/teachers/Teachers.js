@@ -57,6 +57,8 @@ class Teachers extends React.Component {
                             <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
                         );
                     }}
+                    sample="دانلود نمونه اکسل معلمان"
+                    sampleLink="/samples/teacherSample.xlsx"
                     excel="آپلود اکسل معلمان"
                     handleExcel={this.submitExcel}
                     headers={['نام', 'نام خانوادگی', 'کد ملی', 'شماره تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
