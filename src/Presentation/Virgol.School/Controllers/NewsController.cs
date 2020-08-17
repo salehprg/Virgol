@@ -29,6 +29,7 @@ namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [Authorize(Roles="User")]
     public class NewsController : ControllerBase
     {
         private readonly AppSettings appSettings;
@@ -87,6 +88,15 @@ namespace lms_with_moodle.Controllers
 
                 if(auther != null)
                 {
+                    List<string> tags = new List<string>();
+
+                    if(news.Tags != null)
+                    {
+                        tags = news.Tags.Split(",").ToList();
+                    }
+
+                    news.tagsStr = tags;
+                    
                     if(auther.userTypeId == (int)UserType.Manager)
                     {
                         int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
@@ -130,15 +140,15 @@ namespace lms_with_moodle.Controllers
                         }
                         
                     }
-                    
-                    List<string> tags = new List<string>();
-
-                    if(news.Tags != null)
+                    else if(auther.userTypeId == (int)UserType.Teacher)
                     {
-                        tags = news.Tags.Split(",").ToList();
+                        //Because only students can see Teachers News we Should only check SchoolId
+                        string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == auther.Id).FirstOrDefault().SchoolsId;
+                        if(schoolIds.Contains(userModel.SchoolId + ","))
+                        {
+                            result.Add(news);
+                        }
                     }
-
-                    news.tagsStr = tags;
                 }
             }
 

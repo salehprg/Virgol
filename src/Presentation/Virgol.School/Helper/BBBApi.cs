@@ -46,12 +46,12 @@ namespace lms_with_moodle.Helper
             checkSum = SHA1Creator.sha1Creator(data + appSettings.BBBSecret);
 
             Uri uri = new Uri (BaseUrl + modifiedData + "checksum=" + checkSum.ToLower() );
-
             if(joinRoom)
                 return uri.AbsoluteUri;
 
             HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
             
+
             try
             {
                 if (response.IsSuccessStatusCode)  
@@ -124,8 +124,8 @@ namespace lms_with_moodle.Helper
             }
 
         }
-        
-         public async Task<string> JoinRoom(bool teacher , string meetingId , string fullname ,string userId)
+
+        public async Task<string> JoinRoom(bool teacher , string meetingId , string fullname ,string userId)
         {
             try
             {
@@ -145,6 +145,29 @@ namespace lms_with_moodle.Helper
                 Console.WriteLine(ex.Message);
 
                 return null;
+            }
+
+        }
+        
+        public async Task<bool> EndRoom(string meetingId)
+        {
+            try
+            {
+                string FunctionName = string.Format("end?meetingID={0}&password=mp" , meetingId);
+                string data = FunctionName;
+
+                string response = await sendData(data);
+
+                MeetingsResponse meeting = JsonConvert.DeserializeObject<MeetingsResponse>(response);
+                
+                return (meeting.returncode != "FAILED");
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+
+                return false;
             }
 
         }

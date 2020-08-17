@@ -8,6 +8,7 @@ import Header from "../header/Header";
 import Home from './home/Home'
 import Classes from "./classes/Classes";
 import News from "./News";
+import MyNews from "./News/News";
 
 class TeacherDashboard extends React.Component {
 
@@ -63,6 +64,13 @@ class TeacherDashboard extends React.Component {
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="myNews"
+                        title="اخبار من"
+                        icon={open_book}
+                        changeActive={this.changeActive}
+                    />
                 </Sidebar>
 
                 <div className="lg:w-5/6 px-6 w-full min-h-screen bg-bold-blue">
@@ -72,6 +80,7 @@ class TeacherDashboard extends React.Component {
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/classes"} component={Classes}/>
                         <Route path={this.props.match.url + "/news"} component={News}/>
+                        <Route path={this.props.match.url + "/myNews"} component={MyNews}/>
                     </Switch>
                 </div>
             </div>

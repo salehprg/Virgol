@@ -5,7 +5,7 @@ import {home, key, user, users} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import RecentClass from "../RecentClass/RecentClass";
 import { connect } from "react-redux";
-import {GetMeetingList , GetRecentClass , StartMeeting , JoinMeeting } from "../../../../_actions/meetingActions"
+import {GetMeetingList , GetRecentClass , StartMeeting , EndMeeting , JoinMeeting } from "../../../../_actions/meetingActions"
 
 class Home extends React.Component {
 
@@ -21,6 +21,13 @@ class Home extends React.Component {
     StatrMeeting = async(id) => {
 
         await this.props.StartMeeting(this.props.user.token , id)
+        this.componentDidMount()
+        this.render()
+    }
+
+    EndMeeting = async(bbbId) => {
+
+        await this.props.EndMeeting(this.props.user.token , bbbId)
         this.componentDidMount()
         this.render()
     }
@@ -49,6 +56,7 @@ class Home extends React.Component {
                 />
                 <RecentClass
                     onStart={(id) => this.JoinMeeting(id)}
+                    onEnd={(bbbId) => this.EndMeeting(bbbId)}
                     joinList={true}
                     teacher={true}
                     class={this.props.meetingList}
@@ -66,4 +74,4 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , meetingList : state.meetingData.meetingList , recentClass : state.meetingData.recentClass }
 }
 
-export default connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting , JoinMeeting  })(Home);
+export default connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting , EndMeeting , JoinMeeting  })(Home);

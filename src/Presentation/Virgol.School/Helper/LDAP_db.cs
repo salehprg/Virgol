@@ -381,6 +381,46 @@ namespace lms_with_moodle.Helper
         ///<summary>
         ///don't change email in Database before call this methode by yourSelf
         ///</summary>
+        public bool EditUserName(string oldUsername , string newUserName)
+        {
+            try
+            {
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute newUid = new LdapAttribute("uniqueIdentifier", newUserName);
+                LdapAttribute previousUid = new LdapAttribute("uniqueIdentifier", oldUsername);
+
+                mods.Add(new LdapModification(LdapModification.DELETE , previousUid));
+                mods.Add(new LdapModification(LdapModification.ADD , newUid));
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + oldUsername + "," + containerName;      
+
+                //Add the entry to the directory
+                ldapConn.Modify(dn , mods.ToArray());
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                //ldapConn.Disconnect();
+            }
+        }
+        
+
+        ///<summary>
+        ///don't change email in Database before call this methode by yourSelf
+        ///</summary>
         public bool EditMail(UserModel user)
         {
             try

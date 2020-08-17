@@ -11,6 +11,7 @@ import {Link} from "react-router-dom";
 import Modal from "../../../modals/Modal";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
 import PencilText from '../../../field/PencilText';
+import { validator } from "../../../../assets/validator";
 
 class SchoolInfo extends React.Component {
 
@@ -337,6 +338,8 @@ const validate = formValues => {
     }
     // if (!formValues.latinLastname) errors.latinLastname = true
     // if (!formValues.latinFirstname) errors.latinFirstname = true
+    if (!validator.checkMelliCode(formValues.melliCode)) errors.melliCode = true
+    if (!formValues.phoneNumber || !validator.checkPhoneNumber(formValues.phoneNumber)) errors.phoneNumber = true
     if (!formValues.personalIdNUmber) errors.personalIdNUmber = true
 
     return errors;

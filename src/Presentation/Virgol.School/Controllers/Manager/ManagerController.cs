@@ -197,10 +197,11 @@ namespace lms_with_moodle.Controllers
                 student.userTypeId = (int)UserType.Student;
                 student.ConfirmedAcc = true;
                 
-                
-
                 if(myUserManager.CheckMelliCodeInterupt(student.MelliCode , 0))
-                    return BadRequest("شماره همراه دانش آموز قبلا در سیستم ثبت شده است");
+                    return BadRequest("کد ملی وارد شده تکراریست");
+
+                // if(myUserManager.CheckPhoneInterupt(student.PhoneNumber))
+                //     return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
 
                 // if(myUserManager.CheckPhoneInterupt(student.userDetail.FatherPhoneNumber))
                 //     return BadRequest("شماره همراه ولی قبلا در سیستم ثبت شده است");
@@ -308,6 +309,12 @@ namespace lms_with_moodle.Controllers
                 userModel.FirstName = student.FirstName;
                 userModel.LastName = student.LastName;
 
+                if(student.MelliCode != userModel.MelliCode)
+                {
+                    if(myUserManager.CheckMelliCodeInterupt(student.MelliCode , userModel.Id))
+                        return BadRequest("کد ملی وارد شده تکراریست");
+                }
+
                 if(student.PhoneNumber != userModel.PhoneNumber)
                 {
                     if(myUserManager.CheckPhoneInterupt(student.PhoneNumber))
@@ -392,7 +399,10 @@ namespace lms_with_moodle.Controllers
                     TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherModel.Id).FirstOrDefault();
                     if(teacherDetail.SchoolsId.Contains(schoolId + ","))
                     {
-                        userModel = teacherModel;
+                        return Ok(new{
+                            userModel,
+                            teacherDetail
+                        });
                     }
                     else
                     {
@@ -410,7 +420,7 @@ namespace lms_with_moodle.Controllers
                      });
                 }
 
-                return Ok(userModel);
+                return BadRequest("خطایی رخ داد لطفا دوباره وارد سامانه شوید");
             }
             catch(Exception ex)
             {
@@ -777,7 +787,7 @@ namespace lms_with_moodle.Controllers
                     }
                     
                     //if we arrive this point it means error occured and revert any databse actio
-                    await userManager.DeleteAsync(teacher);
+                    await myUserManager.DeleteUser(teacher);
                     return BadRequest("مشکلی در ثبت معلم بوجود آمد");
                     
                 }
@@ -786,11 +796,14 @@ namespace lms_with_moodle.Controllers
                     int teacherId = newTeacher.Id;
 
                     TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
-                    teacherDetail.SchoolsId += schoolId.ToString() + ',';
+                    if(!teacherDetail.SchoolsId.Contains(schoolId.ToString() + ','))
+                    {
+                        teacherDetail.SchoolsId += schoolId.ToString() + ',';
+                        appDbContext.TeacherDetails.Update(teacherDetail);
+                        appDbContext.SaveChanges();
+                    }
 
-                    appDbContext.TeacherDetails.Update(teacherDetail);
-                    appDbContext.SaveChanges();
-
+                
                     return Ok(appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault());
                 }
 
@@ -805,39 +818,53 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditTeacher([FromBody]UserModel teacher)
+        public IActionResult EditTeacher([FromBody]UserDataModel inputModel)
         {
             try
             {
-                UserModel userModel = appDbContext.Users.Where(x => x.Id == teacher.Id).FirstOrDefault();
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == inputModel.Id).FirstOrDefault();
 
-                if(userModel.MelliCode != teacher.MelliCode)
+                if(userModel.MelliCode != inputModel.MelliCode)
                 {
-                    if(myUserManager.CheckMelliCodeInterupt(teacher.MelliCode , teacher.Id))
-                        return BadRequest("معلم با کد ملی وارد شده وجود دارد");
+                    if(myUserManager.CheckMelliCodeInterupt(inputModel.MelliCode , inputModel.Id))
+                        return BadRequest(" کد ملی وارد شده وجود دارد");
                 }
 
-                if(teacher.PhoneNumber != userModel.PhoneNumber)
+                if(inputModel.PhoneNumber != userModel.PhoneNumber)
                 {
-                    if(myUserManager.CheckPhoneInterupt(userModel.PhoneNumber))
+                    if(myUserManager.CheckPhoneInterupt(inputModel.PhoneNumber))
                         return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
                 }
 
-                userModel.FirstName = teacher.FirstName;
-                userModel.LastName = teacher.LastName;
-                userModel.UserName = teacher.MelliCode;
-                userModel.MelliCode = teacher.MelliCode;
-                userModel.PhoneNumber = teacher.PhoneNumber;
-                
-                ldap.EditEntry(userModel.MelliCode , "uniqueIdentifier" , teacher.MelliCode );
+                ldap.EditUserName(userModel.MelliCode ,  inputModel.MelliCode );
 
+                userModel.FirstName = inputModel.FirstName;
+                userModel.LastName = inputModel.LastName;
+                userModel.UserName = inputModel.MelliCode;
+                userModel.MelliCode = inputModel.MelliCode;
+                userModel.PhoneNumber = inputModel.PhoneNumber;
+                
                 appDbContext.Users.Update(userModel);
                 appDbContext.SaveChanges();
 
-                UserModel editedTeacher = appDbContext.Users.Where(x => x.MelliCode == teacher.MelliCode).FirstOrDefault();
-                userManager.UpdateNormalizedUserNameAsync(editedTeacher);
+                userManager.UpdateNormalizedUserNameAsync(userModel);
 
-                return Ok(editedTeacher);
+                var serializedParent = JsonConvert.SerializeObject(userModel); 
+                UserDataModel teacherVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+
+                TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault();
+                teacherDetail.personalIdNUmber = inputModel.teacherDetail.personalIdNUmber;
+
+                appDbContext.TeacherDetails.Update(teacherDetail);
+                appDbContext.SaveChanges();
+
+                if(userModel.LatinFirstname != null)
+                {
+                    teacherVW.completed = true;
+                }
+                teacherVW.teacherDetail = teacherDetail;
+
+                return Ok(teacherVW);
             }
             catch(Exception ex)
             {

@@ -8,6 +8,7 @@ import Fieldish from '../../../../field/Fieldish';
 import { check_circle } from "../../../../../assets/icons";
 import ManagerGenerated from "./ManagerGenerated";
 import {CreateSchool} from "../../../../../_actions/schoolActions";
+import { validator } from '../../../../../assets/validator'
 
 class AddSchool extends React.Component {
 
@@ -139,10 +140,11 @@ const validate = (formValues) => {
 
     if (!formValues.schoolName) errors.schoolName = true
     if (!formValues.schoolIdNumber) errors.schoolIdNumber = true
-    if (!formValues.firstName) errors.firstName = true
-    if (!formValues.lastName) errors.lastName = true
-    if (!formValues.melliCode) errors.melliCode = true
+    if (!formValues.firstName || !validator.checkPersian(formValues.firstName)) errors.firstName = true
+    if (!formValues.lastName || !validator.checkPersian(formValues.lastName)) errors.lastName = true
+    if (!validator.checkMelliCode(formValues.melliCode)) errors.melliCode = true
     if (!formValues.personalIdNumber) errors.personalIdNumber = true
+    if (!formValues.managerPhoneNumber || !validator.checkPhoneNumber(formValues.managerPhoneNumber)) errors.managerPhoneNumber = true
 
     return errors;
 

@@ -82,6 +82,7 @@ namespace lms_with_moodle.Controllers
                     Meeting meeting = new Meeting();
                     meeting.BBB_MeetingId = meetingId;
                     meeting.MeetingName = lessonDetail.displayname;
+                    meeting.StartTime = DateTime.Now;
                     meeting.LessonId = lessonId;
                     meeting.TeacherId = teacherId;
 
@@ -140,6 +141,49 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public async Task<IActionResult> EndMeeting(string bbbMeetingId) 
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+                int userId = user.Id;
+                bool isTeacher = user.userTypeId == (int)UserType.Teacher;
+
+                Meeting meeting = new Meeting();
+                if(isTeacher)
+                {
+                    meeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId && x.TeacherId == userId).FirstOrDefault();
+                }
+
+                if(meeting == null)
+                    BadRequest("کلاس انتخاب شده اشتباه است");
+
+                BBBApi bbbApi = new BBBApi(appSettings);
+                bool resultEnd = await bbbApi.EndRoom(bbbMeetingId);
+
+                if(resultEnd)
+                {
+                    Meeting oldMeeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).FirstOrDefault();
+
+                    oldMeeting.Finished = true;
+                    oldMeeting.EndTime = DateTime.Now;
+                    appDbContext.Meetings.Update(oldMeeting);
+                    appDbContext.SaveChanges();
+
+                    return Ok("کلاس با موفقیت پایان یافت لطفا چند لحطه صبر نمایید");
+                }
+                
+                return BadRequest("در اتمام کلاس مشکلی پیش آمد");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet]
         [Authorize(Roles = "User,Teacher")]

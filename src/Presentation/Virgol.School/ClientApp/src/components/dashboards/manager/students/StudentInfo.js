@@ -5,6 +5,7 @@ import Fieldish from '../../../field/Fieldish';
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
 import {GetUserInfo , EditStudent} from "../../../../_actions/managerActions"
+import { validator } from '../../../../assets/validator';
 
 
 class StudentInfo extends React.Component {
@@ -28,22 +29,15 @@ class StudentInfo extends React.Component {
 
     onSubmit = async (formValues) => {
         
-        let data = {
-            id : parseInt(this.props.match.params.id),
-            firstName : formValues.firstName,
-            lastName : formValues.lastName,
-            phoneNumber : formValues.phoneNumber,
-            fatherName : formValues.fatherName,
-            fatherPhoneNumber : formValues.fatherPhoneNumber,
-            userDetail : {
+        formValues.id = parseInt(this.props.match.params.id);
+        formValues.userDetail = {
                 latinLastname : formValues.latinLastname,
                 latinFirstname : formValues.latinFirstname,
                 fatherName : formValues.fatherName,
                 fatherPhoneNumber : formValues.fatherPhoneNumber
-            }
         }
         
-        await this.props.EditStudent(this.props.user.token , data)
+        await this.props.EditStudent(this.props.user.token , formValues)
     }
 
     render() {
@@ -90,6 +84,13 @@ class StudentInfo extends React.Component {
                             extra={"w-full my-4 mx-2"}
                         />
                         <Field
+                            name="melliCode"
+                            type="text"
+                            placeholder="کد ملی"
+                            component={this.renderInputs}
+                            extra={"w-full my-4 mx-2"}
+                        />
+                        <Field
                             name="fatherName"
                             type="text"
                             placeholder="نام پدر"
@@ -120,16 +121,29 @@ const mapStateToProps = state => {
             lastName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.lastName : null,
             melliCode: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.melliCode : null,
             phoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.phoneNumber : null,
-            fatherName: state.managerData.userInfo.userModel ? state.managerData.userInfo.studentDetail.fatherName : null,
+            fatherName: state.managerData.userInfo.userModel.studentDetail ? state.managerData.userInfo.studentDetail.fatherName : null,
             fatherPhoneNumber: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.fatherPhoneNumber : null,
-            latinFirstname: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.latinFirstname : null,
-            latinLastname: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.latinLastname : null
+            latinFirstname: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.latinFirstname : null,
+            latinLastname: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.latinLastname : null
         }
     }
 }
 
+const validate = formValues => {
+    const errors = {}
+    const { firstName, lastName, melliCode, fatherName } = formValues
+
+    if (!firstName || !validator.checkPersian(firstName)) errors.firstName = true
+    if (!lastName || !validator.checkPersian(lastName)) errors.lastName = true
+    if (!validator.checkMelliCode(melliCode)) errors.melliCode = true
+    if (!fatherName || !validator.checkPersian(fatherName)) errors.fatherName = true
+    
+    return errors
+}
+
 const formWrapped = reduxForm({
     form: 'editStudent',
+    validate,
     enableReinitialize : true
 })(StudentInfo)
 

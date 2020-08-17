@@ -47,6 +47,15 @@ public class MyUserManager {
             await userManager.RemoveFromRoleAsync(user , "Manager");
             await userManager.DeleteAsync(user);
             
+            if(user.userTypeId == (int)UserType.Teacher)
+            {
+                appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == user.Id).ToList());
+                appDbContext.TeacherDetails.Remove(appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault());
+                appDbContext.Meetings.Remove(appDbContext.Meetings.Where(x => x.TeacherId == user.Id).FirstOrDefault());
+                appDbContext.News.Remove(appDbContext.News.Where(x => x.AutherId == user.Id).FirstOrDefault());
+
+                appDbContext.SaveChanges();
+            }
             if(user.userTypeId == (int)UserType.Manager)
             {
                 appDbContext.News.RemoveRange(appDbContext.News.Where(x => x.AutherId == user.Id).ToList());
