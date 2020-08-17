@@ -115,20 +115,21 @@ class Grades extends React.Component {
 
                         <div className="w-full mt-8 p-4 h-64 bg-dark-blue rounded-xl">
                             <p className="text-right text-white">لیست کل کلاس ها</p>
-                            {(this.props.allClass ? 
-                                this.props.allClass.map(x => {
-                                    return(
-                                        <SelectableCard
-                                            id={x.id}
-                                            title={x.className}
-                                            select={(id) => history.push(`/class/${id}`)}
-                                        />
-                                    )
-                                })
-                                
-                                :
-                                null
-                            )}
+                            <div dir="rtl" className="w-full   grid all-classes">
+                                {(this.props.allClass ?
+                                        this.props.allClass.map(x => {
+                                            return(
+                                                <SelectableCard
+                                                    id={x.id}
+                                                    title={x.className}
+                                                    select={(id) => history.push(`/class/${id}`)}
+                                                />
+                                            )
+                                        })
+                                        :
+                                        null
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

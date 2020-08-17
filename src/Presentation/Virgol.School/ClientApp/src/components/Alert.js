@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from 'framer-motion';
 import {alert_octagon, x} from "../assets/icons";
 
 const Alert = ({ type, message, fade }) => {
+
+    useEffect(() => {
+        setTimeout(function(){ fade() }, 10000);
+    }, [])
 
     return (
         <motion.div className="fixed z-50 top-0 w-screen mt-8"

@@ -6,7 +6,7 @@ import {loading} from "../../../assets/icons";
 class PlusTable extends React.Component {
 
     render() {
-        const { isLoading, query, changeQuery, button, excel, handleExcel, title, headers, body } = this.props
+        const { isLoading, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body } = this.props
         return (
             <div className="w-full">
                 <div className="flex sm:flex-row-reverse flex-col justify-start sm:items-stretch items-end mb-4">
@@ -29,6 +29,13 @@ class PlusTable extends React.Component {
                         </>
                         :
                         null
+                    }
+                    {sample ? 
+                         <a href={sampleLink} className="px-6 cursor-pointer py-1 border-2 border-redish text-redish rounded-lg" download>
+                             {sample}
+                         </a>
+                    : 
+                    null
                     }
                 </div>
 
