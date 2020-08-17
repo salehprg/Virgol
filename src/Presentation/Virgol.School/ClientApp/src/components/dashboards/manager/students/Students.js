@@ -66,7 +66,7 @@ class Students extends React.Component {
                             <React.Fragment>
                                 {
                                     this.props.students.map(x => {
-                                        if(x.firstName.includes(this.state.query))
+                                        if (x.firstName.includes(this.state.query) || x.lastName.includes(this.state.query) || (x.firstName + " " + x.lastName).includes(this.state.query))
                                         {
                                             return(
                                             <tr>
