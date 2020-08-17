@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using lms_with_moodle.Helper;
@@ -94,4 +96,39 @@ public class MyUserManager {
     }
 
 
+    public async Task<bool> SyncUserData(List<UserModel> users)
+    {
+        foreach (var user in users)
+        {
+            try
+            {
+                if(!ldap.CheckUserData(user.UserName))
+                {
+                    ldap.AddUserToLDAP(user , user.MelliCode);
+                }
+
+                int moodleId = await moodleApi.GetUserId(user.MelliCode);
+                if(moodleId == -1)
+                {
+                    user.Moodle_Id = await moodleApi.CreateUser(user);
+                }
+                else
+                {
+                    user.Moodle_Id = moodleId;
+                }
+            
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        appDbContext.Users.UpdateRange(users);
+        await appDbContext.SaveChangesAsync();
+
+        return true;
+        
+    }
 }

@@ -65,17 +65,19 @@ export const getManagerDashboardInfo = token => async dispatch => {
 //#region Students
 
 
-export const getAllStudents = token => async dispatch => {
+export const getAllStudents = (token,isForAssign = 'false') => async dispatch => {
 
     try {
-        const response = await lms.get("/Manager/GetAllStudent", {
+        const response = await lms.get(`/Manager/GetAllStudent?IsForAssign=${isForAssign}`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
+        console.log(response)
 
         dispatch({ type: Type.GET_ALL_STUDENTS, payload: response.data });
     } catch (e) {
+        console.log(e)
         dispatch(alert.error("خطا"))
     }
 
@@ -97,7 +99,7 @@ export const addBulkUser = (token, excel) => async dispatch => {
         dispatch({ type: STOP })
         dispatch({ type: Type.ADD_BULK_USER });
         history.push("/m/students")
-        dispatch(alert.success(`لیست معلمان اضافه شد \n : تعداد کل ${response.data.allCount} \n جدید : ${response.data.newCount} \n تکراری : ${response.data.duplicateCount}`))
+        dispatch(alert.success(`لیست دانش آموزان اضافه شد \n : تعداد کل ${response.data.allCount} \n جدید : ${response.data.newCount} \n تکراری : ${response.data.duplicateCount}`))
     } catch (e) {
         dispatch({ type: STOP })
         dispatch(alert.error("خطا"))

@@ -38,7 +38,7 @@ class AddStudent extends React.Component {
 
     render() {
         return (
-            <Add
+                <Add
                     onCancel={() => history.push('/m/students')}
                     title={"اطلاعات دانش آموز"}
                 >
@@ -78,11 +78,11 @@ class AddStudent extends React.Component {
 
 const validate = formValues => {
     const errors = {}
-
     const { firstName, lastName, melliCode, fatherName } = formValues
+
     if (!firstName || !validator.checkPersian(firstName)) errors.firstName = true
     if (!lastName || !validator.checkPersian(lastName)) errors.lastName = true
-    if (!melliCode || !validator.checkMelliCode(melliCode)) errors.melliCode = true
+    if (!validator.checkMelliCode(melliCode)) errors.melliCode = true
     if (!fatherName || !validator.checkPersian(fatherName)) errors.fatherName = true
     
     return errors
@@ -95,7 +95,8 @@ const mapStateToProps = state => {
 }
 
 const formWrapped = reduxForm({
-    form: 'addStudent'
+    form: 'addStudent',
+    validate
 })(AddStudent)
 
 export default connect(mapStateToProps , {AddNewStudent })(formWrapped);
