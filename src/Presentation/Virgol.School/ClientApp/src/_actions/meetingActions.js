@@ -103,7 +103,36 @@ export const StartMeeting = (token,lessonId) => async dispatch => {
 
         console.log(e)
         dispatch({ type: STOP })
-        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        dispatch(alert.error(e.response.data))
+
+        return false
+
+    }
+
+}
+
+export const EndMeeting = (token,bbbMeetingId) => async dispatch => {
+
+    try {
+        
+        dispatch({ type: START })
+        const response = await lms.post(`/Meeting/EndMeeting?bbbMeetingId=${bbbMeetingId}` , null , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success("کلاس درس با موفقیت پایان یافت"))
+        dispatch({ type: Type.EndMeeting, payload: response.data })
+
+        return true
+
+    } catch (e) {
+
+        console.log(e)
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
 
         return false
 

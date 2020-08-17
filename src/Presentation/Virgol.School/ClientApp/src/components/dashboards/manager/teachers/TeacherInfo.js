@@ -5,6 +5,7 @@ import Fieldish from '../../../field/Fieldish';
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
 import {GetUserInfo , editTeacher} from "../../../../_actions/managerActions"
+import { validator } from '../../../../assets/validator';
 
 
 class TeacherInfo extends React.Component {
@@ -30,6 +31,9 @@ class TeacherInfo extends React.Component {
     onSubmit = async (formValues) => {
         
         formValues.id = parseInt(this.props.match.params.id)
+        formValues.teacherDetail = {
+            personalIdNUmber : formValues.personalIdNUmber
+        }
         await this.props.editTeacher(this.props.user.token , formValues)
     }
 
@@ -51,6 +55,12 @@ class TeacherInfo extends React.Component {
                             name="lastName"
                             type="text"
                             placeholder="نام خانوادگی"
+                            component={this.renderInputs}
+                        />
+                        <Field
+                            name="personalIdNUmber"
+                            type="text"
+                            placeholder="کد پرسنلی"
                             component={this.renderInputs}
                         />
                         <Field
@@ -76,19 +86,34 @@ class TeacherInfo extends React.Component {
 }
 
 const mapStateToProps = state => {
+
     return {
         user: state.auth.userInfo , 
         initialValues: {
-            firstName: state.managerData.userInfo ? state.managerData.userInfo.firstName : null,
-            lastName: state.managerData.userInfo ? state.managerData.userInfo.lastName : null,
-            melliCode: state.managerData.userInfo ? state.managerData.userInfo.melliCode : null,
-            phoneNumber: state.managerData.userInfo ? state.managerData.userInfo.phoneNumber : null
+            firstName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.firstName : null,
+            lastName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.lastName : null,
+            melliCode: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.melliCode : null,
+            phoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.phoneNumber : null,
+            personalIdNUmber: state.managerData.userInfo.teacherDetail ? state.managerData.userInfo.teacherDetail.personalIdNUmber : null
+        
         }
     }
 }
 
+const validate = formValues => {
+    const errors = {}
+
+    if (!formValues.firstName || !validator.checkPersian(formValues.firstName)) errors.firstName = true
+    if (!formValues.lastName || !validator.checkPersian(formValues.lastName)) errors.lastName = true
+    if (!formValues.melliCode  || !validator.checkMelliCode(formValues.melliCode)) errors.melliCode = true
+    if (!formValues.phoneNumber  || !validator.checkPhoneNumber(formValues.phoneNumber)) errors.phoneNumber = true
+
+    return errors;
+}
+
 const formWrapped = reduxForm({
     form: 'editTeacher',
+    validate,
     enableReinitialize : true
 }, mapStateToProps)(TeacherInfo)
 

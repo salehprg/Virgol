@@ -99,6 +99,9 @@ const validate = formValues => {
     const errors = {}
 
     if (!formValues.firstName || !validator.checkPersian(formValues.firstName)) errors.firstName = true
+    if (!formValues.lastName || !validator.checkPersian(formValues.lastName)) errors.lastName = true
+    if (!formValues.melliCode  || !validator.checkMelliCode(formValues.melliCode)) errors.melliCode = true
+    if (!formValues.phoneNumber  || !validator.checkPhoneNumber(formValues.phoneNumber)) errors.phoneNumber = true
 
     return errors;
 }

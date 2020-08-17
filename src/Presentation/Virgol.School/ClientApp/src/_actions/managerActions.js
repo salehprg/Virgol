@@ -124,8 +124,7 @@ export const AddNewStudent = (token, formValues) => async dispatch => {
 
     } catch (e) {
         dispatch({type : STOP})
-        console.log(e.response)
-        dispatch(alert.error("خطا در افرودن دانش آموز"))
+        dispatch(alert.error(e.response.data))
     }
 
 }

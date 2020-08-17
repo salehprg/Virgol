@@ -6,7 +6,7 @@ import Feed from "../../feed/Feed";
 import { connect } from "react-redux";
 import {GetIncommingNews } from "../../../../_actions/newsActions"
 import {GetRecentClass , JoinMeeting } from "../../../../_actions/meetingActions"
-import RecentClass from "../../Teacher/RecentClass/RecentClass"
+import RecentClass from "../RecentClass/RecentClass"
 
 class Home extends React.Component {
 
@@ -35,7 +35,6 @@ class Home extends React.Component {
                         adminTitle={`نوع مدرسه : ${this.props.user.userDetail.schooltypeName} `}/>
                 <RecentClass
                     onStart={(id) => this.JoinMeeting(id)}
-                    student={true}
                     joinList={true}
                     class={this.props.recentClass}
                     title="کلاس های فعال"

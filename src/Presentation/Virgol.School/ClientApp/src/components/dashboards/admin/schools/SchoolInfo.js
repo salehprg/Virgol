@@ -11,6 +11,7 @@ import {Link} from "react-router-dom";
 import Modal from "../../../modals/Modal";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
 import PencilText from '../../../field/PencilText';
+import { validator } from "../../../../assets/validator";
 
 class SchoolInfo extends React.Component {
 
@@ -168,7 +169,7 @@ class SchoolInfo extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+            <div onClick={() => this.setState({ showChangeName: false })} className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ تمامی درس های زیرمجموعه پاک خواهند شد و این عمل قابلیت بازگشت ندارد!"
@@ -337,6 +338,8 @@ const validate = formValues => {
     }
     // if (!formValues.latinLastname) errors.latinLastname = true
     // if (!formValues.latinFirstname) errors.latinFirstname = true
+    if (!validator.checkMelliCode(formValues.melliCode)) errors.melliCode = true
+    if (!formValues.phoneNumber || !validator.checkPhoneNumber(formValues.phoneNumber)) errors.phoneNumber = true
     if (!formValues.personalIdNUmber) errors.personalIdNUmber = true
 
     return errors;
