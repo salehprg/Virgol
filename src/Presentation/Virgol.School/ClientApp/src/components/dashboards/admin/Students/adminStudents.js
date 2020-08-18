@@ -8,7 +8,7 @@ import {GetAllStudents} from "../../../../_actions/adminActions"
 
 class adminStudents extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1}
 
     componentDidMount = async () => {
         console.log("start")
@@ -23,6 +23,9 @@ class adminStudents extends React.Component {
         this.setState({ query })
     }
 
+    paginate = (num) => {
+        this.setState({ currentPage: num })
+    }
 
     render() {
         if(this.state.loading || !this.props.allStudents) loading('w-10 text-grayish centerize')
@@ -35,6 +38,10 @@ class adminStudents extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     headers={[ 'نام', 'نام خانوادگی', 'کد ملی' , 'تلفن همراه' , 'تلفن تماس ولی' , 'حساب تکمیل شده']}
+                    cardsPerPage={this.state.itemsPerPage}
+                    totalCards={60}
+                    paginate={this.paginate}
+                    currentPage={this.state.currentPage}
                     body={() => {
                         return (
                             <React.Fragment>

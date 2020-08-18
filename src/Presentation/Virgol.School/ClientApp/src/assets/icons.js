@@ -301,3 +301,24 @@ export const external_link = (styles) => {
         </svg>
     );
 }
+
+export const chevron = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M15 19c-.3 0-.5-.1-.7-.3l-6-6c-.4-.4-.4-1 0-1.4l6-6c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.4 12l5.3 5.3c.4.4.4 1 0 1.4-.2.2-.4.3-.7.3z"/>
+        </svg>
+    );
+}
+
+export const chevrons = (styles) => {
+    return (
+        <svg
+            className={`${styles} fill-current`}
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M11 18c-.3 0-.5-.1-.7-.3l-5-5c-.4-.4-.4-1 0-1.4l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L7.4 12l4.3 4.3c.4.4.4 1 0 1.4-.2.2-.4.3-.7.3z"/>
+            <path d="M18 18c-.3 0-.5-.1-.7-.3l-5-5c-.4-.4-.4-1 0-1.4l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L14.4 12l4.3 4.3c.4.4.4 1 0 1.4-.2.2-.4.3-.7.3z"/>
+        </svg>
+    );
+}

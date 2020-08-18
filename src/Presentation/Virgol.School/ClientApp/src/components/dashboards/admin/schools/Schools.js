@@ -10,7 +10,7 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class Schools extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1}
 
     componentDidMount = async () => {
         this.setState({ loading: true })
@@ -39,6 +39,10 @@ class Schools extends React.Component {
         await this.props.AddBulkSchool(this.props.user.token , excel)
     }
 
+    paginate = (num) => {
+        this.setState({ currentPage: num })
+    }
+
     render() {
         if(this.state.loading) return loading('w-10 text-grayish centerize')
         return (
@@ -61,6 +65,10 @@ class Schools extends React.Component {
                     sample="دانلود نمونه اکسل مدارس"
                     sampleLink="/samples/SchoolTemplate.xlsx"
                     handleExcel={this.submitExcel}
+                    cardsPerPage={this.state.itemsPerPage}
+                    totalCards={60}
+                    paginate={this.paginate}
+                    currentPage={this.state.currentPage}
                     button={() => {
                         return (
                             <button onClick={() => history.push('/newSchool')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>

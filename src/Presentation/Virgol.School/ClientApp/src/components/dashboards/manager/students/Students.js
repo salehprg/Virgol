@@ -8,7 +8,14 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class Students extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false , studentId : 0}
+    state = {
+        loading: false,
+        query: '' ,
+        showDeleteModal : false ,
+        studentId : 0,
+        itemsPerPage: 20,
+        currentPage: 1
+    }
 
     componentDidMount = async () => {
         this.setState({ loading: true })
@@ -35,6 +42,10 @@ class Students extends React.Component {
         await this.props.addBulkUser(this.props.user.token , excel)
     }
 
+    paginate = (num) => {
+        this.setState({ currentPage: num })
+    }
+
     render() {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
@@ -53,6 +64,10 @@ class Students extends React.Component {
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
+                    cardsPerPage={this.state.itemsPerPage}
+                    totalCards={60}
+                    paginate={this.paginate}
+                    currentPage={this.state.currentPage}
                     button={() => {
                         return (
                             <button onClick={() => history.push('/newStudent')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">دانش آموزان جدید</button>
