@@ -325,8 +325,8 @@ namespace lms_with_moodle.Controllers
         {
             int classIntruptCount = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId &&
                                                                                 x.DayType == classSchedule.DayType && //Check same day
-                                                                                ((x.StartHour >= classSchedule.StartHour && x.StartHour <= classSchedule.EndHour) || // Check oldClass Start time between new class Time
-                                                                                    (x.StartHour <= classSchedule.StartHour && x.EndHour >= classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
+                                                                                ((x.StartHour >= classSchedule.StartHour && x.StartHour < classSchedule.EndHour) || // Check oldClass Start time between new class Time
+                                                                                    (x.StartHour <= classSchedule.StartHour && x.EndHour > classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
                     ).Count();
 
             if(classIntruptCount > 0)
@@ -337,8 +337,8 @@ namespace lms_with_moodle.Controllers
             {
                 int teacherIntruptCount = appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == classSchedule.TeacherId &&
                                                                         x.DayType == classSchedule.DayType && //Check same day
-                                                                        ((x.StartHour >= classSchedule.StartHour && x.StartHour <= classSchedule.EndHour) || // Check oldClass Start time between new class Time
-                                                                            (x.StartHour <= classSchedule.StartHour && x.EndHour >= classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
+                                                                        ((x.StartHour >= classSchedule.StartHour && x.StartHour < classSchedule.EndHour) || // Check oldClass Start time between new class Time
+                                                                            (x.StartHour <= classSchedule.StartHour && x.EndHour > classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
                 ).Count();
                 if(teacherIntruptCount > 0)
                 {

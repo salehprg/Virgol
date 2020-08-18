@@ -7,11 +7,25 @@ class LessonInfoModal extends React.Component {
 
     state = { selectedCourse: null, selectedTeacher: null , selectedDay : 0
              , selectedStartTime: null, selectedEndTime: null, loading : false ,
-            teachers : [] , lessons : [] , showDeleteModal : false};
+            teachers : [] , lessons : [] , showDeleteModal : false , times : []};
 
     componentDidMount = async () =>{
 
+        const times = [];
+        var startTime = 7.0;
+        var endTime = 20.0;
+        var step = 0.25;//Every 15 minute
 
+        for(var i = startTime ;i <= endTime ;i += step){
+            var labelHour = (i < 10 ? '0' + Math.trunc(i) : '' + Math.trunc(i))
+            var labelMin = ((i - Math.trunc(i)) == 0 ? '00' : (i - Math.trunc(i)) * 60);
+            
+            times.push({
+                 value: i , label: labelHour + ':' + labelMin 
+            })
+        }
+
+        this.setState({times})
     }
 
 
@@ -25,37 +39,37 @@ class LessonInfoModal extends React.Component {
         { value: 7, label: 'جمعه' }
     ];
 
-    times = [
-        { value: 8, label: '08:00' },
-        { value: 8.5, label: '08:30' },
-        { value: 9, label: '09:00' },
-        { value: 9.5, label: '09:30' },
-        { value: 10, label: '10:00' },
-        { value: 10.5, label: '10:30' },
-        { value: 11, label: '11:00' },
-        { value: 11.5, label: '11:30' },
-        { value: 12, label: '12:00' },
-        { value: 12.5, label: '12:30' },
-        { value: 13, label: '13:00' },
-        { value: 13.5, label: '13:30' },
-        { value: 14, label: '14:00' },
-        { value: 14.5, label: '14:30' },
-        { value: 15, label: '15:00' },
-        { value: 15.5, label: '15:30' },
-        { value: 16, label: '16:00' },
-        { value: 16.5, label: '16:30' },
-        { value: 17, label: '17:00' },
-        { value: 17.5, label: '17:30' },
-        { value: 18, label: '18:00' },
-        { value: 18.5, label: '18:30' },
-        { value: 19, label: '19:00' },
-        { value: 19.5, label: '19:30' },
-        { value: 20, label: '20:00' },
-        { value: 20.5, label: '20:30' },
-        { value: 21, label: '21:00' },
-        { value: 21.5, label: '21:30' },
-        { value: 22, label: '22:00' }
-    ]
+    // times = [
+    //     { value: 8, label: '08:00' },
+    //     { value: 8.5, label: '08:30' },
+    //     { value: 9, label: '09:00' },
+    //     { value: 9.5, label: '09:30' },
+    //     { value: 10, label: '10:00' },
+    //     { value: 10.5, label: '10:30' },
+    //     { value: 11, label: '11:00' },
+    //     { value: 11.5, label: '11:30' },
+    //     { value: 12, label: '12:00' },
+    //     { value: 12.5, label: '12:30' },
+    //     { value: 13, label: '13:00' },
+    //     { value: 13.5, label: '13:30' },
+    //     { value: 14, label: '14:00' },
+    //     { value: 14.5, label: '14:30' },
+    //     { value: 15, label: '15:00' },
+    //     { value: 15.5, label: '15:30' },
+    //     { value: 16, label: '16:00' },
+    //     { value: 16.5, label: '16:30' },
+    //     { value: 17, label: '17:00' },
+    //     { value: 17.5, label: '17:30' },
+    //     { value: 18, label: '18:00' },
+    //     { value: 18.5, label: '18:30' },
+    //     { value: 19, label: '19:00' },
+    //     { value: 19.5, label: '19:30' },
+    //     { value: 20, label: '20:00' },
+    //     { value: 20.5, label: '20:30' },
+    //     { value: 21, label: '21:00' },
+    //     { value: 21.5, label: '21:30' },
+    //     { value: 22, label: '22:00' }
+    // ]
 
     showDelete() {
         this.setState({showDeleteModal : true})
@@ -82,9 +96,11 @@ class LessonInfoModal extends React.Component {
                         <p className="text-center text-white my-4">{this.props.lessonInfo.name}</p>
                         <p className="text-center text-white my-4">{this.props.lessonInfo.teachername}</p> 
                         {(this.props.student ? <p className="text-center text-white my-4">تعداد غیبت : {this.props.lessonInfo.absenceCount}</p>  : null)}
+                        {(this.state.times.length > 0 ?
                         <p className="text-center text-white my-4">
-                            {`${this.props.lessonInfo.endHour} ${this.options.find(x => x.value === this.props.lessonInfo.y).label} از ساعت ${this.props.lessonInfo.startHour} تا ساعت `}
+                            {`${this.state.times.find(x => x.value == this.props.lessonInfo.endHour).label} ${this.options.find(x => x.value === this.props.lessonInfo.y).label} از ساعت ${this.state.times.find(x => x.value == this.props.lessonInfo.startHour).label} تا ساعت `}
                         </p>
+                        : null)}
 
                         {(this.props.canEdit ?
                                 <div onClick={() => this.showDelete()} className="w-12 h-12 relative bg-redish rounded-full cursor-pointer">
