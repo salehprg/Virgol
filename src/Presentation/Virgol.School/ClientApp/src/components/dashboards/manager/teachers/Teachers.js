@@ -58,10 +58,10 @@ class Teachers extends React.Component {
                         );
                     }}
                     sample="دانلود نمونه اکسل معلمان"
-                    sampleLink="/samples/teacherSample.xlsx"
-                    excel="آپلود اکسل معلمان"
+                    sampleLink="/samples/teacherSample.xls"
+                    excel="بارگذاری اکسل معلمان"
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'شماره تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
+                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'تلفن تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
                     body={() => {
                         return (
                             <React.Fragment>

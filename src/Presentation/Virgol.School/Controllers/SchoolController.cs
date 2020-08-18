@@ -226,7 +226,7 @@ namespace lms_with_moodle.Controllers
                     if(errors)
                         return Ok(errors);
 
-                    return BadRequest("اطلاعات فایل اکسل به درستی وارد نشده است");
+                    return BadRequest("اطلاعات فایل اکسل به درستی وارد نشده است دوباره تلاش نمایید");
                 }
 
                 return BadRequest("آپلود فایل با مشکل مواجه شد");
@@ -1097,69 +1097,75 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var schoolData in createSchoolDatas)
                 {
-                    SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                    UserModel user = appDbContext.Users.Where(x => x.UserName == schoolData.MelliCode).FirstOrDefault();
-                    bool duplicateManager = (user != null);
-
-                    if(!duplicateManager)
+                    try
                     {
-                        schoolData.SchoolType = schoolType;
+                        SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                        UserModel user = appDbContext.Users.Where(x => x.UserName == schoolData.MelliCode).FirstOrDefault();
+                        bool duplicateManager = (user != null);
 
-                        SchoolModel schoolResult = await schoolDataHelper.CreateSchool(schoolData);
-                        
-                        UserModel manager = new UserModel();
-                        manager.FirstName = schoolData.FirstName;
-                        manager.LastName = schoolData.LastName;
-                        manager.PhoneNumber = schoolData.managerPhoneNumber;
-                        manager.MelliCode = schoolData.MelliCode;
-                        manager.UserName = schoolData.MelliCode;
-                        manager.SchoolId = schoolResult.Id;
-                        manager.userTypeId = (int)UserType.Manager;
-                        manager.ConfirmedAcc = true;
-
-                        string password = RandomPassword.GeneratePassword(true , true , true , 10);
-
-                        bool resultManager = userManager.CreateAsync(manager , password).Result.Succeeded;
-
-                        if(resultManager)
+                        if(!duplicateManager)
                         {
-                            await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
+                            schoolData.SchoolType = schoolType;
 
-                            int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
-                            manager.Id = userId;
+                            SchoolModel schoolResult = await schoolDataHelper.CreateSchool(schoolData);
+                            
+                            UserModel manager = new UserModel();
+                            manager.FirstName = schoolData.FirstName;
+                            manager.LastName = schoolData.LastName;
+                            manager.PhoneNumber = schoolData.managerPhoneNumber;
+                            manager.MelliCode = schoolData.MelliCode;
+                            manager.UserName = schoolData.MelliCode;
+                            manager.SchoolId = schoolResult.Id;
+                            manager.userTypeId = (int)UserType.Manager;
+                            manager.ConfirmedAcc = true;
 
-                            bool ldapUser = ldap.AddUserToLDAP(manager , password);
+                            string password = RandomPassword.GeneratePassword(true , true , true , 10);
 
-                            bool userToMoodle = false;
-                            if(ldapUser)
+                            bool resultManager = userManager.CreateAsync(manager , password).Result.Succeeded;
+
+                            if(resultManager)
                             {
-                                userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
-                            }
+                                await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
 
-                            if(userToMoodle)
-                            {
-                                int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
-                                manager.Moodle_Id = userMoodle_id;
+                                int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
+                                manager.Id = userId;
 
-                                appDbContext.Users.Update(manager);
+                                bool ldapUser = ldap.AddUserToLDAP(manager , password);
 
-                                ManagerDetail managerDetail = new ManagerDetail();
-                                managerDetail.personalIdNumber = schoolData.personalIdNumber;
-                                managerDetail.UserId = manager.Id;
+                                bool userToMoodle = false;
+                                if(ldapUser)
+                                {
+                                    userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
+                                }
 
-                                appDbContext.ManagerDetails.Add(managerDetail);
-                                appDbContext.SaveChanges();
+                                if(userToMoodle)
+                                {
+                                    int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
+                                    manager.Moodle_Id = userMoodle_id;
 
-                                schoolResult.ManagerId = manager.Id;
+                                    appDbContext.Users.Update(manager);
 
-                                appDbContext.Schools.Update(schoolResult);
-                                appDbContext.SaveChanges();
+                                    ManagerDetail managerDetail = new ManagerDetail();
+                                    managerDetail.personalIdNumber = schoolData.personalIdNumber;
+                                    managerDetail.UserId = manager.Id;
 
-                                SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
-                                
-                                return true;
+                                    appDbContext.ManagerDetails.Add(managerDetail);
+                                    appDbContext.SaveChanges();
+
+                                    schoolResult.ManagerId = manager.Id;
+
+                                    appDbContext.Schools.Update(schoolResult);
+                                    appDbContext.SaveChanges();
+
+                                    SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
+                                    
+                                    return true;
+                                }
                             }
                         }
+                    }
+                    catch(Exception ex){
+                        Console.WriteLine(ex.Message);
                     }
                 }
 

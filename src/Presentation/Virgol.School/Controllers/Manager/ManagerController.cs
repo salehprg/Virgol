@@ -1519,17 +1519,24 @@ namespace lms_with_moodle.Controllers
 
                     UserModel userModel = await userManager.FindByNameAsync(selectedUser.UserName);
 
-                    if(appDbContext.Users.Where(x => x.PhoneNumber == selectedUser.PhoneNumber && x.MelliCode != selectedUser.MelliCode).FirstOrDefault() == null)
+                    if(userModel == null)//Check for duplicate Username
+                    {                        
+                        if(!myUserManager.CheckMelliCodeInterupt(selectedUser.MelliCode , 0))
+                        {
+                            if(selectedUser.PhoneNumber == null)
+                            {
+                                newUsers.Add(selectedUser);
+                            }
+                            if(selectedUser.PhoneNumber != null && myUserManager.CheckPhoneInterupt(selectedUser.PhoneNumber))
+                            {
+                                newUsers.Add(selectedUser);
+                            }
+                        }
+                    }
+                    else
                     {
-                        if(userModel == null)//Check for duplicate Username
-                        {
-                            newUsers.Add(selectedUser);
-                        }
-                        else
-                        {
-                            duplicateUser.Add(selectedUser);
-                            errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
-                        }
+                        duplicateUser.Add(selectedUser);
+                        errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
                     }
 
                 }

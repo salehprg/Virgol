@@ -81,7 +81,7 @@ class AddTeacher extends React.Component {
                         <Field
                             name="phoneNumber"
                             type="text"
-                            placeholder="شماره همراه"
+                            placeholder="تلفن همراه"
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />

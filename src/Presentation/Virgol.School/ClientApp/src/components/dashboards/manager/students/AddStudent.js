@@ -64,7 +64,7 @@ class AddStudent extends React.Component {
                         <Field
                             name="fatherName"
                             type="text"
-                            placeholder="نام پدر"
+                            placeholder="نام ولی"
                             component={this.renderInputs}
                         />
                     

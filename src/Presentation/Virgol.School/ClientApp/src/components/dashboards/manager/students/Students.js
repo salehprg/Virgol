@@ -60,9 +60,9 @@ class Students extends React.Component {
                     }}
                     sample="دانلود نمونه اکسل دانش آموزان"
                     sampleLink="/samples/StudentTemplate.xlsx"
-                    excel="آپلود اکسل دانش آموزان"
+                    excel="بارگذاری اکسل دانش آموزان"
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی', 'شماره همراه', 'کد ملی', 'نام پدر' , 'شماره ولی' , 'حساب تکمیل شده']}
+                    headers={['نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده']}
                     body={() => {
                         return (
                             <React.Fragment>

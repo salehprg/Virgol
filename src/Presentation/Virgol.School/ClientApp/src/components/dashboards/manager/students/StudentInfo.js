@@ -82,7 +82,7 @@ class StudentInfo extends React.Component {
                         <Field
                             name="phoneNumber"
                             type="text"
-                            placeholder="شماره همراه"
+                            placeholder="تلفن همراه"
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />
@@ -96,14 +96,14 @@ class StudentInfo extends React.Component {
                         <Field
                             name="fatherName"
                             type="text"
-                            placeholder="نام پدر"
+                            placeholder="نام ولی"
                             component={this.renderInputs}
                             extra={"w-40 my-4"}
                         />
                         <Field
                             name="fatherPhoneNumber"
                             type="text"
-                            placeholder="شماره همراه پدر"
+                            placeholder="تلفن همراه ولی"
                             component={this.renderInputs}
                             extra={"w-40 my-4 mx-2"}
                         />

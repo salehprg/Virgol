@@ -95,6 +95,8 @@ class AddLesson extends React.Component {
     ];
 
     times = [
+        { value: 7, label: '07:00' },
+        { value: 7.5, label: '07:30' },
         { value: 8, label: '08:00' },
         { value: 8.5, label: '08:30' },
         { value: 9, label: '09:00' },
@@ -119,11 +121,7 @@ class AddLesson extends React.Component {
         { value: 18.5, label: '18:30' },
         { value: 19, label: '19:00' },
         { value: 19.5, label: '19:30' },
-        { value: 20, label: '20:00' },
-        { value: 20.5, label: '20:30' },
-        { value: 21, label: '21:00' },
-        { value: 21.5, label: '21:30' },
-        { value: 22, label: '22:00' }
+        { value: 20, label: '20:00' }
     ]
 
     render() {
