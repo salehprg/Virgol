@@ -71,8 +71,8 @@ public class FileController {
                                     FirstName = excelData.GetValue(2).ToString(),
                                     LastName = excelData.GetValue(3).ToString(),
                                     MelliCode = ConvertToPersian.PersianToEnglish(excelData.GetValue(4).ToString()),
-                                    personalIdNumber = ConvertToPersian.PersianToEnglish(excelData.GetValue(5).ToString()),
-                                    managerPhoneNumber =  ConvertToPersian.PersianToEnglish(excelData.GetValue(6).ToString())
+                                    personalIdNumber = (excelData.GetValue(5) != null ? ConvertToPersian.PersianToEnglish(excelData.GetValue(5).ToString()) : null),
+                                    managerPhoneNumber =  (excelData.GetValue(6) != null ? ConvertToPersian.PersianToEnglish(excelData.GetValue(6).ToString()) : null)
                                 };
 
                                 excelSchools.Add(schoolData);

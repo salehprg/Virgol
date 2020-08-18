@@ -58,6 +58,8 @@ class Schools extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     excel="بارگذاری اکسل مدارس"
+                    sample="دانلود نمونه اکسل مدارس"
+                    sampleLink="/samples/SchoolTemplate.xlsx"
                     handleExcel={this.submitExcel}
                     button={() => {
                         return (
