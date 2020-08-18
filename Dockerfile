@@ -5,8 +5,8 @@ WORKDIR /src
 COPY ./src ./
 
 RUN apt update -yq --allow-releaseinfo-change \
-    && apt install -y curl nano dtrx
-#    && apt install -y curl gnupg libgdiplus libc6-dev nodejs npm
+    && apt install -y nano zip
+    # curl dtrx gnupg libgdiplus libc6-dev nodejs npm
 
 # Fetch and install Node 12 LTS
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE 1
