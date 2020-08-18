@@ -283,7 +283,14 @@ namespace lms_with_moodle.Controllers
                     int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
                     var errors = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
-                    return Ok(errors);
+                    if(errors != null)
+                    {
+                        return Ok(errors);
+                    }
+                    else
+                    {
+                        return BadRequest("خطا در بارگذاری اطلاعات لطفا اطلاعات را بررسی کرده و دوباره تلاش نمایید");
+                    }
                 }
 
                 return BadRequest("آپلود فایل با مشکل مواجه شد");
@@ -688,7 +695,15 @@ namespace lms_with_moodle.Controllers
 
                     var users = await CreateBulkUser((int)UserType.Teacher , Files.Files[0].FileName , schoolId);
 
-                    return Ok(users);
+                    if(users != null)
+                    {
+                        return Ok(users);
+                    }
+                    else
+                    {
+                        return BadRequest("خطا در بارگذاری اطلاعات لطفا اطلاعات را بررسی کرده و دوباره تلاش نمایید");
+                    }
+                    
                 }
                 return BadRequest("آپلود فایل با مشکل مواجه شد");
                 
@@ -1503,6 +1518,7 @@ namespace lms_with_moodle.Controllers
 
                 List<UserDataModel> excelUsers = FileController.excelReader_Users(fileName , (userTypeId == (int)UserType.Teacher)).usersData;
                 List<UserDataModel> newUsers = new List<UserDataModel>();
+                List<UserDataModel> correctUser = new List<UserDataModel>();
                 List<UserDataModel> duplicateUser = new List<UserDataModel>();
 
                 List<UserModel> usersMoodle = new List<UserModel>();
@@ -1510,66 +1526,77 @@ namespace lms_with_moodle.Controllers
                 
                 foreach (var selectedUser in excelUsers)
                 {
+                    try
+                    {
+                        selectedUser.ConfirmedAcc = true;
+                        selectedUser.UserName = selectedUser.MelliCode;
+                        selectedUser.userTypeId = userTypeId;
+                        selectedUser.Sexuality = sexuality;
+                        selectedUser.SchoolId = schoolId;
 
-                    selectedUser.ConfirmedAcc = true;
-                    selectedUser.UserName = selectedUser.MelliCode;
-                    selectedUser.userTypeId = userTypeId;
-                    selectedUser.Sexuality = sexuality;
-                    selectedUser.SchoolId = schoolId;
+                        UserModel userModel = await userManager.FindByNameAsync(selectedUser.UserName);
 
-                    UserModel userModel = await userManager.FindByNameAsync(selectedUser.UserName);
-
-                    if(userModel == null)//Check for duplicate Username
-                    {                        
-                        if(!myUserManager.CheckMelliCodeInterupt(selectedUser.MelliCode , 0))
-                        {
-                            if(selectedUser.PhoneNumber == null)
+                        if(userModel == null)//Check for duplicate Username
+                        {                        
+                            if(!myUserManager.CheckMelliCodeInterupt(selectedUser.MelliCode , 0))
                             {
-                                newUsers.Add(selectedUser);
-                            }
-                            if(selectedUser.PhoneNumber != null && myUserManager.CheckPhoneInterupt(selectedUser.PhoneNumber))
-                            {
-                                newUsers.Add(selectedUser);
+                                if(selectedUser.PhoneNumber == null)
+                                {
+                                    newUsers.Add(selectedUser);
+                                }
+                                if(selectedUser.PhoneNumber != null && !myUserManager.CheckPhoneInterupt(selectedUser.PhoneNumber))
+                                {
+                                    newUsers.Add(selectedUser);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        duplicateUser.Add(selectedUser);
-                        errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
-                    }
+                        else
+                        {
+                            duplicateUser.Add(selectedUser);
+                            errors.Add(" کاربر با کد ملی " + selectedUser.MelliCode + "موجود میباشد");
+                        }
+                    }catch{}
 
                 }
 
                 foreach(var user in newUsers)
                 {
-                    bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
-                    if(result)
+                    if(!string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(user.LastName) && !string.IsNullOrEmpty(user.MelliCode))
                     {
-                        List<string> roles = new List<string>();
-
-                        roles.Add("User");
-
-                        if(userTypeId == (int)UserType.Teacher)
+                        try
                         {
-                            roles.Add("Teacher");
-                        }
+                            bool result = userManager.CreateAsync(user , user.MelliCode).Result.Succeeded;
+                            if(result)
+                            {
+                                List<string> roles = new List<string>();
 
-                        if(userManager.AddToRolesAsync(user , roles).Result.Succeeded)
-                        {
-                            ldap.AddUserToLDAP(user);
-                        }
+                                roles.Add("User");
+
+                                if(userTypeId == (int)UserType.Teacher)
+                                {
+                                    roles.Add("Teacher");
+                                }
+
+                                if(userManager.AddToRolesAsync(user , roles).Result.Succeeded)
+                                {
+                                    ldap.AddUserToLDAP(user);
+                                }
+
+                                user.Moodle_Id = await moodleApi.CreateUser(user);
+                                usersMoodle.Add(user);//Use for add user to moodle
+
+                                correctUser.Add(user);
+                            }
+                        }catch{}
                     }
-
-                    user.Moodle_Id = await moodleApi.CreateUser(user);
-                    usersMoodle.Add(user);//Use for add user to moodle
+                    
                 }
 
-                appDbContext.Users.UpdateRange(newUsers);
+                appDbContext.Users.UpdateRange(correctUser);
 
                 //await moodleApi.CreateUsers(usersMoodle);
 
-                foreach(var user in newUsers)
+                foreach(var user in correctUser)
                 {
                     int userId = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault().Id;
                     user.Id = userId;
@@ -1648,8 +1675,9 @@ namespace lms_with_moodle.Controllers
 
                 BulkData bulkData = new BulkData();
                 bulkData.allCount = excelUsers.Count;
-                bulkData.duplicateCount = excelUsers.Count - newUsers.Count;
-                bulkData.newCount = newUsers.Count;
+                bulkData.duplicateCount = duplicateUser.Count;
+                bulkData.badDataCount = newUsers.Count - correctUser.Count;
+                bulkData.newCount = correctUser.Count;
                 bulkData.usersData = excelUsers;
                 bulkData.errors = errors;
 
@@ -1660,7 +1688,7 @@ namespace lms_with_moodle.Controllers
                 Console.WriteLine(ex.Message);
 
                 BulkData bulkData = new BulkData();
-                bulkData.errors = new List<string>{ex.Message};
+                bulkData.errors = new List<string>{"خطا در بارگذاری اطلاعات لطفا بعدا تلاش نمایید"};
 
                 return null;
             }

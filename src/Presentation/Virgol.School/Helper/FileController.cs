@@ -184,8 +184,8 @@ public class FileController {
                                 {
                                     UserDataModel selectedUser = new UserDataModel
                                     {
-                                        FirstName = excelData.GetValue(firstNameId).ToString(),
-                                        LastName = excelData.GetValue(lastNameId).ToString(),
+                                        FirstName = (excelData.GetValue(firstNameId) != null ? excelData.GetValue(firstNameId).ToString() : null),
+                                        LastName = (excelData.GetValue(lastNameId) != null ? excelData.GetValue(lastNameId).ToString() : null),
                                         MelliCode = excelData.GetValue(melliCodeId).ToString(),
                                         PhoneNumber = (phoneNumberId != -1 ? 
                                                         (excelData.GetValue(phoneNumberId) != null ? excelData.GetValue(phoneNumberId).ToString() : null) 
