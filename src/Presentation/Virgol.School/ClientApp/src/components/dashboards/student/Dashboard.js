@@ -1,5 +1,6 @@
 import React from "react";
 import { Switch, Route } from 'react-router-dom';
+import protectedStudent from "../../protectedRoutes/protectedStudent";
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
@@ -71,4 +72,4 @@ class StudentDashboard extends React.Component {
 
 }
 
-export default StudentDashboard
+export default protectedStudent(StudentDashboard)

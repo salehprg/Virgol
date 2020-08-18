@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { CompleteStudentProfile , SendVerifyPhoneNumber , CheckVerifyPhoneNumber} from "../../../_actions/authActions"
 import moment from 'moment-jalaali'
 import {validator} from '../../../assets/validator'
+import protectedStudent from "../../protectedRoutes/protectedStudent";
 
 class CompleteProfile extends React.Component {
 
@@ -230,4 +231,6 @@ const formWrapped = reduxForm({
     validate
 })(CompleteProfile)
 
-export default connect(mapStateToProps , {CompleteStudentProfile , SendVerifyPhoneNumber , CheckVerifyPhoneNumber})(formWrapped);
+const authWrapped = protectedStudent(formWrapped)
+
+export default connect(mapStateToProps , {CompleteStudentProfile , SendVerifyPhoneNumber , CheckVerifyPhoneNumber})(authWrapped);

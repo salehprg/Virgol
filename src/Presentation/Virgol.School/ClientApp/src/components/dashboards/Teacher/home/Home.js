@@ -42,28 +42,34 @@ class Home extends React.Component {
     render() {
         if(this.state.loading) return "درحال بارگداری اطلاعات ..."
         return (
-            <div className="grid sm:grid-cols-4 grid-cols-2 gap-4 py-6">
-                <Hero userInfo={this.props.user.userInformation}
-                        userDetail={this.props.user.userDetail}/>
-                
-                <RecentClass
-                    onStart={(id) => this.StatrMeeting(id)}
-                    joinList={false}
-                    teacher={true}
-                    class={this.props.recentClass}
-                    title="کلاس های پیش رو"
-                    pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
+                <div className="col-span-1 flex flex-col items-center justify-between">
+                    <Hero userInfo={this.props.user.userInformation}
+                          userDetail={this.props.user.userDetail}/>
+
+                    <RecentClass
+                        onStart={(id) => this.StatrMeeting(id)}
+                        joinList={false}
+                        teacher={true}
+                        class={this.props.recentClass}
+                        title="کلاس های پیش رو"
+                        pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                    />
+                    <RecentClass
+                        onStart={(id) => this.JoinMeeting(id)}
+                        onEnd={(bbbId) => this.EndMeeting(bbbId)}
+                        joinList={true}
+                        teacher={true}
+                        class={this.props.meetingList}
+                        title="کلاس های فعال"
+                        pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                    />
+                </div>
+                <Feed
+                    news={[]}
+                    title="آخرین اخبار مدیر کل برای شما"
+                    pos="col-span-1"
                 />
-                <RecentClass
-                    onStart={(id) => this.JoinMeeting(id)}
-                    onEnd={(bbbId) => this.EndMeeting(bbbId)}
-                    joinList={true}
-                    teacher={true}
-                    class={this.props.meetingList}
-                    title="کلاس های فعال"
-                    pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
-                />
-                
             </div>
         );
     }

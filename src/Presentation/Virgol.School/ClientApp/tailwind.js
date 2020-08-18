@@ -33,6 +33,7 @@ module.exports = {
         '900': '900px',
       },
       height: {
+        '85': '85vh',
         '90': '90vh'
       },
       minHeight: {

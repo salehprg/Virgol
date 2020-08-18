@@ -29,22 +29,24 @@ class Home extends React.Component {
     render() {
         if(this.state.loading) return "درحال بارگداری اطلاعات ..."
         return (
-            <div className="grid sm:grid-cols-4 grid-cols-2 gap-4 py-6">
-                <Hero userInfo={this.props.user.userInformation}
-                        userDetail={this.props.user.userDetail}
-                        adminTitle={`نوع مدرسه : ${this.props.user.userDetail.schooltypeName} `}/>
-                <RecentClass
-                    onStart={(id) => this.JoinMeeting(id)}
-                    joinList={true}
-                    class={this.props.recentClass}
-                    title="کلاس های فعال"
-                    pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
-                />
+            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
+                <div className="col-span-1 flex flex-col justify-between">
+                    <Hero userInfo={this.props.user.userInformation}
+                          userDetail={this.props.user.userDetail}
+                          adminTitle={`نوع مدرسه : ${this.props.user.userDetail.schooltypeName} `}/>
+                    <RecentClass
+                        onStart={(id) => this.JoinMeeting(id)}
+                        joinList={true}
+                        class={this.props.recentClass}
+                        title="کلاس های فعال"
+                        pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                    />
+                </div>
 
                 <Feed
                     news={this.props.inNews}
                     title="آخرین اخبار "
-                    pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                    pos="col-span-1"
                 />
             </div>
         );

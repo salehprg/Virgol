@@ -10,6 +10,7 @@ import Textareaish from '../../../field/Textareaish';
 import { check_circle } from "../../../../assets/icons";
 import {EditNews , GetNewsDetail} from "../../../../_actions/newsActions";
 import getColor from "../../../../assets/colors";
+import protectedManager from "../../../protectedRoutes/protectedManager";
 
 
 class NewsInfo extends React.Component {
@@ -158,4 +159,6 @@ const formWrapped = reduxForm({
     validate
 })(NewsInfo)
 
-export default connect(mapStateToProps,{EditNews , GetNewsDetail})(formWrapped);
+const authWrapped = protectedManager(formWrapped)
+
+export default connect(mapStateToProps,{EditNews , GetNewsDetail})(authWrapped);

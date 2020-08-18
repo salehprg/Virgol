@@ -6,6 +6,7 @@ import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
 import {GetUserInfo , EmptyUserInfo , EditStudent} from "../../../../_actions/managerActions"
 import { validator } from '../../../../assets/validator';
+import protectedManager from "../../../protectedRoutes/protectedManager";
 
 
 class StudentInfo extends React.Component {
@@ -152,4 +153,6 @@ const formWrapped = reduxForm({
     enableReinitialize : true
 })(StudentInfo)
 
-export default connect(mapStateToProps , {EditStudent , GetUserInfo , EmptyUserInfo})(formWrapped);
+const authWrapped = protectedManager(formWrapped)
+
+export default connect(mapStateToProps , {EditStudent , GetUserInfo , EmptyUserInfo})(authWrapped);

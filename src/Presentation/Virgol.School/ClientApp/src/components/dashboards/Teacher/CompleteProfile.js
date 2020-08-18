@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { CompleteTeacherProfile} from "../../../_actions/authActions"
 import moment from 'moment-jalaali'
 import {validator} from '../../../assets/validator'
+import protectedTeacher from "../../protectedRoutes/protectedTeacher";
 
 class CompleteProfile extends React.Component {
 
@@ -122,4 +123,6 @@ const formWrapped = reduxForm({
     validate
 })(CompleteProfile)
 
-export default connect(mapStateToProps , {CompleteTeacherProfile})(formWrapped);
+const authWrapped = protectedTeacher(formWrapped)
+
+export default connect(mapStateToProps , {CompleteTeacherProfile})(authWrapped);

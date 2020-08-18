@@ -15,7 +15,7 @@ class Feed extends React.Component {
         const { title, pos } = this.props
 
         return (
-            <div className={`${pos} w-full h-full px-6 py-4 text-right bg-dark-blue rounded-xl`}>
+            <div className={`${pos} w-full h-85 px-6 py-4 text-right bg-dark-blue rounded-xl`}>
                 <p className="text-white">{title}</p>
                 {
                     (

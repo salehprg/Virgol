@@ -6,6 +6,7 @@ import { reduxForm, Field, formValues } from 'redux-form'
 import { connect } from 'react-redux';
 import {addNewTeacher } from "../../../../_actions/managerActions"
 import {validator} from '../../../../assets/validator'
+import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class AddTeacher extends React.Component {
 
@@ -117,4 +118,6 @@ const formWrapped = reduxForm({
     validate
 })(AddTeacher)
 
-export default connect(mapStateToProps , {addNewTeacher})(formWrapped);
+const authWrapped = protectedManager(formWrapped)
+
+export default connect(mapStateToProps , {addNewTeacher})(authWrapped);

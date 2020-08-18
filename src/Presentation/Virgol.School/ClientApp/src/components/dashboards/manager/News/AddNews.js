@@ -11,6 +11,7 @@ import { check_circle } from "../../../../assets/icons";
 import {CreateNews , ShowError} from "../../../../_actions/newsActions";
 import {alert} from "../../../../_actions/alertActions";
 import getColor from "../../../../assets/colors";
+import protectedManager from "../../../protectedRoutes/protectedManager";
 
 
 class AddNews extends React.Component {
@@ -142,4 +143,6 @@ const formWrapped = reduxForm({
     validate
 }, mapStateToProps)(AddNews)
 
-export default connect(mapStateToProps,{CreateNews , ShowError})(formWrapped);
+const authWrapped = protectedManager(formWrapped)
+
+export default connect(mapStateToProps,{CreateNews , ShowError})(authWrapped);
