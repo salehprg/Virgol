@@ -25,6 +25,7 @@ export const GET_CAT_INFO = 'GET_CAT_INFO';
 
 export const GET_ALL_TEACHERS = 'GET_ALL_TEACHERS';
 export const GetUserInfo = 'GetUserInfo';
+export const EmptyUserInfo = 'EmptyUserInfo';
 export const ADD_BULK_TEACHER = 'ADD_BULK_TEACHER';
 export const ADD_NEW_TEACHER = 'ADD_NEW_TEACHER';
 export const DELETE_TEACHER = 'DELETE_TEACHER';

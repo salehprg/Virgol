@@ -4,7 +4,7 @@ import Add from '../../../field/Add';
 import Fieldish from '../../../field/Fieldish';
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
-import {GetUserInfo , EditStudent} from "../../../../_actions/managerActions"
+import {GetUserInfo , EmptyUserInfo , EditStudent} from "../../../../_actions/managerActions"
 import { validator } from '../../../../assets/validator';
 
 
@@ -12,6 +12,11 @@ class StudentInfo extends React.Component {
 
     componentDidMount = async () => {
         await this.props.GetUserInfo(this.props.user.token , parseInt(this.props.match.params.id))
+    }
+
+    emptyData = async () =>{
+        await this.props.EmptyUserInfo()
+        history.push('/m/students')
     }
 
     renderInputs = ({ input, meta, type, placeholder , extra }) => {
@@ -31,8 +36,6 @@ class StudentInfo extends React.Component {
         
         formValues.id = parseInt(this.props.match.params.id);
         formValues.userDetail = {
-                latinLastname : formValues.latinLastname,
-                latinFirstname : formValues.latinFirstname,
                 fatherName : formValues.fatherName,
                 fatherPhoneNumber : formValues.fatherPhoneNumber
         }
@@ -44,7 +47,7 @@ class StudentInfo extends React.Component {
         return (
             <div>
                 <Add 
-                    onCancel={() => history.push('/m/students')}
+                    onCancel={() => this.emptyData()}
                     title={"اطلاعات دانش آموز"}
                 >
                     <form className="w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
@@ -114,17 +117,19 @@ class StudentInfo extends React.Component {
 }
 
 const mapStateToProps = state => {
+    console.log(state)
     return {
         user: state.auth.userInfo , 
         initialValues: {
-            firstName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.firstName : null,
-            lastName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.lastName : null,
-            melliCode: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.melliCode : null,
-            phoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.phoneNumber : null,
-            fatherName: state.managerData.userInfo.userModel.studentDetail ? state.managerData.userInfo.studentDetail.fatherName : null,
-            fatherPhoneNumber: state.managerData.userInfo.studentDetail ? state.managerData.userInfo.studentDetail.fatherPhoneNumber : null,
-            latinFirstname: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.latinFirstname : null,
-            latinLastname: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.latinLastname : null
+            firstName: state.managerData.userInfo ? state.managerData.userInfo.firstName : null,
+            lastName: state.managerData.userInfo ? state.managerData.userInfo.lastName : null,
+            melliCode: state.managerData.userInfo ? state.managerData.userInfo.melliCode : null,
+            phoneNumber: state.managerData.userInfo ? state.managerData.userInfo.phoneNumber : null,
+            latinFirstname: state.managerData.userInfo ? state.managerData.userInfo.latinFirstname : null,
+            latinLastname: state.managerData.userInfo ? state.managerData.userInfo.latinLastname : null,
+            fatherName: state.managerData.userInfo ? state.managerData.userInfo.userDetail.fatherName : null,
+            fatherPhoneNumber: state.managerData.userInfo ? state.managerData.userInfo.userDetail.fatherPhoneNumber : null,
+            
         }
     }
 }
@@ -135,7 +140,7 @@ const validate = formValues => {
 
     if (!firstName || !validator.checkPersian(firstName)) errors.firstName = true
     if (!lastName || !validator.checkPersian(lastName)) errors.lastName = true
-    if (!validator.checkMelliCode(melliCode)) errors.melliCode = true
+    //if (!validator.checkMelliCode(melliCode)) errors.melliCode = true
     if (!fatherName || !validator.checkPersian(fatherName)) errors.fatherName = true
     
     return errors
@@ -147,4 +152,4 @@ const formWrapped = reduxForm({
     enableReinitialize : true
 })(StudentInfo)
 
-export default connect(mapStateToProps , {EditStudent , GetUserInfo})(formWrapped);
+export default connect(mapStateToProps , {EditStudent , GetUserInfo , EmptyUserInfo})(formWrapped);

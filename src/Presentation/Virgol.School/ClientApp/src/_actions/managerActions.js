@@ -259,6 +259,16 @@ export const getAllTeachers = token => async dispatch => {
 
 }
 
+export const EmptyUserInfo = () => async dispatch => {
+
+    try {
+        dispatch({ type: Type.EmptyUserInfo, payload: null });
+    } catch (e) {
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
 export const GetUserInfo = (token,userId) => async dispatch => {
 
     try {

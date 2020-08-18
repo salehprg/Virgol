@@ -7,10 +7,7 @@ const INITIAL_STATE = {
     myNews: [],
     schoolLessonInfo : null,
     studentsInClass : null,
-    userInfo : {
-        userModel : null,
-        studentDetail : null
-    },
+    userInfo : null,
     'accessRoleIds': [],
     grades: [],
     'classes': [],
@@ -65,6 +62,9 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === Type.GetUserInfo)
         return { ...state, userInfo: action.payload};
+
+    if (action.type === Type.EmptyUserInfo)
+        return { ...state, userInfo: null};
 
     if (action.type === 'DELETE_CATEGORY')
         return { ...state, categories: state.categories.filter(element => element.id !== action.payload) }

@@ -4,7 +4,7 @@ import Add from '../../../field/Add';
 import Fieldish from '../../../field/Fieldish';
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
-import {GetUserInfo , editTeacher} from "../../../../_actions/managerActions"
+import {GetUserInfo , EmptyUserInfo , editTeacher} from "../../../../_actions/managerActions"
 import { validator } from '../../../../assets/validator';
 
 
@@ -13,6 +13,11 @@ class TeacherInfo extends React.Component {
 
     componentDidMount = async () => {
         await this.props.GetUserInfo(this.props.user.token , parseInt(this.props.match.params.id))
+    }
+
+    emptyData = async () =>{
+        await this.props.EmptyUserInfo()
+        history.push('/m/teachers')
     }
 
     renderInputs = ({ input, meta, type, placeholder }) => {
@@ -41,7 +46,7 @@ class TeacherInfo extends React.Component {
         return (
             <div>
                 <Add 
-                    onCancel={() => history.push('/m/teachers')}
+                    onCancel={() => this.emptyData()}
                     title={"اطلاعات معلم"}
                 >
                     <form className="w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
@@ -86,15 +91,16 @@ class TeacherInfo extends React.Component {
 }
 
 const mapStateToProps = state => {
+    console.log(state)
 
     return {
         user: state.auth.userInfo , 
         initialValues: {
-            firstName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.firstName : null,
-            lastName: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.lastName : null,
-            melliCode: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.melliCode : null,
-            phoneNumber: state.managerData.userInfo.userModel ? state.managerData.userInfo.userModel.phoneNumber : null,
-            personalIdNUmber: state.managerData.userInfo.teacherDetail ? state.managerData.userInfo.teacherDetail.personalIdNUmber : null
+            firstName: state.managerData.userInfo ? state.managerData.userInfo.firstName : null,
+            lastName: state.managerData.userInfo ? state.managerData.userInfo.lastName : null,
+            melliCode: state.managerData.userInfo ? state.managerData.userInfo.melliCode : null,
+            phoneNumber: state.managerData.userInfo ? state.managerData.userInfo.phoneNumber : null,
+            personalIdNUmber: state.managerData.userInfo ? state.managerData.userInfo.teacherDetail.personalIdNUmber : null
         
         }
     }
@@ -117,4 +123,4 @@ const formWrapped = reduxForm({
     enableReinitialize : true
 }, mapStateToProps)(TeacherInfo)
 
-export default connect(mapStateToProps , {editTeacher , GetUserInfo})(formWrapped);
+export default connect(mapStateToProps , {editTeacher , GetUserInfo , EmptyUserInfo})(formWrapped);
