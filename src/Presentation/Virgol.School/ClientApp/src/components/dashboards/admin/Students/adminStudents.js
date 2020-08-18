@@ -34,7 +34,7 @@ class adminStudents extends React.Component {
                     button={() => {}}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
-                    headers={[ 'نام', 'نام خانوادگی', 'کد ملی' , 'شماره همراه' , 'شماره تماس ولی' , 'حساب تکمیل شده']}
+                    headers={[ 'نام', 'نام خانوادگی', 'کد ملی' , 'تلفن همراه' , 'تلفن تماس ولی' , 'حساب تکمیل شده']}
                     body={() => {
                         return (
                             <React.Fragment>

@@ -30,9 +30,7 @@ class Schedule extends React.Component {
         {i: "t10", name: "17:00", x: 20, y: 0, w: 2, h: 1, static: true},
         {i: "t11", name: "18:00", x: 22, y: 0, w: 2, h: 1, static: true},
         {i: "t12", name: "19:00", x: 24, y: 0, w: 2, h: 1, static: true},
-        {i: "t13", name: "20:00", x: 26, y: 0, w: 2, h: 1, static: true},
-        {i: "t14", name: "21:00", x: 28, y: 0, w: 2, h: 1, static: true},
-        {i: "t15", name: "22:00", x: 30, y: 0, w: 2, h: 1, static: true},
+        {i: "t13", name: "20:00", x: 26, y: 0, w: 2, h: 1, static: true}
     ],
     lessonInfo: null , showLessonInfo : false , lessons : []
     }

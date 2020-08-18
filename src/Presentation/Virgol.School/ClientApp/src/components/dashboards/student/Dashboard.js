@@ -44,7 +44,7 @@ class StudentDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="dashboard"
-                        title="داشبورد"
+                        title="پیشخوان"
                         icon={layout}
                         changeActive={this.changeActive}
                     />

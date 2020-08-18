@@ -119,11 +119,7 @@ class AddLesson extends React.Component {
         { value: 18.5, label: '18:30' },
         { value: 19, label: '19:00' },
         { value: 19.5, label: '19:30' },
-        { value: 20, label: '20:00' },
-        { value: 20.5, label: '20:30' },
-        { value: 21, label: '21:00' },
-        { value: 21.5, label: '21:30' },
-        { value: 22, label: '22:00' }
+        { value: 20, label: '20:00' }
     ]
 
     render() {

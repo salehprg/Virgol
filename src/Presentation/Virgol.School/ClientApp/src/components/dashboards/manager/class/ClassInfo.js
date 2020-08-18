@@ -151,7 +151,7 @@ class ClassInfo extends React.Component {
                                         variants={this.addVariant}
                             >
                                 <label htmlFor="excel" className="px-6 mb-4 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">
-                                    آپلود فایل اکسل
+                                    بارگذاری فایل اکسل
                                 </label>
                                 <input
                                     onChange={(e) => this.handleExcel(e.target.files[0])}
