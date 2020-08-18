@@ -308,6 +308,8 @@ namespace lms_with_moodle.Controllers
                 UserModel userModel = appDbContext.Users.Where(x => x.Id == student.Id).FirstOrDefault();
                 userModel.FirstName = student.FirstName;
                 userModel.LastName = student.LastName;
+                userModel.LatinFirstname = student.LatinFirstname;
+                userModel.LatinLastname = student.LatinLastname;
 
                 if(student.MelliCode != userModel.MelliCode)
                 {
@@ -328,7 +330,7 @@ namespace lms_with_moodle.Controllers
 
                 if(student.userDetail.FatherPhoneNumber != studentDetail.FatherPhoneNumber)
                 {
-                    if(myUserManager.CheckPhoneInterupt(student.PhoneNumber))
+                    if(myUserManager.CheckPhoneInterupt(student.userDetail.FatherPhoneNumber))
                         return BadRequest("شماره همراه ولی قبلا در سیستم ثبت شده است");
                 }
                 
@@ -337,6 +339,11 @@ namespace lms_with_moodle.Controllers
                 appDbContext.Users.Update(userModel);
                 appDbContext.StudentDetails.Update(studentDetail);
                 appDbContext.SaveChanges();
+
+                if(!string.IsNullOrEmpty(userModel.LatinFirstname) && !string.IsNullOrEmpty(userModel.LatinFirstname))
+                {
+                    ldap.EditMail(userModel);
+                }
 
                 var serializedParent = JsonConvert.SerializeObject(userModel); 
                 student = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
@@ -399,10 +406,10 @@ namespace lms_with_moodle.Controllers
                     TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherModel.Id).FirstOrDefault();
                     if(teacherDetail.SchoolsId.Contains(schoolId + ","))
                     {
-                        return Ok(new{
-                            userModel,
-                            teacherDetail
-                        });
+                        var serializedParent = JsonConvert.SerializeObject(teacherModel); 
+                        UserDataModel teacherVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+                        teacherVW.teacherDetail = teacherDetail;
+                        return Ok(teacherVW);
                     }
                     else
                     {
@@ -414,10 +421,10 @@ namespace lms_with_moodle.Controllers
                 {
                     StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userId).FirstOrDefault();
 
-                     return Ok(new{
-                         userModel,
-                         studentDetail = studentDetail
-                     });
+                    var serializedParent = JsonConvert.SerializeObject(userModel); 
+                    UserDataModel studentVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+                    studentVW.userDetail = studentDetail;
+                    return Ok(studentVW);
                 }
 
                 return BadRequest("خطایی رخ داد لطفا دوباره وارد سامانه شوید");
