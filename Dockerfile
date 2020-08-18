@@ -10,7 +10,7 @@ COPY ./src ./
 # Fetch and install Node 12 LTS
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE 1
 RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash -  
-RUN apt install -y nodejs
+RUN apt install -y nodejs nano dtrx
 RUN nodejs -v
 RUN npm -v
 
