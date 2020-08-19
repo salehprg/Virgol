@@ -13,7 +13,7 @@ class Students extends React.Component {
         query: '' ,
         showDeleteModal : false ,
         studentId : 0,
-        itemsPerPage: 20,
+        itemsPerPage: 40,
         currentPage: 1,
         totalCard : 0
     }

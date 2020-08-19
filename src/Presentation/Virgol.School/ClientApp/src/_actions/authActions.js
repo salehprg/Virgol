@@ -231,3 +231,31 @@ export const CheckVerifyPhoneNumber = (phoneNumber, verificationCode , token , I
 
 }
 
+export const UploadDocuments = (token, documemt , docType) => async dispatch => {
+
+    try {
+        const data = new FormData()
+        data.append('Files', documemt)
+
+        dispatch({ type: START })
+        const response = await lms.post(`/Users/UploadDocuments?docType=${docType}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+
+        dispatch(alert.success(`مدرک با موفقیت آپلود شد`))
+
+        return true
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+
+        return false
+    }
+
+}
+

@@ -589,24 +589,81 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(typeof(bool), 200)]
-        public async Task<IActionResult> UploadDocuments([FromForm]IFormCollection Files , string Mellicode)
+        public async Task<IActionResult> UploadDocuments([FromForm]IFormCollection Files , int docType)
         {
-            var file = Files.Files[0];
-
-            if (file != null)
+            try
             {
-                if (file.Length > 0)
+                //docType 0 = Shenasname
+                //docType 1 = Ax
+                string Mellicode = userManager.GetUserId(User);
+
+                var file = Files.Files[0];
+
+                if (file != null)
                 {
-                    string path = Path.Combine(Request.Host.Value, "ClientApp/build/Documents");
+                    if (file.Length > 0)
+                    {
+                        UserModel userModel = appDbContext.Users.Where(x => x.MelliCode == Mellicode).FirstOrDefault();
+                        if(userModel != null)
+                        {
+                            if(!Directory.Exists("ClientApp/public/Documents"))
+                                Directory.CreateDirectory("ClientApp/public/Documents");
 
-                    var fs = new FileStream(Path.Combine("ClientApp/build/Documents", Mellicode + "." + file.FileName.Split(".")[1]), FileMode.Create);
-                    await file.CopyToAsync(fs);
+                            string fileName = Mellicode + "-" + file.FileName;
 
-                    return Ok(true);
+                            var fs = new FileStream(Path.Combine("ClientApp/public/Documents", fileName), FileMode.Create);
+                            await file.CopyToAsync(fs);
+
+                            fs.Close();
+
+                            StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userModel.Id).FirstOrDefault();
+                            if(studentDetail != null)
+                            {
+                                if(docType == 0)
+                                {
+                                    studentDetail.ShDocument = fileName;
+                                }
+                                else
+                                {
+                                    studentDetail.Document2 = fileName;
+                                }
+
+                                appDbContext.StudentDetails.Update(studentDetail);
+                            }
+                            else
+                            {
+                                studentDetail = new StudentDetail();
+                                studentDetail.UserId = userModel.Id;
+                                if(docType == 0)
+                                {
+                                    studentDetail.ShDocument = fileName;
+                                }
+                                else
+                                {
+                                    studentDetail.Document2 = fileName;
+                                }
+                                
+                                await appDbContext.StudentDetails.AddAsync(studentDetail);
+                            }
+
+                            await appDbContext.SaveChangesAsync();
+
+                            return Ok(true);
+                        }
+                        else
+                        {
+                            return BadRequest("حساب شما در سامانه یافت نشد");
+                        }
+                    }
                 }
+                return BadRequest(false);
             }
-            return BadRequest(false);
+            catch(Exception ex)
+            {
+                return BadRequest("در آپلود فایل مشکلی بوجود آمد");
+            }
         }
 
 

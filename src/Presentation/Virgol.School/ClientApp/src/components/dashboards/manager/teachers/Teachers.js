@@ -9,7 +9,7 @@ import ReactTooltip from "react-tooltip";
 
 class Teachers extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1 , totalCard : 0}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 40, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         this.setState({ loading: true })
