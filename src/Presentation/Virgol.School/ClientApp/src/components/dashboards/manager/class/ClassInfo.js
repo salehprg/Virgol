@@ -7,11 +7,12 @@ import {getStudentsClass , UnAssignUserFromClass , AssignUserToClass , AssignUse
 import {deleteClass , editClass} from '../../../../_actions/schoolActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
-import {plus, x} from "../../../../assets/icons";
+import {arrow_left, plus, x} from "../../../../assets/icons";
 import DeleteConfirm from '../../../modals/DeleteConfirm'
 import PencilText from '../../../field/PencilText';
 import AddStudent from './AddStudent'
 import protectedManager from "../../../protectedRoutes/protectedManager";
+import history from "../../../../history";
 
 class ClassInfo extends React.Component {
 
@@ -108,7 +109,10 @@ class ClassInfo extends React.Component {
 
     render() {
         return (
-            <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="w-screen min-h-screen lg:p-10 p-1 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+            <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="w-screen min-h-screen py-16 lg:px-10 px-1 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+                <div onClick={() => history.push('/m/bases')} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-4 rounded-lg border-2 border-purplish">
+                    {arrow_left('w-6 centerize text-purplish')}
+                </div>
                 {this.state.addStudent ? <AddStudent onAddStudent={(dataIds) => this.onAddStudent(dataIds)} cancel={() => this.setState({addStudent : false})} /> : null}
                 {this.state.showDeleteModal ? 
                     <DeleteConfirm
@@ -221,7 +225,7 @@ class ClassInfo extends React.Component {
                             {/*: null)}*/}
                         </div>
                         <div>
-                            <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/m/bases">بازگشت</Link>
+                            {/*<Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/m/bases">بازگشت</Link>*/}
                             <button onClick={() => this.showDelete(this.state.classDetail.id)} className="px-6 py-1 lg:mx-2 mx-0 mt-4 lg:ml-4 ml-0 rounded-lg border-2 border-redish text-redish">حذف کلاس</button>
                         </div>
                     </div>

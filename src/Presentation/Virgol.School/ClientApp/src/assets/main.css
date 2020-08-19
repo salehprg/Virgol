@@ -8193,6 +8193,10 @@ video {
   min-height: 70vh;
 }
 
+.min-h-85 {
+  min-height: 85vh;
+}
+
 .min-h-90 {
   min-height: 90vh;
 }
@@ -22841,6 +22845,10 @@ video {
 
   .sm\:min-h-70 {
     min-height: 70vh;
+  }
+
+  .sm\:min-h-85 {
+    min-height: 85vh;
   }
 
   .sm\:min-h-90 {
@@ -37494,6 +37502,10 @@ video {
     min-height: 70vh;
   }
 
+  .md\:min-h-85 {
+    min-height: 85vh;
+  }
+
   .md\:min-h-90 {
     min-height: 90vh;
   }
@@ -52145,6 +52157,10 @@ video {
     min-height: 70vh;
   }
 
+  .lg\:min-h-85 {
+    min-height: 85vh;
+  }
+
   .lg\:min-h-90 {
     min-height: 90vh;
   }
@@ -66794,6 +66810,10 @@ video {
 
   .xl\:min-h-70 {
     min-height: 70vh;
+  }
+
+  .xl\:min-h-85 {
+    min-height: 85vh;
   }
 
   .xl\:min-h-90 {
