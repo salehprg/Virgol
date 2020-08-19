@@ -226,15 +226,26 @@ export const AssignUserToClass = (token , classId , excelData) => async dispatch
 export const UnAssignUserFromClass = (token , classId , userIds) => async dispatch => {
 
     try {
+        dispatch({ type: START })
+
         const response = await lms.post(`/Manager/UnAssignUserFromClass?classId=${classId}` , userIds, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
 
+        dispatch({ type: STOP })
+
         dispatch({ type: Type.AssignUserToClass, payload: response.data });
+
+        return true;
+
     } catch (e) {
+        dispatch({ type: STOP })
         dispatch(alert.error("خطا"))
+
+
+        return false
     }
 
 }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from "framer-motion";
 import Schedule from './Schedule'
 import {AddClassSchedule , DeleteClassSchedule , getClassSchedule} from '../../../../_actions/classScheduleActions'
-import {getStudentsClass , AssignUserToClass , AssignUserListToClass } from '../../../../_actions/managerActions'
+import {getStudentsClass , UnAssignUserFromClass , AssignUserToClass , AssignUserListToClass } from '../../../../_actions/managerActions'
 import {deleteClass , editClass} from '../../../../_actions/schoolActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
@@ -16,7 +16,7 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 class ClassInfo extends React.Component {
 
     state = {lessons : [], addLesson: false, loading: false , showChangeName: false, 
-        classDetail : {}, showAdd: false , className : "" , addStudent : false}
+        classDetail : {}, showAdd: false , showUnAssignModal : false, className : "" , addStudent : false}
 
     addVariant = {
         open: {
@@ -71,6 +71,7 @@ class ClassInfo extends React.Component {
     onAddStudent = async(userIds) =>{
         console.log(userIds)
         await this.props.AssignUserListToClass(this.props.user.token , userIds , parseInt(this.props.match.params.id));
+        this.setState({addStudent : false})
         this.componentDidMount()
         this.render()
     }
@@ -80,6 +81,20 @@ class ClassInfo extends React.Component {
         await this.props.DeleteClassSchedule(this.props.user.token , id)
         this.componentDidMount()
         this.render()
+    }
+
+    showUnassign = (id) => {
+        this.setState({selectedStd : id})
+        this.setState({showUnAssignModal : true})
+    }
+
+    unAssignStudent = async () =>{
+        const result = await this.props.UnAssignUserFromClass(this.props.user.token , parseInt(this.props.match.params.id) , [this.state.selectedStd]);
+        if(result)
+        {
+            this.componentDidMount()
+            this.render()
+        }
     }
 
     onEdit = async () =>{
@@ -92,13 +107,22 @@ class ClassInfo extends React.Component {
             <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
                 {this.state.addStudent ? <AddStudent onAddStudent={(dataIds) => this.onAddStudent(dataIds)} cancel={() => this.setState({addStudent : false})} /> : null}
                 {this.state.showDeleteModal ? 
-                <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
-                    confirm={this.DeleteClass}
-                    cancel={() => this.setState({ showDeleteModal: false})}
-                /> 
-                : 
-                null
+                    <DeleteConfirm
+                        title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                        confirm={this.DeleteClass}
+                        cancel={() => this.setState({ showDeleteModal: false})}
+                    /> 
+                    : 
+                    null
+                }
+                {this.state.showUnAssignModal ? 
+                    <DeleteConfirm
+                        title={`آیا از حذف ${this.props.students.find(x => x.id == this.state.selectedStd).firstName} ${this.props.students.find(x => x.id == this.state.selectedStd).lastName} از کلاس مطمعن هستید ؟`}
+                        confirm={this.unAssignStudent}
+                        cancel={() => this.setState({ showUnAssignModal: false , selectedStd : 0})}
+                    /> 
+                    : 
+                    null
                 }
                 {this.state.addLesson ? 
                 <AddLesson
@@ -127,11 +151,12 @@ class ClassInfo extends React.Component {
                                 <p className="text-center text-white">لیست دانش آموزان خالیست</p>
                             </div>
                         :
-                        this.props.students.map(x => {
-                            return ((x ?
+                        this.props.students.map(std => {
+                            return ((std ?
                                         <div className="flex flex-row-reverse justify-between items-center">
-                                            <p className="text-right text-white">{x.firstName} {x.lastName}</p>
-                                            <p className="text-right text-white">{x.melliCode}</p>
+                                            <span onClick={() => this.showUnassign(std.id)}>{x('w-6 text-redish cursor-pointer')}</span>
+                                            <p className="text-right text-white">{std.firstName} {std.lastName}</p>
+                                            <p className="text-right text-white">{std.melliCode}</p>
                                         </div>
                                         :
                                         null
@@ -229,5 +254,5 @@ const mapStateToProps = state => {
 const authWrapped = protectedManager(ClassInfo)
 
 export default connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
-                                        DeleteClassSchedule , getClassSchedule , 
+                                        DeleteClassSchedule , getClassSchedule , UnAssignUserFromClass ,
                                         AssignUserToClass , AssignUserListToClass , deleteClass , editClass})(authWrapped);
