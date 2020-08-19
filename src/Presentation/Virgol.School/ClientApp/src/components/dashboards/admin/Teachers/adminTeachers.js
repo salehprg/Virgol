@@ -8,7 +8,7 @@ import {GetAllTeachers} from "../../../../_actions/adminActions"
 
 class adminTeachers extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1 , totalCard : 0}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 40, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         console.log("start")
