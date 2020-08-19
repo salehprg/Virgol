@@ -5,6 +5,7 @@ import history from "../../../../history";
 import { connect } from "react-redux";
 import {getAllTeachers , addBulkTeacher , deleteTeacher} from "../../../../_actions/managerActions"
 import DeleteConfirm from "../../../modals/DeleteConfirm";
+import ReactTooltip from "react-tooltip";
 
 class Teachers extends React.Component {
 
@@ -44,6 +45,7 @@ class Teachers extends React.Component {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
             <div className="w-full mt-10">
+                <ReactTooltip />
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
@@ -64,10 +66,10 @@ class Teachers extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
+                            <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
                         );
                     }}
-                    sample="دانلود نمونه اکسل معلمان"
+                    sample="بارگیری نمونه اکسل معلمان"
                     sampleLink="/samples/teacherSample.xls"
                     excel="بارگذاری اکسل معلمان"
                     handleExcel={this.submitExcel}
@@ -87,11 +89,10 @@ class Teachers extends React.Component {
                                                 <td>{x.phoneNumber}</td>
                                                 <td>{x.personalIdNUmber}</td>
                                                 <td><span className="text-center">{x.latinFirstNsme ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            
-                                                <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
+                                                <td data-tip="ویرایش" className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>           
-                                                <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                <td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                                     {trash('w-6 text-white ')}
                                                 </td> 
                                             </tr>

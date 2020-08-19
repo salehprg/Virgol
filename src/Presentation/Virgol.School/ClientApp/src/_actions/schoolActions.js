@@ -89,7 +89,7 @@ export const AddBulkSchool = (token, excel) => async dispatch => {
         dispatch({ type: STOP })
         dispatch({ type: Type.AddBulkSchool });
         history.push("/a/schools")
-        dispatch(alert.success("فایل اپلود شد"))
+        dispatch(alert.success("فایل بارگیری شد"))
 
     } catch (e) {
         dispatch({ type: STOP })

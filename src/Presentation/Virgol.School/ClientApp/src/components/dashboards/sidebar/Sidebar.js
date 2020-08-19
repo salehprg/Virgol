@@ -16,6 +16,18 @@ const   Sidebar = ({ show, toggle, active, changeActive, children }) => {
         }
     }
 
+    const toggleVar = {
+        open: {
+            x: 50
+        },
+        close: {
+            x: 0
+        },
+        transition: {
+            duration: 0.5
+        }
+    }
+
     return (
         <motion.div className="lg:w-1/6 z-40 w-3/4 lg:max-w-full max-w-250 h-screen fixed top-0 right-0 bg-black-blue"
             animate={show ? 'open' : 'close'}
@@ -24,6 +36,9 @@ const   Sidebar = ({ show, toggle, active, changeActive, children }) => {
         >
             <motion.div onClick={toggle} className="lg:hidden block absolute sidebar-toggle cursor-pointer"
                 whileTap={{ rotate: 90 }}
+                animate={show ? 'open' : 'close'}
+                transition="transition"
+                variants={toggleVar}
             >
                 {show ? x('w-8 text-white') : menu("w-8 text-white")}
             </motion.div>

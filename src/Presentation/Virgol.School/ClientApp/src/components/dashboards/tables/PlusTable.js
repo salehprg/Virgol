@@ -3,6 +3,7 @@ import Searchish from "../../field/Searchish";
 import Tablish from "./Tablish";
 import {loading} from "../../../assets/icons";
 import Pagination from "../pagination/Pagination";
+import ReactTooltip from "react-tooltip";
 
 class PlusTable extends React.Component {
 
@@ -19,7 +20,7 @@ class PlusTable extends React.Component {
                     {button()}
                     {excel ?
                         <>
-                            <label htmlFor="excel" className="px-6 cursor-pointer mx-4 py-1 border-2 border-greenish text-greenish rounded-lg">{excel}</label>
+                            <label htmlFor="excel" className="px-6 cursor-pointer ml-4 lg:mb-0 mb-2 py-1 border-2 border-greenish text-greenish rounded-lg">{excel}</label>
                             <input
                                 onChange={(e) => handleExcel(e.target.files[0])}
                                 type="file"
