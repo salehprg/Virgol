@@ -23,7 +23,12 @@ class Home extends React.Component {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
-                <div className="col-span-1">
+                <Feed
+                    news={this.props.inNews}
+                    title="آخرین اخبار مدیر کل برای شما"
+                    pos="sm:row-start-1 row-start-2"
+                />
+                <div className="">
                     {(this.props.dashboardInfo.school
                             ?
                             <Hero userInfo={this.props.user.userInformation}
@@ -33,43 +38,38 @@ class Home extends React.Component {
                             <Hero userInfo="درحال بارگذاری ..."
                                   title="درحال بارگذاری ..." />
                     )}
-                    <div className="mt-8 grid grid-cols-2 gap-4">
+                    <div className="mt-8">
                         <CounterCard
                             title="کل کلاس ها"
                             icon={home}
                             number={this.props.dashboardInfo.classCount}
-                            border="border-sky-blue"
+                            bg="bg-sky-blue"
                         />
 
                         <CounterCard
                             title="کلاس های آنلاین"
                             icon={user}
                             number={this.props.dashboardInfo.onlineClass}
-                            border="border-purplish"
-                        />
-
-                        <CounterCard
-                            title="کل دانش آموزان"
-                            icon={key}
-                            number={this.props.dashboardInfo.studentsCount}
-                            border="border-greenish"
-                            pos="row-start-3"
+                            bg="bg-purplish"
                         />
 
                         <CounterCard
                             title="معلمان"
                             icon={users}
                             number={this.props.dashboardInfo.teacherCount}
-                            border="border-redish"
+                            bg="bg-redish"
+                            pos="row-start-3"
+                        />
+
+                        <CounterCard
+                            title="کل دانش آموزان"
+                            icon={key}
+                            number={this.props.dashboardInfo.studentsCount}
+                            bg="bg-greenish"
                             pos="row-start-3"
                         />
                     </div>
                 </div>
-                <Feed
-                    news={this.props.inNews}
-                    title="آخرین اخبار مدیر کل برای شما"
-                    pos="col-span-1"
-                />
             </div>
         );
     }
