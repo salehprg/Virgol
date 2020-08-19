@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {createRef} from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from "framer-motion";
 import Schedule from './Schedule'
@@ -17,6 +17,8 @@ class ClassInfo extends React.Component {
 
     state = {lessons : [], addLesson: false, loading: false , showChangeName: false, 
         classDetail : {}, showAdd: false , showUnAssignModal : false, className : "" , addStudent : false}
+
+        sc = createRef()
 
     addVariant = {
         open: {
@@ -41,6 +43,8 @@ class ClassInfo extends React.Component {
         const classDetail = this.props.allClass.filter(x => x.id == parseInt(this.props.match.params.id))
 
         this.setState({classDetail : classDetail[0]})
+
+        this.sc.current.scrollLeft = this.sc.current.clientWidth
         
     }
 
@@ -223,7 +227,7 @@ class ClassInfo extends React.Component {
                     </div>
                     <div className="my-8">
                         <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2">افزودن درس</button>
-                        <div className="border-2 border-dark-blue overflow-auto">
+                        <div ref={this.sc} className="border-2 border-dark-blue overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
                                     student={false}
