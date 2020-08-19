@@ -276,11 +276,11 @@ class SchoolInfo extends React.Component {
                 {(this.state.loadingCats || this.props.schoolLessonInfo == null ? loading('w-10 text-grayish centerize')
                 :
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
-                    <div className="flex flex-row-reverse justify-between">
+                    <div className="flex lg:flex-row-reverse flex-col justify-between">
                         <div>
                             <PencilText 
                                 text={this.props.schoolLessonInfo.schoolModel.schoolName} 
-                                className="text-right text-white text-2xl" 
+                                className="text-right text-white lg:text-2xl text-lg"
                                 show={this.state.showChangeName}
                                 showBox={() => this.setState({ showChangeName: true })}
                                 value={this.state.className}
@@ -293,7 +293,7 @@ class SchoolInfo extends React.Component {
                         </div>
                         <div>
                             <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>
-                            <button onClick={this.redirect} className="px-6 py-1 mx-2 rounded-lg border-2 border-greenish text-greenish">ورود به عنوان مدیر مدرسه</button>
+                            <button onClick={this.redirect} className="px-6 py-1 lg:mx-2 mx-0 mt-4 rounded-lg border-2 border-greenish text-greenish">ورود به عنوان مدیر مدرسه</button>
                         </div>
                     </div>
                     <div className="mt-8 overflow-auto">

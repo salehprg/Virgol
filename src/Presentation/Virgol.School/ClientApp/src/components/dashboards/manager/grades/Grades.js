@@ -76,7 +76,7 @@ class Grades extends React.Component {
             loading('w-10 text-grayish centerize')
 
         return (
-            <div className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+            <div className="w-full mt-10 pb-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ تمامی درس های زیرمجموعه پاک خواهند شد و این عمل قابلیت بازگشت ندارد!"
@@ -88,7 +88,7 @@ class Grades extends React.Component {
                 }
 
                 {(!this.props.schoolLessonInfo ? "... درحال بارگذاری اطلاعات" :
-                <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1">
+                <div className="w-full rounded-lg min-h-90 lg:col-span-3 col-span-1">
                     <div className="mt-8 overflow-auto">
                         <BaseManager
                             schoolId={this.props.match.params.id}
@@ -113,24 +113,23 @@ class Grades extends React.Component {
                             selectClass={this.selectClass}
                             loadingClasses={this.state.loadingClasses}
                         />
-
-                        <div className="w-full mt-8 p-4 h-64 bg-dark-blue rounded-xl">
-                            <p className="text-right text-white">لیست کل کلاس ها</p>
-                            <div dir="rtl" className="w-full   grid all-classes">
-                                {(this.props.allClass ?
-                                        this.props.allClass.map(x => {
-                                            return(
-                                                <SelectableCard
-                                                    id={x.id}
-                                                    title={x.className}
-                                                    select={(id) => history.push(`/class/${id}`)}
-                                                />
-                                            )
-                                        })
-                                        :
-                                        null
-                                )}
-                            </div>
+                    </div>
+                    <div className="w-full mt-8 p-4 bg-dark-blue rounded-xl">
+                        <p className="text-right text-white">لیست کل کلاس ها</p>
+                        <div dir="rtl" className="w-full   grid all-classes">
+                            {(this.props.allClass ?
+                                    this.props.allClass.map(x => {
+                                        return(
+                                            <SelectableCard
+                                                id={x.id}
+                                                title={x.className}
+                                                select={(id) => history.push(`/class/${id}`)}
+                                            />
+                                        )
+                                    })
+                                    :
+                                    null
+                            )}
                         </div>
                     </div>
                 </div>

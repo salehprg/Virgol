@@ -57,4 +57,12 @@
     grid-template-columns: repeat(auto-fit, 100px);
 }
 
+.addStudentBtn {
+    opacity: 0;
+}
+
+.addStudent:hover .addStudentBtn {
+    opacity: 1;
+}
+
 @tailwind utilities;
