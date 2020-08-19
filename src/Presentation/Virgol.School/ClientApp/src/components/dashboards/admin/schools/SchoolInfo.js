@@ -12,6 +12,7 @@ import Modal from "../../../modals/Modal";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
 import PencilText from '../../../field/PencilText';
 import { validator } from "../../../../assets/validator";
+import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
 
 class SchoolInfo extends React.Component {
 
@@ -368,5 +369,7 @@ const formWrapped = reduxForm({
     validate
 }, mapStateToProps)(SchoolInfo)
 
+const authWrapped = protectedAdmin(formWrapped)
+
 export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , RedirectAdmin, 
-                                        GetSchool_Grades , getLessons , EditManager , EditSchool , AddBaseToSchool , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool})(formWrapped);
+                                        GetSchool_Grades , getLessons , EditManager , EditSchool , AddBaseToSchool , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool})(authWrapped);

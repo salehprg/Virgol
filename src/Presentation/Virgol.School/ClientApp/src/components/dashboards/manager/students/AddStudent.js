@@ -6,6 +6,7 @@ import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
 import {AddNewStudent } from "../../../../_actions/managerActions"
 import { validator } from '../../../../assets/validator'
+import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class AddStudent extends React.Component {
 
@@ -26,7 +27,7 @@ class AddStudent extends React.Component {
         
         let data = formValues;
 
-        data.userDetail = {
+        data.studentDetail = {
             latinLastname : formValues.latinLastname,
             latinFirstname : formValues.latinFirstname,
             fatherName : formValues.fatherName,
@@ -99,4 +100,6 @@ const formWrapped = reduxForm({
     validate
 })(AddStudent)
 
-export default connect(mapStateToProps , {AddNewStudent })(formWrapped);
+const authWrapped = protectedManager(formWrapped)
+
+export default connect(mapStateToProps , {AddNewStudent })(authWrapped);

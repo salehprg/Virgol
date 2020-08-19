@@ -8,7 +8,7 @@ import {GetAllTeachers} from "../../../../_actions/adminActions"
 
 class adminTeachers extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         console.log("start")
@@ -16,12 +16,17 @@ class adminTeachers extends React.Component {
         await this.props.GetAllTeachers(this.props.user.token);
         this.setState({ loading: false })
         console.log("end")
+
+        this.setState({totalCard : this.props.allTeachers.length})
     }
 
     changeQuery = query => {
         this.setState({ query })
     }
 
+    paginate = (num) => {
+        this.setState({ currentPage: num })
+    }
 
     render() {
         if(this.state.loading || !this.props.allTeachers) loading('w-10 text-grayish centerize')
@@ -34,11 +39,15 @@ class adminTeachers extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     headers={['نام', 'نام خانوادگی', 'کد ملی', 'تلفن تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
+                    cardsPerPage={this.state.itemsPerPage}
+                    totalCards={this.state.totalCard}
+                    paginate={this.paginate}
+                    currentPage={this.state.currentPage}
                     body={() => {
                         return (
                             <React.Fragment>
                                 {(this.props.allTeachers ?
-                                    this.props.allTeachers.map(teacher => {
+                                    this.props.allTeachers.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(teacher => {
                                         if (teacher.firstName.includes(this.state.query) || teacher.lastName.includes(this.state.query) || (teacher.firstName + " " + teacher.lastName).includes(this.state.query))
                                         {
                                             return(
@@ -47,8 +56,8 @@ class adminTeachers extends React.Component {
                                                 <td>{teacher.lastName}</td>
                                                 <td>{teacher.melliCode}</td>
                                                 <td>{teacher.phoneNumber}</td>
-                                                <td>{teacher.teacherDetail.personalIdNUmber}</td>
-                                                <td><span className="text-center">{teacher.completed ? check_circle('w-8 text-greenish') : null}</span></td>
+                                                <td>{teacher.personalIdNUmber}</td>
+                                                <td><span className="text-center">{teacher.latinFirstName ? check_circle('w-8 text-greenish') : null}</span></td>
                                             </tr>
                                             )
                                         }

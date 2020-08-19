@@ -22,50 +22,53 @@ class Home extends React.Component {
     render() {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
-            <div className="grid sm:grid-cols-4 grid-cols-2 gap-4 py-6">
-                {(this.props.dashboardInfo.school
-                ?
-                <Hero userInfo={this.props.user.userInformation}
-                    managerTitle={`مدیر مدرسه ${this.props.dashboardInfo.school.schoolName}`}
-                    adminTitle={`نوع مدرسه : ${this.props.user.userDetail.schooltypeName} `}/>
-                    :
-                <Hero userInfo="درحال بارگذاری ..."
-                    title="درحال بارگذاری ..." />
-                )}
-                <CounterCard
-                    title="کل کلاس ها"
-                    icon={home}
-                    number={this.props.dashboardInfo.classCount}
-                    border="border-sky-blue"
-                />
+            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
+                <div className="col-span-1">
+                    {(this.props.dashboardInfo.school
+                            ?
+                            <Hero userInfo={this.props.user.userInformation}
+                                  managerTitle={`مدیر مدرسه ${this.props.dashboardInfo.school.schoolName}`}
+                                  adminTitle={`نوع مدرسه : ${this.props.user.userDetail.schooltypeName} `}/>
+                            :
+                            <Hero userInfo="درحال بارگذاری ..."
+                                  title="درحال بارگذاری ..." />
+                    )}
+                    <div className="mt-8 grid grid-cols-2 gap-4">
+                        <CounterCard
+                            title="کل کلاس ها"
+                            icon={home}
+                            number={this.props.dashboardInfo.classCount}
+                            border="border-sky-blue"
+                        />
 
-                <CounterCard
-                    title="کلاس های آنلاین"
-                    icon={user}
-                    number={this.props.dashboardInfo.onlineClass}
-                    border="border-purplish"
-                />
+                        <CounterCard
+                            title="کلاس های آنلاین"
+                            icon={user}
+                            number={this.props.dashboardInfo.onlineClass}
+                            border="border-purplish"
+                        />
 
-                <CounterCard
-                    title="کل دانش آموزان"
-                    icon={key}
-                    number={this.props.dashboardInfo.studentsCount}
-                    border="border-greenish"
-                    pos="row-start-3"
-                />
+                        <CounterCard
+                            title="کل دانش آموزان"
+                            icon={key}
+                            number={this.props.dashboardInfo.studentsCount}
+                            border="border-greenish"
+                            pos="row-start-3"
+                        />
 
-                <CounterCard
-                    title="معلمان"
-                    icon={users}
-                    number={this.props.dashboardInfo.teacherCount}
-                    border="border-redish"
-                    pos="row-start-3"
-                />
-
+                        <CounterCard
+                            title="معلمان"
+                            icon={users}
+                            number={this.props.dashboardInfo.teacherCount}
+                            border="border-redish"
+                            pos="row-start-3"
+                        />
+                    </div>
+                </div>
                 <Feed
                     news={this.props.inNews}
                     title="آخرین اخبار مدیر کل برای شما"
-                    pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                    pos="col-span-1"
                 />
             </div>
         );

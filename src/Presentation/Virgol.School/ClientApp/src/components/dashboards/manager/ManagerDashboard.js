@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Route } from 'react-router-dom';
 import history from "../../../history";
+import protectedManager from "../../protectedRoutes/protectedManager";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
 import {layout, loading, open_book , users , bell} from "../../../assets/icons";
@@ -98,4 +99,4 @@ class ManagerDashboard extends React.Component {
 
 }
 
-export default ManagerDashboard
+export default protectedManager(ManagerDashboard)

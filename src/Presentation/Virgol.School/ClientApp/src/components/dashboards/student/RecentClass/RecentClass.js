@@ -9,7 +9,7 @@ class RecentClass extends React.Component {
         const { title, pos , joinList } = this.props
 
         return (
-            <div className={`${pos} w-full h-full px-6 py-4 text-right bg-dark-blue rounded-xl`}>
+            <div className={`${pos} w-full h-full mt-4 px-6 py-4 text-right bg-dark-blue rounded-xl`}>
                 <p className="text-white">{title}</p>
                 {(this.props.class ? 
                     (

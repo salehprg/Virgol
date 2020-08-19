@@ -10,12 +10,14 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class Schools extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         this.setState({ loading: true })
         await this.props.getSchools(this.props.user.token);
         this.setState({ loading: false })
+
+        this.setState({totalCard : this.props.schools.length})
     }
 
     showDelete = (id) => {
@@ -37,6 +39,10 @@ class Schools extends React.Component {
 
     submitExcel = async excel => {
         await this.props.AddBulkSchool(this.props.user.token , excel)
+    }
+
+    paginate = (num) => {
+        this.setState({ currentPage: num })
     }
 
     render() {
@@ -61,6 +67,10 @@ class Schools extends React.Component {
                     sample="دانلود نمونه اکسل مدارس"
                     sampleLink="/samples/SchoolTemplate.xlsx"
                     handleExcel={this.submitExcel}
+                    cardsPerPage={this.state.itemsPerPage}
+                    totalCards={this.state.totalCard}
+                    paginate={this.paginate}
+                    currentPage={this.state.currentPage}
                     button={() => {
                         return (
                             <button onClick={() => history.push('/newSchool')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>
@@ -71,7 +81,7 @@ class Schools extends React.Component {
                         return (
                             <React.Fragment>
                                 {
-                                    this.props.schools.map(x => {
+                                    this.props.schools.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(x => {
                                         if(x.schoolName.includes(this.state.query))
                                         {
                                             return(

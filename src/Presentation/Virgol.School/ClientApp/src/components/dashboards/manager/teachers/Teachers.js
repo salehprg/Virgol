@@ -8,12 +8,14 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class Teachers extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         this.setState({ loading: true })
         await this.props.getAllTeachers(this.props.user.token);
         this.setState({ loading: false })
+
+        this.setState({totalCard : this.props.teachers.length})
     }
 
     changeQuery = query => {
@@ -34,6 +36,10 @@ class Teachers extends React.Component {
         await this.props.addBulkTeacher(this.props.user.token , excel)
     }
 
+    paginate = (num) => {
+        this.setState({ currentPage: num })
+    }
+
     render() {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
@@ -52,6 +58,10 @@ class Teachers extends React.Component {
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
+                    cardsPerPage={this.state.itemsPerPage}
+                    totalCards={this.state.totalCard}
+                    paginate={this.paginate}
+                    currentPage={this.state.currentPage}
                     button={() => {
                         return (
                             <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
@@ -66,7 +76,7 @@ class Teachers extends React.Component {
                         return (
                             <React.Fragment>
                                 {
-                                    this.props.teachers.map(x => {
+                                    this.props.teachers.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(x => {
                                         if (x.firstName.includes(this.state.query) || x.lastName.includes(this.state.query) || (x.firstName + " " + x.lastName).includes(this.state.query))
                                         {
                                             return(
@@ -75,8 +85,8 @@ class Teachers extends React.Component {
                                                 <td>{x.lastName}</td>
                                                 <td>{x.melliCode}</td>
                                                 <td>{x.phoneNumber}</td>
-                                                <td>{x.teacherDetail.personalIdNUmber}</td>
-                                                <td><span className="text-center">{x.completed ? check_circle('w-8 text-greenish') : null}</span></td>
+                                                <td>{x.personalIdNUmber}</td>
+                                                <td><span className="text-center">{x.latinFirstNsme ? check_circle('w-8 text-greenish') : null}</span></td>
                                             
                                                 <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}

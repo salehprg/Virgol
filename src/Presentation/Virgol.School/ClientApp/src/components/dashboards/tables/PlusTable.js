@@ -2,11 +2,12 @@ import React from "react";
 import Searchish from "../../field/Searchish";
 import Tablish from "./Tablish";
 import {loading} from "../../../assets/icons";
+import Pagination from "../pagination/Pagination";
 
 class PlusTable extends React.Component {
 
     render() {
-        const { isLoading, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body } = this.props
+        const { isLoading, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body } = this.props
         return (
             <div className="w-full">
                 <div className="flex sm:flex-row-reverse flex-col justify-start sm:items-stretch items-end mb-4">
@@ -50,6 +51,12 @@ class PlusTable extends React.Component {
                         />
                     }
                 </div>
+                <Pagination
+                    cardsPerPage={cardsPerPage}
+                    totalCards={totalCards}
+                    paginate={paginate}
+                    currentPage={currentPage}
+                />
             </div>
         );
     }

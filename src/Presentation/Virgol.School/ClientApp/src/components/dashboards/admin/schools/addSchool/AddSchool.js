@@ -9,6 +9,7 @@ import { check_circle } from "../../../../../assets/icons";
 import ManagerGenerated from "./ManagerGenerated";
 import {CreateSchool} from "../../../../../_actions/schoolActions";
 import { validator } from '../../../../../assets/validator'
+import protectedAdmin from "../../../../protectedRoutes/protectedAdmin";
 
 class AddSchool extends React.Component {
 
@@ -159,4 +160,6 @@ const formWrapped = reduxForm({
     validate
 }, mapStateToProps)(AddSchool)
 
-export default connect(mapStateToProps,{CreateSchool})(formWrapped);
+const authWrapped = protectedAdmin(formWrapped)
+
+export default connect(mapStateToProps,{CreateSchool})(authWrapped);

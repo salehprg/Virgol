@@ -6,6 +6,7 @@ import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux';
 import {GetUserInfo , EmptyUserInfo , EditStudent} from "../../../../_actions/managerActions"
 import { validator } from '../../../../assets/validator';
+import protectedManager from "../../../protectedRoutes/protectedManager";
 
 
 class StudentInfo extends React.Component {
@@ -35,7 +36,7 @@ class StudentInfo extends React.Component {
     onSubmit = async (formValues) => {
         
         formValues.id = parseInt(this.props.match.params.id);
-        formValues.userDetail = {
+        formValues.studentDetail = {
                 fatherName : formValues.fatherName,
                 fatherPhoneNumber : formValues.fatherPhoneNumber
         }
@@ -127,8 +128,8 @@ const mapStateToProps = state => {
             phoneNumber: state.managerData.userInfo ? state.managerData.userInfo.phoneNumber : null,
             latinFirstname: state.managerData.userInfo ? state.managerData.userInfo.latinFirstname : null,
             latinLastname: state.managerData.userInfo ? state.managerData.userInfo.latinLastname : null,
-            fatherName: state.managerData.userInfo ? state.managerData.userInfo.userDetail.fatherName : null,
-            fatherPhoneNumber: state.managerData.userInfo ? state.managerData.userInfo.userDetail.fatherPhoneNumber : null,
+            fatherName: state.managerData.userInfo ? state.managerData.userInfo.fatherName : null,
+            fatherPhoneNumber: state.managerData.userInfo ? state.managerData.userInfo.fatherPhoneNumber : null,
             
         }
     }
@@ -152,4 +153,6 @@ const formWrapped = reduxForm({
     enableReinitialize : true
 })(StudentInfo)
 
-export default connect(mapStateToProps , {EditStudent , GetUserInfo , EmptyUserInfo})(formWrapped);
+const authWrapped = protectedManager(formWrapped)
+
+export default connect(mapStateToProps , {EditStudent , GetUserInfo , EmptyUserInfo})(authWrapped);

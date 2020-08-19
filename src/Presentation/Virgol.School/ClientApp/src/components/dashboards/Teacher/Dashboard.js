@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Route } from 'react-router-dom';
 import history from "../../../history";
+import protectedTeacher from "../../protectedRoutes/protectedTeacher";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
 import {layout , bell , open_book} from "../../../assets/icons";
@@ -89,4 +90,4 @@ class TeacherDashboard extends React.Component {
 
 }
 
-export default TeacherDashboard
+export default protectedTeacher(TeacherDashboard)

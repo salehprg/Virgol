@@ -11,6 +11,7 @@ import {plus, x} from "../../../../assets/icons";
 import DeleteConfirm from '../../../modals/DeleteConfirm'
 import PencilText from '../../../field/PencilText';
 import AddStudent from './AddStudent'
+import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class ClassInfo extends React.Component {
 
@@ -225,6 +226,8 @@ const mapStateToProps = state => {
     return {user : state.auth.userInfo  , allClass : state.schoolData.allClass , schedules : state.schedules.classSchedules , students : state.managerData.studentsInClass}
 }
 
+const authWrapped = protectedManager(ClassInfo)
+
 export default connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
                                         DeleteClassSchedule , getClassSchedule , 
-                                        AssignUserToClass , AssignUserListToClass , deleteClass , editClass})(ClassInfo);
+                                        AssignUserToClass , AssignUserListToClass , deleteClass , editClass})(authWrapped);
