@@ -222,6 +222,7 @@ export const getDashboardInfo = token => async dispatch => {
 export const RedirectAdmin = (token , schoolId) => async dispatch => {
 
     try {
+        console.log("send")
         
         const response = await lms.get(`/Admin/RedirectAdmin?schoolId=${schoolId}` , {
             headers: {
@@ -229,7 +230,7 @@ export const RedirectAdmin = (token , schoolId) => async dispatch => {
             }
         });
 
-        dispatch({ type: authType.LOGIN, payload: response.data })
+        console.log(response)
 
         switch (response.data.userType) {
             case 1: {
@@ -252,6 +253,8 @@ export const RedirectAdmin = (token , schoolId) => async dispatch => {
                 history.push('/sa/dashboard');
             }
         }
+
+        dispatch({ type: authType.LOGIN, payload: response.data })
 
         return true
 

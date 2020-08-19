@@ -27,7 +27,7 @@ class AddStudent extends React.Component {
         
         let data = formValues;
 
-        data.userDetail = {
+        data.studentDetail = {
             latinLastname : formValues.latinLastname,
             latinFirstname : formValues.latinFirstname,
             fatherName : formValues.fatherName,

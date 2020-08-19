@@ -10,12 +10,14 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 
 class Schools extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         this.setState({ loading: true })
         await this.props.getSchools(this.props.user.token);
         this.setState({ loading: false })
+
+        this.setState({totalCard : this.props.schools.length})
     }
 
     showDelete = (id) => {
@@ -66,7 +68,7 @@ class Schools extends React.Component {
                     sampleLink="/samples/SchoolTemplate.xlsx"
                     handleExcel={this.submitExcel}
                     cardsPerPage={this.state.itemsPerPage}
-                    totalCards={60}
+                    totalCards={this.state.totalCard}
                     paginate={this.paginate}
                     currentPage={this.state.currentPage}
                     button={() => {
@@ -79,7 +81,7 @@ class Schools extends React.Component {
                         return (
                             <React.Fragment>
                                 {
-                                    this.props.schools.map(x => {
+                                    this.props.schools.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(x => {
                                         if(x.schoolName.includes(this.state.query))
                                         {
                                             return(

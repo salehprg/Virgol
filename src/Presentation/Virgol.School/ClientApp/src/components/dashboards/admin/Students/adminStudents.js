@@ -8,14 +8,15 @@ import {GetAllStudents} from "../../../../_actions/adminActions"
 
 class adminStudents extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1}
+    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 15, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         console.log("start")
         this.setState({ loading: true })
         await this.props.GetAllStudents(this.props.user.token);
         this.setState({ loading: false })
-        console.log("start")
+        
+        this.setState({totalCard : this.props.allStudents.length})
 
     }
 
@@ -39,14 +40,15 @@ class adminStudents extends React.Component {
                     changeQuery={this.changeQuery}
                     headers={[ 'نام', 'نام خانوادگی', 'کد ملی' , 'تلفن همراه' , 'تلفن تماس ولی' , 'حساب تکمیل شده']}
                     cardsPerPage={this.state.itemsPerPage}
-                    totalCards={60}
+                    totalCards={this.state.totalCard}
                     paginate={this.paginate}
                     currentPage={this.state.currentPage}
                     body={() => {
+
                         return (
                             <React.Fragment>
                                 {(this.props.allStudents ?
-                                    this.props.allStudents.map(x => {
+                                    this.props.allStudents.slice((this.state.currentPage - 1) * this.state.itemsPerPage,this.state.currentPage  * this.state.itemsPerPage).map(x => {
                                         if (x.firstName.includes(this.state.query) || x.lastName.includes(this.state.query) || (x.firstName + " " + x.lastName).includes(this.state.query))
                                         {
                                             return(
@@ -55,7 +57,7 @@ class adminStudents extends React.Component {
                                                 <td>{x.lastName}</td>
                                                 <td>{x.melliCode}</td>
                                                 <td>{x.phoneNumber}</td>
-                                                <td>{x.userDetail.fatherPhoneNumber}</td>
+                                                <td>{x.fatherPhoneNumber}</td>
                                                 <td><span className="text-center">{x.completed ? check_circle('w-8 text-greenish') : null}</span></td>
                                             </tr>
                                             )

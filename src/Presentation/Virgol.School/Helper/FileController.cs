@@ -189,20 +189,22 @@ public class FileController {
                                         MelliCode = excelData.GetValue(melliCodeId).ToString(),
                                         PhoneNumber = (phoneNumberId != -1 ? 
                                                         (excelData.GetValue(phoneNumberId) != null ? excelData.GetValue(phoneNumberId).ToString() : null) 
-                                                        : null),
-                                        teacherDetail = new TeacherDetail {
-                                            personalIdNUmber = (personalIdNumber != -1 ? 
-                                                        (excelData.GetValue(personalIdNumber) != null ? excelData.GetValue(personalIdNumber).ToString() : null) 
                                                         : null)
-                                        }
                                     };
 
                                     if(!isTeacher)
                                     {
-                                        selectedUser.userDetail = new StudentDetail();
-                                        selectedUser.userDetail.FatherName = (fatherNameId != -1 ? 
+                                        selectedUser.studentDetail = new StudentDetail();
+                                        selectedUser.studentDetail.FatherName = (fatherNameId != -1 ? 
                                                                                 (excelData.GetValue(fatherNameId) != null ? excelData.GetValue(fatherNameId).ToString() : null)
                                                                                 : null);
+                                    }
+                                    else
+                                    {
+                                        selectedUser.teacherDetail = new TeacherDetail();
+                                        selectedUser.teacherDetail.personalIdNUmber = (personalIdNumber != -1 ? 
+                                                        (excelData.GetValue(personalIdNumber) != null ? excelData.GetValue(personalIdNumber).ToString() : null) 
+                                                        : null);
                                     }
 
 

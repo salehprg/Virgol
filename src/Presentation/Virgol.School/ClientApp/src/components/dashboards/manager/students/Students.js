@@ -14,13 +14,16 @@ class Students extends React.Component {
         showDeleteModal : false ,
         studentId : 0,
         itemsPerPage: 20,
-        currentPage: 1
+        currentPage: 1,
+        totalCard : 0
     }
 
     componentDidMount = async () => {
         this.setState({ loading: true })
         await this.props.getAllStudents(this.props.user.token);
         this.setState({ loading: false })
+
+        this.setState({totalCard : this.props.students.length})
     }
 
     changeQuery = query => {
@@ -65,7 +68,7 @@ class Students extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     cardsPerPage={this.state.itemsPerPage}
-                    totalCards={60}
+                    totalCards={this.state.totalCard}
                     paginate={this.paginate}
                     currentPage={this.state.currentPage}
                     button={() => {
@@ -82,7 +85,7 @@ class Students extends React.Component {
                         return (
                             <React.Fragment>
                                 {
-                                    this.props.students.map(x => {
+                                    this.props.students.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(x => {
                                         if (x.firstName.includes(this.state.query) || x.lastName.includes(this.state.query) || (x.firstName + " " + x.lastName).includes(this.state.query))
                                         {
                                             return(
@@ -91,9 +94,9 @@ class Students extends React.Component {
                                                 <td>{x.lastName}</td>
                                                 <td>{x.phoneNumber}</td>
                                                 <td>{x.melliCode}</td>
-                                                <td>{(x.userDetail ? x.userDetail.fatherName : "")}</td>
-                                                <td>{(x.userDetail ? x.userDetail.fatherPhoneNumber : "")}</td>
-                                                <td><span className="text-center">{x.completed ? check_circle('w-8 text-greenish') : null}</span></td>
+                                                <td>{x.fatherName}</td>
+                                                <td>{x.fatherPhoneNumber}</td>
+                                                <td><span className="text-center">{x.latinFirstName ? check_circle('w-8 text-greenish') : null}</span></td>
                                                 <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>            

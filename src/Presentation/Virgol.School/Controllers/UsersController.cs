@@ -290,9 +290,9 @@ namespace lms_with_moodle.Controllers
  
                 StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
 
-                studentDetail.BirthDate = userDataModel.userDetail.BirthDate;
-                studentDetail.cityBirth = userDataModel.userDetail.cityBirth;
-                studentDetail.FatherPhoneNumber = userDataModel.userDetail.FatherPhoneNumber;
+                studentDetail.BirthDate = userDataModel.studentDetail.BirthDate;
+                studentDetail.cityBirth = userDataModel.studentDetail.cityBirth;
+                studentDetail.FatherPhoneNumber = userDataModel.studentDetail.FatherPhoneNumber;
                 
                 appDbContext.StudentDetails.Update(studentDetail);
 
@@ -563,11 +563,11 @@ namespace lms_with_moodle.Controllers
                     StudentDetail userDetail = new StudentDetail{
                         ShDocument = _model.MelliCode,
                         Document2 = _model.MelliCode + "_Doc2",
-                        BaseId = _model.userDetail.BaseId,
-                        BirthDate = _model.userDetail.BirthDate,
-                        FatherMelliCode = _model.userDetail.FatherMelliCode,
-                        FatherName = _model.userDetail.FatherName,
-                        FatherPhoneNumber = _model.userDetail.FatherPhoneNumber,
+                        BaseId = _model.studentDetail.BaseId,
+                        BirthDate = _model.studentDetail.BirthDate,
+                        FatherMelliCode = _model.studentDetail.FatherMelliCode,
+                        FatherName = _model.studentDetail.FatherName,
+                        FatherPhoneNumber = _model.studentDetail.FatherPhoneNumber,
                         UserId = userId
                     };
 

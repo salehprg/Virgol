@@ -27,6 +27,7 @@ using Models.InputModel;
 using static SchoolDataHelper;
 using ExcelDataReader;
 using Newtonsoft.Json;
+using Models.Users.Teacher;
 
 namespace lms_with_moodle.Controllers
 {
@@ -75,26 +76,19 @@ namespace lms_with_moodle.Controllers
 
                 int schoolCount = schools.Count;
                 int limitCount = adminModel.SchoolLimit - schoolCount;
-                int studentsCount = 0;
+                int studentsCount = appDbContext.StudentViews.Where(x => x.SchoolType == adminModel.SchoolsType).Count();
 
-                List<UserModel> teachers = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Teacher).ToList();
+                List<TeacherViewModel> teachers = appDbContext.TeacherViews.ToList();
 
-                List<UserModel> resultTeacher = new List<UserModel>();
-                List<UserModel> nullTeacher = new List<UserModel>();
+                List<TeacherViewModel> resultTeacher = new List<TeacherViewModel>();
 
                 foreach (var school in schools)
                 {
-                    studentsCount += appDbContext.Users.Where(x => x.SchoolId == school.Id && (x.userTypeId == (int)UserType.Student)).Count();
                     foreach (var teacher in teachers)
                     {
-                        TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
-                        if(teacherDetail != null && teacherDetail.SchoolsId.Contains(school.Id.ToString() + ","))
+                        if(teacher.SchoolsId.Contains(school.Id.ToString() + ","))
                         {
                             resultTeacher.Add(teacher);
-                        }
-                        else if(teacherDetail == null)
-                        {
-                            nullTeacher.Add(teacher);
                         }
                     }
                 }
@@ -447,32 +441,23 @@ namespace lms_with_moodle.Controllers
                 int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault().SchoolsType;
 
                 List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
-                List<UserModel> teachers = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Teacher).ToList();
 
-                List<UserDataModel> result = new List<UserDataModel>();
+                List<TeacherViewModel> allTeachers = appDbContext.TeacherViews.ToList();
+                List<TeacherViewModel> result = new List<TeacherViewModel>();
 
                 foreach (var school in schools)
                 {
                     int schoolId = school.Id;
-                    foreach (var teacher in teachers)
+                    foreach (var teacher in allTeachers)
                     {
-                        var serializedParent = JsonConvert.SerializeObject(teacher); 
-                        UserDataModel teacherVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
-
-                        TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
-                        if(teacherDetail != null && teacherDetail.SchoolsId.Contains(schoolId.ToString() + ","))
+                        if(teacher.SchoolsId.Contains(schoolId.ToString() + ","))
                         {
-                            if(teacher.LatinFirstname != null)
-                            {
-                                teacherVW.completed = true;
-                            }
-                            teacherVW.teacherDetail = teacherDetail;
-                            result.Add(teacherVW);
+                            result.Add(teacher);
                         }
                     }
                 }
 
-                return Ok(result.Distinct());
+                return Ok(result);
             }
             catch(Exception ex)
             {
@@ -494,26 +479,8 @@ namespace lms_with_moodle.Controllers
 
                 List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
 
-                List<UserDataModel> result = new List<UserDataModel>();
+                List<StudentViewModel> result = appDbContext.StudentViews.Where(x => x.SchoolType == schoolType).ToList();
 
-                foreach (var school in schools)
-                {
-                    List<UserModel> students = appDbContext.Users.Where(x => x.SchoolId == school.Id && x.userTypeId == (int)UserType.Student).ToList();
-                    foreach (var student in students)
-                    {
-                        var serializedParent = JsonConvert.SerializeObject(student); 
-                        UserDataModel studentVW = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
-
-                        StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
-                        if(student.LatinFirstname != null)
-                        {
-                            studentVW.completed = true;
-                        }
-                        studentVW.userDetail = studentDetail;
-
-                        result.Add(studentVW);
-                    }
-                }
 
                 return Ok(result);
             }
