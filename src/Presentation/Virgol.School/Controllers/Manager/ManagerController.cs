@@ -903,6 +903,7 @@ namespace lms_with_moodle.Controllers
                 foreach (var userid in userIds)
                 {
                     School_studentClass studentClass = appDbContext.School_StudentClasses.Where(x => x.UserId == userid && x.ClassId == classId).FirstOrDefault();
+                    int moodelId = appDbContext.Users.Where(x => x.Id == userid).FirstOrDefault().Moodle_Id;
 
                     studentClasses.Add(studentClass);
 
@@ -910,7 +911,7 @@ namespace lms_with_moodle.Controllers
                     {
                         EnrolUser enrolInfo = new EnrolUser();
                         enrolInfo.lessonId = course.id;
-                        enrolInfo.UserId = userid;
+                        enrolInfo.UserId = moodelId;
 
                         enrolsData.Add(enrolInfo);
                     }  
