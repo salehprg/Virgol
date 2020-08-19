@@ -108,7 +108,7 @@ class ClassInfo extends React.Component {
 
     render() {
         return (
-            <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
+            <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="w-screen min-h-screen lg:p-10 p-1 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
                 {this.state.addStudent ? <AddStudent onAddStudent={(dataIds) => this.onAddStudent(dataIds)} cancel={() => this.setState({addStudent : false})} /> : null}
                 {this.state.showDeleteModal ? 
                     <DeleteConfirm
@@ -137,7 +137,7 @@ class ClassInfo extends React.Component {
                 : 
                 null
                 }
-                <div className="addStudent w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
+                <div className="addStudent lg:row-start-1 row-start-2 w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
                      <p className="text-xl text-white mb-8">لیست دانش آموزان</p>
                     {/* <label htmlFor="excel" className="px-1 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">*/}
                     {/*    {plus('w-4')}*/}
@@ -222,7 +222,7 @@ class ClassInfo extends React.Component {
                         </div>
                         <div>
                             <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/m/bases">بازگشت</Link>
-                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className="px-6 py-1 ml-4 rounded-lg border-2 border-redish text-redish">حذف کلاس</button>
+                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className="px-6 py-1 lg:mx-2 mx-0 mt-4 lg:ml-4 ml-0 rounded-lg border-2 border-redish text-redish">حذف کلاس</button>
                         </div>
                     </div>
                     <div className="my-8">
