@@ -76,7 +76,7 @@ class Grades extends React.Component {
             loading('w-10 text-grayish centerize')
 
         return (
-            <div className="w-full mt-10">
+            <div className="w-full mt-10 pb-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ تمامی درس های زیرمجموعه پاک خواهند شد و این عمل قابلیت بازگشت ندارد!"

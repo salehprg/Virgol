@@ -137,7 +137,7 @@ class ClassInfo extends React.Component {
                 : 
                 null
                 }
-                <div className="w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
+                <div className="addStudent w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
                      <p className="text-xl text-white mb-8">لیست دانش آموزان</p>
                     {/* <label htmlFor="excel" className="px-1 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">*/}
                     {/*    {plus('w-4')}*/}
@@ -168,7 +168,7 @@ class ClassInfo extends React.Component {
                             })
                         )
                      )}
-                    <div className={`w-full absolute bottom-0 mb-4 flex flex-row justify-start items-center`}>
+                    <div className={`addStudentBtn transition-all duration-200 w-full absolute bottom-0 mb-4 flex flex-row justify-start items-center`}>
                         <div onClick={() => this.setState({ showAdd: !this.state.showAdd})} className={`w-12 cursor-pointer h-12 mx-2 relative rounded-full bg-greenish`}>
                             {this.state.showAdd ?
                                 x('w-6 text-white centerize')
