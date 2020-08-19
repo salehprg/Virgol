@@ -38,7 +38,7 @@ class adminStudents extends React.Component {
                     button={() => {}}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
-                    headers={[ 'نام', 'نام خانوادگی', 'کد ملی' , 'تلفن همراه' , 'تلفن تماس ولی' , 'حساب تکمیل شده']}
+                    headers={[ 'نام', 'نام خانوادگی', 'نام مدرسه' , 'کد ملی' , 'تلفن همراه' , 'تلفن تماس ولی' , 'حساب تکمیل شده']}
                     cardsPerPage={this.state.itemsPerPage}
                     totalCards={this.state.totalCard}
                     paginate={this.paginate}
@@ -55,6 +55,7 @@ class adminStudents extends React.Component {
                                             <tr>
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
+                                                <td>{x.schoolName}</td>
                                                 <td>{x.melliCode}</td>
                                                 <td>{x.phoneNumber}</td>
                                                 <td>{x.fatherPhoneNumber}</td>

@@ -101,12 +101,12 @@ namespace lms_with_moodle.Helper
 
         }
         
-        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId)
+        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , int duration)
         {
             try
             {
                 name = HttpUtility.UrlEncode(name).ToUpper();
-                string FunctionName = string.Format("create?attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}" , name , meetingId );
+                string FunctionName = string.Format("create?attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}&duration={2}" , name , meetingId , duration.ToString() );
                 string data = FunctionName;
 
                 string _response = await sendData(data);
