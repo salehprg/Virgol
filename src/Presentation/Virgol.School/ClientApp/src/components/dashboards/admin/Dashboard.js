@@ -21,6 +21,18 @@ class Dashboard extends React.Component {
     componentDidMount = async () => {
         this.setState({ active: this.props.location.pathname.split('/')[2] })
         if (window.innerWidth < 1024) this.setState({ sidebar: false })
+
+        window.$crisp = [];
+        window.CRISP_WEBSITE_ID = "4ede6290-1f82-45d7-81ff-1ea74b2afc00";
+
+        (function() {
+            var d = document;
+            var s = d.createElement("script");
+
+            s.src = "https://client.crisp.chat/l.js";
+            s.async = 1;
+            d.getElementsByTagName("head")[0].appendChild(s);
+        })();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

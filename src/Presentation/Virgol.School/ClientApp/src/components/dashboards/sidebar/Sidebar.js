@@ -35,7 +35,7 @@ const   Sidebar = ({ show, toggle, active, changeActive, children }) => {
             variants={sidebarVar}
         >
             <motion.div onClick={toggle} className="lg:hidden block absolute sidebar-toggle cursor-pointer"
-                whileTap={{ rotate: 90 }}
+                // whileTap={{ rotate: 90 }}
                 animate={show ? 'open' : 'close'}
                 transition="transition"
                 variants={toggleVar}
