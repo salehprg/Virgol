@@ -29,6 +29,9 @@ import ManagerNewsInfo from './dashboards/manager/News/NewsInfo';
 import AddNewsTeacher from './dashboards/Teacher/News/AddNews';
 import TeacherNewsInfo from './dashboards/Teacher/News/NewsInfo';
 
+import MeetingResponse from './MeetingResponse/MeetingResponse';
+import ParticipantList from './MeetingResponse/ParticipantList';
+
 class App extends React.Component {
 
     componentDidMount() {
@@ -73,6 +76,10 @@ class App extends React.Component {
                         <Route path="/addNewsTeacher" component={AddNewsTeacher} />
                         <Route path="/teacherNews/:id" component={TeacherNewsInfo} />
                         <Route path="/teacherCompleteProfile" component={TeacherCompleteProfile} />
+
+                        <Route path="/meetingResponse/:id" component={MeetingResponse} />
+                        <Route path="/ParticipantInfo/:id" component={ParticipantList} />
+
                         <Route path="" component={NoFound} />
                     </Switch>
                 </Router>

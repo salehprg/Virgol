@@ -152,6 +152,8 @@ export const DeleteStudents = (token, ids) => async dispatch => {
 
 }
 
+//#endregion
+
 //#region Class
 
 export const getStudentsClass = (token , classId) => async dispatch => {
