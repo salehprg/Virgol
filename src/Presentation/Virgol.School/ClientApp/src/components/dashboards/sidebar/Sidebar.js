@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import {menu, x} from "../../../assets/icons";
 
-const   Sidebar = ({ show, toggle, active, changeActive, children }) => {
+const   Sidebar = ({ show, toggle,title, active, changeActive, children }) => {
 
     const sidebarVar = {
         open: {
@@ -43,7 +43,7 @@ const   Sidebar = ({ show, toggle, active, changeActive, children }) => {
                 {show ? x('w-8 text-white') : menu("w-8 text-white")}
             </motion.div>
 
-            <h1 className="text-center mt-4 text-2xl text-white font-vm">ویرگول</h1>
+            <h1 className="text-center mt-4 text-xl text-white font-vm">{title}</h1>
 
             <div className="w-full mt-10">
                 {children}

@@ -9,7 +9,8 @@ import ReactTooltip from "react-tooltip";
 
 class Teachers extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 40, currentPage: 1 , totalCard : 0}
+    state = { loading: false, query: '' , showDeleteModal : false, selected : [],
+                itemsPerPage: 40, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         this.setState({ loading: true })
@@ -32,6 +33,18 @@ class Teachers extends React.Component {
         this.setState({showDeleteModal : false , teacherId : 0})
     }
 
+    handleSelectTeacher = (e) =>{
+        const event = e;
+
+        if(event.target.checked)
+        {
+            this.setState({selected : [...this.state.selected, parseInt(event.target.value)]})
+        }
+        else
+        {
+            this.setState({selected : this.state.selected.filter(element => element !== parseInt(event.target.value))})
+        } 
+    }
 
     submitExcel = async (excel) => {
         await this.props.addBulkTeacher(this.props.user.token , excel)
@@ -73,7 +86,7 @@ class Teachers extends React.Component {
                     sampleLink="/samples/teacherSample.xls"
                     excel="بارگذاری اکسل معلمان"
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'تلفن تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
+                    headers={[ '' ,'نام', 'نام خانوادگی', 'کد ملی', 'تلفن تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -83,6 +96,7 @@ class Teachers extends React.Component {
                                         {
                                             return(
                                             <tr>
+                                                <td><input type="checkbox" value={x.id} onChange={this.handleSelectTeacher}></input></td>
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
                                                 <td>{x.melliCode}</td>

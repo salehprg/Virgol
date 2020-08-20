@@ -16,7 +16,7 @@ import history from "../../../../history";
 
 class ClassInfo extends React.Component {
 
-    state = {lessons : [], addLesson: false, loading: false , showChangeName: false, 
+    state = {lessons : [], addLesson: false, loading: false , showChangeName: false, selected : [],
         classDetail : {}, showAdd: false , showUnAssignModal : false, className : "" , addStudent : false}
 
         sc = createRef()
@@ -87,6 +87,20 @@ class ClassInfo extends React.Component {
         this.componentDidMount()
         this.render()
     }
+
+    handleSelectStudent = (e) =>{
+        const event = e;
+
+        if(event.target.checked)
+        {
+            this.setState({selected : [...this.state.selected, parseInt(event.target.value)]})
+        }
+        else
+        {
+            this.setState({selected : this.state.selected.filter(element => element !== parseInt(event.target.value))})
+        } 
+    }
+
 
     showUnassign = (id) => {
         this.setState({selectedStd : id})
@@ -162,7 +176,8 @@ class ClassInfo extends React.Component {
                         this.props.students.map(std => {
                             return ((std ?
                                         <div className="flex flex-row-reverse justify-between items-center">
-                                            <span onClick={() => this.showUnassign(std.id)}>{x('w-6 text-redish cursor-pointer')}</span>
+                                            <input type="checkbox" value={std.id} onChange={this.handleSelectStudent}></input>
+                                            {/* <span onClick={() => this.showUnassign(std.id)}>{x('w-6 text-redish cursor-pointer')}</span> */}
                                             <p className="text-right text-white">{std.firstName} {std.lastName}</p>
                                             <p className="text-right text-white">{std.melliCode}</p>
                                         </div>

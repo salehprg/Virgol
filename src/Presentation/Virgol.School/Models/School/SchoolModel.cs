@@ -13,7 +13,7 @@ public class SchoolModel {
     public int SchoolType {get; set;}
     
     ///<summary>
-    ///0 = boy , 1 = girl
+    ///0 = girl , 1 = boy
     ///</summary>
     public int sexuality {get; set;}
     public bool SelfSign {get; set;}

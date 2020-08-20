@@ -149,6 +149,10 @@ namespace lms_with_moodle.Controllers
                 {
                     result = appDbContext.StudentViews.Where(x => x.schoolid == schoolId && x.ClassId == null).ToList();
                 }
+                else
+                {
+                    result = AllStudent;
+                }
 
                 return Ok(result);
             }

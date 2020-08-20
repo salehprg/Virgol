@@ -57,6 +57,7 @@ class Dashboard extends React.Component {
                     show={this.state.sidebar}
                     toggle={this.toggleSidebar}
                     active={this.state.active}
+                    title="ویرگول"
                 >
                     <SidebarCard
                         active={this.state.active}
