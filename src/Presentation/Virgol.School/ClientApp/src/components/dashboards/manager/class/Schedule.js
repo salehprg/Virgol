@@ -44,7 +44,7 @@ class Schedule extends React.Component {
             {
                 (day.map(lesson => {
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: ((26 -lesson.startHour)), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
+                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 28 - ((lesson.endHour - 7) * 2), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
                     h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , absenceCount : lesson.absenceCount , static: true})
                 }))
             }

@@ -37,7 +37,7 @@ class Home extends React.Component {
                     <RecentClass
                         onStart={(id) => this.JoinMeeting(id)}
                         joinList={true}
-                        class={this.props.recentClass}
+                        classes={this.props.recentClass}
                         title="کلاس های فعال"
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />

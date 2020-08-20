@@ -262,66 +262,43 @@ namespace lms_with_moodle.Controllers
                 int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
-                List<MeetingVW> meetingVWs = new List<MeetingVW>();
-
                 if(isTeacher)
                 {
-                    List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.TeacherId == userId && (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))   && x.DayType == dayOfWeek ).ToList();
+                    List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.TeacherId == userId && (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))   && x.DayType == dayOfWeek).ToList();
                     List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => x.TeacherId == userId && !x.Finished).ToList();
                     
-                    //Remove active meeting from all meeting
+                    List<MeetingView> recentClasses = new List<MeetingView>();
+                    // //Remove active meeting from all meeting
                     foreach (var schedule in classes)
                     {
                         if(activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault() == null)
                         {
-                            MeetingVW meetingVW = new MeetingVW();
+                            MeetingView meetingVW = new MeetingView();
 
-                            School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
-                            meetingVW.className = classInfo.ClassName;
-                            SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
-                            meetingVW.schoolName = schoolInfo.SchoolName;
+                            var serialized = JsonConvert.SerializeObject(schedule);
+                            meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
 
-                            meetingVW.meetingDetail = schedule;
-
-                            meetingVWs.Add(meetingVW);
+                            recentClasses.Add(meetingVW);
                         }
                     }
 
-                    meetingVWs = meetingVWs.OrderBy(x => x.meetingDetail.StartHour).Take(5).ToList();
+                    //meetingVWs = meetingVWs.OrderBy(x => x.meetingDetail.StartHour).Take(5).ToList();
 
-                    return Ok(meetingVWs);
+                    recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
+
+                    return Ok(recentClasses);
                 }
                 else
                 {
                     School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault();
+                    List<MeetingView> meetingViews = new List<MeetingView>();
+
                     if(school_Student != null)
                     {
-                        int userClass = school_Student.ClassId;
-                        List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.ClassId == userClass).ToList();
-                        List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => !x.Finished).ToList();
-                        
-                        foreach (var schedule in classes)
-                        {
-                            MeetingVW meetingVW = new MeetingVW();
-                            Meeting meeting = activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault();
-                            if(meeting != null)
-                            {
-                                var serialized = JsonConvert.SerializeObject(meeting);
-                                meetingVW = JsonConvert.DeserializeObject<MeetingVW>(serialized);
-
-                                School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
-                                meetingVW.className = classInfo.ClassName;
-                                SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
-                                meetingVW.schoolName = schoolInfo.SchoolName;
-
-                                meetingVW.meetingDetail = schedule;
-
-                                meetingVWs.Add(meetingVW);
-                            }
-                        }
+                        meetingViews = appDbContext.MeetingViews.Where(x => x.ClassId == school_Student.ClassId && x.Finished == false).ToList();
                     }
 
-                    return  Ok(meetingVWs);
+                    return  Ok(meetingViews);
                 }
 
                
@@ -343,29 +320,9 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
-                List<MeetingVW> meetingVWs = new List<MeetingVW>();
-                List<Meeting> Meetings = appDbContext.Meetings.Where(x => x.TeacherId == teacherId && !x.Finished).ToList();
-
-                foreach (var meeting in Meetings)
-                {
-                    MeetingVW meetingVW = new MeetingVW();
-                    var serialized = JsonConvert.SerializeObject(meeting);
-                    meetingVW = JsonConvert.DeserializeObject<MeetingVW>(serialized);
-
-                    ClassScheduleView classs = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.LessonId).FirstOrDefault();
+                List<MeetingView> meetingViews = appDbContext.MeetingViews.Where(x => x.TeacherId == teacherId && x.Finished == false).ToList();
                     
-                    School_Class classInfo = appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault();
-                    meetingVW.className = classInfo.ClassName;
-                    SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.Id == classInfo.School_Id).FirstOrDefault();
-                    meetingVW.schoolName = schoolInfo.SchoolName;
-
-                    meetingVW.meetingDetail = classs;
-
-                    meetingVWs.Add(meetingVW);
-
-                }
-
-                return Ok(meetingVWs);
+                return Ok(meetingViews);
             }
             catch(Exception ex)
             {

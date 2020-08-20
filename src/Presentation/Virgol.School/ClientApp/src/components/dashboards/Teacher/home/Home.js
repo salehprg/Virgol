@@ -12,12 +12,10 @@ class Home extends React.Component {
     state = {loading : false}
 
     componentDidMount = async () =>{
-            console.log("get meeting List")
             this.setState({loading: true})
             await this.props.GetMeetingList(this.props.user.token);
             await this.props.GetRecentClass(this.props.user.token);
             this.setState({loading: false})
-            console.log("Done !")
 
     }
 
@@ -43,7 +41,6 @@ class Home extends React.Component {
     }
     
     render() {
-        console.log(this.props)
         if(this.state.loading) return "درحال بارگداری اطلاعات ..."
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
@@ -55,7 +52,7 @@ class Home extends React.Component {
                         onStart={(id) => this.StatrMeeting(id)}
                         joinList={false}
                         teacher={true}
-                        class={this.props.recentClass}
+                        classes={this.props.recentClass}
                         title="کلاس های پیش رو"
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
@@ -64,7 +61,7 @@ class Home extends React.Component {
                         onEnd={(bbbId) => this.EndMeeting(bbbId)}
                         joinList={true}
                         teacher={true}
-                        class={this.props.meetingList}
+                        classes={this.props.meetingList}
                         title="کلاس های فعال"
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
