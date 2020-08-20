@@ -57,7 +57,7 @@ namespace lms_with_moodle.Controllers
 #region AfterMeeting
         [HttpGet]
         [Authorize(Roles = "Teacher")]
-        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        [ProducesResponseType(typeof(List<ParticipantView>), 200)]
         public async Task<IActionResult> GetParticipantList(int meetingId) 
         {
             string userName = userManager.GetUserId(User);
@@ -81,7 +81,7 @@ namespace lms_with_moodle.Controllers
             }
 
             await appDbContext.SaveChangesAsync();
-            return Ok(students);
+            return Ok(true);
         }
 
         [HttpGet]
@@ -308,6 +308,21 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Manager")]
+        [ProducesResponseType(typeof(List<ParticipantView>), 200)]
+        public IActionResult GetAllActiveMeeting() 
+        {
+            string userName = userManager.GetUserId(User);
+            int managerId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+            int schoolId = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault().Id;
+
+            List<MeetingView> meetingViews = appDbContext.MeetingViews.Where(x => x.School_Id == schoolId && x.Finished == false).ToList();
+                
+            return Ok(meetingViews);
+        }
+
 
         [HttpGet]
         [Authorize(Roles = "Teacher")]

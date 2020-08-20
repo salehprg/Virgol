@@ -7,7 +7,79 @@ import { worker } from "./workerActions";
 import {START, STOP} from "./workerTypes";
 
 
-//#region Manager
+export const GetAllActiveMeeting = token => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        const response = await lms.get("/Meeting/GetAllActiveMeeting", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.GetAllActiveMeeting, payload: response.data });
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطا دربرقراری اتصال"))
+    }
+
+}
+
+export const SetPresentStatus = students => async dispatch => {
+
+    try {
+        
+        var token = localStorage.getItem("userToken");
+        const response = await lms.post('/Meeting/SetPresentStatus' , students , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        if(response.data)
+        {
+            dispatch(alert.success("لیست حضور و غیاب با موفقیت ثبت شد"))
+            history.push("/t/dashboard")
+            return true
+        }
+        else
+        {
+            return false
+        }
+
+    } catch (e) {
+
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+
+        return false
+
+    }
+
+}
+
+export const GetParticipantList = meetingId => async dispatch => {
+
+    try {
+        
+        var token = localStorage.getItem("userToken");
+        const response = await lms.get(`/Meeting/GetParticipantList?meetingId=${meetingId}` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.GetParticipantList, payload: response.data })
+
+    } catch (e) {
+
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+
+        return false
+
+    }
+
+}
 
 export const GetMeetingList = token => async dispatch => {
 

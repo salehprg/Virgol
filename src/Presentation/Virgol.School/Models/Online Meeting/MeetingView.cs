@@ -17,6 +17,7 @@ public class MeetingView {
     ///</summary>
     public int DayType {get; set;}
     public int ClassId {get; set;}
+    public int School_Id {get; set;}
     public float StartHour {get; set;}
     public float EndHour {get; set;}
     public string FirstName {get; set;}
