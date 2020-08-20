@@ -101,12 +101,39 @@ namespace lms_with_moodle.Helper
 
         }
         
-        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , int duration)
+        public async Task<RecordsResponse> GetMeetingRecords(string meetingID)
+        {
+            try
+            {
+                string FunctionName = string.Format("getRecordings?meetingID={0}" , meetingID);
+                string data = FunctionName;
+
+                string _response = await sendData(data);
+
+                var recordings = JsonConvert.DeserializeObject<RecordsResponse>(_response);
+
+                return recordings;
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+
+                return null;
+            }
+
+        }
+        
+        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , int duration , string callbackUrl)
         {
             try
             {
                 name = HttpUtility.UrlEncode(name).ToUpper();
-                string FunctionName = string.Format("create?attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}&duration={2}" , name , meetingId , duration.ToString() );
+                //https://myapp.example.com/callback?meetingID=test01
+                
+                string urlEncoded = WebUtility.UrlEncode(callbackUrl);
+
+                string FunctionName = string.Format("create?attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}&duration={2}&logoutURL={3}" , name , meetingId , duration.ToString(), urlEncoded );
                 string data = FunctionName;
 
                 string _response = await sendData(data);

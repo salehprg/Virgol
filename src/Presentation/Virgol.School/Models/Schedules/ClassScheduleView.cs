@@ -17,13 +17,12 @@ public class ClassScheduleView {
     public string FirstName {get; set;}
     public string LastName {get; set;}
     public string OrgLessonName {get; set;}
+    public string ClassName {get;set;}
+    public string SchoolName {get;set;}
 
     [NotMapped]
     public string moodleUrl {get;set;}
-    [NotMapped]
-    public string className {get;set;}
-    [NotMapped]
-    public string schoolName {get;set;}
+
     [NotMapped]
     public int absenceCount {get;set;}
 

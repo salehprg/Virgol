@@ -8,6 +8,7 @@ class RecentClass extends React.Component {
     render() {
         const { title, pos , joinList } = this.props
 
+        console.log(this.props.class)
         return (
             <div className={`${pos} w-full h-full my-4 px-6 py-4 text-right bg-dark-blue rounded-xl`}>
                 <p className="text-white">{title}</p>
