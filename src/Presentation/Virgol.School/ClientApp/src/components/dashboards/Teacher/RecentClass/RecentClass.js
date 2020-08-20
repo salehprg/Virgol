@@ -26,8 +26,8 @@ class RecentClass extends React.Component {
                                     onStart={() => this.props.onStart((joinList ? x.bbB_MeetingId : x.meetingDetail.id))}
                                     onEnd={() => this.props.onEnd((joinList ? x.bbB_MeetingId : 0))}
                                     joinable={joinList}
-                                    startTime={`${~~x.meetingDetail.startHour}:${(x.meetingDetail.startHour - ~~x.meetingDetail.startHour) * 60}`}
-                                    endTime={`${~~x.meetingDetail.endHour}:${(x.meetingDetail.endHour - ~~x.meetingDetail.endHour) * 60}`
+                                    startTime={`${~~x.meetingDetail.startHour}:${((x.meetingDetail.startHour - ~~x.meetingDetail.startHour) * 60 == 0 ? '00' : (x.meetingDetail.startHour - ~~x.meetingDetail.startHour) * 60)}`}
+                                    endTime={`${~~x.meetingDetail.endHour}:${((x.meetingDetail.endHour - ~~x.meetingDetail.endHour) * 60 == 0 ? '00' : (x.meetingDetail.endHour - ~~x.meetingDetail.endHour) * 60)}`
                                     }
                                 />
                             );
