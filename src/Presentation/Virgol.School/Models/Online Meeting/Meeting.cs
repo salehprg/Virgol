@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class Meeting {
     public int Id {get; set;}
-    public string MeetingName {get; set;} //Meeting Id that bbb give us
-    public string BBB_MeetingId {get; set;} //Meeting Id that bbb give us
+    public string MeetingName {get; set;} 
+    public string BBB_MeetingId {get; set;} 
     public int AttendeeCount {get; set;}
     public int PresentCount {get; set;}
     public bool Finished {get; set;}

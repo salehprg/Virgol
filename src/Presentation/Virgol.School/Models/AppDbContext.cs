@@ -36,9 +36,13 @@ namespace Models
         public DbSet<StudentDetail> StudentDetails {get; set;}
         public DbSet<TeacherDetail> TeacherDetails {get; set;}
         public DbSet<Class_WeeklySchedule> ClassWeeklySchedules {get; set;}
+        public DbSet<State> States {get; set;}
+        public DbSet<City> Cities {get; set;}
+        public DbSet<Region> Regions {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}
+        public DbSet<ParticipantView> ParticipantViews {get; set;}
         public DbSet<StudentViewModel> StudentViews {get; set;}
         public DbSet<TeacherViewModel> TeacherViews {get; set;}
 

@@ -11,6 +11,9 @@ export const login = formValues => async dispatch => {
         const response = await lms.post('/Users/LoginUser', formValues)
         dispatch({ type: Type.LOGIN, payload: response.data })
 
+        localStorage.setItem('userToken', response.data.token)
+        localStorage.setItem('userType', response.data.userType)
+
         switch (response.data.userType) {
             case 1: {
                 if(!response.data.completedProfile)

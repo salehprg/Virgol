@@ -12,10 +12,13 @@ class Home extends React.Component {
     state = {loading : false}
 
     componentDidMount = async () =>{
+            console.log("get meeting List")
             this.setState({loading: true})
             await this.props.GetMeetingList(this.props.user.token);
             await this.props.GetRecentClass(this.props.user.token);
             this.setState({loading: false})
+            console.log("Done !")
+
     }
 
     StatrMeeting = async(id) => {
@@ -40,6 +43,7 @@ class Home extends React.Component {
     }
     
     render() {
+        console.log(this.props)
         if(this.state.loading) return "درحال بارگداری اطلاعات ..."
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">

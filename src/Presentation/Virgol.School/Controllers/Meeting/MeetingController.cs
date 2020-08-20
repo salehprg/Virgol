@@ -54,8 +54,50 @@ namespace lms_with_moodle.Controllers
 
         }
 
+#region AfterMeeting
+        [HttpGet]
+        [Authorize(Roles = "Teacher")]
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public async Task<IActionResult> GetParticipantList(int meetingId) 
+        {
+            string userName = userManager.GetUserId(User);
+            int userId = appDbContext.Users.Where(x => x.MelliCode == userName).FirstOrDefault().Id;
+
+            List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meetingId && x.UserId != userId).ToList();
+            return Ok(participantViews);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public async Task<IActionResult> SetPresentStatus(List<ParticipantView> students) 
+        {
+            foreach (var student in students)
+            {
+                ParticipantInfo participantInfo = appDbContext.ParticipantInfos.Where(x => x.Id == student.Id).FirstOrDefault();
+                participantInfo.IsPresent = student.IsPresent;
+                
+                appDbContext.ParticipantInfos.Update(participantInfo);
+            }
+
+            await appDbContext.SaveChangesAsync();
+            return Ok(students);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "User")]
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public async Task<IActionResult> SubmitReview(int meetingId , int Score , string description) 
+        {
+            //After finished meeting Student can Submit a review
+            return Ok();
+        }
+
+#endregion
+
 #region Meeting
-        
+    
+
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
@@ -72,28 +114,42 @@ namespace lms_with_moodle.Controllers
                 CourseDetail lessonDetail = await moodleApi.GetCourseDetail(moodleId);
 
                 DateTime timeNow = DateTime.Now;
-                string meetingId = lessonId.ToString() + timeNow.Hour.ToString() + timeNow.Minute.ToString() + timeNow.Second.ToString();
 
                 float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
                 float duration = (classSchedule.EndHour - currentTime) * 60;
 
+                List<Meeting> meetings = appDbContext.Meetings.Where(x => x.TeacherId == teacherId && x.LessonId == lessonId).ToList();
+                int newMeetingNo = meetings.Count + 1;
+
+                string meetingName = lessonDetail.displayname + " جلسه " + newMeetingNo;
+
+                Meeting meeting = new Meeting();
+                meeting.MeetingName = meetingName;
+                meeting.StartTime = DateTime.Now;
+                meeting.LessonId = lessonId;
+                meeting.TeacherId = teacherId;
+
+                appDbContext.Meetings.Add(meeting);
+                appDbContext.SaveChanges();
+
+                string callBackUrl = Request.Scheme + "://" + Request.Host.Value + "/meetingResponse/" + meeting.Id;
+
                 BBBApi bbbApi = new BBBApi(appSettings);
-                MeetingsResponse response = await bbbApi.CreateRoom(lessonDetail.displayname , meetingId , (int)duration);
+                MeetingsResponse response = await bbbApi.CreateRoom(meetingName , meeting.Id.ToString() , (int)duration , callBackUrl);
+
+                meeting.Id = meeting.Id;
 
                 if(response.returncode != "FAILED")
                 {
-                    Meeting meeting = new Meeting();
-                    meeting.BBB_MeetingId = meetingId;
-                    meeting.MeetingName = lessonDetail.displayname;
-                    meeting.StartTime = DateTime.Now;
-                    meeting.LessonId = lessonId;
-                    meeting.TeacherId = teacherId;
-
-                    appDbContext.Meetings.Add(meeting);
-                    appDbContext.SaveChanges();
-
+                    meeting.BBB_MeetingId = meeting.Id.ToString();
+                    appDbContext.Meetings.Update(meeting);
+                    await appDbContext.SaveChangesAsync();
+                
                     return Ok();
                 }
+
+                appDbContext.Remove(meeting);
+                await appDbContext.SaveChangesAsync();
                 
                 return BadRequest("در ایجاد کلاس مشکلی پیش آمد");
             }
