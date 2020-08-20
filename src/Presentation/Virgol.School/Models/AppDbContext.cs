@@ -45,6 +45,7 @@ namespace Models
         public DbSet<ParticipantView> ParticipantViews {get; set;}
         public DbSet<StudentViewModel> StudentViews {get; set;}
         public DbSet<TeacherViewModel> TeacherViews {get; set;}
+        public DbSet<MeetingView> MeetingViews {get; set;}
 
 
         // protected override void OnModelCreating(ModelBuilder builder)
