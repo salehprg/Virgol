@@ -5,7 +5,7 @@ import Add from '../../field/Add';
 import Fieldish from '../../field/Fieldish';
 import { reduxForm, Field, formValues } from 'redux-form'
 import { connect } from 'react-redux';
-import { CompleteStudentProfile , SendVerifyPhoneNumber , CheckVerifyPhoneNumber} from "../../../_actions/authActions"
+import { CompleteStudentProfile , SendVerifyPhoneNumber , CheckVerifyPhoneNumber , UploadDocuments} from "../../../_actions/authActions"
 import moment from 'moment-jalaali'
 import {validator} from '../../../assets/validator'
 import protectedStudent from "../../protectedRoutes/protectedStudent";
@@ -13,6 +13,8 @@ import protectedStudent from "../../protectedRoutes/protectedStudent";
 class CompleteProfile extends React.Component {
 
     state = {birthDate : moment() , 
+        // shDocUploaded : 0, //0 = notSelected , 1 = Uploading , 2 = Uploaded
+        // axDocUploaded : 0, //0 = notSelected , 1 = Uploading , 2 = Uploaded
         verifyPhone : false , 
         verifiedPhone : false , 
         phoneNumber : "" , 
@@ -84,6 +86,37 @@ class CompleteProfile extends React.Component {
             this.setState({verifiedFatherPhone : false ,verifyFatherPhone : false})
         }
     }
+
+    handleUploadSH = async shDoc => {
+
+        //this.setState({shDocUploaded : 1});
+
+        const result = await this.props.UploadDocuments(this.props.user.token , shDoc , 0)
+        // if(result)
+        // {
+        //     this.setState({shDocUploaded : 2});
+        // }
+        // else
+        // {
+        //     this.setState({shDocUploaded : 0});
+        // }
+    }
+
+    handleUploadAX = async axDoc => {
+
+        //this.setState({axDocUploaded : 1});
+
+        const result = await this.props.UploadDocuments(this.props.user.token , axDoc , 1)
+        // if(result)
+        // {
+        //     this.setState({axDocUploaded : 2});
+        // }
+        // else
+        // {
+        //     this.setState({axDocUploaded : 0});
+        // }
+    }
+
 
     onSubmit = async (formValues) => {
         
@@ -185,17 +218,34 @@ class CompleteProfile extends React.Component {
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />
-                        <p className="text-right text-white mb-4 text-xl">تاریخ تولد : </p>
+                        {/* <p className="text-right text-white mb-4 text-xl">تاریخ تولد : </p>
                         <DatePicker
                             timePicker={false}
                             isGregorian={false}
                             value={this.state.birthDate}
                             onChange={value => this.setState({ birthDate : value })}
-                        ></DatePicker>
-                        
+                        ></DatePicker> */
+                        }
+
+                        <p className="text-right text-white mb-4 text-xl">شناسنامه</p>
+                        <input
+                            onChange={(e) => this.handleUploadSH(e.target.files[0])}
+                            type="file"
+                            id="excel"
+                            accept="image/*"
+                        />
+
+                        <p className="text-right text-white mb-4 text-xl">عکس</p>
+                        <input
+                            onChange={(e) => this.handleUploadAX(e.target.files[0])}
+                            type="file"
+                            id="excel"
+                            accept="image/*"
+                        />
 
                         <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
                     </form>
+
                 </Add>
             </div>
         );
@@ -233,4 +283,5 @@ const formWrapped = reduxForm({
 
 const authWrapped = protectedStudent(formWrapped)
 
-export default connect(mapStateToProps , {CompleteStudentProfile , SendVerifyPhoneNumber , CheckVerifyPhoneNumber})(authWrapped);
+export default connect(mapStateToProps , {CompleteStudentProfile , SendVerifyPhoneNumber , 
+                                            CheckVerifyPhoneNumber , UploadDocuments})(authWrapped);

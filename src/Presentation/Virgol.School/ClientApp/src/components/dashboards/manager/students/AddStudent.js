@@ -10,6 +10,8 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class AddStudent extends React.Component {
 
+    state = {selectedOption : "Female"}
+
     renderInputs = ({ input, meta, type, placeholder }) => {
         return (
             <Fieldish
@@ -27,14 +29,18 @@ class AddStudent extends React.Component {
         
         let data = formValues;
 
+        data.sexuality = (this.state.selectedOption === "Male" ? 1 : 0)
+
         data.studentDetail = {
-            latinLastname : formValues.latinLastname,
-            latinFirstname : formValues.latinFirstname,
             fatherName : formValues.fatherName,
             fatherPhoneNumber : formValues.fatherPhoneNumber
         }
         
         await this.props.AddNewStudent(this.props.user.token , data)
+    }
+
+    handleRadioBtnChng = (e) =>{
+        this.setState({selectedOption : e.target.value});
     }
 
     render() {
@@ -44,6 +50,24 @@ class AddStudent extends React.Component {
                     title={"اطلاعات دانش آموز"}
                 >
                     <form className="w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                        <div className="text-white">
+                            <input checked="true" 
+                                type="radio" 
+                                value="Female" 
+                                name="gender" 
+                                checked={this.state.selectedOption === "Female"}
+                                onChange={this.handleRadioBtnChng}
+                            /> دختر
+
+                            <input 
+                                className="mr-4" 
+                                checked={this.state.selectedOption === "Male"}
+                                onChange={this.handleRadioBtnChng} 
+                                type="radio" 
+                                value="Male" 
+                                name="gender" 
+                            /> پسر
+                        </div>
                         <Field
                             name="firstName"
                             type="text"

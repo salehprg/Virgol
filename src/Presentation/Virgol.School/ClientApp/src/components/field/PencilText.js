@@ -1,17 +1,19 @@
 import React from 'react';
 import { edit } from '../../assets/icons';
+import ReactTooltip from "react-tooltip";
 
 const PencilText = ({ text , className, show, showBox, value, changeValue, submit , schoolData , schoolCode , ChangeCode }) => {
 
     return (
         <div onClick={e => e.stopPropagation()} className="relative flex flex-row-reverse items-center">
+            <ReactTooltip />
             <p className={className}>{text}</p>
 
             {(schoolData ?
                 <p className={"mx-3 " + className}>#{schoolCode}</p>
             : null)}
 
-            <div onClick={showBox} className="mx-2">
+            <div data-tip="ویرایش" onClick={showBox} className="mx-2">
                 {edit('w-6 z-20 text-white cursor-pointer')}
             </div>
             <div className={`absolute text-center z-30 w-48 py-4 px-2 bg-black-blue bottomize ${show ? 'block' : 'hidden'}`}>

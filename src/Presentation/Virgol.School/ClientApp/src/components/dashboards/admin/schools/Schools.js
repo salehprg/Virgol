@@ -7,6 +7,7 @@ import {RedirectAdmin } from "../../../../_actions/adminActions"
 import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
 import { connect } from "react-redux";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
+import ReactTooltip from "react-tooltip";
 
 class Schools extends React.Component {
 
@@ -49,6 +50,7 @@ class Schools extends React.Component {
         if(this.state.loading) return loading('w-10 text-grayish centerize')
         return (
             <div className="w-full mt-10">
+                <ReactTooltip />
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
@@ -64,7 +66,7 @@ class Schools extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     excel="بارگذاری اکسل مدارس"
-                    sample="دانلود نمونه اکسل مدارس"
+                    sample="بارگیری نمونه اکسل مدارس"
                     sampleLink="/samples/SchoolTemplate.xlsx"
                     handleExcel={this.submitExcel}
                     cardsPerPage={this.state.itemsPerPage}
@@ -73,7 +75,7 @@ class Schools extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/newSchool')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>
+                            <button onClick={() => history.push('/newSchool')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>
                         );
                     }}
                     headers={['نام مدرسه', 'کد', 'نوع', 'مدیر', '' , '']}
@@ -90,13 +92,13 @@ class Schools extends React.Component {
                                                 <td>{x.schoolIdNumber}</td>
                                                 <td>{x.schoolTypeName}</td>
                                                 <td>{x.firstName} {x.lastName}</td>
-                                                <td onClick={() => this.redirect(x.id)} className="cursor-pointer">
+                                                <td data-tip="ورود به عنوان مدیر مدرسه" onClick={() => this.redirect(x.id)} className="cursor-pointer">
                                                     {external_link('w-6 text-white ')}
                                                 </td>
-                                                <td className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
+                                                <td data-tip="ویرایش" className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>
-                                                <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                <td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                                     {trash('w-6 text-white ')}
                                                 </td>
                                             </tr>

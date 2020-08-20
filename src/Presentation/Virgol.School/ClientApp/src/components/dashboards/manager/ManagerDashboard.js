@@ -11,6 +11,7 @@ import Teachers from "./teachers/Teachers";
 import Students from "./students/Students";
 import Grades from "./grades/Grades";
 import News from "./News/News";
+import { connect } from "react-redux";
 
 class ManagerDashboard extends React.Component {
 
@@ -44,6 +45,11 @@ class ManagerDashboard extends React.Component {
                     show={this.state.sidebar}
                     toggle={this.toggleSidebar}
                     active={this.state.active}
+                    title={(this.props.dashboardInfo && this.props.dashboardInfo.school && this.props.user.userDetail ? 
+                        `مدرسه ${this.props.user.userDetail.schooltypeName} 
+                        ${this.props.dashboardInfo.school.sexuality == 0 ? "دخترانه" : "پسرانه"}  
+                        ${this.props.dashboardInfo.school.schoolName}`
+                    : null)}
                 >
                     <SidebarCard
                         active={this.state.active}
@@ -99,4 +105,8 @@ class ManagerDashboard extends React.Component {
 
 }
 
-export default protectedManager(ManagerDashboard)
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , dashboardInfo : state.managerData.dashboardInfo}
+}
+
+export default connect(mapStateToProps)(protectedManager(ManagerDashboard))

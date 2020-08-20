@@ -10,6 +10,8 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class AddTeacher extends React.Component {
 
+    state = {selectedOption : "Female"}
+
     renderInputs = ({ input, meta, type, placeholder }) => {
         return (
             <Fieldish
@@ -23,6 +25,10 @@ class AddTeacher extends React.Component {
         );
     }
 
+    handleRadioBtnChng = (e) =>{
+        this.setState({selectedOption : e.target.value});
+    }
+
     onSubmit = async (formValues) => {
         
         let data = formValues;
@@ -31,6 +37,7 @@ class AddTeacher extends React.Component {
         //     latinLastname : formValues.latinLastname,
         //     latinFirstname : formValues.latinFirstname
         // }
+        formValues.sexuality = (this.state.selectedOption === "Male" ? 1 : 0)
       
         await this.props.addNewTeacher(this.props.user.token , formValues)
     }
@@ -43,6 +50,24 @@ class AddTeacher extends React.Component {
                     title={"اطلاعات معلم"}
                 >
                     <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                        <div className="text-white">
+                            <input checked="true" 
+                                type="radio" 
+                                value="Female" 
+                                name="gender" 
+                                checked={this.state.selectedOption === "Female"}
+                                onChange={this.handleRadioBtnChng}
+                            /> زن
+
+                            <input 
+                                className="mr-4" 
+                                checked={this.state.selectedOption === "Male"}
+                                onChange={this.handleRadioBtnChng} 
+                                type="radio" 
+                                value="Male" 
+                                name="gender" 
+                            /> مرد
+                        </div>
                         <Field
                             name="firstName"
                             type="text"

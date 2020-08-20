@@ -13,7 +13,7 @@ import protectedAdmin from "../../../../protectedRoutes/protectedAdmin";
 
 class AddSchool extends React.Component {
 
-    state = { showManagerInfo: true }
+    state = { showManagerInfo: true , selectedOption : "Female"}
 
     renderInputs = ({ input, meta, type, placeholder , extra }) => {
         return (
@@ -28,8 +28,14 @@ class AddSchool extends React.Component {
         );
     }
 
+    handleRadioBtnChng = (e) =>{
+        this.setState({selectedOption : e.target.value});
+    }
+
     onSubmit = async (formValues) => {
         console.log(formValues);
+        formValues.sexuality = (this.state.selectedOption === "Male" ? 1 : 0)
+        
         await this.props.CreateSchool(this.props.user.token , formValues)
         this.setState({showManagerInfo : false})
     }
@@ -59,6 +65,25 @@ class AddSchool extends React.Component {
                     extra={"w-1/4 my-4"}
                     component={this.renderInputs}
                 />
+                
+                <div className="text-white">
+                    <input checked="true" 
+                        type="radio" 
+                        value="Female" 
+                        name="gender" 
+                        checked={this.state.selectedOption === "Female"}
+                        onChange={this.handleRadioBtnChng}
+                    /> دخترانه
+
+                    <input 
+                        className="mr-4" 
+                        checked={this.state.selectedOption === "Male"}
+                        onChange={this.handleRadioBtnChng} 
+                        type="radio" 
+                        value="Male" 
+                        name="gender" 
+                    /> پسرانه
+                </div>
                 
                 <Field
                     name="firstName"

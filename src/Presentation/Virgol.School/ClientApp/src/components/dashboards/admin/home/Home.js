@@ -28,7 +28,20 @@ class Home extends React.Component {
         
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
-                <div className="col-span-1">
+                {(this.props.myNews.length === 0 ?
+                        <Feed
+                            news={[]}
+                            title="آخرین خبرهای منتشر شده از سمت شما"
+                            pos="sm:row-start-1 row-start-2"
+                        />
+                        :
+                        <Feed
+                            news={this.props.myNews}
+                            title="آخرین خبرهای منتشر شده از سمت شما"
+                            pos="sm:row-start-1 row-start-2"
+                        />
+                )}
+                <div className="">
                     {(this.props.user
                             ?
                             <Hero userInfo={this.props.user.userInformation}
@@ -37,52 +50,38 @@ class Home extends React.Component {
                             <Hero userInfo="درحال بارگذاری ..."
                                   title="درحال بارگذاری ..." />
                     )}
-                    <div className="mt-8 grid grid-cols-2 gap-4">
+                    <div className="mt-8">
                         <CounterCard
                             title="مدارس"
                             icon={home}
                             number={this.props.dashboardInfo.schoolCount}
-                            border="border-sky-blue"
-                        />
-
-                        <CounterCard
-                            title="معلمان"
-                            icon={user}
-                            number={this.props.dashboardInfo.teacherCount}
-                            border="border-purplish"
+                            bg="bg-sky-blue"
                         />
 
                         <CounterCard
                             title="کلید"
                             icon={key}
                             number={this.props.dashboardInfo.keyCount}
-                            border="border-greenish"
+                            bg="bg-greenish"
                             pos="row-start-3"
+                        />
+
+                        <CounterCard
+                            title="معلمان"
+                            icon={user}
+                            number={this.props.dashboardInfo.teacherCount}
+                            bg="bg-purplish"
                         />
 
                         <CounterCard
                             title="دانش آموزان"
                             icon={users}
                             number={this.props.dashboardInfo.studentsCount}
-                            border="border-redish"
+                            bg="bg-redish"
                             pos="row-start-3"
                         />
                     </div>
                 </div>
-
-                {(this.props.myNews.length === 0 ?
-                <Feed
-                    news={[]}
-                    title="آخرین خبرهای منتشر شده از سمت شما"
-                    pos="col-span-1"
-                />
-                :
-                <Feed
-                    news={this.props.myNews}
-                    title="آخرین خبرهای منتشر شده از سمت شما"
-                    pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
-                />
-                )}
             </div>
         );
     }

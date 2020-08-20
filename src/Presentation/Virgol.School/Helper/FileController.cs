@@ -133,6 +133,7 @@ public class FileController {
                         int fatherNameId = -1;
                         int melliCodeId = -1;
                         int personalIdNumber = -1;
+                        int sexualityId = -1;
 
                         for(int i = 0;i < excelData.FieldCount;i++)
                         {
@@ -164,6 +165,10 @@ public class FileController {
                                 {
                                     personalIdNumber = i;
                                 }
+                                if(((string)value).Contains("جنسیت"))
+                                {
+                                    sexualityId = i;
+                                }
                             }
                         }
 
@@ -182,6 +187,15 @@ public class FileController {
                                 }
                                 if(!reachEnd)
                                 {
+                                    int sexCode = 0;
+                                    if(sexualityId != -1)
+                                    {
+                                        if(excelData.GetValue(sexualityId) != null)
+                                        {
+                                            string femaleCode = "زن";
+                                            sexCode = (excelData.GetValue(sexualityId).ToString().Contains(femaleCode) ? 0 : 1);
+                                        }
+                                    }
                                     UserDataModel selectedUser = new UserDataModel
                                     {
                                         FirstName = (excelData.GetValue(firstNameId) != null ? excelData.GetValue(firstNameId).ToString() : null),
@@ -189,7 +203,8 @@ public class FileController {
                                         MelliCode = excelData.GetValue(melliCodeId).ToString(),
                                         PhoneNumber = (phoneNumberId != -1 ? 
                                                         (excelData.GetValue(phoneNumberId) != null ? excelData.GetValue(phoneNumberId).ToString() : null) 
-                                                        : null)
+                                                        : null),
+                                        Sexuality = sexCode
                                     };
 
                                     if(!isTeacher)

@@ -707,6 +707,14 @@ video {
   grid-template-columns: repeat(auto-fit, 100px);
 }
 
+.addStudentBtn {
+  opacity: 0;
+}
+
+.addStudent:hover .addStudentBtn {
+  opacity: 1;
+}
+
 .space-y-0 > :not(template) ~ :not(template) {
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));
@@ -8183,6 +8191,10 @@ video {
 
 .min-h-70 {
   min-height: 70vh;
+}
+
+.min-h-85 {
+  min-height: 85vh;
 }
 
 .min-h-90 {
@@ -22833,6 +22845,10 @@ video {
 
   .sm\:min-h-70 {
     min-height: 70vh;
+  }
+
+  .sm\:min-h-85 {
+    min-height: 85vh;
   }
 
   .sm\:min-h-90 {
@@ -37486,6 +37502,10 @@ video {
     min-height: 70vh;
   }
 
+  .md\:min-h-85 {
+    min-height: 85vh;
+  }
+
   .md\:min-h-90 {
     min-height: 90vh;
   }
@@ -52137,6 +52157,10 @@ video {
     min-height: 70vh;
   }
 
+  .lg\:min-h-85 {
+    min-height: 85vh;
+  }
+
   .lg\:min-h-90 {
     min-height: 90vh;
   }
@@ -66786,6 +66810,10 @@ video {
 
   .xl\:min-h-70 {
     min-height: 70vh;
+  }
+
+  .xl\:min-h-85 {
+    min-height: 85vh;
   }
 
   .xl\:min-h-90 {

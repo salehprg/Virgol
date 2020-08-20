@@ -11,8 +11,14 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class StudentInfo extends React.Component {
 
+    state = {selectedOption : "Female"}
+
     componentDidMount = async () => {
         await this.props.GetUserInfo(this.props.user.token , parseInt(this.props.match.params.id))
+        if(this.props.userInfo)
+        {
+            this.setState({selectedOption : this.props.userInfo.sexuality === 0 ? "Female" : "Male"})
+        }
     }
 
     emptyData = async () =>{
@@ -33,9 +39,14 @@ class StudentInfo extends React.Component {
         );
     }
 
+    handleRadioBtnChng = (e) =>{
+        this.setState({selectedOption : e.target.value});
+    }
+
     onSubmit = async (formValues) => {
         
         formValues.id = parseInt(this.props.match.params.id);
+        formValues.sexuality = (this.state.selectedOption === "Male" ? 1 : 0)
         formValues.studentDetail = {
                 fatherName : formValues.fatherName,
                 fatherPhoneNumber : formValues.fatherPhoneNumber
@@ -52,6 +63,24 @@ class StudentInfo extends React.Component {
                     title={"اطلاعات دانش آموز"}
                 >
                     <form className="w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                        <div className="text-white">
+                            <input checked="true" 
+                                type="radio" 
+                                value="Female" 
+                                name="gender" 
+                                checked={this.state.selectedOption === "Female"}
+                                onChange={this.handleRadioBtnChng}
+                            /> دختر
+
+                            <input 
+                                className="mr-4" 
+                                checked={this.state.selectedOption === "Male"}
+                                onChange={this.handleRadioBtnChng} 
+                                type="radio" 
+                                value="Male" 
+                                name="gender" 
+                            /> پسر
+                        </div>
                         <Field
                             name="firstName"
                             type="text"
@@ -121,6 +150,7 @@ const mapStateToProps = state => {
     console.log(state)
     return {
         user: state.auth.userInfo , 
+        userInfo : state.managerData.userInfo,
         initialValues: {
             firstName: state.managerData.userInfo ? state.managerData.userInfo.firstName : null,
             lastName: state.managerData.userInfo ? state.managerData.userInfo.lastName : null,

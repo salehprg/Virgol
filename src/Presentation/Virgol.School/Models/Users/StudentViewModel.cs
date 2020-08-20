@@ -17,6 +17,8 @@ public class StudentViewModel {
     public string LatinLastname {get; set;}
     public string PhoneNumber {get; set;}
     public string MelliCode {get; set;}
+    //0 = Girl , 1 = Boy
+    public int? Sexuality {get; set;}
     public string SchoolName {get; set;}
     ///<summary>
     ///Get schoolType from SchoolType Class

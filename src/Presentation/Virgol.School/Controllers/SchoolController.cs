@@ -249,6 +249,9 @@ namespace lms_with_moodle.Controllers
                 if(string.IsNullOrEmpty(inputData.SchoolName) || string.IsNullOrEmpty(inputData.MelliCode) || string.IsNullOrEmpty(inputData.SchoolIdNumber))
                     return BadRequest("اطلاعات وارد شده کافی نیست");
 
+                inputData.SchoolIdNumber = ConvertToPersian.PersianToEnglish(inputData.SchoolIdNumber);
+                inputData.MelliCode = ConvertToPersian.PersianToEnglish(inputData.MelliCode);
+                inputData.managerPhoneNumber = ConvertToPersian.PersianToEnglish(inputData.managerPhoneNumber);
 
                 string idNumberAdmin = userManager.GetUserId(User);
                 UserModel adminModel = appDbContext.Users.Where(x => x.UserName == idNumberAdmin).FirstOrDefault();
@@ -264,82 +267,63 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("شما حداکثر تعداد مدارس خود را ثبت کردید");
 
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                UserModel adminUser = appDbContext.Users.Where(x => x.UserName == inputData.MelliCode).FirstOrDefault();
-                bool duplicateManager = adminUser != null;
+                MyUserManager myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
 
-                if(!duplicateManager)
+                bool melliCodeInterupt = myUserManager.CheckMelliCodeInterupt(inputData.MelliCode , 0);
+                bool phoneInterupt = myUserManager.CheckPhoneInterupt(inputData.managerPhoneNumber);
+
+                if(melliCodeInterupt)
+                    return BadRequest("کد ملی وارد شده تکراریست");
+
+                if(phoneInterupt)
+                    return BadRequest("شماره تلفن وارد شده تکراریست");
+
+    
+                inputData.SchoolType = schoolType;
+                SchoolModel schoolResult = await schoolDataHelper.CreateSchool(inputData);
+
+                ManagerDetail managerDetail = new ManagerDetail();
+                managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(inputData.personalIdNumber);
+
+                UserModel manager = new UserModel();
+                manager.FirstName = inputData.FirstName;
+                manager.LatinFirstname = inputData.LatinFirstname;
+                manager.LastName = inputData.LastName;
+                manager.LatinLastname = inputData.LatinLastname;
+                manager.MelliCode = inputData.MelliCode;
+                manager.UserName = inputData.MelliCode;
+                manager.PhoneNumber = inputData.managerPhoneNumber;
+                manager.SchoolId = schoolResult.Id;
+                manager.userTypeId = (int)UserType.Manager;
+                manager.ConfirmedAcc = true;
+
+                string password = RandomPassword.GeneratePassword(true , true , true , 8);
+
+                var serializedParent = JsonConvert.SerializeObject(manager); 
+                UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
+                userData.managerDetail = managerDetail;
+
+                List<UserDataModel> managerResult = await myUserManager.CreateUser(new List<UserDataModel>{userData} , (int)UserType.Manager , schoolResult.Id , password);
+
+                if(managerResult.Count > 0)
                 {
-                    inputData.SchoolType = schoolType;
-                    inputData.SchoolIdNumber = ConvertToPersian.PersianToEnglish(inputData.SchoolIdNumber);
+                    schoolResult.ManagerId = managerResult[0].Id;
 
-                    SchoolModel schoolResult = await schoolDataHelper.CreateSchool(inputData);
+                    appDbContext.Schools.Update(schoolResult);
+                    appDbContext.SaveChanges();
                     
-                    UserModel manager = new UserModel();
-                    manager.FirstName = inputData.FirstName;
-                    manager.LatinFirstname = inputData.LatinFirstname;
-                    manager.LastName = inputData.LastName;
-                    manager.LatinLastname = inputData.LatinLastname;
-                    manager.MelliCode = ConvertToPersian.PersianToEnglish(inputData.MelliCode);
-                    manager.UserName = inputData.MelliCode;
-                    manager.PhoneNumber = ConvertToPersian.PersianToEnglish(inputData.managerPhoneNumber);
-                    manager.SchoolId = schoolResult.Id;
-                    manager.userTypeId = (int)UserType.Manager;
-                    manager.ConfirmedAcc = true;
-
-                    string password = RandomPassword.GeneratePassword(true , true , true , 8);
-
-                    bool resultManager = userManager.CreateAsync(manager , password).Result.Succeeded;
-
-                    if(resultManager)
-                    {    
-                        await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
-                        int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
-                        manager.Id = userId;
-
-                        bool ldapUser = ldap.AddUserToLDAP(manager , password);
-
-                        bool userToMoodle = false;
-                        if(ldapUser)
-                        {
-                            userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
-                        }
-
-                        if(userToMoodle)
-                        {
-                            int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
-                            manager.Moodle_Id = userMoodle_id;
-
-                            appDbContext.Users.Update(manager);
-
-                            ManagerDetail managerDetail = new ManagerDetail();
-                            managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(inputData.personalIdNumber);
-                            managerDetail.UserId = manager.Id;
-
-                            appDbContext.ManagerDetails.Add(managerDetail);
-                            appDbContext.SaveChanges();
-
-                            schoolResult.ManagerId = manager.Id;
-
-                            appDbContext.Schools.Update(schoolResult);
-                            appDbContext.SaveChanges();
-                            
-                            SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
-                            SMSApi.SendSchoolData(manager.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
-                            
-                            return Ok(new{
-                                manager.MelliCode,
-                                password,
-                                schoolId = schoolResult.Id
-                            });
-                        }
-                    }
-
-                    MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
-                    await myUserManager.DeleteUser(manager);
-                    return BadRequest("ثبت مدیر با مشکل مواجه شد");
+                    SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
+                    SMSApi.SendSchoolData(manager.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
+                    
+                    return Ok(new{
+                        manager.MelliCode,
+                        password,
+                        schoolId = schoolResult.Id
+                    });
                 }
 
-                return BadRequest("اطلاعات مدیر وارد شده تکراریست");
+                await myUserManager.DeleteUser(manager);
+                return BadRequest("ثبت مدیر با مشکل مواجه شد");
 
             }
             catch(Exception ex)

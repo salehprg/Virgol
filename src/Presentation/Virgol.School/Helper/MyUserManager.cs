@@ -27,7 +27,7 @@ public class MyUserManager {
     ///<summary>
     ///Every user should have MelliCode property 
     ///</summary>
-    public async Task<List<UserDataModel>> CreateUser(List<UserDataModel> users , int usersType , int schoolId)
+    public async Task<List<UserDataModel>> CreateUser(List<UserDataModel> users , int usersType , int schoolId , string password = null)
     {
         users = users.Where(x => x.MelliCode != null).ToList();
 
@@ -44,7 +44,7 @@ public class MyUserManager {
 
                 user.userTypeId = usersType;
                 
-                if((await userManager.CreateAsync(user , user.MelliCode)).Succeeded)
+                if((await userManager.CreateAsync(user , (password != null ? password : user.MelliCode))).Succeeded)
                 {
                     if(ldap.AddUserToLDAP(user , user.MelliCode))
                     {
@@ -62,6 +62,7 @@ public class MyUserManager {
                                     StudentDetail studentDetail = new StudentDetail();
                                     studentDetail = user.studentDetail;
                                     studentDetail.UserId = user.Id;
+                                    studentDetail.FatherName = (user.studentDetail != null ? user.studentDetail.FatherName : null);
 
                                     await appDbContext.StudentDetails.AddAsync(studentDetail);
                                     break;
@@ -134,6 +135,7 @@ public class MyUserManager {
                 oldData.LatinLastname = user.LatinLastname;
                 oldData.PhoneNumber = user.PhoneNumber;
                 oldData.MelliCode = user.MelliCode;
+                oldData.Sexuality = user.Sexuality;
             }
 
             appDbContext.Users.Update(oldData);

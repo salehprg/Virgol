@@ -16,6 +16,8 @@ namespace Models.Users.Teacher
         public string PhoneNumber {get; set;}    
         public string SchoolsId {get;set;}
         public string personalIdNUmber {get;set;}
+        //0 = Girl , 1 = Boy
+        public int? Sexuality {get; set;}
 
     }
 }

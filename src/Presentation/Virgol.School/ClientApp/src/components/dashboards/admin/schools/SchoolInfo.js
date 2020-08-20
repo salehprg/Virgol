@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from 'react-redux';
 import {Field, reduxForm, reset} from "redux-form";
-import {briefcase, loading, slash} from "../../../../assets/icons";
+import {arrow_left, briefcase, loading, slash} from "../../../../assets/icons";
 import Fieldish from "../../../field/Fieldish";
 import BaseManager from "../../baseManager/BaseManager";
 import {GetSchoolInfo  , GetSchool_Grades , GetSchool_StudyFields 
@@ -13,6 +13,7 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 import PencilText from '../../../field/PencilText';
 import { validator } from "../../../../assets/validator";
 import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
+import history from "../../../../history";
 
 class SchoolInfo extends React.Component {
 
@@ -170,8 +171,11 @@ class SchoolInfo extends React.Component {
 
     render() {
         return (
-            <div onClick={() => this.setState({ showChangeName: false })} className="w-screen min-h-screen p-10 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
-                {this.state.showDeleteModal ? 
+            <div onClick={() => this.setState({ showChangeName: false })} className="w-screen min-h-screen lg:px-16 px-2 py-16 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 col-gap-4 row-gap-10">
+                <div onClick={() => history.push('/a/schools')} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-4 rounded-lg border-2 border-purplish">
+                    {arrow_left('w-6 centerize text-purplish')}
+                </div>
+                {this.state.showDeleteModal ?
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ تمامی درس های زیرمجموعه پاک خواهند شد و این عمل قابلیت بازگشت ندارد!"
                     confirm={this.confirmDelete}
@@ -180,7 +184,7 @@ class SchoolInfo extends React.Component {
                 : 
                 null
                 }
-                <div className="w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
+                <div className="w-full relative rounded-lg lg:min-h-85 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
                     <div className="absolute manager-options">
                         {slash('w-6 text-white')}
                     </div>
@@ -276,11 +280,11 @@ class SchoolInfo extends React.Component {
                 {(this.state.loadingCats || this.props.schoolLessonInfo == null ? loading('w-10 text-grayish centerize')
                 :
                 <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
-                    <div className="flex flex-row-reverse justify-between">
+                    <div className="flex lg:flex-row-reverse flex-col justify-between">
                         <div>
                             <PencilText 
                                 text={this.props.schoolLessonInfo.schoolModel.schoolName} 
-                                className="text-right text-white text-2xl" 
+                                className="text-right text-white lg:text-2xl text-lg"
                                 show={this.state.showChangeName}
                                 showBox={() => this.setState({ showChangeName: true })}
                                 value={this.state.className}
@@ -292,8 +296,8 @@ class SchoolInfo extends React.Component {
                             />
                         </div>
                         <div>
-                            <Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>
-                            <button onClick={this.redirect} className="px-6 py-1 mx-2 rounded-lg border-2 border-greenish text-greenish">ورود به عنوان مدیر مدرسه</button>
+                            {/*<Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>*/}
+                            <button onClick={this.redirect} className="px-6 py-1 lg:mx-2 mx-0 mt-4 rounded-lg border-2 border-greenish text-greenish">ورود به عنوان مدیر مدرسه</button>
                         </div>
                     </div>
                     <div className="mt-8 overflow-auto">

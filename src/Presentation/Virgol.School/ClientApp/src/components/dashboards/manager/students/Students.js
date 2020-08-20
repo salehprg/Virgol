@@ -13,7 +13,8 @@ class Students extends React.Component {
         query: '' ,
         showDeleteModal : false ,
         studentId : 0,
-        itemsPerPage: 20,
+        selected : [],
+        itemsPerPage: 40,
         currentPage: 1,
         totalCard : 0
     }
@@ -24,6 +25,19 @@ class Students extends React.Component {
         this.setState({ loading: false })
 
         this.setState({totalCard : this.props.students.length})
+    }
+
+    handleSelectStudent = (e) =>{
+        const event = e;
+
+        if(event.target.checked)
+        {
+            this.setState({selected : [...this.state.selected, parseInt(event.target.value)]})
+        }
+        else
+        {
+            this.setState({selected : this.state.selected.filter(element => element !== parseInt(event.target.value))})
+        } 
     }
 
     changeQuery = query => {
@@ -73,14 +87,14 @@ class Students extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/newStudent')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">دانش آموزان جدید</button>
+                            <button onClick={() => history.push('/newStudent')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">دانش آموزان جدید</button>
                         );
                     }}
-                    sample="دانلود نمونه اکسل دانش آموزان"
+                    sample="بارگیری نمونه اکسل دانش آموزان"
                     sampleLink="/samples/StudentTemplate.xlsx"
                     excel="بارگذاری اکسل دانش آموزان"
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده']}
+                    headers={[ '' ,'نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده' ]}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -90,6 +104,7 @@ class Students extends React.Component {
                                         {
                                             return(
                                             <tr>
+                                                <td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
                                                 <td>{x.phoneNumber}</td>

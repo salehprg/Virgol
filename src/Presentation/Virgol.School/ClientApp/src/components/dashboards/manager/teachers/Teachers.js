@@ -5,10 +5,12 @@ import history from "../../../../history";
 import { connect } from "react-redux";
 import {getAllTeachers , addBulkTeacher , deleteTeacher} from "../../../../_actions/managerActions"
 import DeleteConfirm from "../../../modals/DeleteConfirm";
+import ReactTooltip from "react-tooltip";
 
 class Teachers extends React.Component {
 
-    state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 20, currentPage: 1 , totalCard : 0}
+    state = { loading: false, query: '' , showDeleteModal : false, selected : [],
+                itemsPerPage: 40, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
         this.setState({ loading: true })
@@ -31,6 +33,18 @@ class Teachers extends React.Component {
         this.setState({showDeleteModal : false , teacherId : 0})
     }
 
+    handleSelectTeacher = (e) =>{
+        const event = e;
+
+        if(event.target.checked)
+        {
+            this.setState({selected : [...this.state.selected, parseInt(event.target.value)]})
+        }
+        else
+        {
+            this.setState({selected : this.state.selected.filter(element => element !== parseInt(event.target.value))})
+        } 
+    }
 
     submitExcel = async (excel) => {
         await this.props.addBulkTeacher(this.props.user.token , excel)
@@ -44,6 +58,7 @@ class Teachers extends React.Component {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
             <div className="w-full mt-10">
+                <ReactTooltip />
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
@@ -64,14 +79,14 @@ class Teachers extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
+                            <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
                         );
                     }}
-                    sample="دانلود نمونه اکسل معلمان"
+                    sample="بارگیری نمونه اکسل معلمان"
                     sampleLink="/samples/teacherSample.xls"
                     excel="بارگذاری اکسل معلمان"
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'تلفن تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
+                    headers={[ '' ,'نام', 'نام خانوادگی', 'کد ملی', 'تلفن تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -81,17 +96,17 @@ class Teachers extends React.Component {
                                         {
                                             return(
                                             <tr>
+                                                <td><input type="checkbox" value={x.id} onChange={this.handleSelectTeacher}></input></td>
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
                                                 <td>{x.melliCode}</td>
                                                 <td>{x.phoneNumber}</td>
                                                 <td>{x.personalIdNUmber}</td>
                                                 <td><span className="text-center">{x.latinFirstNsme ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            
-                                                <td className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
+                                                <td data-tip="ویرایش" className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>           
-                                                <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                <td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                                     {trash('w-6 text-white ')}
                                                 </td> 
                                             </tr>
