@@ -251,6 +251,8 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                Console.WriteLine("Back : Get meeting List");
+
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 int userId = user.Id;
@@ -285,6 +287,7 @@ namespace lms_with_moodle.Controllers
                     //meetingVWs = meetingVWs.OrderBy(x => x.meetingDetail.StartHour).Take(5).ToList();
 
                     recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
+                    Console.WriteLine("Back : Done !");
 
                     return Ok(recentClasses);
                 }
@@ -298,6 +301,7 @@ namespace lms_with_moodle.Controllers
                         meetingViews = appDbContext.MeetingViews.Where(x => x.ClassId == school_Student.ClassId && x.Finished == false).ToList();
                     }
 
+                    Console.WriteLine("Back : Student Done !");
                     return  Ok(meetingViews);
                 }
 
@@ -305,10 +309,12 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine("Back : Error" + ex.Message);
+
                 return BadRequest(ex.Message);
             }
         }
-
+        
         [HttpGet]
         [Authorize(Roles = "Manager")]
         [ProducesResponseType(typeof(List<ParticipantView>), 200)]
@@ -377,7 +383,26 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
-    
+
+        [HttpGet]
+        [Authorize(Roles = "Teacher")]
+        [ProducesResponseType(typeof(List<Meeting>), 200)]
+        public async Task<IActionResult> GetRecordList(int meetingId) 
+        {
+            try
+            {
+
+                BBBApi bBApi = new BBBApi(appSettings);
+                List<RecordInfo> recordsResponses = (await bBApi.GetMeetingRecords(meetingId.ToString())).recordings.recording;
+                    
+                return Ok(recordsResponses);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 #endregion
 
     }
