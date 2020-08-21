@@ -726,12 +726,12 @@ namespace lms_with_moodle.Controllers
             }
 
             List<VerificationCodeModel> lastestCodeInfo = new List<VerificationCodeModel>();
-            lastestCodeInfo = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
+            lastestCodeInfo = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.LastSend.AddMinutes(30) >= MyDateTime.Now()) //Limit count in 30 minutes
                                                             .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList();
             
             if(lastestCodeInfo.Count != 3 && lastestCodeInfo.Count > 0) // Rich limit Send sms
             {
-                if(lastestCodeInfo[0].LastSend.AddMinutes(3) < DateTime.Now)//Send sms code delay
+                if(lastestCodeInfo[0].LastSend.AddMinutes(3) < MyDateTime.Now())//Send sms code delay
                 {   
                     return true;
                 }
@@ -764,7 +764,7 @@ namespace lms_with_moodle.Controllers
                 if(SmsResult)
                 {
                     VerificationCodeModel verification = new VerificationCodeModel();
-                    verification.LastSend = DateTime.Now;
+                    verification.LastSend = MyDateTime.Now();
                     verification.fatherCode = fatherPhone;
                     verification.UserId = user.Id;
                     verification.VerificationCode = Code;
@@ -801,7 +801,7 @@ namespace lms_with_moodle.Controllers
             {
                 //Check verification if user Reach limit Code by Check last sent Code 
 
-                VerificationCodeModel lastVerifyCode = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.fatherCode == isFatherVerification && x.LastSend.AddMinutes(30) >= DateTime.Now) //Limit count in 30 minutes
+                VerificationCodeModel lastVerifyCode = appDbContext.VerificationCodes.Where(x => x.UserId == user.Id && x.fatherCode == isFatherVerification && x.LastSend.AddMinutes(30) >= MyDateTime.Now()) //Limit count in 30 minutes
                                                             .ToList().OrderByDescending(x => x.LastSend).Take(3).ToList()[0];
                 string LastCode = lastVerifyCode.VerificationCode;
                 

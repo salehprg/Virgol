@@ -113,7 +113,7 @@ namespace lms_with_moodle.Controllers
 
                 CourseDetail lessonDetail = await moodleApi.GetCourseDetail(moodleId);
 
-                DateTime timeNow = DateTime.Now;
+                DateTime timeNow = MyDateTime.Now();
 
                 float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
                 float duration = (classSchedule.EndHour - currentTime) * 60;
@@ -125,7 +125,7 @@ namespace lms_with_moodle.Controllers
 
                 Meeting meeting = new Meeting();
                 meeting.MeetingName = meetingName;
-                meeting.StartTime = DateTime.Now;
+                meeting.StartTime = timeNow;
                 meeting.LessonId = lessonId;
                 meeting.TeacherId = teacherId;
 
@@ -229,7 +229,7 @@ namespace lms_with_moodle.Controllers
                     Meeting oldMeeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).FirstOrDefault();
 
                     oldMeeting.Finished = true;
-                    oldMeeting.EndTime = DateTime.Now;
+                    oldMeeting.EndTime = MyDateTime.Now();
                     appDbContext.Meetings.Update(oldMeeting);
                     appDbContext.SaveChanges();
 
@@ -251,37 +251,19 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                Console.WriteLine("Hello I'm Saleh -_-");
-                Console.WriteLine("Back : Get meeting List");
 
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 int userId = user.Id;
                 bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
-                Console.WriteLine(userName);
-                Console.WriteLine(userId);
-                Console.WriteLine(isTeacher);
+                DateTime currentDateTime = MyDateTime.Now();
+                Console.WriteLine(currentDateTime);
 
-                int currentHour = DateTime.Now.Hour;
-                float currentTime = DateTime.Now.Hour + ((float)DateTime.Now.Minute / 60);
+                float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
                 
-                int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
+                int dayOfWeek = (int)currentDateTime.DayOfWeek + 2;
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
-
-                Console.WriteLine(DateTime.Now);
-                Console.WriteLine(DateTime.Now.ToLocalTime());
-                Console.WriteLine(DateTime.Now.ToUniversalTime());
-                Console.WriteLine(DateTime.UtcNow.ToLocalTime());
-                Console.WriteLine(DateTime.UtcNow);
-                Console.WriteLine(dayOfWeek);
-                System.Globalization.CultureInfo.CurrentCulture.ClearCachedData();
-                Console.WriteLine(DateTime.Now);
-                Console.WriteLine(DateTime.Now.ToLocalTime());
-                Console.WriteLine(DateTime.Now.ToUniversalTime());
-                Console.WriteLine(DateTime.UtcNow.ToLocalTime());
-                Console.WriteLine(DateTime.UtcNow);
-                Console.WriteLine(dayOfWeek);
 
                 if(isTeacher)
                 {
@@ -292,7 +274,6 @@ namespace lms_with_moodle.Controllers
                     // //Remove active meeting from all meeting
                     foreach (var schedule in classes)
                     {
-                        Console.WriteLine(schedule.ClassName);
                         if(activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault() == null)
                         {
                             MeetingView meetingVW = new MeetingView();
@@ -307,14 +288,7 @@ namespace lms_with_moodle.Controllers
                     //meetingVWs = meetingVWs.OrderBy(x => x.meetingDetail.StartHour).Take(5).ToList();
 
                     recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
-                    Console.WriteLine(recentClasses.Count);
-                    foreach (var schedule in recentClasses)
-                    {
-                        Console.WriteLine(schedule.ClassName);
-                        Console.WriteLine(schedule.SchoolName);
-                    }
                    
-
                     return Ok(recentClasses);
                 }
                 else
