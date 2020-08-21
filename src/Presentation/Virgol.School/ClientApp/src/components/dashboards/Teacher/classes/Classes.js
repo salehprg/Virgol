@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import Schedule from '../../manager/class/Schedule'
 import {getTeacherSchedule } from '../../../../_actions/classScheduleActions'
 import {GetRecentClass} from "../../../../_actions/meetingActions"
@@ -8,6 +8,7 @@ import { loading } from '../../../../assets/icons'
 class Classes extends React.Component {
 
     state = { loading: false , finished : true }
+    sc = createRef()
 
     componentDidMount = async () => {
         this.setState({ loading: true })
@@ -17,9 +18,9 @@ class Classes extends React.Component {
 
         this.setState({ loading: false })
 
-        console.log(this.props)
         this.setState({finished : true})
         this.render()
+        this.sc.current.scrollLeft = this.sc.current.clientWidth
     }
 
     render() {
@@ -29,7 +30,7 @@ class Classes extends React.Component {
             </>
         );
         return (
-            <div className="overflow-auto">
+            <div ref={this.sc} className="overflow-auto">
                 <Schedule
                     student={true}
                     editable={false}
