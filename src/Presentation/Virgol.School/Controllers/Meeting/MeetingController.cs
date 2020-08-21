@@ -270,6 +270,7 @@ namespace lms_with_moodle.Controllers
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
                 Console.WriteLine(DateTime.Now);
+                Console.WriteLine(DateTime.UtcNow);
                 Console.WriteLine(dayOfWeek);
 
                 if(isTeacher)
