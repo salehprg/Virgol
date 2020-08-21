@@ -93,12 +93,18 @@ class LessonInfoModal extends React.Component {
                             <h2 className="text-center text-white my-4 text-2xl">جزییات ساعت درسی</h2>
                         </div>
                       
-                        <p className="text-center text-white my-4">{this.props.lessonInfo.name}</p>
-                        <p className="text-center text-white my-4">{this.props.lessonInfo.teachername}</p> 
-                        {(this.props.student ? <p className="text-center text-white my-4">تعداد غیبت : {this.props.lessonInfo.absenceCount}</p>  : null)}
+                        <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.orgLessonName}</p>
+                        {(!this.props.isTeacher || this.props.isManager ? <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.firstName + " " + this.props.lessonInfo.lessonDetail.lastName}</p> : null )}
+                        {(!this.props.isTeacher ? <p className="text-center text-white my-4">تعداد غیبت : {this.props.lessonInfo.lessonDetail.absenceCount}</p>  
+                        : 
+                        (!this.props.isManager ? <p className="text-center text-white my-4">مدرسه {this.props.lessonInfo.lessonDetail.schoolName} (کلاس {this.props.lessonInfo.lessonDetail.className})</p> : null)
+                        )}
+
+                        {(this.props.isManager ? <p className="text-center text-white my-4">(کلاس {this.props.lessonInfo.lessonDetail.className})</p> : null)}
+
                         {(this.state.times.length > 0 ?
                         <p className="text-center text-white my-4">
-                            {`${this.state.times.find(x => x.value == this.props.lessonInfo.endHour).label} ${this.options.find(x => x.value === this.props.lessonInfo.y).label} از ساعت ${this.state.times.find(x => x.value == this.props.lessonInfo.startHour).label} تا ساعت `}
+                            {`${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.options.find(x => x.value === this.props.lessonInfo.y).label} از ساعت ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} تا ساعت `}
                         </p>
                         : null)}
 
@@ -110,7 +116,7 @@ class LessonInfoModal extends React.Component {
                             null
                         )}
                         <p className="text-center text-white my-4">
-                            <a href={this.props.lessonInfo.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
+                            <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
                                 ورود به کلاس درس
                             </a>
                         </p>
