@@ -264,6 +264,8 @@ namespace lms_with_moodle.Controllers
                 int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
+                Console.WriteLine(DateTime.Now);
+
                 if(isTeacher)
                 {
                     List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.TeacherId == userId && (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))   && x.DayType == dayOfWeek).ToList();
