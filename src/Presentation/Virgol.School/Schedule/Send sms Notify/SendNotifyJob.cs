@@ -33,10 +33,10 @@ namespace Schedule
                     var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
                     var appSetting = scope.ServiceProvider.GetService<IOptions<AppSettings>>().Value;
 
-                    int currentHour = DateTime.Now.Hour;
-                    float currnetTime = currentHour + (float)DateTime.Now.Minute / 60;
+                    int currentHour = MyDateTime.Now().Hour;
+                    float currnetTime = currentHour + (float)MyDateTime.Now().Minute / 60;
 
-                    int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
+                    int dayOfWeek = (int)MyDateTime.Now().DayOfWeek + 2;
                     dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
                     List<ClassScheduleView> classes = dbContext.ClassScheduleView.Where(x => (x.StartHour - currnetTime) <= 0.5 && (x.StartHour - currnetTime) >=0 && x.DayType == dayOfWeek ).ToList();
@@ -54,7 +54,7 @@ namespace Schedule
                                 CourseNotify courseNotify = new CourseNotify();
                                 courseNotify.ScheduleId = schedule.Id;
                                 courseNotify.UserId = student.Id;
-                                courseNotify.SentTime = DateTime.Now;
+                                courseNotify.SentTime = MyDateTime.Now();
 
                                 float min = (schedule.StartHour - (float)Math.Floor(schedule.StartHour)) * 60;
                                 string dateTime = "ساعت " + (int)Math.Floor(schedule.StartHour) + ":" + (min == 0 ? "00" : min.ToString());
@@ -71,7 +71,7 @@ namespace Schedule
                             CourseNotify courseNotify = new CourseNotify();
                             courseNotify.ScheduleId = schedule.Id;
                             courseNotify.UserId = teacher.Id;
-                            courseNotify.SentTime = DateTime.Now;
+                            courseNotify.SentTime = MyDateTime.Now();
 
                             float min = (schedule.StartHour - (float)Math.Floor(schedule.StartHour)) * 60;
                             string dateTime = "ساعت " + (int)Math.Floor(schedule.StartHour) + ":" + (min == 0 ? "00" : min.ToString());

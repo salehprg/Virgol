@@ -25,7 +25,7 @@ class Classes extends React.Component {
         return (
             <div ref={this.sc} className="overflow-auto">
                 <Schedule
-                    student={true}
+                    isTeacher={false}
                     editable={false}
                     // lessons={this.props.schedules}
                     lessons={this.props.schedules}           

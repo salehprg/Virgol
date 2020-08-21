@@ -249,7 +249,8 @@ class ClassInfo extends React.Component {
                         <div ref={this.sc} className="border-2 border-dark-blue overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
-                                    student={false}
+                                    isManager={true}
+                                    isTeacher={true}
                                     editable={true}
                                     lessons={this.props.schedules}
                                     deleteSchedule={(id)  => this.deleteLesson(id)}

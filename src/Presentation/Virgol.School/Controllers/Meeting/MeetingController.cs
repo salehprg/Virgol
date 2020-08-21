@@ -113,7 +113,7 @@ namespace lms_with_moodle.Controllers
 
                 CourseDetail lessonDetail = await moodleApi.GetCourseDetail(moodleId);
 
-                DateTime timeNow = DateTime.Now;
+                DateTime timeNow = MyDateTime.Now();
 
                 float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
                 float duration = (classSchedule.EndHour - currentTime) * 60;
@@ -125,7 +125,7 @@ namespace lms_with_moodle.Controllers
 
                 Meeting meeting = new Meeting();
                 meeting.MeetingName = meetingName;
-                meeting.StartTime = DateTime.Now;
+                meeting.StartTime = timeNow;
                 meeting.LessonId = lessonId;
                 meeting.TeacherId = teacherId;
 
@@ -229,7 +229,7 @@ namespace lms_with_moodle.Controllers
                     Meeting oldMeeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).FirstOrDefault();
 
                     oldMeeting.Finished = true;
-                    oldMeeting.EndTime = DateTime.Now;
+                    oldMeeting.EndTime = MyDateTime.Now();
                     appDbContext.Meetings.Update(oldMeeting);
                     appDbContext.SaveChanges();
 
@@ -251,17 +251,18 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                Console.WriteLine("Back : Get meeting List");
 
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 int userId = user.Id;
                 bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
-                int currentHour = DateTime.Now.Hour;
-                float currentTime = DateTime.Now.Hour + ((float)DateTime.Now.Minute / 60);
+                DateTime currentDateTime = MyDateTime.Now();
+                Console.WriteLine(currentDateTime);
+
+                float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
                 
-                int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
+                int dayOfWeek = (int)currentDateTime.DayOfWeek + 2;
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
                 if(isTeacher)
@@ -287,8 +288,7 @@ namespace lms_with_moodle.Controllers
                     //meetingVWs = meetingVWs.OrderBy(x => x.meetingDetail.StartHour).Take(5).ToList();
 
                     recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
-                    Console.WriteLine("Back : Done !");
-
+                   
                     return Ok(recentClasses);
                 }
                 else

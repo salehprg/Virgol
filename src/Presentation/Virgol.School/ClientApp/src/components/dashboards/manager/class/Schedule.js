@@ -36,16 +36,16 @@ class Schedule extends React.Component {
     lessonInfo: null , showLessonInfo : false , lessons : []
     }
 
-    componentDidMount() {
+    handleLessonLayout() {
         const lessons = [];
 
         this.props.lessons.map(day => {
             if(day && day.length > 0)
             {
                 (day.map(lesson => {
-                    lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
+                    lessons.push({i: lesson.id + '', name: lesson.orgLessonName, 
                     c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 28 - ((lesson.endHour - 7) * 2), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
-                    h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , absenceCount : lesson.absenceCount , static: true})
+                    h: 1 , lessonDetail : lesson , static: true})
                 }))
             }
         })
@@ -53,21 +53,12 @@ class Schedule extends React.Component {
         this.setState({lessons : lessons})
     }
 
+    componentDidMount() {
+        this.handleLessonLayout()
+    }   
+
     componentWillReceiveProps(){
-        const lessons = [];
-
-        this.props.lessons.map(day => {
-            if(day && day.length > 0)
-            {
-                (day.map(lesson => {
-                    lessons.push({i: lesson.id + '', name: lesson.orgLessonName, teachername: lesson.firstName + " " + lesson.lastName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 28 - ((lesson.endHour - 7) * 2), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
-                    h: 1 , startHour : lesson.startHour , endHour : lesson.endHour , moodleUrl : lesson.moodleUrl , static: true})
-                }))
-            }
-        })
-
-        this.setState({lessons : lessons})
+        this.handleLessonLayout()
     }
 
 
@@ -91,7 +82,8 @@ class Schedule extends React.Component {
             <>
                 {this.state.showLessonInfo ? 
                 <LessonInfoModal
-                    student={this.props.student}
+                    isManager={this.props.isManager}
+                    isTeacher={this.props.isTeacher}
                     lessonInfo={this.state.lessonInfo}
                     cancel={() => this.onCancel()}
                     canEdit={this.props.editable}
