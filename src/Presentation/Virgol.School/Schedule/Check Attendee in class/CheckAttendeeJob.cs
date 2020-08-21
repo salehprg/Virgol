@@ -89,7 +89,7 @@ namespace Schedule
                         if(closedMeeting == null) // it means a meeting has closed but its state in our database is Active
                         {
                             oldMeeting.Finished = true;
-                            oldMeeting.EndTime = DateTime.Now;
+                            oldMeeting.EndTime = MyDateTime.Now();
                             dbContext.Meetings.Update(oldMeeting);
                             dbContext.SaveChanges();
                         }
