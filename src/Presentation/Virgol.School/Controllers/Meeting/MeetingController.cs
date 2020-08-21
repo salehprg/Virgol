@@ -251,6 +251,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                Console.WriteLine("Hello I'm Saleh -_-");
                 Console.WriteLine("Back : Get meeting List");
 
                 string userName = userManager.GetUserId(User);
@@ -258,11 +259,18 @@ namespace lms_with_moodle.Controllers
                 int userId = user.Id;
                 bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
+                Console.WriteLine(userName);
+                Console.WriteLine(userId);
+                Console.WriteLine(isTeacher);
+
                 int currentHour = DateTime.Now.Hour;
                 float currentTime = DateTime.Now.Hour + ((float)DateTime.Now.Minute / 60);
                 
                 int dayOfWeek = (int)DateTime.Now.DayOfWeek + 2;
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
+
+                Console.WriteLine(DateTime.Now);
+                Console.WriteLine(dayOfWeek);
 
                 if(isTeacher)
                 {
@@ -273,6 +281,7 @@ namespace lms_with_moodle.Controllers
                     // //Remove active meeting from all meeting
                     foreach (var schedule in classes)
                     {
+                        Console.WriteLine(schedule.ClassName);
                         if(activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault() == null)
                         {
                             MeetingView meetingVW = new MeetingView();
