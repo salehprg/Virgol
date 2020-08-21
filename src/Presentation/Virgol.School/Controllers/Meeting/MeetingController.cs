@@ -270,6 +270,16 @@ namespace lms_with_moodle.Controllers
                 dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
                 Console.WriteLine(DateTime.Now);
+                Console.WriteLine(DateTime.Now.ToLocalTime());
+                Console.WriteLine(DateTime.Now.ToUniversalTime());
+                Console.WriteLine(DateTime.UtcNow.ToLocalTime());
+                Console.WriteLine(DateTime.UtcNow);
+                Console.WriteLine(dayOfWeek);
+                System.Globalization.CultureInfo.CurrentCulture.ClearCachedData();
+                Console.WriteLine(DateTime.Now);
+                Console.WriteLine(DateTime.Now.ToLocalTime());
+                Console.WriteLine(DateTime.Now.ToUniversalTime());
+                Console.WriteLine(DateTime.UtcNow.ToLocalTime());
                 Console.WriteLine(DateTime.UtcNow);
                 Console.WriteLine(dayOfWeek);
 
