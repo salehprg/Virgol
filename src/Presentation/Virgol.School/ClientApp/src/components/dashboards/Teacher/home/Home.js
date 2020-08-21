@@ -17,6 +17,7 @@ class Home extends React.Component {
             await this.props.GetRecentClass(this.props.user.token);
             this.setState({loading: false})
 
+            console.log(this.props.recentClass)
     }
 
     StatrMeeting = async(id) => {

@@ -308,7 +308,7 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
         [HttpGet]
         [Authorize(Roles = "Manager")]
         [ProducesResponseType(typeof(List<ParticipantView>), 200)]
@@ -377,7 +377,26 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
-    
+
+        [HttpGet]
+        [Authorize(Roles = "Teacher")]
+        [ProducesResponseType(typeof(List<Meeting>), 200)]
+        public async Task<IActionResult> GetRecordList(int meetingId) 
+        {
+            try
+            {
+
+                BBBApi bBApi = new BBBApi(appSettings);
+                List<RecordInfo> recordsResponses = (await bBApi.GetMeetingRecords(meetingId.ToString())).recordings.recording;
+                    
+                return Ok(recordsResponses);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 #endregion
 
     }
