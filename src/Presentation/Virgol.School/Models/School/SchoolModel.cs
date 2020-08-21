@@ -18,5 +18,6 @@ public class SchoolModel {
     ///</summary>
     public int sexuality {get; set;}
     public bool SelfSign {get; set;}
+    public bool RemindUser {get; set;}
 
 }
