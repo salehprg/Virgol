@@ -1,9 +1,18 @@
 import React from "react";
 import Tablish from "../../tables/Tablish";
 import {arrow_left, check_circle, edit, trash} from "../../../../assets/icons";
+import {GetClassBook}  from "../../../../_actions/teacherActions"
 import history from "../../../../history";
+import { connect } from "react-redux";
 
 class SessionInfo extends React.Component {
+
+    state = {loading : false}
+    componentDidMount = async () => {
+        this.setState({loading : true})
+        await this.props.GetClassBook(this.props.user.token , parseInt(this.props.match.params.id))
+        this.setState({loading : false})
+    }
 
     render() {
         return (
@@ -12,25 +21,27 @@ class SessionInfo extends React.Component {
                     <div onClick={() => history.push('/t/classes')} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-8 rounded-lg border-2 border-purplish">
                         {arrow_left('w-6 centerize text-purplish')}
                     </div>
-                    <p className="text-right text-xl text-white">حسابان - مدرسه فرزانگان - کلاس 101</p>
+                    <p className="text-right text-xl text-white">{this.props.lessonDetail ? `${this.props.lessonDetail.orgLessonName} - مدرسه ${this.props.lessonDetail.schoolName} - کلاس ${this.props.lessonDetail.className}` : null}</p>
+                    {(this.props.classBookData ?
                     <div className="mx-auto rounded-lg bg-dark-blue mt-4 py-4 px-8">
                         <Tablish
                             headers={['نام', 'کد ملی', 'ایمیل', 'تعداد غیبت', 'نمره']}
                             body={() => {
                                 return (
-                                    <React.Fragment>
+                                    this.props.classBookData.map(x =>
                                         <tr>
-                                            <td className="py-4">صالح ابراهیمیان</td>
-                                            <td>10536984568</td>
-                                            <td>Saleh.Ebrahimian.05@legace.ir</td>
-                                            <td>5</td>
-                                            <td>20</td>
+                                            <td className="py-4">{x.firstName} {x.lastName}</td>
+                                            <td>{x.melliCode}</td>
+                                            <td>{x.email ? x.email : "ندارد"}</td>
+                                            <td>{x.absentCount}</td>
+                                            <td>{x.score}</td>
                                         </tr>
-                                    </React.Fragment>
+                                    )
                                 );
                             }}
                         />
                     </div>
+                    : <p className="text-right text-white">درحال بارگذاری ...</p> )}
                 </div>
             </div>
         );
@@ -38,4 +49,11 @@ class SessionInfo extends React.Component {
 
 }
 
-export default SessionInfo
+const mapStateToProps = state => {
+    return {user : state.auth.userInfo  , 
+        classBookData : state.teacherData.classBook ? state.teacherData.classBook.classBooks : null,
+        lessonDetail : state.teacherData.classBook ? state.teacherData.classBook.lessonDetail : null,
+    }
+}
+
+export default connect(mapStateToProps , {GetClassBook})(SessionInfo)

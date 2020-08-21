@@ -54,6 +54,74 @@ namespace lms_with_moodle.Controllers
 
         }
 
+        [HttpGet]
+        [Authorize( Roles = "Teacher")]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        public IActionResult GetClassBook(int lessonId)
+        {
+            try
+            {
+                //userManager getuserid get MelliCode field of user beacause we set in token
+                string userName = userManager.GetUserId(User);
+                int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+
+                List<ClassBook> classBooks = new List<ClassBook>();
+                List<MeetingView> meetings = appDbContext.MeetingViews.Where(x => x.LessonId == lessonId).ToList();
+
+                List<School_studentClass> students = new List<School_studentClass>();
+
+                if(meetings.Count > 0)
+                    students = appDbContext.School_StudentClasses.Where(x => x.ClassId == meetings[0].ClassId).ToList();
+
+                foreach (var student in students)
+                {
+                    UserModel studentModel = appDbContext.Users.Where(x => x.Id == student.UserId).FirstOrDefault();
+                    ClassBook classBook = new ClassBook();
+
+                    classBook.AbsentCount = meetings.Count;
+                    classBook.Email = studentModel.Email;
+                    classBook.FirstName = studentModel.FirstName;
+                    classBook.LastName = studentModel.LastName;
+                    classBook.MelliCode = studentModel.MelliCode;
+                    classBook.Score = 0;
+                    classBook.UserId = studentModel.Id;
+
+                    classBooks.Add(classBook);
+                }
+
+                List<ParticipantView> result = new List<ParticipantView>();
+
+                foreach (var meeting in meetings)
+                {
+                    List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meeting.Id && x.IsPresent).ToList();
+                    foreach (var participant in participantViews)
+                    {
+                        ClassBook classBook = classBooks.Where(x => x.UserId == participant.UserId).FirstOrDefault();
+                        if(classBook != null)
+                        {
+                            classBook.AbsentCount--;
+                        }
+                    }
+                }
+
+                // var groupedUser = result
+                //         .GroupBy(x => x.UserId)
+                //         .Select(grp => grp.ToList())
+                //         .ToList();
+
+                var lessonDetail = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
+                return Ok(new {
+                    classBooks,
+                    lessonDetail
+                    });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 #region Category
         [HttpGet]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]

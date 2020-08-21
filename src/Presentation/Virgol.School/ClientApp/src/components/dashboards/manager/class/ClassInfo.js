@@ -176,8 +176,8 @@ class ClassInfo extends React.Component {
                         this.props.students.map(std => {
                             return ((std ?
                                         <div className="flex flex-row-reverse justify-between items-center">
-                                            <input type="checkbox" value={std.id} onChange={this.handleSelectStudent}></input>
-                                            {/* <span onClick={() => this.showUnassign(std.id)}>{x('w-6 text-redish cursor-pointer')}</span> */}
+                                            {/* <input type="checkbox" value={std.id} onChange={this.handleSelectStudent}></input> */}
+                                            <span onClick={() => this.showUnassign(std.id)}>{x('w-6 text-redish cursor-pointer')}</span>
                                             <p className="text-right text-white">{std.firstName} {std.lastName}</p>
                                             <p className="text-right text-white">{std.melliCode}</p>
                                         </div>

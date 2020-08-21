@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from '../../../modals/Modal';
+import history from '../../../../history';
 import DeleteConfirm from '../../../modals/DeleteConfirm';
 import { edit, external_link, trash } from '../../../../assets/icons';
 
@@ -119,6 +120,11 @@ class LessonInfoModal extends React.Component {
                             <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
                                 ورود به کلاس درس
                             </a>
+                            {(this.props.isTeacher ?
+                            <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative w-full bg-purplish rounded-full cursor-pointer p-2 mx-2">
+                                نمایش دفتر کلاسی
+                            </a>
+                            : null )}
                         </p>
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}
