@@ -287,7 +287,13 @@ namespace lms_with_moodle.Controllers
                     //meetingVWs = meetingVWs.OrderBy(x => x.meetingDetail.StartHour).Take(5).ToList();
 
                     recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
-                    Console.WriteLine("Back : Done !");
+                    Console.WriteLine(recentClasses.Count);
+                    foreach (var schedule in recentClasses)
+                    {
+                        Console.WriteLine(schedule.ClassName);
+                        Console.WriteLine(schedule.SchoolName);
+                    }
+                   
 
                     return Ok(recentClasses);
                 }
