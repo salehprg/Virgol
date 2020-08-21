@@ -4,8 +4,28 @@ import { connect } from 'react-redux';
 import { logout } from "../../../_actions/authActions";
 import Notification from "./Notification";
 import {briefcase, globe, headphones, log_out, mail, message, video} from "../../../assets/icons";
+import moment from 'moment'
 
 class Header extends React.Component {
+
+    state = {dateTime : 0}
+
+    componentDidMount() {
+        this.intervalID = setInterval(
+          () => this.tick(),
+          1000
+        );
+      }
+
+    tick() {
+    this.setState({
+        dateTime: new Date().toLocaleString('fa-IR')
+    });
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalID);
+    }
 
     render() {
         return (
@@ -21,7 +41,9 @@ class Header extends React.Component {
                 {/*</div>*/}
 
                 <div className="mr-4 px-2 py-1 flex md:flex-row-reverse flex-col justify-between items-center border-2 rounded-lg border-dark-blue">
-                    <span className="text-white text-right md:ml-4 ml-0 md:mb-0 mb-2">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName} </span>
+                    <span className="text-white text-right md:ml-4 ml-0 md:mb-0 mb-2">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName} 
+                    &nbsp;&nbsp;{this.state.dateTime}
+                    </span>
                     <div className="flex flex-row-reverse items-center">
                         {/*<div data-tip="سامانه مودل" className="relative mx-1">*/}
                         {/*    <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://moodle.legace.ir">*/}

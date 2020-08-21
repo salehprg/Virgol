@@ -31,6 +31,7 @@ import TeacherNewsInfo from './dashboards/Teacher/News/NewsInfo';
 
 import MeetingResponse from './MeetingResponse/MeetingResponse';
 import ParticipantList from './MeetingResponse/ParticipantList';
+import SessionInfo from "./dashboards/Teacher/classes/SessionInfo";
 
 class App extends React.Component {
 
@@ -76,6 +77,7 @@ class App extends React.Component {
                         <Route path="/addNewsTeacher" component={AddNewsTeacher} />
                         <Route path="/teacherNews/:id" component={TeacherNewsInfo} />
                         <Route path="/teacherCompleteProfile" component={TeacherCompleteProfile} />
+                        <Route path="/session/:id" component={SessionInfo} />
 
                         <Route path="/meetingResponse/:id" component={MeetingResponse} />
                         <Route path="/ParticipantInfo/:id" component={ParticipantList} />

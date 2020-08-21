@@ -9,8 +9,10 @@ import schoolReducer from "./schoolReducer";
 import newsReducer from "./newsReducer";
 import classScheduleReducer from "./classScheduleReducer";
 import meetingReducer from "./meetingReducer";
+import teachersReducer from "./teachersReducer";
 
 export default combineReducers({
+    teacherData: teachersReducer,
     meetingData: meetingReducer,
     schedules: classScheduleReducer,
     newsData: newsReducer,
