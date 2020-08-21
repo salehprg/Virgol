@@ -350,62 +350,6 @@ namespace lms_with_moodle.Controllers
                 //schoolInfo.SelfSign = inputData.SelfSign;
 
                 appDbContext.Schools.Update(schoolInfo);
-                // List<School_Bases> previousBases = appDbContext.School_Bases.Where(x => x.School_Id == schoolInfo.Id).ToList();
-                // List<School_StudyFields> previousStudyF = appDbContext.School_StudyFields.Where(x => x.School_Id == schoolInfo.Id).ToList();
-                // List<School_Grades> previousGrades = appDbContext.School_Grades.Where(x => x.School_Id == schoolInfo.Id).ToList();
-
-                // //Check for add new Base->StudyField->Grade
-                // foreach (var newBaseId in inputData.BaseIds)
-                // {
-                //     if(previousBases.Where(x => x.Base_Id == newBaseId).FirstOrDefault() != null)
-                //     {
-                //         //Remove same
-                //         previousBases.Remove(previousBases.Where(x => x.Id == newBaseId).FirstOrDefault());
-                //         inputData.BaseIds.Remove(newBaseId);
-                //     }
-                // }
-
-                // foreach (var newStudyFId in inputData.StudyFieldIds)
-                // {
-                //     if(previousStudyF.Where(x => x.StudyField_Id == newStudyFId).FirstOrDefault() != null)
-                //     {
-                //         //Remove same
-                //         previousStudyF.Remove(previousStudyF.Where(x => x.Id == newStudyFId).FirstOrDefault());
-                //         inputData.StudyFieldIds.Remove(newStudyFId);
-                //     }
-                // }
-
-                // foreach (var newGradeId in inputData.GradeIds)
-                // {
-                //     if(previousGrades.Where(x => x.Grade_Id == newGradeId).FirstOrDefault() != null)
-                //     {
-                //         //Remove same
-                //         previousGrades.Remove(previousGrades.Where(x => x.Id == newGradeId).FirstOrDefault());
-                //         inputData.BaseIds.Remove(newGradeId);
-                //     }
-                // }
-
-                // //Create new data
-                // SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                // await schoolDataHelper.CreateSchool_Grade(inputData.BaseIds , inputData.StudyFieldIds , inputData.GradeIds , schoolInfo.Moodle_Id);
-                
-                // //Remove deleted data from moodle
-                // foreach (var prBase in previousBases)
-                // {
-                //     await moodleApi.DeleteCategory(prBase.Moodle_Id);
-                // }
-                // foreach (var prStudyF in previousStudyF)
-                // {
-                //     await moodleApi.DeleteCategory(prStudyF.Moodle_Id);
-                // }
-                // foreach (var prGrade in previousGrades)
-                // {
-                //     await moodleApi.DeleteCategory(prGrade.Moodle_Id);
-                // }
-
-                // appDbContext.School_Bases.RemoveRange(previousBases);
-                // appDbContext.School_StudyFields.RemoveRange(previousStudyF);
-                // appDbContext.School_Grades.AddRange(previousGrades);
 
                 appDbContext.SaveChanges();
                 
@@ -418,6 +362,38 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [Authorize(Roles = "Manager")]
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        //if want use commented Part change inputData ObjectType to SchoolData
+        public async Task<IActionResult> ToggleReminder(bool status)
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                int managerId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+
+                SchoolModel schoolInfo = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+
+                schoolInfo.RemindUser = status;
+                //schoolInfo.SelfSign = inputData.SelfSign;
+
+                appDbContext.Schools.Update(schoolInfo);
+
+                appDbContext.SaveChanges();
+                
+
+                return Ok("اطلاع رسانی با موفقیت ویرایش شد");
+            }
+            catch(Exception ex)
+            {
+                //await userManager.DeleteAsync(newSchool);
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [Authorize(Roles = "Admin")]
         [HttpDelete]

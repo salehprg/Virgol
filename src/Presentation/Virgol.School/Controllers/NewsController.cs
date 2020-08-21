@@ -233,7 +233,7 @@ namespace lms_with_moodle.Controllers
                 newsModel.AccessRoleId = accessStr;
 
                 newsModel.AutherId = UserId;
-                newsModel.CreateTime = DateTime.Now;
+                newsModel.CreateTime = MyDateTime.Now();
 
                 appDbContext.News.Add(newsModel);
                 await appDbContext.SaveChangesAsync();
