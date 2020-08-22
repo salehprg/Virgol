@@ -10,6 +10,7 @@ namespace Models.InputModel
         // {
         //     this.FirstName
         // }
+        
         public StudentDetail studentDetail {get; set;}
         public TeacherDetail teacherDetail {get; set;}
         public ManagerDetail managerDetail {get; set;}

@@ -43,6 +43,8 @@ public class MyUserManager {
                 int moodleId = 0;
 
                 user.userTypeId = usersType;
+                if(usersType != (int)UserType.Teacher)
+                    user.SchoolId = schoolId;
                 
                 if((await userManager.CreateAsync(user , (password != null ? password : user.MelliCode))).Succeeded)
                 {
@@ -110,7 +112,7 @@ public class MyUserManager {
     ///<summary>
     ///Every user should have Id property 
     ///</summary>    
-    public async Task<List<UserDataModel>> EditUsers(List<UserDataModel> users , int schoolId = 0 , bool assignTeacher = false)
+    public async Task<List<UserDataModel>> EditUsers(List<UserDataModel> users , int schoolId = 0 , bool assignTeacher = false , string newPassword = "")
     {
         bool result = false;
 
@@ -122,6 +124,16 @@ public class MyUserManager {
             {
                 oldData.UserName = user.MelliCode;
                 ldap.EditUserName(oldData.MelliCode , user.MelliCode);
+            }
+
+            if(!string.IsNullOrEmpty(newPassword))
+            {
+                string token = await userManager.GeneratePasswordResetTokenAsync(oldData);
+                IdentityResult chngPassword = await userManager.ResetPasswordAsync(oldData , token , newPassword);
+                if(chngPassword.Succeeded)
+                {
+                    ldap.EditEntry(oldData.UserName , "userPassword" , newPassword);
+                }
             }
 
             ldap.EditEntry(oldData.MelliCode , "cn" , user.FirstName);
@@ -196,6 +208,31 @@ public class MyUserManager {
                         await appDbContext.TeacherDetails.AddAsync(teacherDetail);
                     }
                     user.teacherDetail = teacherDetail;
+                    break;
+
+                case (int)UserType.Manager:
+                    ManagerDetail managerDetail = appDbContext.ManagerDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
+                    if(managerDetail != null)
+                    {
+                        if(user.managerDetail != null)
+                        {
+                            managerDetail.personalIdNumber = user.managerDetail.personalIdNumber;
+                        }
+                        
+                        appDbContext.ManagerDetails.Update(managerDetail);
+                    }
+                    else
+                    {
+                        managerDetail = new ManagerDetail();
+                        if(user.managerDetail != null)
+                        {
+                            managerDetail.personalIdNumber = user.teacherDetail.personalIdNUmber;
+                        }
+                        managerDetail.UserId = user.Id;
+
+                        await appDbContext.ManagerDetails.AddAsync(managerDetail);
+                    }
+                    user.managerDetail = managerDetail;
                     break;
             }
             

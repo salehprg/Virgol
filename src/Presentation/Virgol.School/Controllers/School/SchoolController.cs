@@ -44,6 +44,7 @@ namespace lms_with_moodle.Controllers
         MoodleApi moodleApi;
         LDAP_db ldap;
         FarazSmsApi SMSApi;
+        MyUserManager myUserManager;
         public SchoolController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -59,6 +60,7 @@ namespace lms_with_moodle.Controllers
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
             ldap = new LDAP_db(appSettings , appDbContext);
+            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
         }
 
         [HttpGet]
@@ -267,7 +269,6 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("شما حداکثر تعداد مدارس خود را ثبت کردید");
 
                 SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
-                MyUserManager myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
 
                 bool melliCodeInterupt = myUserManager.CheckMelliCodeInterupt(inputData.MelliCode , 0);
                 bool phoneInterupt = myUserManager.CheckPhoneInterupt(inputData.managerPhoneNumber);
@@ -418,7 +419,7 @@ namespace lms_with_moodle.Controllers
                         // manager.SchoolId = -1;
                         
                         // appDbContext.Users.Update(manager);
-                        await userManager.DeleteAsync(manager);
+                        await myUserManager.DeleteUser(manager);
                     }
                     
                     appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
@@ -427,7 +428,6 @@ namespace lms_with_moodle.Controllers
                     appDbContext.School_Classes.RemoveRange(appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList());
 
                     List<UserModel> students = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Student && x.SchoolId == school.Id).ToList();
-                    MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
 
                     foreach (var student in students)
                     {
@@ -445,7 +445,7 @@ namespace lms_with_moodle.Controllers
                             
                         }catch{}
                     }
-                    appDbContext.Users.RemoveRange(appDbContext.Users.Where(x => x.SchoolId == school.Id));
+                    //appDbContext.Users.RemoveRange(appDbContext.Users.Where(x => x.SchoolId == school.Id));
                     appDbContext.Schools.Remove(school);
 
                     appDbContext.SaveChanges();
