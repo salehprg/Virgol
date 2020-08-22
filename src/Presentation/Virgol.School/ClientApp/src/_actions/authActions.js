@@ -99,7 +99,7 @@ export const CompleteTeacherProfile = (token,formValues) => async dispatch => {
 
     } catch (e) {
         dispatch({ type: STOP })
-        dispatch(alert.error("مشکلی بوجود آمده است"))
+        dispatch(alert.error(e.response.data))
         return false
     }
 
@@ -122,7 +122,7 @@ export const CompleteStudentProfile = (token,formValues) => async dispatch => {
 
     } catch (e) {
         dispatch({ type: STOP })
-        dispatch(alert.error("مشکلی بوجود آمده است"))
+        dispatch(alert.error(e.response.data))
         return false
     }
 

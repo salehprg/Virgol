@@ -8,7 +8,7 @@ import ReactTooltip from "react-tooltip";
 class PlusTable extends React.Component {
 
     render() {
-        const { isLoading, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body } = this.props
+        const { isLoading, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body , isPaginate} = this.props
         return (
             <div className="w-full">
                 <div className="flex sm:flex-row-reverse flex-col justify-start sm:items-stretch items-end mb-4">
@@ -52,12 +52,14 @@ class PlusTable extends React.Component {
                         />
                     }
                 </div>
-                <Pagination
-                    cardsPerPage={cardsPerPage}
-                    totalCards={totalCards}
-                    paginate={paginate}
-                    currentPage={currentPage}
-                />
+                {(isPaginate ? 
+                    <Pagination
+                        cardsPerPage={cardsPerPage}
+                        totalCards={totalCards}
+                        paginate={paginate}
+                        currentPage={currentPage}
+                    />
+                : null)}
             </div>
         );
     }
