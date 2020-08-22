@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
@@ -10,8 +10,8 @@ import Schools from "./schools/Schools";
 import News from "./News/News";
 import adminTeachers from "./Teachers/adminTeachers";
 import adminStudents from "./Students/adminStudents";
-import { connect } from "react-redux";
 import protectedAdmin from "../../protectedRoutes/protectedAdmin";
+import Tracker from "../manager/tracker/Tracker";
 
 
 class Dashboard extends React.Component {
@@ -105,6 +105,7 @@ class Dashboard extends React.Component {
                         <Route path={this.props.match.url + "/students"} component={adminStudents}/>
                         <Route path={this.props.match.url + "/schools"} component={Schools} />
                         <Route path={this.props.match.url + "/news"} component={News} />
+                        <Redirect to="/404" />
                     </Switch>
                 </div>
             </div>
