@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class TeacherDetail {
     public int Id {get;set;}
@@ -10,6 +11,9 @@ public class TeacherDetail {
     public string personalIdNUmber {get;set;}
     public DateTime birthDate {get;set;}
     public string cityBirth {get;set;}
+
+    [NotMapped]
+    public int NM_schoolId {get;set;} //Use when append schoolId to the SchoolsId
 
 
 }
