@@ -1119,7 +1119,6 @@ namespace lms_with_moodle.Controllers
 
                                     SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
                                     
-                                    return true;
                                 }
                             }
                         }
@@ -1129,7 +1128,7 @@ namespace lms_with_moodle.Controllers
                     }
                 }
 
-                return false;
+                return true;
             }
             catch (Exception ex)
             {

@@ -271,6 +271,11 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
+                schoolModel.sexuality = model.schoolSexuality;
+                
+                appDbContext.Schools.Update(schoolModel);
+                await appDbContext.SaveChangesAsync();
 
                 model.MelliCode = ConvertToPersian.PersianToEnglish(model.MelliCode);
 
@@ -283,7 +288,6 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("کد ملی وارد شده تکراریست");
                 }
 
-                
                 IdentityResult chngPass = new IdentityResult();
                 if(currentManager != null && newManager != null && currentManager.Id == newManager.Id)//It means MelliCode not changed and just should Edit manager Info
                 {

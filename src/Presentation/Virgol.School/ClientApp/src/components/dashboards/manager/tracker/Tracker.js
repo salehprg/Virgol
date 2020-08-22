@@ -17,7 +17,10 @@ class Tracker extends React.Component {
             {i: "t11", name: "17:00", x: 6, y: 0, w: 2, h: 1, static: true},
             {i: "t12", name: "18:00", x: 4, y: 0, w: 2, h: 1, static: true},
             {i: "t13", name: "19:00", x: 2, y: 0, w: 2, h: 1, static: true},
-            {i: "t14", name: "20:00", x: 0, y: 0, w: 2, h: 1, static: true}
+            {i: "t14", name: "20:00", x: 0, y: 0, w: 2, h: 1, static: true},
+            {i: "c1", name: "کلاس 701", x: 28, y: 1, w: 2, h: 1, static: true},
+            {i: "c2", name: "کلاس 702", x: 28, y: 2, w: 2, h: 1, static: true},
+            {i: "l1", name: "ریاضی", x: 26, y:1 , w: 2, h: 1, static: true}
     ]}
     sc = createRef()
 

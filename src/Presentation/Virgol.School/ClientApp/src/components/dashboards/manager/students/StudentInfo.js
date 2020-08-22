@@ -17,7 +17,7 @@ class StudentInfo extends React.Component {
         await this.props.GetUserInfo(this.props.user.token , parseInt(this.props.match.params.id))
         if(this.props.userInfo)
         {
-            this.setState({selectedOption : this.props.userInfo.sexuality === 0 ? "Female" : "Male"})
+            this.setState({selectedOption : this.props.userInfo.sexuality == 0 ? "Female" : "Male"})
         }
     }
 

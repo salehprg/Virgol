@@ -46,7 +46,7 @@ class TeacherInfo extends React.Component {
     onSubmit = async (formValues) => {
         
         formValues.id = parseInt(this.props.match.params.id)
-        formValues.sexuality = (this.state.selectedOption === "Male" ? 1 : 0)
+        formValues.sexuality = (this.state.selectedOption == "Male" ? 1 : 0)
         formValues.teacherDetail = {
             personalIdNUmber : formValues.personalIdNUmber
         }
