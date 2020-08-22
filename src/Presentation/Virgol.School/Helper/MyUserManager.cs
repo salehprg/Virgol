@@ -46,7 +46,7 @@ public class MyUserManager {
                 if(usersType != (int)UserType.Teacher)
                     user.SchoolId = schoolId;
                 
-                if((await userManager.CreateAsync(user , (string.IsNullOrEmpty(password) ? password : user.MelliCode))).Succeeded)
+                if((await userManager.CreateAsync(user , (!string.IsNullOrEmpty(password) ? password : user.MelliCode))).Succeeded)
                 {
                     bool ldapResult = (usersType == (int)UserType.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
                     if(ldapResult)
@@ -335,7 +335,7 @@ public class MyUserManager {
                         managerDetail = new ManagerDetail();
                         if(user.managerDetail != null)
                         {
-                            managerDetail.personalIdNumber = user.teacherDetail.personalIdNUmber;
+                            managerDetail.personalIdNumber = user.managerDetail.personalIdNumber;
                         }
                         managerDetail.UserId = user.Id;
 

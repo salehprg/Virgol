@@ -221,7 +221,6 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
