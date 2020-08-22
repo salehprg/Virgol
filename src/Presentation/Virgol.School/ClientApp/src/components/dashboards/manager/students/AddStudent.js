@@ -10,7 +10,7 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class AddStudent extends React.Component {
 
-    state = {selectedOption : "Female"}
+    state = {selectedOption : ""}
 
     renderInputs = ({ input, meta, type, placeholder }) => {
         return (

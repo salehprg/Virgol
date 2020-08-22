@@ -12,8 +12,5 @@ public class TeacherDetail {
     public DateTime birthDate {get;set;}
     public string cityBirth {get;set;}
 
-    [NotMapped]
-    public int NM_schoolId {get;set;} //Use when append schoolId to the SchoolsId
-
 
 }

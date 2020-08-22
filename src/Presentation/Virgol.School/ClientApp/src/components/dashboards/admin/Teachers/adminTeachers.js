@@ -57,7 +57,7 @@ class adminTeachers extends React.Component {
                                                 <td>{teacher.melliCode}</td>
                                                 <td>{teacher.phoneNumber}</td>
                                                 <td>{teacher.personalIdNUmber}</td>
-                                                <td><span className="text-center">{teacher.latinFirstname ? check_circle('w-8 text-greenish') : null}</span></td>
+                                                <td><span className="text-center">{teacher.latinFirstname && teacher.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
                                             </tr>
                                             )
                                         }

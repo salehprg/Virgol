@@ -11,7 +11,7 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class StudentInfo extends React.Component {
 
-    state = {selectedOption : "Female"}
+    state = {selectedOption : ""}
 
     componentDidMount = async () => {
         await this.props.GetUserInfo(this.props.user.token , parseInt(this.props.match.params.id))

@@ -681,6 +681,7 @@ namespace lms_with_moodle.Controllers
                 if(newTeacher != null)
                 {
                     teacher.Id = newTeacher.Id;
+                    teacher.teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
                     result = await myUserManager.EditUsers(new List<UserDataModel>{teacher} , schoolId , true);
                 }
                 else
