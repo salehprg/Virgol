@@ -227,7 +227,7 @@ class CompleteProfile extends React.Component {
                         ></DatePicker> */
                         }
 
-                        <p className="text-right text-white mb-4 text-xl">شناسنامه</p>
+                        {/* <p className="text-right text-white mb-4 text-xl">شناسنامه</p>
                         <input
                             onChange={(e) => this.handleUploadSH(e.target.files[0])}
                             type="file"
@@ -241,7 +241,7 @@ class CompleteProfile extends React.Component {
                             type="file"
                             id="excel"
                             accept="image/*"
-                        />
+                        /> */}
 
                         <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
                     </form>
