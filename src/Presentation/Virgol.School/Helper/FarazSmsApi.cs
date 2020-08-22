@@ -95,9 +95,9 @@ namespace lms_with_moodle.Helper
 
             string json = JsonConvert.SerializeObject(patternModel);
 
-            // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
+            //return SendData(json , "/v1/messages/patterns/send");
 
-            return SendData(json , "/v1/messages/patterns/send");
+            return true;
         }
 
         public bool SendScheduleNotify(string Number , string userName , string className , string dateTime)
@@ -116,9 +116,8 @@ namespace lms_with_moodle.Helper
 
             string json = JsonConvert.SerializeObject(patternModel);
 
-            // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
-
-            return SendData(json , "/v1/messages/patterns/send");
+            //return SendData(json , "/v1/messages/patterns/send");
+            return true;
         }
 
 
@@ -134,8 +133,10 @@ namespace lms_with_moodle.Helper
 
             // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
 
-            return SendData(json , "/v1/messages");
+            //return SendData(json , "/v1/messages");
+            return true;
         }
+
 
         // public string SendSocial(string[] Numbers , string Message , SocialType _social)
         // {
