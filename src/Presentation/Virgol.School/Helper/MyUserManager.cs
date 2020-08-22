@@ -46,7 +46,8 @@ public class MyUserManager {
                 
                 if((await userManager.CreateAsync(user , (password != null ? password : user.MelliCode))).Succeeded)
                 {
-                    if(ldap.AddUserToLDAP(user , user.MelliCode))
+                    bool ldapResult = (usersType == (int)UserType.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
+                    if(ldapResult)
                     {
                         moodleId = await moodleApi.CreateUser(user);
                         if(moodleId != -1)
@@ -248,19 +249,21 @@ public class MyUserManager {
 
     public bool CheckPhoneInterupt(string phoneNumber)
     {
-        if(!string.IsNullOrEmpty(phoneNumber))
-        {
-            UserModel oldPhone = appDbContext.Users.Where(x => x.PhoneNumber.Contains(phoneNumber.ToString())).FirstOrDefault();
+        // if(!string.IsNullOrEmpty(phoneNumber))
+        // {
+        //     UserModel oldPhone = appDbContext.Users.Where(x => x.PhoneNumber.Contains(phoneNumber.ToString())).FirstOrDefault();
 
-            if(oldPhone != null)
-                return true;
+        //     if(oldPhone != null)
+        //         return true;
 
-            StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.FatherPhoneNumber.Contains(phoneNumber.ToString())).FirstOrDefault();
-            if(studentDetail != null)
-                return true;
-        }
+        //     StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.FatherPhoneNumber.Contains(phoneNumber.ToString())).FirstOrDefault();
+        //     if(studentDetail != null)
+        //         return true;
+        // }
 
-        return false;
+        // return false;
+
+        return true;
 
     }
 
