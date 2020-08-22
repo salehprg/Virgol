@@ -5,6 +5,7 @@ import {home, key, user, users} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import RecentClass from "../RecentClass/RecentClass";
 import { connect } from "react-redux";
+import {GetIncommingNews} from "../../../../_actions/newsActions"
 import {GetMeetingList , GetRecentClass , StartMeeting , EndMeeting , JoinMeeting } from "../../../../_actions/meetingActions"
 
 class Home extends React.Component {
@@ -14,6 +15,7 @@ class Home extends React.Component {
     componentDidMount = async () =>{
             this.setState({loading: true})
             await this.props.GetMeetingList(this.props.user.token);
+            await this.props.GetIncommingNews(this.props.user.token);
             await this.props.GetRecentClass(this.props.user.token);
             this.setState({loading: false})
 
@@ -68,8 +70,8 @@ class Home extends React.Component {
                     />
                 </div>
                 <Feed
-                    news={[]}
-                    title="آخرین اخبار مدیر کل برای شما"
+                    news={this.props.inNews}
+                    title="اخبار و اطلاعیه ها"
                     pos="col-span-1"
                 />
             </div>
@@ -79,7 +81,10 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , meetingList : state.meetingData.meetingList , recentClass : state.meetingData.recentClass }
+    return {user: state.auth.userInfo , meetingList : state.meetingData.meetingList , 
+                                        recentClass : state.meetingData.recentClass ,
+                                        inNews : state.newsData.incomeNews }
 }
 
-export default connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting , EndMeeting , JoinMeeting  })(Home);
+export default connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting ,
+                                             EndMeeting , JoinMeeting , GetIncommingNews })(Home);

@@ -46,7 +46,7 @@ class Teachers extends React.Component {
     }
 
     deleteTeacher = async () => {
-        await this.props.deleteTeacher(this.props.user.token , [this.state.teacherId])
+        await this.props.deleteTeacher(this.props.user.token , this.state.selected)
         this.setState({showDeleteModal : false , teacherId : 0})
     }
 
@@ -142,7 +142,7 @@ class Teachers extends React.Component {
                     options={() => {
                         return (
                             <React.Fragment>
-                                <div onClick={() => this.setState({ showDeleteTeachers: true })} className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
+                                <div onClick={() => this.setState({ showDeleteModal: true })} className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
                                     {trash("w-6 mx-1 text-white")}
                                     <span className="font-vb mx-1 text-white">حذف</span>
                                 </div>

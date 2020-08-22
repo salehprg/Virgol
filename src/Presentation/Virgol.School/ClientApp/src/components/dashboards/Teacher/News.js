@@ -23,7 +23,7 @@ class News extends React.Component {
             <div style={{direction : "rtl"}} className="grid sm:grid-cols-4 grid-cols-4 gap-4 py-6">
                 <Feed
                     news={this.props.inNews}
-                    title="آخرین اخبار برای شما"
+                    title="اخبار و اطلاعیه ها"
                     pos="row-start-4 sm:row-start-auto col-span-3 row-span-3"
                 />
             </div>

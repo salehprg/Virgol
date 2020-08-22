@@ -96,7 +96,7 @@ class Schedule extends React.Component {
                     {layout.map(x => {
                         return (
                             <div onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
-                                <p className="centerize">{x.name}</p>
+                                <p className="text-center">{x.name}</p>
                             </div>
                         );
                     })}

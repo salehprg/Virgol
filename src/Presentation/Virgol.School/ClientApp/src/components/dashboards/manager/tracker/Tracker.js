@@ -35,7 +35,7 @@ class Tracker extends React.Component {
             {
                 (classs.map(lesson => {
                     schedules.push({i: 'l' + lesson.id , name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 28 - ((lesson.endHour - 7) * 2), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
+                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 28 - ((lesson.endHour - 7) * 2), y: index + 1, w: (lesson.endHour - lesson.startHour) * 2,
                     h: 1 , lessonDetail : lesson , static: true})
                 }))
             }
@@ -61,7 +61,7 @@ class Tracker extends React.Component {
     }
 
     showLessonInfo = (id) => {
-        if (!this.state.lessons.find(el => el.i === id)) return;
+        if (!this.state.lessons.find(el => el.i === id) || this.state.lessons.find(el => el.i === id).i.includes('c')) return;
         this.setState({ lessonInfo: this.state.lessons.find(el => el.i === id) , showLessonInfo : true})
     }
 
@@ -92,7 +92,7 @@ class Tracker extends React.Component {
                             {layout.map(x => {
                                 return (
                                     <div onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
-                                        <p className="centerize">{x.name}</p>
+                                        <p className="text-center">{x.name}</p>
                                     </div>
                                 );
                             })}
