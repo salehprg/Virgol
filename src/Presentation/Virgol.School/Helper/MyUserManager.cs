@@ -21,7 +21,7 @@ public class MyUserManager {
         userManager = _userManager;
         appDbContext = _appDbContext;
         moodleApi = new MoodleApi(appSettings);
-        ldap = new LDAP_db(appSettings , null);
+        ldap = new LDAP_db(appSettings , _appDbContext);
     }
 
     ///<summary>
