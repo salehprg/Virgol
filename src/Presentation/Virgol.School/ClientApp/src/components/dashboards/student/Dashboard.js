@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from 'react-router-dom';
+import {Switch, Route, Redirect} from 'react-router-dom';
 import protectedStudent from "../../protectedRoutes/protectedStudent";
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
@@ -75,6 +75,7 @@ class StudentDashboard extends React.Component {
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/classes"} component={Classes}/>
+                        <Redirect to="/404" />
                     </Switch>
                 </div>
             </div>
