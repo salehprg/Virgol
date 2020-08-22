@@ -168,7 +168,9 @@ const validate = (formValues) => {
     if (!formValues.schoolIdNumber) errors.schoolIdNumber = true
     if (!formValues.firstName || !validator.checkPersian(formValues.firstName)) errors.firstName = true
     if (!formValues.lastName || !validator.checkPersian(formValues.lastName)) errors.lastName = true
-    if (!validator.checkMelliCode(formValues.melliCode)) errors.melliCode = true
+    if (formValues.latinFirstname && validator.checkPersian(formValues.latinFirstname)) errors.latinFirstname = true
+    if (formValues.latinLastname && validator.checkPersian(formValues.latinLastname)) errors.latinLastname = true
+    if (!formValues.melliCode && !validator.checkMelliCode(formValues.melliCode)) errors.melliCode = true
     if (!formValues.personalIdNumber) errors.personalIdNumber = true
     if (!formValues.managerPhoneNumber || !validator.checkPhoneNumber(formValues.managerPhoneNumber)) errors.managerPhoneNumber = true
 

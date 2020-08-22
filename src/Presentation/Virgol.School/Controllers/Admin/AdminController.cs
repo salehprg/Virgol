@@ -45,6 +45,7 @@ namespace lms_with_moodle.Controllers
         LDAP_db ldap;
         MoodleApi moodleApi;
         FarazSmsApi SMSApi;
+        MyUserManager myUserManager;
         public AdminController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -60,6 +61,7 @@ namespace lms_with_moodle.Controllers
             moodleApi = new MoodleApi(appSettings);
             SMSApi = new FarazSmsApi(appSettings);
             ldap = new LDAP_db(appSettings , appDbContext);
+            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
         }
 
         [HttpGet]
@@ -234,47 +236,25 @@ namespace lms_with_moodle.Controllers
                 manager.Moodle_Id = 0;
                 manager.MelliCode = ConvertToPersian.PersianToEnglish(manager.MelliCode);
 
-                bool result = userManager.CreateAsync(manager , manager.MelliCode).Result.Succeeded;
+                ManagerDetail managerDetail = new ManagerDetail();
+                managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(model.personalIdNumber);
 
-                if(result)
+                UserDataModel managerData = new UserDataModel();
+                var seialized = JsonConvert.SerializeObject(manager);
+                managerData = JsonConvert.DeserializeObject<UserDataModel>(seialized);
+
+                managerData.managerDetail = managerDetail;
+
+                List<UserDataModel> managerDatas = await myUserManager.CreateUser(new List<UserDataModel>{managerData} , (int)UserType.Manager , model.SchoolId , model.password);
+
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
+
+                if(school != null)
                 {
-                    await userManager.AddToRolesAsync(manager , new string[]{"User" , "Manager"});
-                    
-                    int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
-                    manager.Id = userId;
-
-                    bool ldapUser = ldap.AddUserToLDAP(manager);
-
-                    bool userToMoodle = false;
-                    if(ldapUser)
-                    {
-                        userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
-                    }
-
-                    if(userToMoodle)
-                    {
-                        int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
-                        manager.Moodle_Id = userMoodle_id;
-
-                        appDbContext.Users.Update(manager);
-
-                        ManagerDetail managerDetail = new ManagerDetail();
-                        managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(model.personalIdNumber);
-                        managerDetail.UserId = userId;
-
-                        appDbContext.ManagerDetails.Add(managerDetail);
-                        appDbContext.SaveChanges();
-                        
-                        SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
-
-                        if(school != null)
-                        {
-                            school.ManagerId = userId;
-                            appDbContext.Schools.Update(school);
-                            appDbContext.SaveChanges();
-                        }
-                    }
-                }
+                    school.ManagerId = managerDatas[0].Id;
+                    appDbContext.Schools.Update(school);
+                    appDbContext.SaveChanges();
+                }           
 
                 return Ok(model);
             }
@@ -292,7 +272,6 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                MyUserManager myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
 
                 model.MelliCode = ConvertToPersian.PersianToEnglish(model.MelliCode);
 
@@ -320,25 +299,20 @@ namespace lms_with_moodle.Controllers
                         currentManager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
                     }
                     
-                    if(!string.IsNullOrEmpty(model.password))
-                    {
-                        string token = await userManager.GeneratePasswordResetTokenAsync(currentManager);
-                        chngPass = await userManager.ResetPasswordAsync(currentManager , token , model.password);
-                    }
                     
                     currentManager.FirstName = model.FirstName;
                     currentManager.LatinFirstname = model.LatinFirstname;
                     currentManager.LastName = model.LastName;
                     currentManager.LatinLastname = model.LatinLastname;
 
-                    
+                    UserDataModel userDataModel = new  UserDataModel();
+                    var serialized = JsonConvert.SerializeObject(currentManager);
+                    userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
 
-                    if(!string.IsNullOrEmpty(currentManager.LatinFirstname) && !string.IsNullOrEmpty(currentManager.LatinFirstname))
-                    {
-                        ldap.EditMail(currentManager);
-                    }
-                    appDbContext.Users.Update(currentManager);
-                    appDbContext.SaveChanges();
+                    userDataModel.managerDetail = new ManagerDetail();
+                    userDataModel.managerDetail.personalIdNumber = model.personalIdNumber;
+
+                    await myUserManager.EditUsers(new List<UserDataModel>{userDataModel} , model.SchoolId , false , model.password);
 
                     List<IdentityError> errors = chngPass.Errors.ToList();
                     return Ok(new{
@@ -365,12 +339,27 @@ namespace lms_with_moodle.Controllers
                         // appDbContext.SaveChanges();
                     }
 
-                    await AddNewManager(model);
-                    newManager = appDbContext.Users.Where(x => x.MelliCode == model.MelliCode).FirstOrDefault();
+                    UserDataModel userDataModel = new  UserDataModel();
+                    var serialized = JsonConvert.SerializeObject(model);
+                    userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+                    userDataModel.UserName = userDataModel.MelliCode;
 
-                    string token = await userManager.GeneratePasswordResetTokenAsync(newManager);
-                    await userManager.ResetPasswordAsync(newManager , token , model.password);
+                    userDataModel.managerDetail = new ManagerDetail();
+                    userDataModel.managerDetail.personalIdNumber = model.personalIdNumber;
 
+                    List<UserDataModel> datas = await myUserManager.CreateUser(new List<UserDataModel>{userDataModel} , (int)UserType.Manager , model.SchoolId , model.password );
+
+                    if(datas.Count > 0)
+                    {
+                        SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
+                        school.ManagerId = datas[0].Id;
+
+                        appDbContext.Schools.Update(school);
+                        await appDbContext.SaveChangesAsync();
+
+                        newManager = datas[0];
+                    }
+                    
                     List<IdentityError> errors = chngPass.Errors.ToList();
                     return Ok(new{
                         newManager,
