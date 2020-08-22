@@ -36,6 +36,7 @@ class AddSchool extends React.Component {
         console.log(formValues);
         formValues.sexuality = (this.state.selectedOption === "Male" ? 1 : 0)
         
+        
         await this.props.CreateSchool(this.props.user.token , formValues)
         this.setState({showManagerInfo : false})
     }
