@@ -96,9 +96,9 @@ namespace lms_with_moodle.Helper
 
             string json = JsonConvert.SerializeObject(patternModel);
 
-            //return SendData(json , "/v1/messages/patterns/send");
+            return SendData(json , "/v1/messages/patterns/send");
 
-            return true;
+            //return true;
         }
 
         public bool SendScheduleNotify(string Number , string userName , string className , string dateTime)

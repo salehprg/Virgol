@@ -13,7 +13,7 @@ import protectedAdmin from "../../../../protectedRoutes/protectedAdmin";
 
 class AddSchool extends React.Component {
 
-    state = { showManagerInfo: true , selectedOption : "Female"}
+    state = { showManagerInfo: true , selectedOption : ""}
 
     renderInputs = ({ input, meta, type, placeholder , extra }) => {
         return (
@@ -95,17 +95,17 @@ class AddSchool extends React.Component {
                     component={this.renderInputs}
                 />
                 <Field
-                    name="latinFirstname"
+                    name="lastName"
                     type="text"
-                    placeholder="نام لاتین"
                     extra={"w-40 my-4"}
+                    placeholder="نام خانوادگی مدیر"
                     component={this.renderInputs}
                 />
                 <Field
-                    name="lastName"
+                    name="latinFirstname"
                     type="text"
+                    placeholder="نام لاتین"
                     extra={"w-40 my-4 mx-2"}
-                    placeholder="نام خانوادگی مدیر"
                     component={this.renderInputs}
                 />
                 <Field

@@ -324,9 +324,44 @@ namespace lms_with_moodle.Controllers
             int managerId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
             int schoolId = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault().Id;
 
-            List<MeetingView> meetingViews = appDbContext.MeetingViews.Where(x => x.School_Id == schoolId && x.Finished == false).ToList();
-                
-            return Ok(meetingViews);
+            List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == schoolId).ToList();
+            
+            DateTime currentDateTime = MyDateTime.Now();
+
+            float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
+            
+            int dayOfWeek = (int)currentDateTime.DayOfWeek + 2;
+            dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
+
+            List<MeetingView> result = new List<MeetingView>();
+
+            foreach (var classs in classes)
+            {
+                List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.ClassId == classs.Id && x.DayType == dayOfWeek).ToList();
+                List<MeetingView> activeMeetings = appDbContext.MeetingViews.Where(x => x.ClassId == classs.Id && !x.Finished).ToList();
+
+                foreach (var schedule in schedules)
+                {
+                    MeetingView meetingVW = activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault();
+                    if(meetingVW == null)
+                    {
+                        meetingVW = new MeetingView();
+
+                        var serialized = JsonConvert.SerializeObject(schedule);
+                        meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
+                    }
+
+                    result.Add(meetingVW);
+                }
+            }
+        
+
+            var groupedMeetings = result
+                    .GroupBy(x => x.ClassId)
+                    .Select(grp => grp.ToList())
+                    .ToList();
+
+            return Ok(groupedMeetings);
         }
 
 

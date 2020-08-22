@@ -59,20 +59,81 @@ public class FileController {
                     using (var excelData = ExcelReaderFactory.CreateReader(stream))
                     {
                         excelData.Read(); //Ignore column header name
+                        
+                        int schoolNameId = -1;
+                        int schoolCodeId = -1;
+                        int firstNameId = -1;
+                        int lastNameId = -1;
+                        int managerPhoneNumberId = -1;
+                        int melliCodeId = -1;
+                        int personalIdNumber = -1;
+                        int sexualityId = -1;
+
+                        for(int i = 0;i < excelData.FieldCount;i++)
+                        {
+                            object value = excelData.GetValue(i);
+
+                            if(value != null)
+                            {
+                                if(((string)value).Trim().Contains("نام مدیر".Trim()))
+                                {
+                                    firstNameId = i;
+                                }
+                                if(((string)value).Contains("نام خانوادگی"))
+                                {
+                                    lastNameId = i;
+                                }
+                                if(((string)value).Contains("شماره تلفن") || ((string)value).Contains("شماره تماس"))
+                                {
+                                    managerPhoneNumberId = i;
+                                }
+                                if(((string)value).Contains("کد ملی") || ((string)value).Contains("کدملی"))
+                                {
+                                    melliCodeId = i;
+                                }
+                                if(((string)value).Contains("کد پرسنلی"))
+                                {
+                                    personalIdNumber = i;
+                                }
+                                if(((string)value).Contains("جنسیت"))
+                                {
+                                    sexualityId = i;
+                                }
+                                if(((string)value).Contains("نام مدرسه"))
+                                {
+                                    schoolNameId = i;
+                                }
+                                if(((string)value).Contains("کد مدرسه"))
+                                {
+                                    schoolCodeId = i;
+                                }
+                            }
+                        }
 
                         while (excelData.Read()) //Each row of the file
                         {
                             try
                             {
+                                int sexCode = 0;
+                                if(sexualityId != -1)
+                                {
+                                    if(excelData.GetValue(sexualityId) != null)
+                                    {
+                                        string femaleCode = "دخترانه";
+                                        sexCode = (excelData.GetValue(sexualityId).ToString().Contains(femaleCode) ? 0 : 1);
+                                    }
+                                }
+
                                 CreateSchoolData schoolData = new CreateSchoolData
                                 {
-                                    SchoolName = excelData.GetValue(0).ToString(),
-                                    SchoolIdNumber = ConvertToPersian.PersianToEnglish(excelData.GetValue(1).ToString()),
-                                    FirstName = excelData.GetValue(2).ToString(),
-                                    LastName = excelData.GetValue(3).ToString(),
-                                    MelliCode = ConvertToPersian.PersianToEnglish(excelData.GetValue(4).ToString()),
-                                    personalIdNumber = (excelData.GetValue(5) != null ? ConvertToPersian.PersianToEnglish(excelData.GetValue(5).ToString()) : null),
-                                    managerPhoneNumber =  (excelData.GetValue(6) != null ? ConvertToPersian.PersianToEnglish(excelData.GetValue(6).ToString()) : null)
+                                    SchoolName = (excelData.GetValue(schoolNameId) != null ? excelData.GetValue(schoolNameId).ToString() : null),
+                                    SchoolIdNumber = (excelData.GetValue(schoolCodeId) != null ? ConvertToPersian.PersianToEnglish(excelData.GetValue(schoolCodeId).ToString()) : null),
+                                    FirstName = (excelData.GetValue(firstNameId) != null ? excelData.GetValue(firstNameId).ToString() : null),
+                                    LastName = (excelData.GetValue(lastNameId) != null ? excelData.GetValue(lastNameId).ToString() : null),
+                                    MelliCode = (excelData.GetValue(melliCodeId) != null ? ConvertToPersian.PersianToEnglish(excelData.GetValue(melliCodeId).ToString()): null),
+                                    personalIdNumber = (excelData.GetValue(personalIdNumber) != null ? ConvertToPersian.PersianToEnglish(excelData.GetValue(personalIdNumber).ToString()) : null),
+                                    managerPhoneNumber =  (excelData.GetValue(managerPhoneNumberId) != null ? ConvertToPersian.PersianToEnglish(excelData.GetValue(managerPhoneNumberId).ToString()) : null),
+                                    sexuality = sexCode
                                 };
 
                                 excelSchools.Add(schoolData);

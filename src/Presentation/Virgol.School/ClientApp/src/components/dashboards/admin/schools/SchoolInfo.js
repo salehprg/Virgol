@@ -30,6 +30,7 @@ class SchoolInfo extends React.Component {
         courses: [
             {id: 1, fieldId: 1, gradeId: 4, courses: [{id: 1, name: 'ریاضی 1'}]},
         ],
+        selectedOption : "",
         selectedCat: null,
         selectedField: null,
         selectedGrade: null,
@@ -49,24 +50,12 @@ class SchoolInfo extends React.Component {
         await this.props.GetSchoolInfo(this.props.user.token , this.props.match.params.id);
         this.setState({loadingCats: false})
 
+        this.setState({selectedOption : this.props.schoolLessonInfo.schoolModel.sexuality == 0 ? "Female" : "Male"})
     }
 
-    // getFields = async () => {
-    //     console.log("test")
-    //     await this.props.getStudyfields(this.props.user.token , this.state.selectedCat);
-    //     if (!this.props.bases) return null
-    //     return this.props.studyFields.find(el => el.catId === this.state.selectedCat).fields
-    // }
-
-    // getGrades = () => {
-    //     if (!this.state.selectedField && (!this.state.selectedCat || this.state.fields.find(el => el.catId === this.state.selectedCat).fields.length !== 0)) return null
-    //     return this.state.grades.find(el => el.catId === this.state.selectedCat).grades
-    // }
-
-    // getCourses = () => {
-    //     if (!this.state.selectedGrade) return null
-    //     return this.state.courses.find(el => (el.fieldId === -1 || el.fieldId === this.state.selectedField) && el.gradeId === this.state.selectedGrade).courses
-    // }
+    handleRadioBtnChng = (e) =>{
+        this.setState({selectedOption : e.target.value});
+    }
 
     onEditSchool = async() =>{
         const data = {
@@ -127,6 +116,8 @@ class SchoolInfo extends React.Component {
             formValues.password = null;
         }
         formValues.schoolId = parseInt(this.props.match.params.id);
+        formValues.schoolSexuality = (this.state.selectedOption === "Male" ? 1 : 0)
+
         await this.props.EditManager(this.props.user.token , formValues)
     }
 
@@ -194,6 +185,25 @@ class SchoolInfo extends React.Component {
                     : 
                     <form className="text-center mt-8 w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
                         <div className="w-full flex flex-row justify-end items-center flex-wrap">
+                            <div style={{direction : "rtl"}} className="text-white">
+                                <input checked="true" 
+                                    type="radio" 
+                                    value="Female" 
+                                    name="gender" 
+                                    className="form-radio"
+                                    checked={this.state.selectedOption === "Female"}
+                                    onChange={this.handleRadioBtnChng}
+                                /> دخترانه
+
+                                <input 
+                                    className="mr-4" 
+                                    checked={this.state.selectedOption === "Male"}
+                                    onChange={this.handleRadioBtnChng} 
+                                    type="radio" 
+                                    value="Male" 
+                                    name="gender" 
+                                /> پسرانه
+                            </div>
                             <Field
                                 name="latinFirstname"
                                 type="text"

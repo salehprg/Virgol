@@ -1085,7 +1085,6 @@ namespace lms_with_moodle.Controllers
                         selectedUser.ConfirmedAcc = true;
                         selectedUser.UserName = selectedUser.MelliCode;
                         selectedUser.userTypeId = userTypeId;
-                        selectedUser.Sexuality = sexuality;
                         selectedUser.SchoolId = schoolId;
 
                         UserModel userModel = await userManager.FindByNameAsync(selectedUser.UserName);
