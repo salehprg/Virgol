@@ -141,7 +141,15 @@ public class MyUserManager {
             if(user.LatinFirstname != null && user.LatinLastname != null)
                 ldap.EditMail(user);
 
+            if(assignTeacher)
+            {
+                TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault();
+                teacherDetail.NM_schoolId = schoolId;
+                user.teacherDetail = teacherDetail;
+            }
             await SyncUserDetail(user);
+
+            users.Add(user);
         }
         
         
