@@ -72,6 +72,7 @@ class AddSchool extends React.Component {
                         type="radio" 
                         value="Female" 
                         name="gender" 
+                        className="form-radio"
                         checked={this.state.selectedOption === "Female"}
                         onChange={this.handleRadioBtnChng}
                     /> دخترانه

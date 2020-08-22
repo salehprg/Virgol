@@ -66,11 +66,7 @@ public class MyUserManager {
 
                                 case (int)UserType.Teacher :
                                     await userManager.AddToRolesAsync(user , new string[]{"User" , "Teacher"});
-
-                                    TeacherDetail teacherDetail = new TeacherDetail();
-                                    user.teacherDetail.NM_schoolId = schoolId;
-
-                                    await SyncUserDetail(user);
+                                    await SyncUserDetail(user , schoolId);
                                     break;
 
                                 case (int)UserType.Manager :
@@ -99,7 +95,7 @@ public class MyUserManager {
     ///</summary>    
     public async Task<List<UserDataModel>> EditUsers(List<UserDataModel> users , int schoolId = 0 , bool assignTeacher = false , string newPassword = "")
     {
-        bool result = false;
+        List<UserDataModel> result = new List<UserDataModel>();
 
         foreach (var user in users)
         {
@@ -138,23 +134,19 @@ public class MyUserManager {
 
             appDbContext.Users.Update(oldData);
 
+            user.userTypeId = oldData.userTypeId;
+
             if(user.LatinFirstname != null && user.LatinLastname != null)
                 ldap.EditMail(user);
 
-            if(assignTeacher)
-            {
-                TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault();
-                teacherDetail.NM_schoolId = schoolId;
-                user.teacherDetail = teacherDetail;
-            }
-            await SyncUserDetail(user);
+            await SyncUserDetail(user , schoolId);
 
-            users.Add(user);
+            result.Add(user);
         }
         
         
         await appDbContext.SaveChangesAsync();
-        return users;
+        return result;
     }
     public async Task<bool> DeleteUser(UserModel user)
     {
@@ -269,7 +261,7 @@ public class MyUserManager {
         
     }
 
-    public async Task<bool> SyncUserDetail(UserDataModel user)
+    public async Task<bool> SyncUserDetail(UserDataModel user , int teacherSchoolId = 0)
     {
         try
         {
@@ -305,9 +297,9 @@ public class MyUserManager {
                             teacherDetail.personalIdNUmber = user.teacherDetail.personalIdNUmber;
                         }
                         
-                        if(user.teacherDetail.NM_schoolId != 0 && !teacherDetail.SchoolsId.Contains(user.teacherDetail.NM_schoolId.ToString() + ','))
+                        if(teacherSchoolId != 0 && !teacherDetail.SchoolsId.Contains(teacherSchoolId.ToString() + ','))
                         {
-                            teacherDetail.SchoolsId += user.teacherDetail.NM_schoolId.ToString() + ',';
+                            teacherDetail.SchoolsId += teacherSchoolId.ToString() + ',';
                         }
                         
                         appDbContext.TeacherDetails.Update(teacherDetail);
@@ -320,7 +312,7 @@ public class MyUserManager {
                             teacherDetail.personalIdNUmber = user.teacherDetail.personalIdNUmber;
                         }
                         teacherDetail.TeacherId = user.Id;
-                        teacherDetail.SchoolsId = user.teacherDetail.NM_schoolId + ",";
+                        teacherDetail.SchoolsId = teacherSchoolId + ",";
 
                         await appDbContext.TeacherDetails.AddAsync(teacherDetail);
                     }

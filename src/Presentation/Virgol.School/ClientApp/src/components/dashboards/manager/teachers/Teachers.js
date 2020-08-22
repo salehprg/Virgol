@@ -102,7 +102,7 @@ class Teachers extends React.Component {
                                                 <td>{x.melliCode}</td>
                                                 <td>{x.phoneNumber}</td>
                                                 <td>{x.personalIdNUmber}</td>
-                                                <td><span className="text-center">{x.latinFirstname ? check_circle('w-8 text-greenish') : null}</span></td>
+                                                <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
                                                 <td data-tip="ویرایش" className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>           
