@@ -286,7 +286,7 @@ namespace lms_with_moodle.Controllers
 
                 
                 IdentityResult chngPass = new IdentityResult();
-                if(currentManager != null && newManager != null && currentManager.Id == newManager.Id)//It means MelliCode not changed
+                if(currentManager != null && newManager != null && currentManager.Id == newManager.Id)//It means MelliCode not changed and just should Edit manager Info
                 {
                     if(!string.IsNullOrEmpty(model.password) && model.password.Length < 8)
                         return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
@@ -321,7 +321,7 @@ namespace lms_with_moodle.Controllers
                     });
                 }
                 
-                if(newManager == null )
+                if(newManager == null ) //melliCode changed and should remove oldManager then add newManager
                 {
                     if(model.password == null || model.password.Trim() == null)
                         return BadRequest("رمز عبور مدیر جدید به درستی وارد نشده است");
@@ -335,14 +335,12 @@ namespace lms_with_moodle.Controllers
                     if(currentManager != null)
                     {
                         await myUserManager.DeleteUser(currentManager);
-                        // appDbContext.Users.Remove(currentManager);
-                        // appDbContext.SaveChanges();
                     }
+                    model.UserName = model.MelliCode;
 
                     UserDataModel userDataModel = new  UserDataModel();
                     var serialized = JsonConvert.SerializeObject(model);
                     userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
-                    userDataModel.UserName = userDataModel.MelliCode;
 
                     userDataModel.managerDetail = new ManagerDetail();
                     userDataModel.managerDetail.personalIdNumber = model.personalIdNumber;
