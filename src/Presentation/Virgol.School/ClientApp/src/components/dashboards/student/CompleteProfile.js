@@ -122,7 +122,7 @@ class CompleteProfile extends React.Component {
         
         let data = formValues;
 
-        data.userDetail = {
+        data.studentDetail = {
             fatherPhoneNumber : formValues.fatherPhoneNumber,
             birthDate : (this.state.birthDate ? this.state.birthDate._d : null),
             cityBirth: formValues.cityBirth
