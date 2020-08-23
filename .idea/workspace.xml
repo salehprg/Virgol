@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/schoolActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/schoolActions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/schools/SchoolInfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/schools/SchoolInfo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/schools/Schools.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/schools/Schools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/students/Students.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/students/Students.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/teachers/Teachers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/teachers/Teachers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/sidebar/Sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/sidebar/Sidebar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/tables/PlusTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/tables/PlusTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/field/PencilText.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/field/PencilText.js" afterDir="false" />
-    </list>
+    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,6 +33,7 @@
       <updated>1597089409134</updated>
       <workItem from="1597089410554" duration="36000" />
       <workItem from="1597822739483" duration="31000" />
+      <workItem from="1598097113185" duration="25000" />
     </task>
     <servers />
   </component>
