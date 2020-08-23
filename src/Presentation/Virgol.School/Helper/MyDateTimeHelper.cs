@@ -12,4 +12,12 @@ public class MyDateTime {
         
         return result;
     }
+
+    public static int convertDayOfWeek(DateTime time)
+    {
+        int dayOfWeek = (int)time.DayOfWeek + 3;
+        dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
+
+        return dayOfWeek;
+    }
 }

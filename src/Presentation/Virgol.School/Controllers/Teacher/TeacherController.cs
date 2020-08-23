@@ -68,10 +68,9 @@ namespace lms_with_moodle.Controllers
                 List<ClassBook> classBooks = new List<ClassBook>();
                 List<MeetingView> meetings = appDbContext.MeetingViews.Where(x => x.LessonId == lessonId).ToList();
 
-                List<School_studentClass> students = new List<School_studentClass>();
+                int classId = appDbContext.ClassWeeklySchedules.Where(x => x.Id == lessonId).FirstOrDefault().ClassId;
 
-                if(meetings.Count > 0)
-                    students = appDbContext.School_StudentClasses.Where(x => x.ClassId == meetings[0].ClassId).ToList();
+                List<School_studentClass> students = appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
 
                 foreach (var student in students)
                 {

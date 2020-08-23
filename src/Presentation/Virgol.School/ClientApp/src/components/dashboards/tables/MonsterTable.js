@@ -1,14 +1,13 @@
 import React from "react";
 import Searchish from "../../field/Searchish";
-import Tablish from "./Tablish";
 import {loading} from "../../../assets/icons";
 import Pagination from "../pagination/Pagination";
-import ReactTooltip from "react-tooltip";
+import CheckTable from "./CheckTable";
 
-class PlusTable extends React.Component {
+class MonsterTable extends React.Component {
 
     render() {
-        const { isLoading, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body , isPaginate = true} = this.props
+        const { options, checkAll, clearItems, selected, isLoading, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body , isPaginate} = this.props
         return (
             <div className="w-full">
                 <div className="flex sm:flex-row-reverse flex-col justify-start sm:items-stretch items-end mb-4">
@@ -32,12 +31,12 @@ class PlusTable extends React.Component {
                         :
                         null
                     }
-                    {sample ? 
-                         <a href={sampleLink} className="px-6 cursor-pointer py-1 border-2 border-redish text-redish rounded-lg" download>
-                             {sample}
-                         </a>
-                    : 
-                    null
+                    {sample ?
+                        <a href={sampleLink} className="px-6 cursor-pointer py-1 border-2 border-redish text-redish rounded-lg" download>
+                            {sample}
+                        </a>
+                        :
+                        null
                     }
                 </div>
 
@@ -46,24 +45,28 @@ class PlusTable extends React.Component {
                     {isLoading ?
                         loading('w-10 text-grayish centerize')
                         :
-                        <Tablish
+                        <CheckTable
                             headers={headers}
                             body={body}
+                            options={options}
+                            checkAll={checkAll}
+                            clearItems={clearItems}
+                            selected={selected}
                         />
                     }
                 </div>
-                {(isPaginate ? 
+                {(isPaginate ?
                     <Pagination
                         cardsPerPage={cardsPerPage}
                         totalCards={totalCards}
                         paginate={paginate}
                         currentPage={currentPage}
                     />
-                : null)}
+                    : null)}
             </div>
         );
     }
 
 }
 
-export default PlusTable;
+export default MonsterTable;

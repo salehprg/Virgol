@@ -105,7 +105,7 @@ class LessonInfoModal extends React.Component {
 
                         {(this.state.times.length > 0 ?
                         <p className="text-center text-white my-4">
-                            {`${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.options.find(x => x.value === this.props.lessonInfo.y).label} از ساعت ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} تا ساعت `}
+                            {`${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.options.find(x => x.value === this.props.lessonInfo.lessonDetail.dayType).label} از ساعت ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} تا ساعت `}
                         </p>
                         : null)}
 

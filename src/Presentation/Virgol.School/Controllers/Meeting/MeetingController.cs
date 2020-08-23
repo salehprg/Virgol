@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.MoodleApiResponse.Activity_Grade_Info;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace lms_with_moodle.Controllers
 {
@@ -262,8 +263,7 @@ namespace lms_with_moodle.Controllers
 
                 float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
                 
-                int dayOfWeek = (int)currentDateTime.DayOfWeek + 2;
-                dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
+                int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
 
                 if(isTeacher)
                 {
@@ -329,9 +329,8 @@ namespace lms_with_moodle.Controllers
             DateTime currentDateTime = MyDateTime.Now();
 
             float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
-            
-            int dayOfWeek = (int)currentDateTime.DayOfWeek + 2;
-            dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
+
+            int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
 
             List<MeetingView> result = new List<MeetingView>();
 
