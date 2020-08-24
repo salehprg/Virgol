@@ -69,13 +69,13 @@ class TeacherDashboard extends React.Component {
                         icon={bell}
                         changeActive={this.changeActive}
                     />
-                    <SidebarCard
-                        active={this.state.active}
-                        code="news"
-                        title="اخبار"
-                        icon={open_book}
-                        changeActive={this.changeActive}
-                    />
+                    {/*<SidebarCard*/}
+                    {/*    active={this.state.active}*/}
+                    {/*    code="news"*/}
+                    {/*    title="اخبار"*/}
+                    {/*    icon={open_book}*/}
+                    {/*    changeActive={this.changeActive}*/}
+                    {/*/>*/}
                     <SidebarCard
                         active={this.state.active}
                         code="myNews"
@@ -91,7 +91,7 @@ class TeacherDashboard extends React.Component {
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/classes"} component={Classes}/>
-                        <Route path={this.props.match.url + "/news"} component={News}/>
+                        {/*<Route path={this.props.match.url + "/news"} component={News}/>*/}
                         <Route path={this.props.match.url + "/myNews"} component={MyNews}/>
                         <Redirect to="/404" />
                     </Switch>
