@@ -53,8 +53,8 @@ class SchoolInfo extends React.Component {
         this.setState({selectedOption : this.props.schoolLessonInfo.schoolModel.sexuality == 0 ? "Female" : "Male"})
     }
 
-    handleRadioBtnChng = (e) =>{
-        this.setState({selectedOption : e.target.value});
+    handleRadioBtnChng = (gender) =>{
+        this.setState({selectedOption : gender});
     }
 
     onEditSchool = async() =>{
@@ -106,7 +106,7 @@ class SchoolInfo extends React.Component {
                 type={type}
                 dir={dir}
                 placeholder={placeholder}
-                extra={extra + "max-w-350 my-4 lg:mx-0 mx-0"}
+                extra={extra + "max-w-350 my-4"}
             />
         );
     }
@@ -176,80 +176,86 @@ class SchoolInfo extends React.Component {
                 null
                 }
                 <div className="w-full relative rounded-lg lg:min-h-85 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
-                    <div className="absolute manager-options">
-                        {slash('w-6 text-white')}
-                    </div>
+                    {/*<div className="absolute manager-options">*/}
+                    {/*    {slash('w-6 text-white')}*/}
+                    {/*</div>*/}
                     {briefcase('w-1/5 mb-2 text-white mx-auto')}
                     <p className="text-white">اطلاعات مدیر</p>
                     {this.state.loadingCats ? loading('w-10 text-grayish centerize')
                     : 
                     <form className="text-center mt-8 w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
                         <div className="w-full flex flex-row justify-end items-center flex-wrap">
-                            <div style={{direction : "rtl"}} className="text-white">
-                                <input checked="true" 
-                                    type="radio" 
-                                    value="Female" 
-                                    name="gender" 
-                                    className="form-radio"
-                                    checked={this.state.selectedOption === "Female"}
-                                    onChange={this.handleRadioBtnChng}
-                                /> دخترانه
+                            {/*<div style={{direction : "rtl"}} className="text-white">*/}
+                            {/*    <input checked="true" */}
+                            {/*        type="radio" */}
+                            {/*        value="Female" */}
+                            {/*        name="gender" */}
+                            {/*        className="form-radio"*/}
+                            {/*        checked={this.state.selectedOption === "Female"}*/}
+                            {/*        onChange={this.handleRadioBtnChng}*/}
+                            {/*    /> دخترانه*/}
 
-                                <input 
-                                    className="mr-4" 
-                                    checked={this.state.selectedOption === "Male"}
-                                    onChange={this.handleRadioBtnChng} 
-                                    type="radio" 
-                                    value="Male" 
-                                    name="gender" 
-                                /> پسرانه
+                            {/*    <input */}
+                            {/*        className="mr-4" */}
+                            {/*        checked={this.state.selectedOption === "Male"}*/}
+                            {/*        onChange={this.handleRadioBtnChng} */}
+                            {/*        type="radio" */}
+                            {/*        value="Male" */}
+                            {/*        name="gender" */}
+                            {/*    /> پسرانه*/}
+                            {/*</div>*/}
+                            <div className="w-full flex justify-between items-center">
+                                <Field
+                                    name="latinFirstname"
+                                    type="text"
+                                    placeholder="نام لاتین"
+                                    extra={"w-1/2 mr-1 my-4"}
+                                    component={this.renderInputs}
+                                />
+                                <Field
+                                    name="firstName"
+                                    dir="rtl"
+                                    type="text"
+                                    placeholder="نام"
+                                    extra={"w-1/2 ml-1 my-4"}
+                                    component={this.renderInputs}
+                                />
                             </div>
-                            <Field
-                                name="latinFirstname"
-                                type="text"
-                                placeholder="نام لاتین"
-                                extra={"w-1/2 my-4"}
-                                component={this.renderInputs}
-                            />
-                            <Field
-                                name="firstName"
-                                dir="rtl"
-                                type="text"
-                                placeholder="نام"
-                                extra={"w-1/2 my-4"}
-                                component={this.renderInputs}
-                            />
-                            <Field
-                                name="latinLastname"
-                                type="text"
-                                extra={"w-1/2 my-4"}
-                                placeholder="نام خانوادگی لاتین "
-                                component={this.renderInputs}
-                            />
-                            <Field
-                                name="lastName"
-                                dir="rtl"
-                                type="text"
-                                placeholder="نام خانوادگی"
-                                extra={"w-1/2 my-4"}
-                                component={this.renderInputs}
-                            />
-                            <Field
-                                name="personalIdNumber"
-                                dir="ltr"
-                                type="text"
-                                placeholder="شماره پرسنلی"
-                                extra={"w-1/2 my-4"}
-                                component={this.renderInputs}
-                            />
-                            <Field
-                                name="melliCode"
-                                type="text"
-                                dir="ltr"
-                                placeholder="کد ملی"
-                                extra={"w-1/2 my-4"}
-                                component={this.renderInputs}
-                            />
+                            <div className="w-full flex justify-between items-center">
+                                <Field
+                                    name="latinLastname"
+                                    type="text"
+                                    extra={"w-1/2 mr-1 my-4"}
+                                    placeholder="نام خانوادگی لاتین "
+                                    component={this.renderInputs}
+                                />
+                                <Field
+                                    name="lastName"
+                                    dir="rtl"
+                                    type="text"
+                                    placeholder="نام خانوادگی"
+                                    extra={"w-1/2 ml-1 my-4"}
+                                    component={this.renderInputs}
+                                />
+                            </div>
+                            <div className="w-full flex justify-between items-center">
+                                <Field
+                                    name="personalIdNumber"
+                                    dir="ltr"
+                                    type="text"
+                                    placeholder="شماره پرسنلی"
+                                    extra={"w-1/2 mr-1 my-4"}
+                                    component={this.renderInputs}
+                                />
+                                <Field
+                                    name="melliCode"
+                                    type="text"
+                                    dir="ltr"
+                                    placeholder="کد ملی"
+                                    extra={"w-1/2 ml-1 my-4"}
+                                    component={this.renderInputs}
+                                />
+                            </div>
                             <Field
                                 name="phoneNumber"
                                 type="text"
@@ -258,6 +264,11 @@ class SchoolInfo extends React.Component {
                                 extra={"w-full my-4"}
                                 component={this.renderInputs}
                             />
+                            <div className="w-full my-4 flex flex-row-reverse justify-between items-center">
+                                <span className="text-white">جنسیت</span>
+                                <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-2/5 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>زن</span>
+                                <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-2/5 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>مرد</span>
+                            </div>
                             <Field
                                 name="password"
                                 type="text"
