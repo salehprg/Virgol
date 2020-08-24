@@ -43,6 +43,12 @@ const Hero = (props) => {
 
             {(props.managerTitle ?
                 <p className="text-white my-2">{props.managerTitle}</p> : "")}
+
+            {(props.userTitle ?
+                <>
+                    <p className="text-white my-2">{` مدرسه ${props.userTitle} ${props.userDetail.userDetail.school.schoolName}`}</p> 
+                </>
+                : "")}
                 
             
         </div>

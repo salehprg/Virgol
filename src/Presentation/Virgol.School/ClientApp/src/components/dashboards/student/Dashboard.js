@@ -8,6 +8,7 @@ import {layout} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Classes from "./classes/Classes";
+import { connect } from "react-redux";
 
 class StudentDashboard extends React.Component {
 
@@ -52,6 +53,8 @@ class StudentDashboard extends React.Component {
                     show={this.state.sidebar}
                     toggle={this.toggleSidebar}
                     active={this.state.active}
+                    logoTitle={this.props.user  ? this.props.user.userDetail.userDetail.school.schoolType : -1}
+                    title={this.props.user  ? this.props.user.userDetail.userDetail.school.schoolName : null}
                 >
                     <SidebarCard
                         active={this.state.active}
@@ -84,4 +87,8 @@ class StudentDashboard extends React.Component {
 
 }
 
-export default protectedStudent(StudentDashboard)
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo  }
+}
+
+export default connect(mapStateToProps, {})(protectedStudent(StudentDashboard));
