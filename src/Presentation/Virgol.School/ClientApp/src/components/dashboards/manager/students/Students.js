@@ -5,6 +5,8 @@ import history from "../../../../history";
 import { connect } from "react-redux";
 import {getAllStudents , addBulkUser , DeleteStudents} from "../../../../_actions/managerActions"
 import DeleteConfirm from "../../../modals/DeleteConfirm";
+import MonsterTable from "../../tables/MonsterTable";
+import Checkbox from "../../tables/Checkbox";
 
 class Students extends React.Component {
 
@@ -25,6 +27,22 @@ class Students extends React.Component {
         this.setState({ loading: false })
 
         this.setState({totalCard : this.props.students.length})
+    }
+
+    checkAll = () => {
+        this.setState({ selected: this.props.students.map(teacher => teacher.id) })
+    }
+
+    clearItems = () => {
+        this.setState({ selected: [] })
+    }
+
+    checkItem = (id) => {
+        this.setState({ selected: [...this.state.selected, id] })
+    }
+
+    uncheckItem = (id) => {
+        this.setState({ selected: this.state.selected.filter(el => el !== id)})
     }
 
     handleSelectStudent = (e) =>{
@@ -76,7 +94,7 @@ class Students extends React.Component {
                 : 
                 null
                 }
-                <PlusTable
+                <MonsterTable
                     title="لیست دانش آموزان"
                     isLoading={this.state.loading}
                     query={this.state.query}
@@ -94,7 +112,8 @@ class Students extends React.Component {
                     sampleLink="/samples/StudentTemplate.xlsx"
                     excel="بارگذاری اکسل دانش آموزان"
                     handleExcel={this.submitExcel}
-                    headers={[ '' ,'نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده' ]}
+                    // headers={[ '' ,'نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده', '' ]}
+                    headers={['نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی', 'تلفن ولی', 'حساب تکمیل شده', '']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -104,7 +123,12 @@ class Students extends React.Component {
                                         {
                                             return(
                                             <tr>
-                                                <td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>
+                                                {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>*/}
+                                                <td className="py-4">
+                                                    <div className="flex justify-center items-center">
+                                                        <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
+                                                    </div>
+                                                </td>
                                                 <td className="py-4">{x.firstName}</td>
                                                 <td>{x.lastName}</td>
                                                 <td>{x.phoneNumber}</td>
@@ -115,9 +139,9 @@ class Students extends React.Component {
                                                 <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>            
-                                                <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
-                                                    {trash('w-6 text-white ')}
-                                                </td>
+                                                {/*<td onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}
+                                                {/*    {trash('w-6 text-white ')}*/}
+                                                {/*</td>*/}
                                             </tr>
                                             )
                                         }
@@ -126,6 +150,27 @@ class Students extends React.Component {
                             </React.Fragment>
                         );
                     }}
+                    options={() => {
+                        return (
+                            <React.Fragment>
+                                <div onClick={() => this.setState({ showDeleteModal: true })} className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
+                                    {trash("w-6 mx-1 text-white")}
+                                    <span className="font-vb mx-1 text-white">حذف</span>
+                                </div>
+                                {/*{this.state.selected.length === 1 ?*/}
+                                {/*    <div onClick={() => history.push(`/teacher/${this.state.selectedItems[0]}`)} className="flex justify-between items-center mx-1 cursor-pointer bg-grayish rounded-full md:px-6 px-3 py-1">*/}
+                                {/*        {edit("w-6 mx-1 text-white")}*/}
+                                {/*        <span className="font-vb mx-1 text-white">ویرایش</span>*/}
+                                {/*    </div>*/}
+                                {/*    :*/}
+                                {/*    null*/}
+                                {/*}*/}
+                            </React.Fragment>
+                        );
+                    }}
+                    selected={this.state.selected}
+                    checkAll={this.checkAll}
+                    clearItems={this.clearItems}
                 />
             </div>
         );
