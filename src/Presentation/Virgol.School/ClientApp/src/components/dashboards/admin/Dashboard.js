@@ -12,6 +12,7 @@ import adminTeachers from "./Teachers/adminTeachers";
 import adminStudents from "./Students/adminStudents";
 import protectedAdmin from "../../protectedRoutes/protectedAdmin";
 import Tracker from "../manager/tracker/Tracker";
+import { connect } from "react-redux";
 
 
 class Dashboard extends React.Component {
@@ -57,7 +58,8 @@ class Dashboard extends React.Component {
                     show={this.state.sidebar}
                     toggle={this.toggleSidebar}
                     active={this.state.active}
-                    title="ویرگول"
+                    logoTitle={this.props.dashboardInfo.adminDetail  ? this.props.dashboardInfo.adminDetail.schoolsType : -1}
+                    title={"ویرگول"}
                 >
                     <SidebarCard
                         active={this.state.active}
@@ -114,4 +116,8 @@ class Dashboard extends React.Component {
 
 }
 
-export default protectedAdmin(Dashboard)
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , dashboardInfo: state.adminData.dashboardInfo }
+}
+
+export default connect(mapStateToProps , {})(protectedAdmin(Dashboard))
