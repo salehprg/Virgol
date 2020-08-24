@@ -13,7 +13,7 @@ import protectedAdmin from "../../../../protectedRoutes/protectedAdmin";
 
 class AddSchool extends React.Component {
 
-    state = { showManagerInfo: true , selectedOption : ""}
+    state = { showManagerInfo: true , selectedOption : "Male"}
 
     renderInputs = ({ input, meta, type, placeholder , extra }) => {
         return (
@@ -23,20 +23,17 @@ class AddSchool extends React.Component {
                 type={type}
                 dir="rtl"
                 placeholder={placeholder}
-                extra={extra + " my-4"}
+                extra={extra}
             />
         );
     }
 
-    handleRadioBtnChng = (e) =>{
-        this.setState({selectedOption : e.target.value});
+    handleRadioBtnChng = (gender) => {
+        this.setState({selectedOption : gender});
     }
 
     onSubmit = async (formValues) => {
-        console.log(formValues);
         formValues.sexuality = (this.state.selectedOption === "Male" ? 1 : 0)
-        
-        
         await this.props.CreateSchool(this.props.user.token , formValues)
         this.setState({showManagerInfo : false})
     }
@@ -52,90 +49,104 @@ class AddSchool extends React.Component {
             >
                 {this.state.showManagerInfo || !this.props.managerInfo ? 
                 <form className="w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                <Field
-                    name="schoolName"
-                    type="text"
-                    placeholder="نام مدرسه"
-                    extra={"w-3/4 my-4"}
-                    component={this.renderInputs}
-                />
-                <Field
-                    name="schoolIdNumber"
-                    type="text"
-                    placeholder="کد مدرسه"
-                    extra={"w-1/4 my-4"}
-                    component={this.renderInputs}
-                />
-                
-                <div className="text-white">
-                    <input checked="true" 
-                        type="radio" 
-                        value="Female" 
-                        name="gender" 
-                        className="form-radio"
-                        checked={this.state.selectedOption === "Female"}
-                        onChange={this.handleRadioBtnChng}
-                    /> دخترانه
+                <div className="w-full flex flex-row justify-between items-center">
+                    <Field
+                        name="schoolName"
+                        type="text"
+                        placeholder="نام مدرسه"
+                        extra={"w-3/4 ml-1 my-4"}
+                        component={this.renderInputs}
+                    />
+                    <Field
+                        name="schoolIdNumber"
+                        type="text"
+                        placeholder="کد مدرسه"
+                        extra={"w-1/4 mr-1 my-4"}
+                        component={this.renderInputs}
+                    />
+                </div>
 
-                    <input 
-                        className="mr-4" 
-                        checked={this.state.selectedOption === "Male"}
-                        onChange={this.handleRadioBtnChng} 
-                        type="radio" 
-                        value="Male" 
-                        name="gender" 
-                    /> پسرانه
+                <div className="w-full my-4 flex justify-between items-center">
+                    <span className="text-white">جنسیت مدرسه:</span>
+                    <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>دخترانه</span>
+                    <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>پسرانه</span>
                 </div>
                 
-                <Field
-                    name="firstName"
-                    type="text"
-                    placeholder="نام مدیر"
-                    extra={"w-40 my-4 mx-2"}
-                    component={this.renderInputs}
-                />
-                <Field
-                    name="lastName"
-                    type="text"
-                    extra={"w-40 my-4"}
-                    placeholder="نام خانوادگی مدیر"
-                    component={this.renderInputs}
-                />
-                <Field
-                    name="latinFirstname"
-                    type="text"
-                    placeholder="نام لاتین"
-                    extra={"w-40 my-4 mx-2"}
-                    component={this.renderInputs}
-                />
-                <Field
-                    name="latinLastname"
-                    type="text"
-                    extra={"w-40 my-4"}
-                    placeholder="نام خانوادگی لاتین "
-                    component={this.renderInputs}
-                />
+                {/*<div className="text-white">*/}
+                {/*    <input checked="true" */}
+                {/*        type="radio" */}
+                {/*        value="Female" */}
+                {/*        name="gender" */}
+                {/*        className="form-radio"*/}
+                {/*        checked={this.state.selectedOption === "Female"}*/}
+                {/*        onChange={this.handleRadioBtnChng}*/}
+                {/*    /> دخترانه*/}
+
+                {/*    <input */}
+                {/*        className="mr-4" */}
+                {/*        checked={this.state.selectedOption === "Male"}*/}
+                {/*        onChange={this.handleRadioBtnChng} */}
+                {/*        type="radio" */}
+                {/*        value="Male" */}
+                {/*        name="gender" */}
+                {/*    /> پسرانه*/}
+                {/*</div>*/}
+                
+                <div className="w-full flex flex-row justify-between items-center">
+                    <Field
+                        name="firstName"
+                        type="text"
+                        placeholder="نام مدیر"
+                        extra={"w-1/2 my-4 mx-2"}
+                        component={this.renderInputs}
+                    />
+                    <Field
+                        name="lastName"
+                        type="text"
+                        extra={"w-1/2 my-4"}
+                        placeholder="نام خانوادگی مدیر"
+                        component={this.renderInputs}
+                    />
+                </div>
+                <div className="w-full flex flex-row justify-between items-center">
+                    <Field
+                        name="latinFirstname"
+                        type="text"
+                        placeholder="نام لاتین"
+                        extra={"w-1/2 my-4 mx-2"}
+                        component={this.renderInputs}
+                    />
+                    <Field
+                        name="latinLastname"
+                        type="text"
+                        extra={"w-1/2 my-4"}
+                        placeholder="نام خانوادگی لاتین "
+                        component={this.renderInputs}
+                    />
+                </div>
                 <Field
                     name="managerPhoneNumber"
                     type="text"
-                    extra={"w-full my-4 mx-2"}
+                    extra={"w-full my-4"}
                     placeholder="شماره همراه مدیر"
                     component={this.renderInputs}
                 />
-                <Field
-                    name="melliCode"
-                    type="text"
-                    placeholder="کدملی مدیر"
-                    extra={"w-2/4 my-4"}
-                    component={this.renderInputs}
-                />
-                <Field
-                    name="personalIdNumber"
-                    type="text"
-                    placeholder="کد پرسنلی مدیر"
-                    extra={"w-2/4 my-4"}
-                    component={this.renderInputs}
-                />
+                <div className="w-full flex flex-row justify-between items-center">
+                    <Field
+                        name="melliCode"
+                        type="text"
+                        placeholder="کدملی مدیر"
+                        extra={"w-1/2 ml-1 my-4"}
+                        component={this.renderInputs}
+                    />
+                    <Field
+                        name="personalIdNumber"
+                        type="text"
+                        placeholder="کد پرسنلی مدیر"
+                        extra={"w-1/2 mr-1 my-4"}
+                        component={this.renderInputs}
+                    />
+                </div>
 
                 <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">افزودن</button>
             </form> 
