@@ -46,10 +46,10 @@ const   Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, child
             
             {
                 logoTitle == 0 ? 
-                <img src={`${process.env.PUBLIC_URL}/icons/sampad.png`} />
+                <img width="180px" height="180px" src={`${process.env.PUBLIC_URL}/icons/sampad.png`} />
                 : 
                 logoTitle == 1 ?
-                <img src={`${process.env.PUBLIC_URL}/icons/RD.png`} /> 
+                <img width="180px" height="180px" src={`${process.env.PUBLIC_URL}/icons/RD.png`} /> 
                 : 
                 <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">{title}</h1>
             }
