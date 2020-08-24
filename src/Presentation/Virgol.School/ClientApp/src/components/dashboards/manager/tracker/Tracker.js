@@ -86,7 +86,7 @@ class Tracker extends React.Component {
                 : 
                 null
                 }
-                <div className="w-full mt-10">
+                <div className="w-full py-10">
                     <div ref={this.sc} className="w-11/12 p-4 mx-auto rounded-lg min-h-70 border-2 border-dark-blue overflow-auto">
                         <GridLayout className="layout" layout={layout} cols={30} rowHeight={50} width={1800}>
                             {layout.map(x => {
