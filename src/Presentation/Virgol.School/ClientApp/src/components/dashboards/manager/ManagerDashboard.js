@@ -80,6 +80,13 @@ class ManagerDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
+                        code="tracker"
+                        title="کلاس های مجازی"
+                        icon={open_book}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
                         code="teachers"
                         title="معلمان"
                         icon={users}
@@ -110,7 +117,7 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/bases"} component={Grades}/>
                         <Route path={this.props.match.url + "/students"} component={Students}/>
                         <Route path={this.props.match.url + "/news"} component={News}/>
-                        <Route path={this.props.match.url + "/bb"} component={Tracker}/>
+                        <Route path={this.props.match.url + "/tracker"} component={Tracker}/>
                         <Redirect to="/404" />
                     </Switch>
                 </div>
