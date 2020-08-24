@@ -22,7 +22,7 @@ public class MyDateTime {
 
         Console.WriteLine("Day week = " + (int)time.DayOfWeek);
 
-        int dayOfWeek = (int)time.DayOfWeek + 3;
+        int dayOfWeek = (int)time.DayOfWeek + 2;
         dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
         Console.WriteLine("Converted Day week = " + dayOfWeek);
