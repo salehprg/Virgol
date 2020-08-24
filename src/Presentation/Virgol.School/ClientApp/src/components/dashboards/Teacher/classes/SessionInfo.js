@@ -14,11 +14,22 @@ class SessionInfo extends React.Component {
         this.setState({loading : false})
     }
 
+    redirectUrl = () =>{
+        if(this.props.user.userType == 3)
+        {
+            return '/t/classes'
+        }
+        else if(this.props.user.userType == 2)
+        {
+            return '/m/bases'
+        }
+    }
+
     render() {
         return (
             <div className="w-screen min-h-screen py-4 bg-black-blue">
                 <div className="lg:w-11/12 w-full lg:px-8 px-4 py-16 relative min-h-90 mx-auto lg:border-2 border-0 rounded-lg border-dark-blue">
-                    <div onClick={() => history.push('/t/classes')} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-8 rounded-lg border-2 border-purplish">
+                    <div onClick={() => history.push(this.redirectUrl())} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-8 rounded-lg border-2 border-purplish">
                         {arrow_left('w-6 centerize text-purplish')}
                     </div>
                     <p className="text-right text-xl text-white">{this.props.lessonDetail ? `${this.props.lessonDetail.orgLessonName} - مدرسه ${this.props.lessonDetail.schoolName} - کلاس ${this.props.lessonDetail.className}` : null}</p>

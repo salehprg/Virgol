@@ -29,7 +29,7 @@ namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Teacher")]
+    [Authorize(Roles = "Teacher,Manager")]
     public class TeacherController : ControllerBase
     {
         private readonly AppSettings appSettings;
@@ -55,7 +55,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize( Roles = "Teacher")]
+        [Authorize( Roles = "Teacher,Manager")]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public IActionResult GetClassBook(int lessonId)
         {
