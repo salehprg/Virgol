@@ -291,6 +291,8 @@ namespace lms_with_moodle.Controllers
                 IdentityResult chngPass = new IdentityResult();
                 if(currentManager != null && newManager != null && currentManager.Id == newManager.Id)//It means MelliCode not changed and just should Edit manager Info
                 {
+                    newManager = null;
+
                     if(!string.IsNullOrEmpty(model.password) && model.password.Length < 8)
                         return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
 
@@ -358,7 +360,10 @@ namespace lms_with_moodle.Controllers
                         appDbContext.Schools.Update(school);
                         await appDbContext.SaveChangesAsync();
 
-                        newManager = datas[0];
+                        var serializedNewManager = JsonConvert.SerializeObject(userDataModel);
+                        UserModel newUserManager = JsonConvert.DeserializeObject<UserModel>(serialized);
+
+                        newManager = newUserManager;
                     }
                     
                     List<IdentityError> errors = chngPass.Errors.ToList();

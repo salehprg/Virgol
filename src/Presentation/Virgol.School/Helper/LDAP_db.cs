@@ -6,6 +6,7 @@ using Models.InputModel;
 using Novell.Directory.Ldap;
 using System.Collections.Generic;
 using Models;
+using Newtonsoft.Json;
 
 namespace lms_with_moodle.Helper
 {
@@ -423,8 +424,30 @@ namespace lms_with_moodle.Helper
         ///</summary>
         public bool EditMail(UserModel user)
         {
+            return DoEditMail(user , null);
+        }
+        
+        public bool EditMail(UserDataModel user)
+        {
+            return DoEditMail(null , user);
+        }
+
+        private bool DoEditMail(UserModel userModel = null , UserDataModel userDataModel = null)
+        {
             try
             {
+                UserModel user = new UserModel();
+
+                if(userModel == null)
+                {
+                    var serialized = JsonConvert.SerializeObject(userDataModel);
+                    user = JsonConvert.DeserializeObject<UserModel>(serialized);
+                }
+                else
+                {
+                    user = userModel;
+                }
+
                 if(!ldapConn.Connected)
                     ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
 

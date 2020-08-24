@@ -314,7 +314,7 @@ namespace lms_with_moodle.Controllers
                     appDbContext.SaveChanges();
                     
                     SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
-                    SMSApi.SendSchoolData(manager.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
+                    //SMSApi.SendSchoolData(manager.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                     
                     return Ok(new{
                         manager.MelliCode,
@@ -1117,7 +1117,7 @@ namespace lms_with_moodle.Controllers
                                     appDbContext.Schools.Update(schoolResult);
                                     appDbContext.SaveChanges();
 
-                                    SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
+                                    //SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
                                     
                                 }
                             }
