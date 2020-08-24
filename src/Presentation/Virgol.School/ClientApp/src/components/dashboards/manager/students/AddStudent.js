@@ -10,7 +10,7 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 
 class AddStudent extends React.Component {
 
-    state = {selectedOption : ""}
+    state = {selectedOption : "Male"}
 
     renderInputs = ({ input, meta, type, placeholder }) => {
         return (
@@ -39,8 +39,8 @@ class AddStudent extends React.Component {
         await this.props.AddNewStudent(this.props.user.token , data)
     }
 
-    handleRadioBtnChng = (e) =>{
-        this.setState({selectedOption : e.target.value});
+    handleRadioBtnChng = (gender) =>{
+        this.setState({selectedOption : gender});
     }
 
     render() {
@@ -50,24 +50,24 @@ class AddStudent extends React.Component {
                     title={"اطلاعات دانش آموز"}
                 >
                     <form className="w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                        <div className="text-white">
-                            <input checked="true" 
-                                type="radio" 
-                                value="Female" 
-                                name="gender" 
-                                checked={this.state.selectedOption === "Female"}
-                                onChange={this.handleRadioBtnChng}
-                            /> دختر
+                        {/*<div className="text-white">*/}
+                        {/*    <input checked="true" */}
+                        {/*        type="radio" */}
+                        {/*        value="Female" */}
+                        {/*        name="gender" */}
+                        {/*        checked={this.state.selectedOption === "Female"}*/}
+                        {/*        onChange={this.handleRadioBtnChng}*/}
+                        {/*    /> دختر*/}
 
-                            <input 
-                                className="mr-4" 
-                                checked={this.state.selectedOption === "Male"}
-                                onChange={this.handleRadioBtnChng} 
-                                type="radio" 
-                                value="Male" 
-                                name="gender" 
-                            /> پسر
-                        </div>
+                        {/*    <input */}
+                        {/*        className="mr-4" */}
+                        {/*        checked={this.state.selectedOption === "Male"}*/}
+                        {/*        onChange={this.handleRadioBtnChng} */}
+                        {/*        type="radio" */}
+                        {/*        value="Male" */}
+                        {/*        name="gender" */}
+                        {/*    /> پسر*/}
+                        {/*</div>*/}
                         <Field
                             name="firstName"
                             type="text"
@@ -92,7 +92,12 @@ class AddStudent extends React.Component {
                             placeholder="نام ولی"
                             component={this.renderInputs}
                         />
-                    
+
+                        <div className="w-full my-4 flex justify-between items-center">
+                            <span className="text-white">جنسیت</span>
+                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>دختر</span>
+                            <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>پسر</span>
+                        </div>
                         <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
                     </form>
                 </Add>
