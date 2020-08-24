@@ -16,12 +16,22 @@ class adminStudents extends React.Component {
         await this.props.GetAllStudents(this.props.user.token);
         this.setState({ loading: false })
         
-        this.setState({totalCard : this.props.allStudents.length})
+        this.queriedStudent('');
 
     }
 
     changeQuery = query => {
         this.setState({ query })
+        this.queriedStudent(query)
+    }
+
+    queriedStudent = (query) => {
+        var queried = this.props.allStudents.filter(x => x.firstName.includes(query) 
+        || x.lastName.includes(query) 
+        || (x.firstName + " " + x.lastName).includes(query))
+
+        this.setState({students :  queried})
+        this.setState({totalCard : queried.length})
     }
 
     paginate = (num) => {
@@ -47,10 +57,10 @@ class adminStudents extends React.Component {
 
                         return (
                             <React.Fragment>
-                                {(this.props.allStudents ?
-                                    this.props.allStudents.slice((this.state.currentPage - 1) * this.state.itemsPerPage,this.state.currentPage  * this.state.itemsPerPage).map(x => {
-                                        if (x.firstName.includes(this.state.query) || x.lastName.includes(this.state.query) || (x.firstName + " " + x.lastName).includes(this.state.query))
-                                        {
+                                {(this.state.students ?
+                                    
+                                    this.state.students.slice((this.state.currentPage - 1) * this.state.itemsPerPage,this.state.currentPage  * this.state.itemsPerPage)
+                                    .map(x => {
                                             return(
                                             <tr>
                                                 <td className="py-4">{x.firstName}</td>
@@ -62,7 +72,6 @@ class adminStudents extends React.Component {
                                                 <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
                                             </tr>
                                             )
-                                        }
                                     })
                                 : "لودینگ")}
                             </React.Fragment>
