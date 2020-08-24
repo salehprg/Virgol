@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.InputModel;
 using Models.User;
+using Newtonsoft.Json;
 ///<summary>
 ///use this to Operate User in all Database in moodle , LDAP , SQL
 ///</summary>
@@ -33,8 +34,12 @@ public class MyUserManager {
 
         List<UserDataModel> result = new List<UserDataModel>();
 
-        foreach (var user in users)
+        foreach (var userData in users)
         {
+            var serialized = JsonConvert.SerializeObject(userData);
+            UserModel user = JsonConvert.DeserializeObject<UserModel>(serialized);
+
+
             bool melliCodeIterupt = CheckMelliCodeInterupt(user.MelliCode , 0);
             bool phoneInterupt = CheckPhoneInterupt(user.PhoneNumber);
 
@@ -43,11 +48,17 @@ public class MyUserManager {
                 int moodleId = 0;
 
                 user.userTypeId = usersType;
+                userData.userTypeId = usersType;
+
                 if(usersType != (int)UserType.Teacher)
+                {
                     user.SchoolId = schoolId;
+                    userData.SchoolId = schoolId;
+                }
                 
                 if((await userManager.CreateAsync(user , (!string.IsNullOrEmpty(password) ? password : user.MelliCode))).Succeeded)
                 {
+                    userData.Id = user.Id;
                     bool ldapResult = (usersType == (int)UserType.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
                     if(ldapResult)
                     {
@@ -61,23 +72,23 @@ public class MyUserManager {
                                 case (int)UserType.Student :
                                     await userManager.AddToRoleAsync(user , "User");
 
-                                    await SyncUserDetail(user);
+                                    await SyncUserDetail(userData);
                                     break;
 
                                 case (int)UserType.Teacher :
                                     await userManager.AddToRolesAsync(user , new string[]{"User" , "Teacher"});
-                                    await SyncUserDetail(user , schoolId);
+                                    await SyncUserDetail(userData , schoolId);
                                     break;
 
                                 case (int)UserType.Manager :
                                     await userManager.AddToRolesAsync(user , new string[]{"User" , "Manager"});
 
-                                    await SyncUserDetail(user);
+                                    await SyncUserDetail(userData);
                                     break;
                             }
 
                             appDbContext.Users.Update(user);
-                            result.Add(user);
+                            result.Add(userData);
                         }
                     }
                 }
@@ -133,6 +144,7 @@ public class MyUserManager {
             }
 
             appDbContext.Users.Update(oldData);
+            await appDbContext.SaveChangesAsync();
 
             user.userTypeId = oldData.userTypeId;
 
@@ -145,7 +157,7 @@ public class MyUserManager {
         }
         
         
-        await appDbContext.SaveChangesAsync();
+        
         return result;
     }
     public async Task<bool> DeleteUser(UserModel user)
@@ -352,7 +364,8 @@ public class MyUserManager {
             Console.WriteLine(ex.Message);
             return false;
         }
-
+        
+        Console.WriteLine(appDbContext.Users.Local);
         await appDbContext.SaveChangesAsync();
 
         return true;

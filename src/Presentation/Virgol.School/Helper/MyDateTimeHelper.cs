@@ -9,14 +9,23 @@ public class MyDateTime {
 
         result = result.AddHours(Hour);
         result = result.AddMinutes(Minute);
+
+        Console.WriteLine("UTC Now = " + DateTime.UtcNow);
+        Console.WriteLine("Date Now = " + DateTime.Now.Date);
         
         return result;
     }
 
     public static int convertDayOfWeek(DateTime time)
     {
+        Console.WriteLine("Convert day Time = " + time);
+
+        Console.WriteLine("Day week = " + (int)time.DayOfWeek);
+
         int dayOfWeek = (int)time.DayOfWeek + 3;
         dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
+
+        Console.WriteLine("Converted Day week = " + dayOfWeek);
 
         return dayOfWeek;
     }

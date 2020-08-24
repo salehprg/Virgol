@@ -24,6 +24,7 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
+using Newtonsoft.Json;
 
 namespace lms_with_moodle.Controllers
 {
@@ -542,7 +543,8 @@ namespace lms_with_moodle.Controllers
                 {}
             }
 
-            UserModel newUser = _model;
+            var serialized = JsonConvert.SerializeObject(_model);
+            UserModel newUser = JsonConvert.DeserializeObject<UserModel>(serialized);
 
             try
             {

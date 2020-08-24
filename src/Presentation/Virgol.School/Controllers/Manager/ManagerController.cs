@@ -416,7 +416,10 @@ namespace lms_with_moodle.Controllers
                     user.MelliCode = SelectedUser.MelliCode;
                     user.studentDetail = userDetail;
 
-                    bool ldapUser = ldap.AddUserToLDAP(user);
+                    var serialized = JsonConvert.SerializeObject(user);
+                    UserModel userModel = JsonConvert.DeserializeObject<UserModel>(serialized);
+
+                    bool ldapUser = ldap.AddUserToLDAP(userModel);
                     
                     bool createUser = false;
                     if(ldapUser)
@@ -878,7 +881,8 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var user in userDataModels)
                 {
-                    UserModel userModel = user;
+                    var serialized = JsonConvert.SerializeObject(user);
+                    UserModel userModel = JsonConvert.DeserializeObject<UserModel>(serialized);
                     userModels.Add(userModel);
                 }
 
