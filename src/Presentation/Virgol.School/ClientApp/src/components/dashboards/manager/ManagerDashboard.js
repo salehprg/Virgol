@@ -57,6 +57,7 @@ class ManagerDashboard extends React.Component {
                     show={this.state.sidebar}
                     toggle={this.toggleSidebar}
                     active={this.state.active}
+                    logoTitle={this.props.dashboardInfo.school  ? this.props.dashboardInfo.school.schoolType : -1}
                     title={(this.props.dashboardInfo && this.props.dashboardInfo.school && this.props.user.userDetail ? 
                         `مدرسه ${this.props.user.userDetail.schooltypeName} 
                         ${this.props.dashboardInfo.school.sexuality == 0 ? "دخترانه" : "پسرانه"}  
