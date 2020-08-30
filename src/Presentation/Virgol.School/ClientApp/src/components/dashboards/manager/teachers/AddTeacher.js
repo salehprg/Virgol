@@ -33,11 +33,11 @@ class AddTeacher extends React.Component {
         
         let data = formValues;
 
-        // data.userDetail = {
-        //     latinLastname : formValues.latinLastname,
-        //     latinFirstname : formValues.latinFirstname
-        // }
+        data.teacherDetail = {
+            personalIdNUmber : formValues.personalIdNUmber
+        }
         formValues.sexuality = (this.state.selectedOption === "Male" ? 1 : 0)
+
       
         await this.props.addNewTeacher(this.props.user.token , formValues)
     }
@@ -82,14 +82,14 @@ class AddTeacher extends React.Component {
                             component={this.renderInputs}
                             extra={"my-4 mx-2"}
                         />
-                        {/* <Field
-                            name="latinFirstname"
-                            type="text"
-                            placeholder="نام لاتین"
-                            component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
-                        />
                         <Field
+                            name="personalIdNUmber"
+                            type="text"
+                            placeholder="کد پرسنلی"
+                            component={this.renderInputs}
+                            extra={"w-full my-4 mx-2"}
+                        />
+                        {/* <Field
                             name="latinLastname"
                             type="text"
                             placeholder="نام خانوادگی لاتین"
