@@ -31,7 +31,7 @@ class CompleteProfile extends React.Component {
         let data = formValues;
 
         data.teacherDetail = {
-            personalIdNUmber : formValues.personalIdNUmber,
+            //personalIdNUmber : formValues.personalIdNUmber,
             birthDate : (this.state.birthDate ? this.state.birthDate._d : null),
             cityBirth: formValues.cityBirth
         }
@@ -50,6 +50,7 @@ class CompleteProfile extends React.Component {
                 >
                     <form className="w-full text-right " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         <p className="text-right text-white mb-6 text-xl">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</p>
+                        <p className="text-right text-white mb-6 text-xl">کد پرسنلی : {this.props.user.userDetail.userDetail.personalIdNUmber}</p>
                         <Field
                             name="latinFirstname"
                             type="text"
@@ -64,13 +65,13 @@ class CompleteProfile extends React.Component {
                             component={this.renderInputs}
                             extra={"w-40 my-4"}
                         />
-                        <Field
+                        {/* <Field
                             name="personalIdNUmber"
                             type="text"
                             placeholder="کد پرسنلی"
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
-                        />
+                        /> */}
                         <Field
                             name="cityBirth"
                             type="text"
@@ -101,7 +102,7 @@ const validate = formValues => {
 
     if (!formValues.latinFirstname) errors.latinFirstname = true
     if (!formValues.latinLastname) errors.latinLastname = true
-    if (!formValues.personalIdNUmber) errors.personalIdNUmber = true
+    //if (!formValues.personalIdNUmber) errors.personalIdNUmber = true
 
     return errors;
 }

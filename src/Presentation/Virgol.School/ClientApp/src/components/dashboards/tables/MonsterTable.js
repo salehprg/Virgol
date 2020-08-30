@@ -7,7 +7,7 @@ import CheckTable from "./CheckTable";
 class MonsterTable extends React.Component {
 
     render() {
-        const { options, checkAll, clearItems, selected, isLoading, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body , isPaginate} = this.props
+        const { options, checkAll, clearItems, selected, isLoading, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body , isPaginate = true} = this.props
         return (
             <div className="w-full">
                 <div className="flex sm:flex-row-reverse flex-col justify-start sm:items-stretch items-end mb-4">

@@ -326,16 +326,16 @@ namespace lms_with_moodle.Controllers
                 if(user.LatinFirstname != null && user.LatinLastname != null)
                     return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
 
-                bool duplicatePersonalIdNumber = appDbContext.TeacherDetails.Where(x => x.personalIdNUmber == userDataModel.teacherDetail.personalIdNUmber).FirstOrDefault() != null;
+                // bool duplicatePersonalIdNumber = appDbContext.TeacherDetails.Where(x => x.personalIdNUmber == userDataModel.teacherDetail.personalIdNUmber && x.TeacherId != user.Id).FirstOrDefault() != null;
                                            
-                if(duplicatePersonalIdNumber)
-                    return BadRequest("کد پرسنلی وارد شده تکراریست");
+                // if(duplicatePersonalIdNumber)
+                //     return BadRequest("کد پرسنلی وارد شده تکراریست");
  
                 TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault();
 
                 teacherDetail.birthDate = userDataModel.teacherDetail.birthDate;
                 teacherDetail.cityBirth = userDataModel.teacherDetail.cityBirth;
-                teacherDetail.personalIdNUmber = userDataModel.teacherDetail.personalIdNUmber;
+                //teacherDetail.personalIdNUmber = userDataModel.teacherDetail.personalIdNUmber;
                 
                 appDbContext.TeacherDetails.Update(teacherDetail);
 
