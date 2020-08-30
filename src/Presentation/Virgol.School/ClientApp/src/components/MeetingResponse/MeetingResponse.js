@@ -16,7 +16,7 @@ class MeetingResponse extends React.Component {
 
         if(userType == 1)
         {
-            this.setState({redirectUrl : this.props.match.url + "/SubmitReview"})
+            history.push("/s/dashboard")
         }
         else if(userType == 3)
         {

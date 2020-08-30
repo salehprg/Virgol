@@ -19,16 +19,28 @@ class RecentClass extends React.Component {
                         :
                         classes.map(x => {
                             return (
-                                <RecentClassDetail
-                                    text={x.meetingName}
-                                    schoolName={x.schoolName}
-                                    className={x.className}
-                                    onStart={() => this.props.onStart(x.id)}
-                                    joinable={joinList}
-                                    startTime={`${~~x.startHour}:${(x.startHour - ~~x.startHour) * 60}`}
-                                    endTime={`${~~x.endHour}:${(x.endHour - ~~x.endHour) * 60}`
-                                    }
-                                />
+                                (x.started ? 
+                                    <RecentClassDetail
+                                        text={x.meetingName}
+                                        schoolName={x.schoolName}
+                                        className={x.className}
+                                        onStart={() => this.props.onStart(x.bbB_MeetingId)}
+                                        joinable={joinList}
+                                        startTime={`${~~x.startHour}:${(x.startHour - ~~x.startHour) * 60}`}
+                                        endTime={`${~~x.endHour}:${(x.endHour - ~~x.endHour) * 60}`
+                                        }
+                                    />
+                                :
+                                    <RecentClassDetail
+                                        text={`${x.orgLessonName} - ${x.firstName} ${x.lastName}`}
+                                        schoolName={x.schoolName}
+                                        className={x.className}
+                                        joinable={false}
+                                        startTime={`${~~x.startHour}:${(x.startHour - ~~x.startHour) * 60}`}
+                                        endTime={`${~~x.endHour}:${(x.endHour - ~~x.endHour) * 60}`
+                                        }
+                                    />
+                                )
                             );
                         })
                     )

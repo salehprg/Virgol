@@ -28,6 +28,7 @@ public class MeetingView {
     public string SchoolName {get;set;}
 
 
-
+    [NotMapped]
+    public bool started {get; set;}
 
 }
