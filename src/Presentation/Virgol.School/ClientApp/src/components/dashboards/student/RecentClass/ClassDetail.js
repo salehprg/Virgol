@@ -11,11 +11,15 @@ const RecentClassDetail = ({ text, startTime , endTime , schoolName , className 
             </div>
             <div className="w-full flex flex-row justify-between items-center">
 
-                <div className="w-2/4 flex flex-wrap flex-row-reverse justify-start items-center">
+            {(joinable ? 
+                <div className="flex flex-wrap flex-row-reverse justify-start items-center">
                     <button onClick={() => onStart()} className={`px-6 py-1 ml-2 mb-2 rounded-full text-white bg-${getColor(3)}`}>
                         ورود به کلاس
                     </button>
                 </div>
+            :
+                <span className="text-redish mb-4">کلاس هنوز اغاز نشده است</span>
+            )}
             </div>
         </div>
     );

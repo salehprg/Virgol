@@ -265,47 +265,73 @@ namespace lms_with_moodle.Controllers
                 
                 int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
 
+                List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))   && x.DayType == dayOfWeek).ToList();
+                List<MeetingView> recentClasses = new List<MeetingView>();
+                List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => !x.Finished).ToList();
+
                 if(isTeacher)
                 {
-                    List<ClassScheduleView> classes = appDbContext.ClassScheduleView.Where(x => x.TeacherId == userId && (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))   && x.DayType == dayOfWeek).ToList();
-                    List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => x.TeacherId == userId && !x.Finished).ToList();
-                    
-                    List<MeetingView> recentClasses = new List<MeetingView>();
-                    // //Remove active meeting from all meeting
-                    foreach (var schedule in classes)
-                    {
-                        if(activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault() == null)
-                        {
-                            MeetingView meetingVW = new MeetingView();
-
-                            var serialized = JsonConvert.SerializeObject(schedule);
-                            meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
-
-                            recentClasses.Add(meetingVW);
-                        }
-                    }
-
-                    //meetingVWs = meetingVWs.OrderBy(x => x.meetingDetail.StartHour).Take(5).ToList();
-
-                    recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
-                   
-                    return Ok(recentClasses);
+                    schedules = schedules.Where(x => x.TeacherId == userId).ToList();
+                    activeMeetings = activeMeetings.Where(x => x.TeacherId == userId ).ToList();
                 }
                 else
                 {
                     School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault();
-                    List<MeetingView> meetingViews = new List<MeetingView>();
+                    int classId = 0;
 
                     if(school_Student != null)
                     {
-                        meetingViews = appDbContext.MeetingViews.Where(x => x.ClassId == school_Student.ClassId && x.Finished == false).ToList();
+                        classId = school_Student.ClassId;
                     }
 
-                    Console.WriteLine("Back : Student Done !");
-                    return  Ok(meetingViews);
+                    schedules = schedules.Where(x => x.ClassId == classId).ToList();
                 }
 
-               
+                foreach (var schedule in schedules)
+                {
+                    Meeting meeting = activeMeetings.Where(x => x.LessonId == schedule.Id).FirstOrDefault();
+
+                    if(isTeacher)
+                    {
+                        if(meeting == null)
+                        {
+                            var serialized = JsonConvert.SerializeObject(schedule);
+                            MeetingView meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
+
+                            recentClasses.Add(meetingVW);
+                        }
+                    }
+                    else
+                    {
+                        var serialized = JsonConvert.SerializeObject(schedule);
+                        MeetingView meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
+
+                        if(meeting != null)
+                        {
+                            meetingVW.BBB_MeetingId = meeting.BBB_MeetingId;
+                            meetingVW.MeetingName = meeting.MeetingName;
+                        }
+
+                        recentClasses.Add(meetingVW);
+                    }
+                }
+
+                                
+                foreach (var classs in recentClasses)
+                {
+                    if(classs.BBB_MeetingId != null)
+                    {
+                        classs.started = true;
+                    }
+                    else
+                    {
+                        classs.started = false;
+                    }
+                }
+            
+                recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
+
+                return Ok(recentClasses);
             }
             catch(Exception ex)
             {

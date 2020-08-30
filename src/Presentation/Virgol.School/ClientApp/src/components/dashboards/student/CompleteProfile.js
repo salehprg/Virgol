@@ -123,7 +123,7 @@ class CompleteProfile extends React.Component {
         let data = formValues;
 
         data.studentDetail = {
-            fatherPhoneNumber : formValues.fatherPhoneNumber,
+            fatherPhoneNumber : "",
             birthDate : (this.state.birthDate ? this.state.birthDate._d : null),
             cityBirth: formValues.cityBirth
         }
@@ -184,7 +184,7 @@ class CompleteProfile extends React.Component {
                             )
                         )}
 
-                        {(this.state.verifiedFatherPhone ? <p className="text-right text-white mb-6 text-xl">  شماره تلفن ولی : {this.state.fatherPhoneNumber} </p> :
+                        {/* {(this.state.verifiedFatherPhone ? <p className="text-right text-white mb-6 text-xl">  شماره تلفن ولی : {this.state.fatherPhoneNumber} </p> :
                             (!this.state.verifyFatherPhone ? 
                                 <>
                                 <Field
@@ -210,7 +210,7 @@ class CompleteProfile extends React.Component {
                                     <button type="button" onClick={() => this.onCheckVerifyFatherPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت</button>
                                 </>
                             )
-                        )}
+                        )} */}
                         <Field
                             name="cityBirth"
                             type="text"
