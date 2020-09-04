@@ -293,8 +293,8 @@ namespace lms_with_moodle.Controllers
 
                 if(studentDetail == null)
                 {
-                    UserDataModel userData = new UserDataModel();
-                    userData.Id = user.Id;
+                    var serialized = JsonConvert.SerializeObject(user);
+                    UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serialized);
 
                     studentDetail = new StudentDetail();
                     studentDetail.UserId = user.Id;
@@ -348,8 +348,8 @@ namespace lms_with_moodle.Controllers
 
                 if(teacherDetail == null)
                 {
-                    UserDataModel userData = new UserDataModel();
-                    userData.Id = user.Id;
+                    var serialized = JsonConvert.SerializeObject(user);
+                    UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serialized);
 
                     teacherDetail = new TeacherDetail();
                     teacherDetail.TeacherId = user.Id;

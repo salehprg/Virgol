@@ -365,7 +365,6 @@ public class MyUserManager {
             return false;
         }
         
-        Console.WriteLine(appDbContext.Users.Local);
         await appDbContext.SaveChangesAsync();
 
         return true;
