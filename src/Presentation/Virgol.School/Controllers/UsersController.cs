@@ -284,12 +284,25 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string idNumber = userManager.GetUserId(User);
-                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+                UserModel user = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault();
 
                 if(user.LatinFirstname != null && user.LatinLastname != null)
                     return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
- 
+
                 StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
+
+                if(studentDetail == null)
+                {
+                    UserDataModel userData = new UserDataModel();
+                    userData.Id = user.Id;
+
+                    studentDetail = new StudentDetail();
+                    studentDetail.UserId = user.Id;
+
+                    userData.studentDetail = studentDetail;
+
+                    await myUserManager.SyncUserDetail(userData);
+                }
 
                 studentDetail.BirthDate = userDataModel.studentDetail.BirthDate;
                 studentDetail.cityBirth = userDataModel.studentDetail.cityBirth;
@@ -321,7 +334,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string idNumber = userManager.GetUserId(User);
-                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+                UserModel user = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault();
 
                 if(user.LatinFirstname != null && user.LatinLastname != null)
                     return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
@@ -332,6 +345,19 @@ namespace lms_with_moodle.Controllers
                 //     return BadRequest("کد پرسنلی وارد شده تکراریست");
  
                 TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault();
+
+                if(teacherDetail == null)
+                {
+                    UserDataModel userData = new UserDataModel();
+                    userData.Id = user.Id;
+
+                    teacherDetail = new TeacherDetail();
+                    teacherDetail.TeacherId = user.Id;
+
+                    userData.teacherDetail = teacherDetail;
+
+                    await myUserManager.SyncUserDetail(userData);
+                }
 
                 teacherDetail.birthDate = userDataModel.teacherDetail.birthDate;
                 teacherDetail.cityBirth = userDataModel.teacherDetail.cityBirth;
@@ -350,9 +376,9 @@ namespace lms_with_moodle.Controllers
                 return Ok(true);
 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 #endregion

@@ -66,7 +66,7 @@ namespace lms_with_moodle.Controllers
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
                 List<ClassBook> classBooks = new List<ClassBook>();
-                List<MeetingView> meetings = appDbContext.MeetingViews.Where(x => x.LessonId == lessonId).ToList();
+                List<MeetingView> meetings = appDbContext.MeetingViews.Where(x => x.ScheduleId == lessonId).ToList();
 
                 int classId = appDbContext.ClassWeeklySchedules.Where(x => x.Id == lessonId).FirstOrDefault().ClassId;
 

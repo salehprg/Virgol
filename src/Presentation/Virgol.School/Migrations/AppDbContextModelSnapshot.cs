@@ -140,6 +140,9 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("ClassId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("CommonScheduleId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("DayType")
                         .HasColumnType("integer");
 
@@ -272,13 +275,13 @@ namespace lms_with_moodle.Migrations
                     b.Property<bool>("Finished")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LessonId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("MeetingName")
                         .HasColumnType("text");
 
                     b.Property<int>("PresentCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScheduleId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartTime")
@@ -332,9 +335,6 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("text");
 
-                    b.Property<int>("LessonId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("MeetingName")
                         .HasColumnType("text");
 
@@ -342,6 +342,9 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("PresentCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScheduleId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SchoolName")

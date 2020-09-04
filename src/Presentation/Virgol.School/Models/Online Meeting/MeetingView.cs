@@ -12,7 +12,7 @@ public class MeetingView {
     public DateTime StartTime {get; set;}
     public DateTime EndTime {get; set;}
     public int TeacherId {get; set;}
-    public int LessonId {get; set;}
+    public int ScheduleId {get; set;}
     ///<summary>
     ///Get dayType from DayType class
     ///</summary>
@@ -30,5 +30,7 @@ public class MeetingView {
 
     [NotMapped]
     public bool started {get; set;}
+    [NotMapped]
+    public bool mixed {get; set;}
 
 }

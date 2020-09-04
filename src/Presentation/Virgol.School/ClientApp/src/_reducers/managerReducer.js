@@ -14,7 +14,8 @@ const INITIAL_STATE = {
     teachers : [],
     students : [],
     'catInfo': [],
-    dashboardInfo : {}
+    dashboardInfo : {},
+    checkNewTeacher : {}
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -56,6 +57,9 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === Type.UnAssignUserFromClass)
         return { ...state, unAssigned: action.payload };
+
+    if (action.type === Type.CheckNewTeacher)
+        return { ...state, checkNewTeacher: action.payload};
 
     if (action.type === Type.ADD_NEW_TEACHER)
         return { ...state, teachers: [...state.teachers, action.payload]};
