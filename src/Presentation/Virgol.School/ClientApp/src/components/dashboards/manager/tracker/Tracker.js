@@ -37,7 +37,7 @@ class Tracker extends React.Component {
             {
                 (classs.map(lesson => {
                     schedules.push({i: 'l' + lesson.id , name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 30 - ((lesson.endHour - 7) * 2), y: index + 1, w: (lesson.endHour - lesson.startHour) * 2,
+                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: index + 1, w: (lesson.endHour - lesson.startHour) * 2,
                     h: 1 , lessonDetail : lesson , static: true})
                 }))
             }
@@ -47,12 +47,12 @@ class Tracker extends React.Component {
             schedules.push({i: 'c' + classs[0].classId, name: 'کلاس ' + classs[0].className,x: 33 , y: index + 1, w: 2, h: 1 , static: true})
         })
                 
-
         this.setState({lessons : schedules})
+
+        this.sc.current.scrollLeft = this.sc.current.clientWidth
     } 
 
     componentDidMount = async () => {
-        this.sc.current.scrollLeft = this.sc.current.clientWidth
 
         await this.props.GetAllActiveMeeting(this.props.user.token)
 
