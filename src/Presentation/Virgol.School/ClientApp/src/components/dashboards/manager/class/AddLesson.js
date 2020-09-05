@@ -35,7 +35,7 @@ class AddLesson extends React.Component {
 
         const times = [];
         var startTime = 7.0;
-        var endTime = 20.0;
+        var endTime = 22.0;
         var step = 0.25;//Every 15 minute
 
         for(var i = startTime ;i <= endTime ;i += step){

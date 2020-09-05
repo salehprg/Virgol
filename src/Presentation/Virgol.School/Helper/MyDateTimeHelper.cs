@@ -2,12 +2,21 @@ using System;
 
 public class MyDateTime {
 
+<<<<<<< HEAD
     static int Hour = 4;
     static int Minute = 30;
+=======
+     static int Hour = 4;
+     static int Minute = 30;
+>>>>>>> origin/Bug-fixing
 
     //For local test
     //static int Hour = 0;
     //static int Minute = 30;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/Bug-fixing
     public static DateTime Now(){
         DateTime result = DateTime.UtcNow;
 

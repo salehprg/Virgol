@@ -46,7 +46,7 @@ class News extends React.Component {
                 null
                 }
                 <PlusTable
-                    title="لیتس خبرهای منتشر شده"
+                    title="لیست خبرهای منتشر شده"
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
