@@ -58,18 +58,18 @@ class AddField extends React.Component {
                                     <span onClick={() => this.setCat(study.id)}
                                             className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
                                     >
-                                    {study.studyFieldName}
+                                    {study.studyFieldName} ({study.codeStudyField})
                                 </span>
                                 );
                             })
                             :
-                            this.props.newSchoolInfo.studyFields.filter(x => x.studyFieldName.includes(this.state.query)).slice(0 , 10).map(study => {
+                            this.props.newSchoolInfo.studyFields.filter(x => x.studyFieldName.includes(this.state.query) || x.codeStudyField.toString().includes(this.state.query)).slice(0 , 10).map(study => {
                                 // if (this.props.newSchoolInfo.studyFields.length < 10 || study.studyFieldName.includes(this.state.query)) {
                                     return (
                                         <span onClick={() => this.setCat(study.id)}
                                               className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
                                         >
-                                        {study.studyFieldName}
+                                        {study.studyFieldName} ({study.codeStudyField})
                                     </span>
                                     );
                                 // }

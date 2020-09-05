@@ -22,6 +22,10 @@ class MeetingResponse extends React.Component {
         {
             history.push("/ParticipantInfo/" + this.props.match.params.id)
         }
+        else if(userType == 4)
+        {
+            history.push("/m/tracker")
+        }
     }
 
     render() {

@@ -14,7 +14,7 @@ class LessonInfoModal extends React.Component {
 
         const times = [];
         var startTime = 7.0;
-        var endTime = 20.0;
+        var endTime = 22.0;
         var step = 0.25;//Every 15 minute
 
         for(var i = startTime ;i <= endTime ;i += step){
@@ -118,7 +118,7 @@ class LessonInfoModal extends React.Component {
                         )}
                         <p className="text-center text-white my-4">
                             <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
-                                ورود به کلاس درس
+                               ورود به فعالیت های درسی
                             </a>
                             {(this.props.isTeacher ?
                             <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative w-full bg-purplish rounded-full cursor-pointer p-2 mx-2">
