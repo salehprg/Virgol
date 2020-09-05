@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { motion } from 'framer-motion'
 import GridLayout from 'react-grid-layout';
@@ -38,6 +38,8 @@ class Schedule extends React.Component {
     lessonInfo: null , showLessonInfo : false , lessons : []
     }
 
+    sc = createRef()
+
     handleLessonLayout() {
         const lessons = [];
 
@@ -46,17 +48,20 @@ class Schedule extends React.Component {
             {
                 (day.map(lesson => {
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 30 - ((lesson.endHour - 7) * 2), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
+                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
                     h: 1 , lessonDetail : lesson , static: true})
                 }))
             }
         })
 
         this.setState({lessons : lessons})
+
+        this.sc.current.scrollLeft = this.sc.current.clientWidth
     }
 
     componentDidMount() {
         this.handleLessonLayout()
+        
     }   
 
     componentWillReceiveProps(){
@@ -97,7 +102,7 @@ class Schedule extends React.Component {
                 <GridLayout className="layout" layout={layout} cols={34} rowHeight={50} width={1800}>
                     {layout.map(x => {
                         return (
-                            <div onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
+                            <div ref={this.sc} onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
                                 <p className="text-center">{x.name}</p>
                             </div>
                         );
