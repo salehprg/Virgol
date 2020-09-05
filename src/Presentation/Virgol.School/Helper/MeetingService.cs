@@ -259,6 +259,17 @@ public class MeetingService {
         BBBApi bbbApi = new BBBApi(appSettings);
         bool resultEnd = await bbbApi.EndRoom(bbbMeetingId);
 
+        MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
+        List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
+
+        if(meetingsResponse.meetings != null)
+            newMeetingList = meetingsResponse.meetings.meeting; 
+
+        if(!resultEnd && newMeetingList.Where(x => x.meetingID == bbbMeetingId).FirstOrDefault() == null)// it means this class Closed by Moderator and Currently Open in Our Db
+        {
+            resultEnd = true;
+        }
+
         if(resultEnd)
         {
             List<Meeting> oldMeetings = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).ToList();

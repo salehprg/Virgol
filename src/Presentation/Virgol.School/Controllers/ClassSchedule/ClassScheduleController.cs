@@ -305,7 +305,7 @@ namespace lms_with_moodle.Controllers
                             await moodleApi.setCourseVisible(lessonMoodleId , false);
                         }
 
-                        Meeting meeting = appDbContext.Meetings.Where(x => x.LessonId == classSchedule.Id).FirstOrDefault();
+                        Meeting meeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).FirstOrDefault();
                         appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
                         appDbContext.Meetings.Remove(meeting);
 
