@@ -1,8 +1,10 @@
 import React from 'react';
 import Modal from '../../../modals/Modal';
 import history from '../../../../history';
+import {JoinMeeting} from '../../../../_actions/meetingActions'
 import DeleteConfirm from '../../../modals/DeleteConfirm';
 import { edit, external_link, trash } from '../../../../assets/icons';
+import { connect } from 'react-redux';
 
 class TrackerLessonInfo extends React.Component {
 
@@ -14,7 +16,7 @@ class TrackerLessonInfo extends React.Component {
 
         var times = [];
         var startTime = 7.0;
-        var endTime = 20.0;
+        var endTime = 22.0;
         var step = 0.25;//Every 15 minute
 
         for(var i = startTime ;i <= endTime ;i += step){
@@ -29,6 +31,9 @@ class TrackerLessonInfo extends React.Component {
         this.setState({times})
     }
 
+    joinMeeting = async (bbb_MeetingId) => {
+        await this.props.JoinMeeting(this.props.user.token , bbb_MeetingId)
+    }
 
     options = [
         { value: 1, label: 'شنبه' },
@@ -104,7 +109,10 @@ class TrackerLessonInfo extends React.Component {
                         : null)}
 
                         {(this.props.lessonInfo.lessonDetail.bbB_MeetingId ? 
-                            <p className="text-center text-greenish text-xl my-4 rounded-full">درحال برگذاری</p>  
+                            <>
+                                <p className="text-center text-greenish text-xl my-4 rounded-full">درحال برگذاری</p>
+                                <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.bbB_MeetingId)} >ورود به کلاس آنلاین</button>
+                            </>
                         : 
                         null
                         )}
@@ -119,4 +127,8 @@ class TrackerLessonInfo extends React.Component {
 
 }
 
-export default TrackerLessonInfo;
+const mapStateToProps = state => {
+    return {user : state.auth.userInfo}
+}
+
+export default connect(mapStateToProps , {JoinMeeting})(TrackerLessonInfo);

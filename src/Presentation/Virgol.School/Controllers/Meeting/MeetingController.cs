@@ -225,13 +225,22 @@ namespace lms_with_moodle.Controllers
                 BBBApi bbbApi = new BBBApi(appSettings);
                 bool resultEnd = await bbbApi.EndRoom(bbbMeetingId);
 
+                MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
+                List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
+
+                if(meetingsResponse.meetings != null)
+                    newMeetingList = meetingsResponse.meetings.meeting; 
+
+                if(!resultEnd && newMeetingList.Where(x => x.meetingID == bbbMeetingId).FirstOrDefault() == null)// it means this class Closed by Moderator and Currently Open in Our Db
+                {
+                    resultEnd = true;
+                }
+
                 if(resultEnd)
                 {
-                    Meeting oldMeeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).FirstOrDefault();
-
-                    oldMeeting.Finished = true;
-                    oldMeeting.EndTime = MyDateTime.Now();
-                    appDbContext.Meetings.Update(oldMeeting);
+                    meeting.Finished = true;
+                    meeting.EndTime = MyDateTime.Now();
+                    appDbContext.Meetings.Update(meeting);
                     appDbContext.SaveChanges();
 
                     return Ok("کلاس با موفقیت پایان یافت لطفا چند لحطه صبر نمایید");
