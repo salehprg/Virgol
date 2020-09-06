@@ -4,6 +4,7 @@ import {edit, loading , check_circle, trash } from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {GetAllTeachers} from "../../../../_actions/adminActions"
+import { fullNameSerach , pagingItems } from "../../../Search/Seaarch";
 
 
 class adminTeachers extends React.Component {
@@ -11,21 +12,30 @@ class adminTeachers extends React.Component {
     state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 40, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
-        console.log("start")
+
         this.setState({ loading: true })
         await this.props.GetAllTeachers(this.props.user.token);
         this.setState({ loading: false })
-        console.log("end")
 
-        this.setState({totalCard : this.props.allTeachers.length})
+        this.queriedTeachers('');
     }
 
     changeQuery = query => {
         this.setState({ query })
+        this.queriedTeachers(query)
+    }
+
+    queriedTeachers = (query , currentPage = -1) => {
+        const serachedItems = fullNameSerach(this.props.allTeachers , query ,  (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+        const pagedItems = pagingItems(serachedItems ,  (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+
+        this.setState({teachers :  pagedItems})
+        this.setState({totalCard : serachedItems.length})
     }
 
     paginate = (num) => {
         this.setState({ currentPage: num })
+        this.queriedTeachers(this.state.query , num)
     }
 
     render() {
@@ -46,21 +56,18 @@ class adminTeachers extends React.Component {
                     body={() => {
                         return (
                             <React.Fragment>
-                                {(this.props.allTeachers ?
-                                    this.props.allTeachers.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(teacher => {
-                                        if (teacher.firstName.includes(this.state.query) || teacher.lastName.includes(this.state.query) || (teacher.firstName + " " + teacher.lastName).includes(this.state.query))
-                                        {
-                                            return(
-                                            <tr>
-                                                <td className="py-4">{teacher.firstName}</td>
-                                                <td>{teacher.lastName}</td>
-                                                <td>{teacher.melliCode}</td>
-                                                <td>{teacher.phoneNumber}</td>
-                                                <td>{teacher.personalIdNUmber}</td>
-                                                <td><span className="text-center">{teacher.latinFirstname && teacher.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            </tr>
-                                            )
-                                        }
+                                {(this.state.teachers ?
+                                    this.state.teachers.map(teacher => {
+                                        return(
+                                        <tr>
+                                            <td className="py-4">{teacher.firstName}</td>
+                                            <td>{teacher.lastName}</td>
+                                            <td>{teacher.melliCode}</td>
+                                            <td>{teacher.phoneNumber}</td>
+                                            <td>{teacher.personalIdNUmber}</td>
+                                            <td><span className="text-center">{teacher.latinFirstname && teacher.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
+                                        </tr>
+                                        )
                                     })
                                 : "لودینگ")}
                             </React.Fragment>

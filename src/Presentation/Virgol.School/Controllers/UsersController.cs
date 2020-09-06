@@ -303,15 +303,14 @@ namespace lms_with_moodle.Controllers
 
                     await myUserManager.SyncUserDetail(userData);
                 }
-
                 studentDetail.BirthDate = userDataModel.studentDetail.BirthDate;
                 studentDetail.cityBirth = userDataModel.studentDetail.cityBirth;
                 studentDetail.FatherPhoneNumber = userDataModel.studentDetail.FatherPhoneNumber;
                 
                 appDbContext.StudentDetails.Update(studentDetail);
 
-                user.LatinFirstname = userDataModel.LatinFirstname;
-                user.LatinLastname = userDataModel.LatinLastname;
+                user.LatinFirstname = userDataModel.LatinFirstname.Trim();
+                user.LatinLastname = userDataModel.LatinLastname.Trim();
                 user.PhoneNumber = userDataModel.PhoneNumber;
 
                 appDbContext.Users.Update(user);
@@ -365,8 +364,8 @@ namespace lms_with_moodle.Controllers
                 
                 appDbContext.TeacherDetails.Update(teacherDetail);
 
-                user.LatinFirstname = userDataModel.LatinFirstname;
-                user.LatinLastname = userDataModel.LatinLastname;
+                user.LatinFirstname = userDataModel.LatinFirstname.Trim();
+                user.LatinLastname = userDataModel.LatinLastname.Trim();
 
                 appDbContext.Users.Update(user);
                 appDbContext.SaveChanges();

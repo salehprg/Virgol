@@ -8,12 +8,13 @@ const checkEnglish = (value) => {
 
 
 const checkMelliCode = (value) => {
-    if (!/^\d{10}$/.test(value))
-        return false;
+    return true
+    // if (!/^\d{10}$/.test(value))
+    //     return false;
 
-    const check = +value[9];
-    const sum = Array(9).fill().map((_, i) => +value[i] * (10 - i)).reduce((x, y) => x + y) % 11;
-    return (sum < 2 && check === sum) || (sum >= 2 && check + sum === 11);
+    // const check = +value[9];
+    // const sum = Array(9).fill().map((_, i) => +value[i] * (10 - i)).reduce((x, y) => x + y) % 11;
+    // return (sum < 2 && check === sum) || (sum >= 2 && check + sum === 11);
 }
 
 const checkPhoneNumber = (value) => {

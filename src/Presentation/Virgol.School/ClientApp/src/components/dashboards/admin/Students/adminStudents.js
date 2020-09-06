@@ -4,6 +4,7 @@ import {edit, loading,check_circle, trash} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {GetAllStudents} from "../../../../_actions/adminActions"
+import { fullNameSerach , pagingItems } from "../../../Search/Seaarch";
 
 
 class adminStudents extends React.Component {
@@ -25,17 +26,17 @@ class adminStudents extends React.Component {
         this.queriedStudent(query)
     }
 
-    queriedStudent = (query) => {
-        var queried = this.props.allStudents.filter(x => x.firstName.includes(query) 
-        || x.lastName.includes(query) 
-        || (x.firstName + " " + x.lastName).includes(query))
+    queriedStudent = (query , currentPage = -1) => {
+        const serachedItems = fullNameSerach(this.props.allStudents , query , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+        const pagedItems = pagingItems(serachedItems , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
 
-        this.setState({students :  queried})
-        this.setState({totalCard : queried.length})
+        this.setState({students :  pagedItems})
+        this.setState({totalCard : serachedItems.length})
     }
 
     paginate = (num) => {
         this.setState({ currentPage: num })
+        this.queriedStudent(this.state.query , num)
     }
 
     render() {
@@ -58,22 +59,20 @@ class adminStudents extends React.Component {
                         return (
                             <React.Fragment>
                                 {(this.state.students ?
-                                    
-                                    this.state.students.slice((this.state.currentPage - 1) * this.state.itemsPerPage,this.state.currentPage  * this.state.itemsPerPage)
-                                    .map(x => {
-                                            return(
-                                            <tr>
-                                                <td className="py-4">{x.firstName}</td>
-                                                <td>{x.lastName}</td>
-                                                <td>{x.schoolName}</td>
-                                                <td>{x.melliCode}</td>
-                                                <td>{x.phoneNumber}</td>
-                                                <td>{x.fatherPhoneNumber}</td>
-                                                <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            </tr>
-                                            )
+                                    this.state.students.map(x => {
+                                        return(
+                                        <tr>
+                                            <td className="py-4">{x.firstName}</td>
+                                            <td>{x.lastName}</td>
+                                            <td>{x.schoolName}</td>
+                                            <td>{x.melliCode}</td>
+                                            <td>{x.phoneNumber}</td>
+                                            <td>{x.fatherPhoneNumber}</td>
+                                            <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
+                                        </tr>
+                                        )
                                     })
-                                : "لودینگ")}
+                                : "درحال بارگذاری ...")}
                             </React.Fragment>
                         );
                     }}
