@@ -303,8 +303,11 @@ namespace lms_with_moodle.Controllers
                         }
 
                         Meeting meeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).FirstOrDefault();
-                        appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
-                        appDbContext.Meetings.Remove(meeting);
+                        if(meeting != null)
+                        {
+                            appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
+                            appDbContext.Meetings.Remove(meeting);
+                        }
 
                         await appDbContext.SaveChangesAsync();
 
