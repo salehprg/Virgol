@@ -7,6 +7,7 @@ import {getAllStudents , addBulkUser , DeleteStudents} from "../../../../_action
 import DeleteConfirm from "../../../modals/DeleteConfirm";
 import MonsterTable from "../../tables/MonsterTable";
 import Checkbox from "../../tables/Checkbox";
+import { fullNameSerach, pagingItems } from "../../../Search/Seaarch";
 
 class Students extends React.Component {
 
@@ -25,8 +26,8 @@ class Students extends React.Component {
         this.setState({ loading: true })
         await this.props.getAllStudents(this.props.user.token);
         this.setState({ loading: false })
-
-        this.setState({totalCard : this.props.students.length})
+        
+        this.queriedStudents('')
     }
 
     checkAll = () => {
@@ -60,7 +61,18 @@ class Students extends React.Component {
 
     changeQuery = query => {
         this.setState({ query })
+        this.queriedStudents(query)
     }
+
+    queriedStudents = (query , currentPage = -1) => {
+        const serachedItems = fullNameSerach(this.props.students , query , (currentPage != -1 ? currentPage : this.state.currentPage)  , this.state.itemsPerPage)
+        const pagedItems = pagingItems(serachedItems , (currentPage != -1 ? currentPage : this.state.currentPage)  , this.state.itemsPerPage)
+
+        this.setState({students :  pagedItems})
+        this.setState({totalCard : serachedItems.length})
+    }
+
+    
 
     showDelete = (id) => {
         this.setState({showDeleteModal : true , studentId : id})
@@ -79,6 +91,7 @@ class Students extends React.Component {
 
     paginate = (num) => {
         this.setState({ currentPage: num })
+        this.queriedStudents(this.state.query , num)
     }
 
     render() {
@@ -115,38 +128,37 @@ class Students extends React.Component {
                     // headers={[ '' ,'نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده', '' ]}
                     headers={['نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی', 'تلفن ولی', 'حساب تکمیل شده', '']}
                     body={() => {
+
                         return (
                             <React.Fragment>
-                                {
-                                    this.props.students.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(x => {
-                                        if (x.firstName.includes(this.state.query) || x.lastName.includes(this.state.query) || (x.firstName + " " + x.lastName).includes(this.state.query))
-                                        {
-                                            return(
-                                            <tr>
-                                                {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>*/}
-                                                <td className="py-4">
-                                                    <div className="flex justify-center items-center">
-                                                        <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
-                                                    </div>
-                                                </td>
-                                                <td className="py-4">{x.firstName}</td>
-                                                <td>{x.lastName}</td>
-                                                <td>{x.phoneNumber}</td>
-                                                <td>{x.melliCode}</td>
-                                                <td>{x.fatherName}</td>
-                                                <td>{x.fatherPhoneNumber}</td>
-                                                <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                                <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
-                                                    {edit('w-6 text-white')}
-                                                </td>            
-                                                {/*<td onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}
-                                                {/*    {trash('w-6 text-white ')}*/}
-                                                {/*</td>*/}
-                                            </tr>
-                                            )
-                                        }
+                                {(this.state.students ?
+                                    this.state.students.map(x => {
+                                        return(
+                                        <tr>
+                                            {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>*/}
+                                            <td className="py-4">
+                                                <div className="flex justify-center items-center">
+                                                    <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
+                                                </div>
+                                            </td>
+                                            <td className="py-4">{x.firstName}</td>
+                                            <td>{x.lastName}</td>
+                                            <td>{x.phoneNumber}</td>
+                                            <td>{x.melliCode}</td>
+                                            <td>{x.fatherName}</td>
+                                            <td>{x.fatherPhoneNumber}</td>
+                                            <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
+                                            <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
+                                                {edit('w-6 text-white')}
+                                            </td>            
+                                            {/*<td onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}
+                                            {/*    {trash('w-6 text-white ')}*/}
+                                            {/*</td>*/}
+                                        </tr>
+                                        )
                                     })
-                                }
+                                    : "درحال بارگذاری ..."
+                                )}
                             </React.Fragment>
                         );
                     }}
