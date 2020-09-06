@@ -36,6 +36,7 @@ namespace lms_with_moodle.Helper
 
         //BBB Configuration Setting
         public static string BBBBaseUrl { get; set; }
+        public static string BBBCallBackUrl { get; set; }
         public static string BBBSecret { get; set; }
         //------------------------
 

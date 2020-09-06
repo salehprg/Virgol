@@ -16,6 +16,7 @@ public class Meeting {
     ///school Lesson Id
     ///</summary>
     public int ScheduleId {get; set;}
+    public bool Private {get; set;}
 
     [NotMapped]
     public string className {get; set;}

@@ -11,12 +11,10 @@ using Newtonsoft.Json;
 public class MeetingService {
     AppDbContext appDbContext;
     MoodleApi moodleApi;
-    HttpRequest Request;
-    public MeetingService(AppDbContext _appDbContext , HttpRequest _Request)
+    public MeetingService(AppDbContext _appDbContext)
     {
         appDbContext = _appDbContext;
         moodleApi = new MoodleApi();
-        Request = _Request;
     }
 
 #region Private Functions
@@ -57,7 +55,7 @@ public class MeetingService {
     }
     private async Task<bool> CreateRoom(Meeting meeting , float duration)
     {
-        string callBackUrl = Request.Scheme + "://" + Request.Host.Value + "/meetingResponse/" + meeting.Id;
+        string callBackUrl = AppSettings.BBBCallBackUrl + meeting.Id;
 
         BBBApi bbbApi = new BBBApi();
         MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , meeting.Id.ToString() , (int)duration , callBackUrl);
@@ -251,6 +249,9 @@ public class MeetingService {
         Meeting meeting = new Meeting();
         meeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId && x.TeacherId == teacherId).FirstOrDefault();
 
+        if(meeting == null)
+            meeting = appDbContext.Meetings.Where(x => x.Id == int.Parse(bbbMeetingId) && x.TeacherId == teacherId).FirstOrDefault();
+
         if(meeting == null || meeting.Id == 0)
             return false;
 
@@ -270,7 +271,7 @@ public class MeetingService {
 
         if(resultEnd)
         {
-            List<Meeting> oldMeetings = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).ToList();
+            List<Meeting> oldMeetings = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId || x.Id == int.Parse(bbbMeetingId)).ToList();// Use for mixed meeting Id
 
             foreach (var oldMeeting in oldMeetings)
             {
