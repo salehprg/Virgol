@@ -35,7 +35,6 @@ namespace lms_with_moodle.Controllers
     {
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
-        private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly MeetingService MeetingService;
 
         MoodleApi moodleApi;
@@ -58,7 +57,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [Authorize(Roles = "Teacher")]
         [ProducesResponseType(typeof(List<ParticipantView>), 200)]
-        public async Task<IActionResult> GetParticipantList(int meetingId) 
+        public IActionResult GetParticipantList(int meetingId) 
         {
             string userName = userManager.GetUserId(User);
             int userId = appDbContext.Users.Where(x => x.MelliCode == userName).FirstOrDefault().Id;
@@ -87,7 +86,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [Authorize(Roles = "User")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
-        public async Task<IActionResult> SubmitReview(int meetingId , int Score , string description) 
+        public IActionResult SubmitReview(int meetingId , int Score , string description) 
         {
             //After finished meeting Student can Submit a review
             return Ok();

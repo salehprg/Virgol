@@ -35,7 +35,6 @@ namespace lms_with_moodle.Controllers
         private readonly AppSettings appSettings;
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
-        private readonly RoleManager<IdentityRole<int>> roleManager;
 
         MoodleApi moodleApi;
         LDAP_db ldap;

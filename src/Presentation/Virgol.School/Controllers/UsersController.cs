@@ -686,6 +686,7 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return BadRequest("در آپلود فایل مشکلی بوجود آمد");
             }
         }

@@ -24,7 +24,6 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
-using lms_with_moodle.Helper;
 using ExcelDataReader;
 using Newtonsoft.Json;
 
@@ -336,7 +335,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
         //if want use commented Part change inputData ObjectType to SchoolData
-        public async Task<IActionResult> EditSchool([FromBody]SchoolModel inputData)
+        public IActionResult EditSchool([FromBody]SchoolModel inputData)
         {
             try
             {
@@ -366,7 +365,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
         //if want use commented Part change inputData ObjectType to SchoolData
-        public async Task<IActionResult> ToggleReminder(bool status)
+        public IActionResult ToggleReminder(bool status)
         {
             try
             {
@@ -815,7 +814,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<GradeModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> GradesList()
+        public IActionResult GradesList()
         {
             try
             {   
