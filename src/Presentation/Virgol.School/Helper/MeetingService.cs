@@ -55,17 +55,36 @@ public class MeetingService {
     }
     private async Task<bool> CreateRoom(Meeting meeting , float duration)
     {
-        string callBackUrl = AppSettings.BBBCallBackUrl + meeting.Id;
+        string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
+
+        if(meeting.Private)
+        {
+            UserModel user = appDbContext.Users.Where(x => x.Id == meeting.TeacherId).FirstOrDefault();
+
+            callBackUrl = AppSettings.ServerRootUrl ;
+            if(user.userTypeId == (int)UserType.Teacher)
+            {
+                callBackUrl = "/t/dashboard";
+            }
+            else if(user.userTypeId == (int)UserType.Manager)
+            {
+                callBackUrl = "/m/dashboard";
+            }
+        }
 
         BBBApi bbbApi = new BBBApi();
-        MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , meeting.Id.ToString() , (int)duration , callBackUrl);
+        MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , meeting.Id.ToString() , callBackUrl , (int)duration);
 
-        if(response.returncode != "FAILED")
+        if(response.returncode != "FAILED" && !meeting.Private)
         {
             meeting.BBB_MeetingId = meeting.Id.ToString();
             appDbContext.Meetings.Update(meeting);
             await appDbContext.SaveChangesAsync();
         
+            return true;
+        }
+        else if(response.returncode != "FAILED" && meeting.Private)
+        {
             return true;
         }
 
@@ -191,6 +210,30 @@ public class MeetingService {
 
 #endregion
 
+    public async Task<Meeting> StartPrivateMeeting(string meetingName , int userId)
+    {   
+        DateTime timeNow = MyDateTime.Now();
+
+        Meeting meeting = new Meeting();
+        meeting.MeetingName = meetingName;
+        meeting.StartTime = timeNow;
+        meeting.ScheduleId = 0;
+        meeting.TeacherId = userId;
+        meeting.Private = true;
+        meeting.BBB_MeetingId = RandomPassword.GenerateGUID(true , true , true);
+
+        appDbContext.Meetings.Add(meeting);
+        appDbContext.SaveChanges();
+
+        await CreateRoom(meeting , 0);
+
+        if(meeting != null)
+        {
+            return meeting;
+        }
+
+        return null;
+    }
 
     public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId)
     {   

@@ -122,7 +122,7 @@ namespace lms_with_moodle.Helper
 
         }
         
-        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , int duration , string callbackUrl)
+        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , string callbackUrl , int duration)
         {
             try
             {

@@ -77,7 +77,7 @@ namespace lms_with_moodle
                 AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));
                 AppSettings.LDAPUserAdmin = Environment.GetEnvironmentVariable("VIRGOL_LDAP_USER_ADMIN");
                 AppSettings.LDAPPassword = Environment.GetEnvironmentVariable("VIRGOL_LDAP_PASSWORD");
-                AppSettings.BBBCallBackUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_CALLBACK_URL");
+                AppSettings.ServerRootUrl = Environment.GetEnvironmentVariable("VIRGOL_SERVER_ROOT_URL");
 
             }
             else

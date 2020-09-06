@@ -46,7 +46,7 @@ namespace Schedule
                     foreach(var newMeeting in newMeetingList)
                     {
                         Meeting oldMeeting = oldMeetingList.Where(x => x.BBB_MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
-                        if(oldMeeting != null) // it means current Meeting exist and active in our database 
+                        if(oldMeeting != null && !oldMeeting.Private) // it means current Meeting exist and active in our database 
                         {
                             foreach(var attendee in newMeeting.attendees.attendee.Where(x => x.role != "MODERATOR")) // Participant present in Online Course
                             {
