@@ -187,7 +187,7 @@ class ClassInfo extends React.Component {
                             })
                         )
                      )}
-                    <div className={`addStudentBtn transition-all duration-200 w-full absolute bottom-0 mb-4 flex flex-row justify-start items-center`}>
+                    <div className={`addStudentBtn transition-all duration-200 absolute bottom-0 mb-4 flex flex-row justify-start items-center`}>
                         <div onClick={() => this.setState({ showAdd: !this.state.showAdd})} className={`w-12 cursor-pointer h-12 mx-2 relative rounded-full bg-greenish`}>
                             {this.state.showAdd ?
                                 x('w-6 text-white centerize')
