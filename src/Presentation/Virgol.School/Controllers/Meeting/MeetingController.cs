@@ -33,7 +33,6 @@ namespace lms_with_moodle.Controllers
     [Route("api/[controller]/[action]")]
     public class MeetingController : ControllerBase
     {
-        private readonly AppSettings appSettings;
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
@@ -43,17 +42,15 @@ namespace lms_with_moodle.Controllers
         LDAP_db ldap;
         
         public MeetingController(AppDbContext dbContext
-                                , IOptions<AppSettings> _appsetting
                                 , RoleManager<IdentityRole<int>> _roleManager
                                 , UserManager<UserModel> _userManager)
         {
             appDbContext = dbContext;
-            appSettings = _appsetting.Value;
             userManager = _userManager;
 
-            moodleApi = new MoodleApi(appSettings);
-            ldap = new LDAP_db(appSettings , appDbContext);
-            MeetingService = new MeetingService(appSettings , appDbContext , Request);
+            moodleApi = new MoodleApi();
+            ldap = new LDAP_db(appDbContext);
+            MeetingService = new MeetingService(appDbContext , Request);
 
         }
 
@@ -337,7 +334,7 @@ namespace lms_with_moodle.Controllers
             try
             {
 
-                BBBApi bBApi = new BBBApi(appSettings);
+                BBBApi bBApi = new BBBApi();
                 List<RecordInfo> recordsResponses = (await bBApi.GetMeetingRecords(meetingId.ToString())).recordings.recording;
                     
                 return Ok(recordsResponses);

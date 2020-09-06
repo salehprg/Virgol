@@ -49,8 +49,8 @@ namespace lms_with_moodle.Controllers
             appSettings = _appsetting.Value;
             userManager = _userManager;
 
-            moodleApi = new MoodleApi(appSettings);
-            ldap = new LDAP_db(appSettings , appDbContext);
+            moodleApi = new MoodleApi();
+            ldap = new LDAP_db(appDbContext);
 
         }
 
@@ -164,7 +164,7 @@ namespace lms_with_moodle.Controllers
                 List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
 
                 userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
-                userCourses.ForEach(x => x.CourseUrl = appSettings.moddleCourseUrl + x.id);
+                userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
 
                 return Ok(userCourses);
             }

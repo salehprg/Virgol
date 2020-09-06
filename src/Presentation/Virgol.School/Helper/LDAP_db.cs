@@ -13,13 +13,10 @@ namespace lms_with_moodle.Helper
     public class LDAP_db {
         LdapConnection ldapConn;
         AppDbContext appDbContext;
-        private readonly AppSettings appSettings;
 
         string containerName = "ou=people,dc=legace,dc=ir";
-        public LDAP_db (AppSettings _appsetting , AppDbContext _appDbContext)
+        public LDAP_db (AppDbContext _appDbContext)
         {
-            
-            appSettings = _appsetting;
             appDbContext = _appDbContext;
 
             // Creating an LdapConnection instance 
@@ -33,9 +30,9 @@ namespace lms_with_moodle.Helper
             try
             {
                 if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
                 //Bind function will Bind the user object Credentials to the Server
-                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
                 
                 bool hasMail = false;
                 string uniqueMailId = user.MelliCode;
@@ -127,10 +124,10 @@ namespace lms_with_moodle.Helper
             try
             {
                 if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
                 //Bind function will Bind the user object Credentials to the Server
-                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute attr =  new LdapAttribute(attrName, attrValue);
@@ -160,10 +157,10 @@ namespace lms_with_moodle.Helper
             try
             {
                 if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
                 //Bind function will Bind the user object Credentials to the Server
-                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute attr =  new LdapAttribute(attrName, attrValue);
@@ -193,10 +190,10 @@ namespace lms_with_moodle.Helper
             try
             {
                 if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
                 //Bind function will Bind the user object Credentials to the Server
-                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
                 
                 // DN of the entry to be added
                 
@@ -224,10 +221,10 @@ namespace lms_with_moodle.Helper
             try
             {
                 if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
                 //Bind function will Bind the user object Credentials to the Server
-                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
                 
                 // DN of the entry to be added
                 LdapAttribute attrPassword = new LdapAttribute("userPassword", password);
@@ -283,10 +280,10 @@ namespace lms_with_moodle.Helper
         public bool CheckUserData(string userName)
         {
             if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
             //Bind function will Bind the user object Credentials to the Server
-            ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);       
+            ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);       
             
             string searchFilter = "(uniqueIdentifier=" + userName + ")";
                                     
@@ -330,10 +327,10 @@ namespace lms_with_moodle.Helper
             try
             {
                 if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
                 //Bind function will Bind the user object Credentials to the Server
-                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
 
                 string uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
                                                                 , user.LatinLastname 
@@ -387,10 +384,10 @@ namespace lms_with_moodle.Helper
             try
             {
                 if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
                 //Bind function will Bind the user object Credentials to the Server
-                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute newUid = new LdapAttribute("uniqueIdentifier", newUserName);
@@ -449,10 +446,10 @@ namespace lms_with_moodle.Helper
                 }
 
                 if(!ldapConn.Connected)
-                    ldapConn.Connect(appSettings.LDAPServer, appSettings.LDAPPort);
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
                 //Bind function will Bind the user object Credentials to the Server
-                ldapConn.Bind(appSettings.LDAPUserAdmin , appSettings.LDAPPassword);
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
 
                 string uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
                                                                 , user.LatinLastname 

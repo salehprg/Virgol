@@ -35,7 +35,6 @@ namespace lms_with_moodle.Controllers
     [Authorize(Roles = "Admin,Manager")]
     public class SchoolController : ControllerBase
     {
-        private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
@@ -48,19 +47,17 @@ namespace lms_with_moodle.Controllers
         public SchoolController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , IOptions<AppSettings> _appsetting
                                 , AppDbContext _appdbContext)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             signInManager =_signinManager;
-            appSettings = _appsetting.Value;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi(appSettings);
-            SMSApi = new FarazSmsApi(appSettings);
-            ldap = new LDAP_db(appSettings , appDbContext);
-            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
+            moodleApi = new MoodleApi();
+            SMSApi = new FarazSmsApi();
+            ldap = new LDAP_db(appDbContext);
+            myUserManager = new MyUserManager(userManager , appDbContext);
         }
 
         [HttpGet]
@@ -268,7 +265,7 @@ namespace lms_with_moodle.Controllers
                 if(appDbContext.Schools.Where(x => x.SchoolType == schoolType).Count() >= adminDetail.SchoolLimit)
                     return BadRequest("شما حداکثر تعداد مدارس خود را ثبت کردید");
 
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
 
                 bool melliCodeInterupt = myUserManager.CheckMelliCodeInterupt(inputData.MelliCode , 0);
                 bool phoneInterupt = myUserManager.CheckPhoneInterupt(inputData.managerPhoneNumber);
@@ -510,7 +507,7 @@ namespace lms_with_moodle.Controllers
                 if(result.Count == 0)
                     return BadRequest("مقطع(مقاطع) انتخاب شده تکراریست");
 
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
 
                 List<School_Bases> schoolBases = await schoolDataHelper.AddBaseToSchool(result);
 
@@ -542,7 +539,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
 
                 School_Bases basee = await schoolDataHelper.DeleteBaseFromSchool(baseId);
 
@@ -647,7 +644,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
 
                 List<School_StudyFields> result = new List<School_StudyFields>();
 
@@ -706,7 +703,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
 
                 School_StudyFields studyField = await schoolDataHelper.DeleteStudyFieldFromSchool(studyFId);
                 
@@ -1059,7 +1056,7 @@ namespace lms_with_moodle.Controllers
                 {
                     try
                     {
-                        SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appSettings , appDbContext);
+                        SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
                         UserModel user = appDbContext.Users.Where(x => x.UserName == schoolData.MelliCode).FirstOrDefault();
                         bool duplicateManager = (user != null);
 

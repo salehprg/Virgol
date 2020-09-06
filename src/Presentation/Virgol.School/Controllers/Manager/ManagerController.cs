@@ -48,10 +48,10 @@ namespace lms_with_moodle.Controllers
             roleManager = _roleManager;
             appSettings = _appsetting.Value;
 
-            moodleApi = new MoodleApi(appSettings);
-            ldap = new LDAP_db(appSettings , appDbContext);
+            moodleApi = new MoodleApi();
+            ldap = new LDAP_db(appDbContext);
 
-            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
+            myUserManager = new MyUserManager(userManager , appDbContext);
 
             
         }
@@ -293,7 +293,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
+                MyUserManager myUserManager = new MyUserManager(userManager);
 
                 foreach (int studentId in studentIds)
                 {
@@ -442,7 +442,7 @@ namespace lms_with_moodle.Controllers
 
                             enrolUsers.Add(enrolUser);
 
-                            FarazSmsApi smsApi = new FarazSmsApi(appSettings);
+                            FarazSmsApi smsApi = new FarazSmsApi();
                             String welcomeMessage = string.Format("{0} {1} عزیز ثبت نام شما با موفقیت انجام شد \n" +
                                                                     "نام کاربری و رمز عبور شما کدملی شما میباشد" , SelectedUser.FirstName , SelectedUser.LastName);
 
@@ -778,7 +778,7 @@ namespace lms_with_moodle.Controllers
                 string userNameManager = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
 
-                MyUserManager myUserManager = new MyUserManager(userManager , appSettings);
+                MyUserManager myUserManager = new MyUserManager(userManager);
 
                 foreach (int teacherId in teacherIds)
                 {

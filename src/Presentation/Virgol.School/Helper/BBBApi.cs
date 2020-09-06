@@ -10,17 +10,15 @@ using System.Net;
 namespace lms_with_moodle.Helper
 {
     public class BBBApi {
-        private readonly AppSettings appSettings;
         static HttpClient client;
         string BaseUrl;
         string token;
-        public BBBApi(AppSettings _appsetting)
+        public BBBApi()
         {
-            appSettings = _appsetting;
             client = new HttpClient();   
 
-            BaseUrl = _appsetting.BBBBaseUrl;
-            token = _appsetting.Token_moodle;
+            BaseUrl = AppSettings.BBBBaseUrl;
+            token = AppSettings.Token_moodle;
         }       
 
         async Task<string> sendData (string data , bool joinRoom = false)
@@ -43,7 +41,7 @@ namespace lms_with_moodle.Helper
             string checkSum = "";
             data = data.Replace("?" , "");
             
-            checkSum = SHA1Creator.sha1Creator(data + appSettings.BBBSecret);
+            checkSum = SHA1Creator.sha1Creator(data + AppSettings.BBBSecret);
 
             Uri uri = new Uri (BaseUrl + modifiedData + "checksum=" + checkSum.ToLower() );
             if(joinRoom)

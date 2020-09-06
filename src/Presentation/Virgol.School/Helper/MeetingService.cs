@@ -10,14 +10,12 @@ using Newtonsoft.Json;
 
 public class MeetingService {
     AppDbContext appDbContext;
-    AppSettings appSettings;
     MoodleApi moodleApi;
     HttpRequest Request;
-    public MeetingService(AppSettings _appSettings , AppDbContext _appDbContext , HttpRequest _Request)
+    public MeetingService(AppDbContext _appDbContext , HttpRequest _Request)
     {
         appDbContext = _appDbContext;
-        appSettings = _appSettings;
-        moodleApi = new MoodleApi(_appSettings);
+        moodleApi = new MoodleApi();
         Request = _Request;
     }
 
@@ -61,7 +59,7 @@ public class MeetingService {
     {
         string callBackUrl = Request.Scheme + "://" + Request.Host.Value + "/meetingResponse/" + meeting.Id;
 
-        BBBApi bbbApi = new BBBApi(appSettings);
+        BBBApi bbbApi = new BBBApi();
         MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , meeting.Id.ToString() , (int)duration , callBackUrl);
 
         if(response.returncode != "FAILED")
@@ -238,7 +236,7 @@ public class MeetingService {
         if(meeting == null)
             return null;
 
-        BBBApi bbbApi = new BBBApi(appSettings);
+        BBBApi bbbApi = new BBBApi();
         string classUrl = await bbbApi.JoinRoom(isTeacher , meeting.BBB_MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
 
         if(classUrl != null)
@@ -256,7 +254,7 @@ public class MeetingService {
         if(meeting == null || meeting.Id == 0)
             return false;
 
-        BBBApi bbbApi = new BBBApi(appSettings);
+        BBBApi bbbApi = new BBBApi();
         bool resultEnd = await bbbApi.EndRoom(bbbMeetingId);
 
         MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 

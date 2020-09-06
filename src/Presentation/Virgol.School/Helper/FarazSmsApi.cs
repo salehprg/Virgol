@@ -33,13 +33,13 @@ namespace lms_with_moodle.Helper
         private string BaseUrl;
         private string FromNumber;
 
-        public FarazSmsApi(AppSettings appSetting)
+        public FarazSmsApi()
         {
-            BaseUrl = appSetting.FarazAPI_URL;
-            Username = appSetting.FarazAPI_Username;
-            Password = appSetting.FarazAPI_Password;
-            ApiKey = appSetting.FarazAPI_ApiKey;
-            FromNumber = appSetting.FarazAPI_SendNumber;
+            BaseUrl = AppSettings.FarazAPI_URL;
+            Username = AppSettings.FarazAPI_Username;
+            Password = AppSettings.FarazAPI_Password;
+            ApiKey = AppSettings.FarazAPI_ApiKey;
+            FromNumber = AppSettings.FarazAPI_SendNumber;
         }   
 
         bool SendData(string JsonData , string Method)
