@@ -115,7 +115,32 @@ namespace lms_with_moodle.Controllers
 #endregion
 
 #region Meeting
-    
+
+        [HttpPost]
+        [Authorize(Roles = "Teacher,Manager,Admin")]
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public async Task<IActionResult> CreatePrivateRoom(string roomName) 
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                int userId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+
+                Meeting meeting = await MeetingService.StartPrivateMeeting(roomName , userId);
+
+                if(meeting != null)
+                {
+                    return Ok(meeting);
+                }
+
+                return BadRequest("درایجاد کلاس خصوصی مشکلی پیش آمد");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPost]
         [Authorize(Roles = "Teacher")]
