@@ -291,6 +291,19 @@ namespace lms_with_moodle.Controllers
  
                 StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
 
+                if(studentDetail == null)
+                {
+                    var serialized = JsonConvert.SerializeObject(user);
+                    UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+
+                    studentDetail = new StudentDetail();
+                    studentDetail.UserId = user.Id;
+
+                    userData.studentDetail = studentDetail;
+
+                    await myUserManager.SyncUserDetail(userData);
+                }
+                
                 studentDetail.BirthDate = userDataModel.studentDetail.BirthDate;
                 studentDetail.cityBirth = userDataModel.studentDetail.cityBirth;
                 studentDetail.FatherPhoneNumber = userDataModel.studentDetail.FatherPhoneNumber;
@@ -332,6 +345,19 @@ namespace lms_with_moodle.Controllers
                 //     return BadRequest("کد پرسنلی وارد شده تکراریست");
  
                 TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault();
+
+                if(teacherDetail == null)
+                {
+                    var serialized = JsonConvert.SerializeObject(user);
+                    UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+
+                    teacherDetail = new TeacherDetail();
+                    teacherDetail.TeacherId = user.Id;
+
+                    userData.teacherDetail = teacherDetail;
+
+                    await myUserManager.SyncUserDetail(userData);
+                }
 
                 teacherDetail.birthDate = userDataModel.teacherDetail.birthDate;
                 teacherDetail.cityBirth = userDataModel.teacherDetail.cityBirth;

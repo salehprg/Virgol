@@ -7,6 +7,7 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 import ReactTooltip from "react-tooltip";
 import Checkbox from "../../tables/Checkbox";
 import MonsterTable from "../../tables/MonsterTable";
+import { fullNameSerach , pagingItems } from "../../../Search/Seaarch";
 
 class Teachers extends React.Component {
 
@@ -18,7 +19,7 @@ class Teachers extends React.Component {
         await this.props.getAllTeachers(this.props.user.token);
         this.setState({ loading: false })
 
-        this.setState({totalCard : this.props.teachers.length})
+        this.queriedTeachers('')
     }
 
     checkAll = () => {
@@ -39,6 +40,15 @@ class Teachers extends React.Component {
 
     changeQuery = query => {
         this.setState({ query })
+        this.queriedTeachers(query)
+    }
+
+    queriedTeachers = (query , currentPage = -1) => {
+        const serachedItems = fullNameSerach(this.props.teachers , query , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+        const pagedItems = pagingItems(serachedItems , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+
+        this.setState({teachers :  pagedItems})
+        this.setState({totalCard : serachedItems.length})
     }
 
     showDelete = (id) => {
@@ -69,6 +79,7 @@ class Teachers extends React.Component {
 
     paginate = (num) => {
         this.setState({ currentPage: num })
+        this.queriedTeachers(this.state.query , num)
     }
 
     render() {
@@ -107,35 +118,34 @@ class Teachers extends React.Component {
                     body={() => {
                         return (
                             <React.Fragment>
-                                {
-                                    this.props.teachers.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(x => {
-                                        if (x.firstName.includes(this.state.query) || x.lastName.includes(this.state.query) || (x.firstName + " " + x.lastName).includes(this.state.query))
-                                        {
-                                            return(
-                                            <tr>
-                                                {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectTeacher}></input></td>*/}
-                                                <td className="py-4">
-                                                    <div className="flex justify-center items-center">
-                                                        <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
-                                                    </div>
-                                                </td>
-                                                <td className="py-4">{x.firstName}</td>
-                                                <td>{x.lastName}</td>
-                                                <td>{x.melliCode}</td>
-                                                <td>{x.phoneNumber}</td>
-                                                <td>{x.personalIdNUmber}</td>
-                                                <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                                <td data-tip="ویرایش" className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
-                                                    {edit('w-6 text-white')}
-                                                </td>           
-                                                {/*<td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}
-                                                {/*    {trash('w-6 text-white ')}*/}
-                                                {/*</td> */}
-                                            </tr>
-                                            )
-                                        }
+                                {(this.state.teachers ?
+                                    this.state.teachers.map(x => {
+                                        return(
+                                        <tr>
+                                            {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectTeacher}></input></td>*/}
+                                            <td className="py-4">
+                                                <div className="flex justify-center items-center">
+                                                    <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
+                                                </div>
+                                            </td>
+                                            <td className="py-4">{x.firstName}</td>
+                                            <td>{x.lastName}</td>
+                                            <td>{x.melliCode}</td>
+                                            <td>{x.phoneNumber}</td>
+                                            <td>{x.personalIdNUmber}</td>
+                                            <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
+                                            <td data-tip="ویرایش" className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
+                                                {edit('w-6 text-white')}
+                                            </td>           
+                                            {/*<td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}
+                                            {/*    {trash('w-6 text-white ')}*/}
+                                            {/*</td> */}
+                                        </tr>
+                                        )
                                     })
-                                }
+                                    : "درحال بارگذاری ... "
+                                )}
+                                
                             </React.Fragment>
                         );
                     }}
