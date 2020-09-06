@@ -17,12 +17,12 @@ public class MyUserManager {
     MoodleApi moodleApi;
     LDAP_db ldap;
 
-    public MyUserManager(UserManager<UserModel> _userManager , AppSettings appSettings , AppDbContext _appDbContext = null)
+    public MyUserManager(UserManager<UserModel> _userManager , AppDbContext _appDbContext = null)
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
-        moodleApi = new MoodleApi(appSettings);
-        ldap = new LDAP_db(appSettings , _appDbContext);
+        moodleApi = new MoodleApi();
+        ldap = new LDAP_db(_appDbContext);
     }
 
     ///<summary>

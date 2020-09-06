@@ -33,7 +33,7 @@ namespace Schedule
                     var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
                     var appSetting = scope.ServiceProvider.GetService<IOptions<AppSettings>>().Value;
 
-                    BBBApi bbbApi = new BBBApi(appSetting);
+                    BBBApi bbbApi = new BBBApi();
 
                     MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
                     List<MeetingInfo> newMeetingList = new List<MeetingInfo>();

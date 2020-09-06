@@ -32,7 +32,6 @@ namespace lms_with_moodle.Controllers
     [Route("api/[controller]/[action]")]
     public class UsersController : ControllerBase
     {
-        private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
@@ -45,20 +44,18 @@ namespace lms_with_moodle.Controllers
         public UsersController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , IOptions<AppSettings> _appsetting
                                 , AppDbContext _appdbContext)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             signInManager =_signinManager;
-            appSettings = _appsetting.Value;
             appDbContext = _appdbContext;
 
 
-            ldap = new LDAP_db(appSettings , appDbContext);
-            moodleApi = new MoodleApi(appSettings);
-            SMSApi = new FarazSmsApi(appSettings);
-            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
+            ldap = new LDAP_db(appDbContext);
+            moodleApi = new MoodleApi();
+            SMSApi = new FarazSmsApi();
+            myUserManager = new MyUserManager(userManager , appDbContext);
         }
         
 
@@ -119,7 +116,7 @@ namespace lms_with_moodle.Controllers
                 List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
 
                 userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
-                userCourses.ForEach(x => x.CourseUrl = appSettings.moddleCourseUrl + x.id);
+                userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
 
                 return Ok(userCourses);
             }
@@ -496,7 +493,7 @@ namespace lms_with_moodle.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
                 }
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWTSecret));
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.JWTSecret));
 
                 var token = new JwtSecurityToken(
                     issuer: "https://localhost:5001",

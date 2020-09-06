@@ -32,7 +32,6 @@ namespace lms_with_moodle.Controllers
     [Authorize(Roles="User")]
     public class NewsController : ControllerBase
     {
-        private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
@@ -44,19 +43,17 @@ namespace lms_with_moodle.Controllers
         public NewsController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , IOptions<AppSettings> _appsetting
                                 , AppDbContext _appdbContext)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             signInManager =_signinManager;
-            appSettings = _appsetting.Value;
             appDbContext = _appdbContext;
 
 
-            ldap = new LDAP_db(appSettings , appDbContext);
-            moodleApi = new MoodleApi(appSettings);
-            SMSApi = new FarazSmsApi(appSettings);
+            ldap = new LDAP_db(appDbContext);
+            moodleApi = new MoodleApi();
+            SMSApi = new FarazSmsApi();
         }
         
         [HttpGet]

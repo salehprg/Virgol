@@ -36,7 +36,6 @@ namespace lms_with_moodle.Controllers
     [Authorize(Roles = "Administrator,Admin")]
     public class AdministratorController : ControllerBase
     {
-        private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
@@ -47,17 +46,15 @@ namespace lms_with_moodle.Controllers
         public AdministratorController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , IOptions<AppSettings> _appsetting
                                 , AppDbContext _appdbContext)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             signInManager =_signinManager;
-            appSettings = _appsetting.Value;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi(appSettings);
-            SMSApi = new FarazSmsApi(appSettings);
+            moodleApi = new MoodleApi();
+            SMSApi = new FarazSmsApi();
         }
 
 #region Admin
@@ -821,7 +818,7 @@ namespace lms_with_moodle.Controllers
 
     public async Task<bool> SyncUserDetails()
     {
-        MyUserManager myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
+        MyUserManager myUserManager = new MyUserManager(userManager , appDbContext);
 
         List<StudentViewModel> studentViews = appDbContext.StudentViews.Where(x => x.BirthDate == null).ToList();
 

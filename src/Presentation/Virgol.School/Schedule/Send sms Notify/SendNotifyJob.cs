@@ -40,7 +40,7 @@ namespace Schedule
                     dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
                     List<ClassScheduleView> classes = dbContext.ClassScheduleView.Where(x => (x.StartHour - currnetTime) <= 0.5 && (x.StartHour - currnetTime) >=0 && x.DayType == dayOfWeek ).ToList();
-                    FarazSmsApi smsApi = new FarazSmsApi(appSetting);
+                    FarazSmsApi smsApi = new FarazSmsApi();
 
                     foreach (var schedule in classes)
                     {
