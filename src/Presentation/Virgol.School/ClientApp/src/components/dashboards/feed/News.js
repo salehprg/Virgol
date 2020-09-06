@@ -5,7 +5,7 @@ const News = ({ text, tags, time }) => {
 
     return (
         <div className="w-full py-2 mt-6 border-b border-grayish">
-            <p className="text-white mb-4">{text}</p>
+            <p className="text-white mb-4" style={{direction : "rtl"}}>{text}</p>
             <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-grayish text-sm">{time}</span>
                 <div className="w-3/4 flex flex-wrap flex-row-reverse justify-start items-center">

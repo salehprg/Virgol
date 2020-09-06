@@ -114,7 +114,7 @@ public class MyUserManager {
 
             if(oldData.MelliCode != user.MelliCode)
             {
-                oldData.UserName = user.MelliCode;
+                await userManager.SetUserNameAsync(oldData , user.MelliCode);
                 ldap.EditUserName(oldData.MelliCode , user.MelliCode);
             }
 
@@ -365,7 +365,6 @@ public class MyUserManager {
             return false;
         }
         
-        Console.WriteLine(appDbContext.Users.Local);
         await appDbContext.SaveChangesAsync();
 
         return true;

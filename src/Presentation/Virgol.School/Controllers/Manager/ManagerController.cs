@@ -657,6 +657,30 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(UserModel), 200)]
+        [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
+        public IActionResult CheckNewTeacher(string MelliCode)
+        {
+            try
+            {
+                string userNameManager = userManager.GetUserId(User);
+                int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
+
+                UserModel newTeacher = appDbContext.Users.Where(x => x.MelliCode == MelliCode).FirstOrDefault();
+
+                if(newTeacher != null && newTeacher.userTypeId != (int)UserType.Teacher)
+                    return BadRequest("کد ملی وارد شده مربوط به شخص دیگری است"); 
+
+                return Ok(newTeacher);
+
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
@@ -683,7 +707,10 @@ namespace lms_with_moodle.Controllers
 
                 if(newTeacher != null)
                 {
+                    teacher.FirstName = newTeacher.FirstName;
+                    teacher.LastName = newTeacher.LastName;
                     teacher.Id = newTeacher.Id;
+                    
                     teacher.teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
                     result = await myUserManager.EditUsers(new List<UserDataModel>{teacher} , schoolId , true);
                 }

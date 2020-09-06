@@ -26,6 +26,8 @@ using System.IO;
 using Models.InputModel;
 using static SchoolDataHelper;
 using ExcelDataReader;
+using Models.Users.Teacher;
+using Newtonsoft.Json;
 
 namespace lms_with_moodle.Controllers
 {
@@ -815,7 +817,53 @@ namespace lms_with_moodle.Controllers
 
 #endregion
      
+#region Sync Data
 
+    public async Task<bool> SyncUserDetails()
+    {
+        MyUserManager myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
+
+        List<StudentViewModel> studentViews = appDbContext.StudentViews.Where(x => x.BirthDate == null).ToList();
+
+        foreach (var studentView in studentViews)
+        {
+            UserModel user = appDbContext.Users.Where(x => x.Id == studentView.Id).FirstOrDefault();
+            
+            var serialized = JsonConvert.SerializeObject(user);
+            UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+
+            StudentDetail studentDetail = new StudentDetail();
+            studentDetail.UserId = studentView.Id;
+
+            userData.studentDetail = studentDetail;
+            userData.Id = studentView.Id;
+
+            await myUserManager.SyncUserDetail(userData);
+            
+        }
+
+        List<TeacherViewModel> teacherViews = appDbContext.TeacherViews.Where(x => x.SchoolsId == null).ToList();
+
+        foreach (var teacherView in teacherViews)
+        {
+            UserModel user = appDbContext.Users.Where(x => x.Id == teacherView.Id).FirstOrDefault();
+
+            var serialized = JsonConvert.SerializeObject(user);
+            UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+
+            TeacherDetail teacherDetail = new TeacherDetail();
+            teacherDetail.TeacherId = teacherView.Id;
+            
+            userData.teacherDetail = teacherDetail;
+            userData.Id = teacherView.Id;
+
+            await myUserManager.SyncUserDetail(userData);
+            
+        }
+
+        return true;
+    }
+#endregion
     }
 }
         

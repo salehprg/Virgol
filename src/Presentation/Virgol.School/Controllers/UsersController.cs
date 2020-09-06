@@ -284,11 +284,11 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string idNumber = userManager.GetUserId(User);
-                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+                UserModel user = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault();
 
                 if(user.LatinFirstname != null && user.LatinLastname != null)
                     return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
- 
+
                 StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
 
                 if(studentDetail == null)
@@ -303,7 +303,6 @@ namespace lms_with_moodle.Controllers
 
                     await myUserManager.SyncUserDetail(userData);
                 }
-                
                 studentDetail.BirthDate = userDataModel.studentDetail.BirthDate;
                 studentDetail.cityBirth = userDataModel.studentDetail.cityBirth;
                 studentDetail.FatherPhoneNumber = userDataModel.studentDetail.FatherPhoneNumber;
@@ -334,7 +333,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string idNumber = userManager.GetUserId(User);
-                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+                UserModel user = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault();
 
                 if(user.LatinFirstname != null && user.LatinLastname != null)
                     return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
@@ -376,9 +375,9 @@ namespace lms_with_moodle.Controllers
                 return Ok(true);
 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 #endregion

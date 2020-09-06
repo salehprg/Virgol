@@ -298,6 +298,34 @@ export const GetUserInfo = (token,userId) => async dispatch => {
 
 }
 
+export const CheckNewTeacher = (token, MelliCode) => async dispatch => {
+
+
+    try {
+        dispatch({type : START})
+
+        const response = await lms.post(`/Manager/CheckNewTeacher?MelliCode=${MelliCode}` ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({type : STOP})
+
+        dispatch({ type: Type.CheckNewTeacher, payload: response.data });
+
+        return true
+
+    } catch (e) {
+        dispatch({type : STOP})
+        console.log(e.response)
+        dispatch(alert.error(e.response.data))
+
+        return false
+    }
+
+}
+
 export const addNewTeacher = (token, formValues) => async dispatch => {
 
 

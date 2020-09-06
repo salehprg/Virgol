@@ -19,6 +19,8 @@ public class Class_WeeklySchedule {
     ///2 = fardWeek
     ///</sumary>
     public int weekly {get; set;}
+    public int MixedId {get;set;}
+
 
 
 

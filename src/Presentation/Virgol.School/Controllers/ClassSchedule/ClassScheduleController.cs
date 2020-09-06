@@ -91,7 +91,7 @@ namespace lms_with_moodle.Controllers
                             int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
                             schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
 
-                            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.LessonId == schedule.Id).ToList();
+                            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList();
                             int absenceCount = 0;
 
                             foreach (var meeting in meetings)
@@ -305,7 +305,7 @@ namespace lms_with_moodle.Controllers
                             await moodleApi.setCourseVisible(lessonMoodleId , false);
                         }
 
-                        Meeting meeting = appDbContext.Meetings.Where(x => x.LessonId == classSchedule.Id).FirstOrDefault();
+                        Meeting meeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).FirstOrDefault();
                         appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
                         appDbContext.Meetings.Remove(meeting);
 
