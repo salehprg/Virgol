@@ -54,6 +54,7 @@ namespace Schedule
                                 if(participantInfo != null)
                                 {
                                     participantInfo.PresentCount++;
+                                    participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeeting.CheckCount + 1) * 100 ) > 70 ? true : false;
                                     dbContext.ParticipantInfos.Update(participantInfo);
                                 }
                                 else
