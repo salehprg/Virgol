@@ -35,7 +35,6 @@ namespace lms_with_moodle.Controllers
     {
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
-        private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly MeetingService MeetingService;
 
         MoodleApi moodleApi;
@@ -50,7 +49,7 @@ namespace lms_with_moodle.Controllers
 
             moodleApi = new MoodleApi();
             ldap = new LDAP_db(appDbContext);
-            MeetingService = new MeetingService(appDbContext , Request);
+            MeetingService = new MeetingService(appDbContext);
 
         }
 
@@ -64,6 +63,26 @@ namespace lms_with_moodle.Controllers
             int userId = appDbContext.Users.Where(x => x.MelliCode == userName).FirstOrDefault().Id;
 
             List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meetingId && x.UserId != userId).ToList();
+            int classId = appDbContext.MeetingViews.Where(x => x.Id == meetingId).FirstOrDefault().ClassId;
+            
+            List<School_studentClass> studentClasses = appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
+
+            foreach (var student in studentClasses)
+            {
+                if(participantViews.Where(x => x.UserId == student.UserId).FirstOrDefault() == null)
+                {
+                    ParticipantInfo participant = new ParticipantInfo();
+                    participant.IsPresent = false;
+                    participant.MeetingId = meetingId;
+                    participant.PresentCount = 0;
+                    participant.UserId = student.UserId;
+
+                    appDbContext.ParticipantInfos.Add(participant);
+                }
+            }
+            await appDbContext.SaveChangesAsync();
+            participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meetingId && x.UserId != userId).ToList();
+
             return Ok(participantViews);
         }
 
@@ -87,7 +106,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [Authorize(Roles = "User")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
-        public async Task<IActionResult> SubmitReview(int meetingId , int Score , string description) 
+        public IActionResult SubmitReview(int meetingId , int Score , string description) 
         {
             //After finished meeting Student can Submit a review
             return Ok();

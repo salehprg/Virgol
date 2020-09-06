@@ -380,7 +380,7 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
-                //await userManager.DeleteAsync(newSchool);
+                Console.WriteLine(ex.Message);
                 return BadRequest("خطای سیستمی رخ داد لطفا بعدا تلاش نمایید");
             }
         }

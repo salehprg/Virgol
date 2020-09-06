@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {menu, x} from "../../../assets/icons";
+import {logo, menu, x} from "../../../assets/icons";
 
 
 const   Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, children }) => {
@@ -51,7 +51,7 @@ const   Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, child
                 logoTitle == 1 ?
                 <img src={`${process.env.PUBLIC_URL}/icons/RD.png`} /> 
                 : 
-                <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">{title}</h1>
+                <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">{logo('w-16 mb-3 text-purplish mx-auto')}</h1>
             }
 
             <div className="w-full mt-10">

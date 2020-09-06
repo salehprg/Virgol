@@ -56,11 +56,12 @@ class Schedule extends React.Component {
 
         this.setState({lessons : lessons})
 
-        this.sc.current.scrollLeft = this.sc.current.clientWidth
+        
     }
 
     componentDidMount() {
         this.handleLessonLayout()
+        this.sc.current.scrollLeft = this.sc.current.clientWidth
         
     }   
 

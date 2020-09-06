@@ -699,6 +699,7 @@ namespace lms_with_moodle.Helper
             }
             catch (System.Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return null;
                 throw;
             }

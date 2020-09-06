@@ -36,6 +36,7 @@ namespace lms_with_moodle.Helper
 
         //BBB Configuration Setting
         public static string BBBBaseUrl { get; set; }
+        public static string BBBCallBackUrl { get; set; }
         public static string BBBSecret { get; set; }
         //------------------------
 
@@ -45,7 +46,7 @@ namespace lms_with_moodle.Helper
             return string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n{12}\n{13}\n{14}" ,
                                     moddleCourseUrl , BaseUrl_moodle , Token_moodle ,
                                     FarazAPI_URL , FarazAPI_SendNumber , FarazAPI_Username , FarazAPI_Password , FarazAPI_ApiKey ,
-                                    BBBBaseUrl , BBBBaseUrl , JWTSecret , LDAPServer , LDAPPort , LDAPUserAdmin , LDAPPassword);
+                                    BBBBaseUrl , BBBSecret , JWTSecret , LDAPServer , LDAPPort , LDAPUserAdmin , LDAPPassword);
         }
 
     }
