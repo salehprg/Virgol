@@ -79,10 +79,10 @@ class Students extends React.Component {
     }
 
     deleteStudent = async () => {
-        const data = [this.state.studentId]
+        const data = this.state.selected
 
         await this.props.DeleteStudents(this.props.user.token , data)
-        this.setState({showDeleteModal : false , studentId : 0})
+        this.setState({showDeleteModal : false , selected : []})
     }
 
     submitExcel = async (excel) => {

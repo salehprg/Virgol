@@ -57,9 +57,13 @@ public class MeetingService {
     {
         string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
 
+        Console.WriteLine(callBackUrl);
+
         if(meeting.Private)
         {
             UserModel user = appDbContext.Users.Where(x => x.Id == meeting.TeacherId).FirstOrDefault();
+
+            Console.WriteLine("Private");
 
             callBackUrl = AppSettings.ServerRootUrl ;
             if(user.userTypeId == (int)UserType.Teacher)
@@ -75,16 +79,21 @@ public class MeetingService {
         BBBApi bbbApi = new BBBApi();
         MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , meeting.Id.ToString() , callBackUrl , (int)duration);
 
+        Console.WriteLine(response.returncode);
+
         if(response.returncode != "FAILED" && !meeting.Private)
         {
             meeting.BBB_MeetingId = meeting.Id.ToString();
             appDbContext.Meetings.Update(meeting);
             await appDbContext.SaveChangesAsync();
-        
+
+             Console.WriteLine("True Non-Private");
+
             return true;
         }
         else if(response.returncode != "FAILED" && meeting.Private)
         {
+            Console.WriteLine("True Private");
             return true;
         }
 
@@ -94,17 +103,22 @@ public class MeetingService {
     {
         Meeting meeting = await CreateInDb(classSchedule , teacherId);
 
+        Console.WriteLine(meeting.Id);
+
         DateTime timeNow = MyDateTime.Now();
         float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
         float duration = (classSchedule.EndHour - currentTime) * 60;
 
         bool result = await CreateRoom(meeting , duration);
 
+        Console.WriteLine("room :" + result );
+
         if(result)
         {
+            Console.WriteLine("Succeed !");
             return meeting;
         }
-
+        
         appDbContext.Remove(meeting);
         await appDbContext.SaveChangesAsync();
 
@@ -238,6 +252,8 @@ public class MeetingService {
     public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId)
     {   
         Meeting meeting = await StartMeeting(classSchedule , teacherId);
+
+        Console.WriteLine(meeting != null);
 
         if(meeting != null)
         {
