@@ -9,8 +9,8 @@ IMAGE_TAG=${3:-latest}
 TAG_REVISION=0
 
 git pull origin Beta
-git checkout -b origin/Beta
-# git checkout -b origin/master
+git checkout origin/Beta
+# git checkout origin/master
 docker login
 docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG .
 docker tag  $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG  $IMAGE_ACCOUNT/$IMAGE_REPO:latest
