@@ -51,4 +51,4 @@ docker run \
     -e "VIRGOL_LDAP_PORT=389" \
     -e "VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir" \
     -e "VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24" \
-    -d $IMAGE_ACCOUNT/$IMAGE_REPO:1.3.5
+    -d $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
