@@ -8,7 +8,7 @@ IMAGE_REPO=${2:-virgol}
 IMAGE_TAG=${3:-latest}
 TAG_REVISION=0
 
-git pull
+git pull origin Beta
 git checkout -b origin/Beta
 # git checkout -b origin/master
 docker login
