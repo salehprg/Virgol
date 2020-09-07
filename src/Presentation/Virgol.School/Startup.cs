@@ -196,7 +196,7 @@ namespace lms_with_moodle
             });
 
 
-            if (!env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -224,7 +224,7 @@ namespace lms_with_moodle
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (!env.IsDevelopment())
+                if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
