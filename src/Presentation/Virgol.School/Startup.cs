@@ -55,29 +55,35 @@ namespace lms_with_moodle
 
             if(!environment.IsDevelopment())
             {
-                string host = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_HOST");
-                string name = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_NAME");
-                string userName = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_USER");
-                string password = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_PASSWORD");
+                IConfigurationSection section = Configuration.GetSection("AppSettings");
 
-                conStr = string.Format("Server={0};Database={1};Username={2};Password={3}" , host , name , userName ,password);
+                section.Get<AppSettings>();
                 
-                AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
-                AppSettings.moddleCourseUrl = Environment.GetEnvironmentVariable("VIRGOL_MODDLE_COURSE_URL");
-                AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
-                AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
-                AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
-                AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
-                AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");
-                AppSettings.FarazAPI_Password = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_PASSWORD");
-                AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
-                AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
-                AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
-                AppSettings.LDAPServer = Environment.GetEnvironmentVariable("VIRGOL_LDAP_SERVER");
-                AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));
-                AppSettings.LDAPUserAdmin = Environment.GetEnvironmentVariable("VIRGOL_LDAP_USER_ADMIN");
-                AppSettings.LDAPPassword = Environment.GetEnvironmentVariable("VIRGOL_LDAP_PASSWORD");
-                AppSettings.ServerRootUrl = Environment.GetEnvironmentVariable("VIRGOL_SERVER_ROOT_URL");
+                conStr = Configuration.GetConnectionString("PublishConnection_PS");
+
+                // string host = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_HOST");
+                // string name = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_NAME");
+                // string userName = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_USER");
+                // string password = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_PASSWORD");
+
+                // conStr = string.Format("Server={0};Database={1};Username={2};Password={3}" , host , name , userName ,password);
+                
+                // AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
+                // AppSettings.moddleCourseUrl = Environment.GetEnvironmentVariable("VIRGOL_MODDLE_COURSE_URL");
+                // AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
+                // AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
+                // AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
+                // AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
+                // AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");
+                // AppSettings.FarazAPI_Password = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_PASSWORD");
+                // AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
+                // AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
+                // AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
+                // AppSettings.LDAPServer = Environment.GetEnvironmentVariable("VIRGOL_LDAP_SERVER");
+                // AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));
+                // AppSettings.LDAPUserAdmin = Environment.GetEnvironmentVariable("VIRGOL_LDAP_USER_ADMIN");
+                // AppSettings.LDAPPassword = Environment.GetEnvironmentVariable("VIRGOL_LDAP_PASSWORD");
+                // AppSettings.ServerRootUrl = Environment.GetEnvironmentVariable("VIRGOL_SERVER_ROOT_URL");
 
             }
             else
