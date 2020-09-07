@@ -152,8 +152,12 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
+                Console.WriteLine(teacherId);
+
                 ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
                 
+                Console.WriteLine(classSchedule.Id);
+
                 bool mixed = (classSchedule.MixedId != 0 ? true : false); // if Teacher start mixed class
 
                 if(mixed)//if Teacher start Mixed Meeting
@@ -161,6 +165,7 @@ namespace lms_with_moodle.Controllers
                     int parentId = await MeetingService.StartSingleMeeting(classSchedule , teacherId);
                     List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
 
+                    Console.WriteLine("Get mixed");
                     foreach (var schedule in mixedSchedules)
                     {
                         await MeetingService.StartMixedMeeting(schedule , teacherId , parentId);
@@ -168,13 +173,18 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    await MeetingService.StartSingleMeeting(classSchedule , teacherId);
+                    Console.WriteLine("Start Single");
+                    int meetingId = await MeetingService.StartSingleMeeting(classSchedule , teacherId);
+                    Console.WriteLine("mId = " + meetingId);
                 }
 
                 return Ok(true);
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

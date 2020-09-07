@@ -136,8 +136,10 @@ namespace lms_with_moodle.Helper
 
                 string _response = await sendData(data);
 
-                var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
+                Console.WriteLine(_response);
 
+                var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
+                
                 return meetingsInfo;
             }
             catch(Exception ex)
