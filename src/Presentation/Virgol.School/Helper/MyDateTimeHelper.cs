@@ -14,8 +14,14 @@ public class MyDateTime {
         result = result.AddHours(Hour);
         result = result.AddMinutes(Minute);
 
-        Console.WriteLine("UTC Now = " + DateTime.UtcNow);
-        Console.WriteLine("Date Now = " + DateTime.Now.Date);
+        string devStatus = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+        Console.WriteLine(devStatus);
+
+        if(devStatus == "Development")
+        {
+            result = DateTime.Now;
+        }
         
         return result;
     }

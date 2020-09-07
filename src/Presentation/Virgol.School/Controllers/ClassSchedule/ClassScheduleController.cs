@@ -225,7 +225,7 @@ namespace lms_with_moodle.Controllers
                             await moodleApi.setCourseVisible(lessonMoodle_Id , true);
                             return Ok(scheduleView);
                         }
-
+                        
                         return BadRequest("افزودن ساعت با مشکل مواجه لطفا بعدا تلاش نمایدد");
                     }
                     else
