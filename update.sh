@@ -18,7 +18,7 @@ docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
 docker stop $IMAGE_REPO
 docker rm $IMAGE_REPO
 docker run \
-    -p 5001:80 \
+    -p 8086:80 \
     -v VirgolExcels:/app/BulkData \
     --restart=always \
     --name=$IMAGE_REPO \
