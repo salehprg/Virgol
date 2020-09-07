@@ -12,9 +12,9 @@ IMAGE_REPO=${3:-virgol}
 IMAGE_TAG=${1:-latest}
 TAG_REVISION=0
 
-git pull origin Beta
-git checkout origin/Beta
-# git checkout origin/master
+sudo git pull origin Beta
+sudo git checkout origin/Beta
+#sudo git checkout origin/master
 
 docker login
 docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG .
