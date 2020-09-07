@@ -1,3 +1,7 @@
+# bash update.sh  1.3.6
+
+# sudo chown -R tiger:tiger lms-with-moodle
+
 # build options
 # BUILD_REVISION=`git rev-parse --short HEAD`
 # BUILD_DIR_BASE=`git rev-parse --git-dir`/..
@@ -11,6 +15,7 @@ TAG_REVISION=0
 git pull origin Beta
 git checkout origin/Beta
 # git checkout origin/master
+
 docker login
 docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG .
 docker tag  $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG  $IMAGE_ACCOUNT/$IMAGE_REPO:latest
