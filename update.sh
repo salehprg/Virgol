@@ -1,7 +1,8 @@
 # sudo chown -R tiger:tiger lms-with-moodle
 git pull
+# git config --global user.email "hamid.najafi@legace.ir"
 # git config --global user.name 'Hamid Najafi'
-# git config --global user.password 'Password'
+
 docker build -t goldenstarc/virgol:1.2.0 .
 docker stop virgol_1.2.0
 docker rm virgol_1.2.0
