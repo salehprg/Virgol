@@ -3,9 +3,9 @@
 # BUILD_DIR_BASE=`git rev-parse --git-dir`/..
 # BUILD_VERSION?=
 # BUILD_IMAGE=0
-IMAGE_ACCOUNT=${1:-goldenstarc}
-IMAGE_REPO=${2:-virgol}
-IMAGE_TAG=${3:-latest}
+IMAGE_ACCOUNT=${2:-goldenstarc}
+IMAGE_REPO=${3:-virgol}
+IMAGE_TAG=${1:-latest}
 TAG_REVISION=0
 
 git pull origin Beta
