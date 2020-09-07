@@ -7,13 +7,14 @@
 # BUILD_DIR_BASE=`git rev-parse --git-dir`/..
 # BUILD_VERSION?=
 # BUILD_IMAGE=0
-IMAGE_ACCOUNT=${2:-goldenstarc}
-IMAGE_REPO=${3:-virgol}
 IMAGE_TAG=${1:-latest}
+GIT_BRANCH=${2:-Beta}
+IMAGE_ACCOUNT=${3:-goldenstarc}
+IMAGE_REPO=${4:-virgol}
 TAG_REVISION=0
 
-sudo git pull origin Beta
-sudo git checkout origin/Beta
+sudo git pull origin $GIT_BRANCH
+sudo git checkout origin/$GIT_BRANCH
 #sudo git checkout origin/master
 
 docker login
