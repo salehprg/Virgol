@@ -37,7 +37,7 @@ class Tracker extends React.Component {
             {
                 (classs.map(lesson => {
                     schedules.push({i: 'l' + lesson.id , name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: index + 1, w: (lesson.endHour - lesson.startHour) * 2,
+                    c: `bg-${getColor(lesson.id)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: index + 1, w: (lesson.endHour - lesson.startHour) * 2,
                     h: 1 , lessonDetail : lesson , static: true})
                 }))
             }
