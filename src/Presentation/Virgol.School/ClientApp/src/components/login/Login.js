@@ -167,7 +167,7 @@ class Login extends React.Component {
                 <div className="w-full max-w-350 mx-auto">
                     <div className="text-center mb-8">
                         {logo('w-16 mb-3 text-purplish mx-auto')}
-                        <span className="text-xl text-white">ورود به سامانه ویرگول</span>
+                        <span className="text-xl text-white">ورود به سامانه ویرگول بتا</span>
                     </div>
                     <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
                         {this.renderPanel()}
