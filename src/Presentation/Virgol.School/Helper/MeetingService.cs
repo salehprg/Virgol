@@ -53,7 +53,7 @@ public class MeetingService {
             return null;
         }
     }
-    private async Task<bool> CreateRoom(Meeting meeting , float duration)
+    private async Task<bool> CreateRoom(Meeting meeting , float duration , string bbbMeetingId = "")
     {
         string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
 
@@ -68,16 +68,16 @@ public class MeetingService {
             callBackUrl = AppSettings.ServerRootUrl ;
             if(user.userTypeId == (int)UserType.Teacher)
             {
-                callBackUrl = "/t/dashboard";
+                callBackUrl += "/t/dashboard";
             }
             else if(user.userTypeId == (int)UserType.Manager)
             {
-                callBackUrl = "/m/dashboard";
+                callBackUrl += "/m/dashboard";
             }
         }
 
         BBBApi bbbApi = new BBBApi();
-        MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , meeting.Id.ToString() , callBackUrl , (int)duration);
+        MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , (bbbMeetingId == "" ? meeting.Id.ToString() : bbbMeetingId) , callBackUrl , (int)duration);
 
         Console.WriteLine(response.returncode);
 
@@ -239,7 +239,7 @@ public class MeetingService {
         appDbContext.Meetings.Add(meeting);
         appDbContext.SaveChanges();
 
-        await CreateRoom(meeting , 0);
+        await CreateRoom(meeting , 0 , meeting.BBB_MeetingId);
 
         if(meeting != null)
         {
@@ -275,26 +275,24 @@ public class MeetingService {
 
         return (meeting != null ? meeting.Id : -1);
     }
-    public async Task<string> JoinMeeting(UserModel user , string meetingId)
+    public async Task<string> JoinMeeting(UserModel user , string bbbMeetingId , bool privatee = false)
     {
         int userId = user.Id;
-        bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
-        Meeting meeting;
-        if(isTeacher)
+        Meeting meeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).FirstOrDefault();
+
+        if(meeting != null)
         {
-            meeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == meetingId && x.TeacherId == userId).FirstOrDefault();
+            meeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).FirstOrDefault();
         }
-        else
-        {
-            meeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == meetingId).FirstOrDefault();
-        }
+
+        bool isModerator = user.Id == meeting.TeacherId;
 
         if(meeting == null)
             return null;
 
         BBBApi bbbApi = new BBBApi();
-        string classUrl = await bbbApi.JoinRoom(isTeacher , meeting.BBB_MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
+        string classUrl = await bbbApi.JoinRoom(isModerator , meeting.BBB_MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
 
         if(classUrl != null)
         {

@@ -16,11 +16,11 @@ public class MeetingView {
     ///<summary>
     ///Get dayType from DayType class
     ///</summary>
-    public int DayType {get; set;}
-    public int ClassId {get; set;}
-    public int School_Id {get; set;}
-    public float StartHour {get; set;}
-    public float EndHour {get; set;}
+    public int? DayType {get; set;}
+    public int? ClassId {get; set;}
+    public int? School_Id {get; set;}
+    public float? StartHour {get; set;}
+    public float? EndHour {get; set;}
     public string FirstName {get; set;}
     public string LastName {get; set;}
     public string OrgLessonName {get; set;}

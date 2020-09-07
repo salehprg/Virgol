@@ -329,24 +329,24 @@ namespace lms_with_moodle.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public object CheckInteruptSchedule(Class_WeeklySchedule classSchedule)
         {
-            int classIntruptCount = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId &&
+            List<Class_WeeklySchedule> classInterupts = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId &&
                                                                                 x.DayType == classSchedule.DayType && //Check same day
                                                                                 ((x.StartHour >= classSchedule.StartHour && x.StartHour < classSchedule.EndHour) || // Check oldClass Start time between new class Time
                                                                                     (x.StartHour <= classSchedule.StartHour && x.EndHour > classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
-                    ).Count();
+                    ).ToList();
 
-            if(classIntruptCount > 0)
+            if(classInterupts.Count > 0 && classInterupts.Where(x => x.weekly == classSchedule.weekly || x.weekly == 0).FirstOrDefault() != null)
             {
                 return "ساعت ایجاد شده با درس دیگر تداخل دارد";
             }
             else
             {
-                int teacherIntruptCount = appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == classSchedule.TeacherId &&
+                List<Class_WeeklySchedule> teacherIntrupts = appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == classSchedule.TeacherId &&
                                                                         x.DayType == classSchedule.DayType && //Check same day
                                                                         ((x.StartHour >= classSchedule.StartHour && x.StartHour < classSchedule.EndHour) || // Check oldClass Start time between new class Time
                                                                             (x.StartHour <= classSchedule.StartHour && x.EndHour > classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
-                ).Count();
-                if(teacherIntruptCount > 0)
+                ).ToList();
+                if(teacherIntrupts.Count > 0 && teacherIntrupts.Where(x => x.weekly == classSchedule.weekly || x.weekly == 0).FirstOrDefault() != null)
                 {
                     return "ساعت ایجاد شده با درس دیگر این معلم تداخل دارد";
                 }

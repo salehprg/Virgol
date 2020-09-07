@@ -63,7 +63,7 @@ namespace lms_with_moodle.Controllers
             int userId = appDbContext.Users.Where(x => x.MelliCode == userName).FirstOrDefault().Id;
 
             List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meetingId && x.UserId != userId).ToList();
-            int classId = appDbContext.MeetingViews.Where(x => x.Id == meetingId).FirstOrDefault().ClassId;
+            int? classId = appDbContext.MeetingViews.Where(x => x.Id == meetingId).FirstOrDefault().ClassId;
             
             List<School_studentClass> studentClasses = appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
 
@@ -116,7 +116,7 @@ namespace lms_with_moodle.Controllers
 
 #region Meeting
 
-        [HttpPost]
+        [HttpPut]
         [Authorize(Roles = "Teacher,Manager,Admin")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> CreatePrivateRoom(string roomName) 
@@ -141,6 +141,35 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Teacher,Manager,Admin")]
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public async Task<IActionResult> JoinPrivateRoom(string roomGUID) 
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+
+                Meeting meeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == roomGUID).FirstOrDefault();
+
+                if(meeting != null)
+                {
+                    string url = await MeetingService.JoinMeeting(user , meeting.BBB_MeetingId , true);
+
+                    if(url != null)
+                    {
+                        return Ok(url);
+                    }
+                }
+
+                return BadRequest("کلاس مورد نظر وجود ندارد");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
         [Authorize(Roles = "Teacher")]
@@ -381,13 +410,12 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(typeof(List<Meeting>), 200)]
         public async Task<IActionResult> GetRecordList(int meetingId) 
         {
             try
             {
-
                 BBBApi bBApi = new BBBApi();
                 List<RecordInfo> recordsResponses = (await bBApi.GetMeetingRecords(meetingId.ToString())).recordings.recording;
                     

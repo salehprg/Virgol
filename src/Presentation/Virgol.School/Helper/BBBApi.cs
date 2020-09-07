@@ -103,7 +103,7 @@ namespace lms_with_moodle.Helper
         {
             try
             {
-                string FunctionName = string.Format("getRecordings?meetingID={0}" , meetingID);
+                string FunctionName =  (meetingID != "0" ? string.Format("getRecordings?meetingID={0}" , meetingID) : "getRecordings");
                 string data = FunctionName;
 
                 string _response = await sendData(data);
@@ -131,7 +131,7 @@ namespace lms_with_moodle.Helper
                 
                 string urlEncoded = WebUtility.UrlEncode(callbackUrl);
 
-                string FunctionName = string.Format("create?attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}&duration={2}&logoutURL={3}" , name , meetingId , duration.ToString(), urlEncoded );
+                string FunctionName = string.Format("create?allowStartStopRecording=true&record=true&attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}&duration={2}&logoutURL={3}" , name , meetingId , duration.ToString(), urlEncoded );
                 string data = FunctionName;
 
                 string _response = await sendData(data);

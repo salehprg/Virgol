@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 public class PlayBack
 {
-    [JsonConverter(typeof(SingleValueArrayConverter<AttendeeInfo>))]
+    [JsonConverter(typeof(SingleValueArrayConverter<FormatInfo>))]
     public List<FormatInfo> format { get; set; }
 }
 public class RecordInfo {
