@@ -7,9 +7,10 @@ import SidebarCard from "../sidebar/SidebarCard";
 import {layout , bell , open_book} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
-import Classes from "./classes/Classes";
+import Classes from "./classes/ClassSchedule";
 import News from "./News";
 import MyNews from "./News/News";
+import ClassList from "./classes/ClassList";
 
 class TeacherDashboard extends React.Component {
 
@@ -64,8 +65,15 @@ class TeacherDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
-                        code="classes"
+                        code="schedule"
                         title="برنامه درسی"
+                        icon={bell}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="classes"
+                        title="کلاس ها"
                         icon={bell}
                         changeActive={this.changeActive}
                     />
@@ -90,7 +98,8 @@ class TeacherDashboard extends React.Component {
 
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
-                        <Route path={this.props.match.url + "/classes"} component={Classes}/>
+                        <Route path={this.props.match.url + "/schedule"} component={Classes}/>
+                        <Route path={this.props.match.url + "/classes"} component={ClassList}/>
                         {/*<Route path={this.props.match.url + "/news"} component={News}/>*/}
                         <Route path={this.props.match.url + "/myNews"} component={MyNews}/>
                         <Redirect to="/404" />

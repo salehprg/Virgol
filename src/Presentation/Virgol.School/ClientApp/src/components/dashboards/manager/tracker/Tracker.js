@@ -93,7 +93,7 @@ class Tracker extends React.Component {
                         <GridLayout className="layout" layout={layout} cols={34} rowHeight={50} width={1800}>
                             {layout.map(x => {
                                 return (
-                                    <div onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
+                                    <div onClick={() => this.showLessonInfo(x.i)} className={`pointer overflow-hidden border border-white text-center text-white ${x.c}`} key={x.i}>
                                         <p className="text-center">{x.name}</p>
                                     </div>
                                 );

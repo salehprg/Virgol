@@ -32,6 +32,7 @@ import TeacherNewsInfo from './dashboards/Teacher/News/NewsInfo';
 import MeetingResponse from './MeetingResponse/MeetingResponse';
 import ParticipantList from './MeetingResponse/ParticipantList';
 import SessionInfo from "./dashboards/Teacher/classes/SessionInfo";
+import RecorededSession from './dashboards/recordedSessions/RecordedSessions';
 
 class App extends React.Component {
 
@@ -72,6 +73,8 @@ class App extends React.Component {
                         
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
+
+                        <Route path="/recordedSessions/:id" component={RecorededSession} />
 
                         <Route path="/t" component={TeacherDashboard} />
                         <Route path="/addNewsTeacher" component={AddNewsTeacher} />

@@ -52,52 +52,7 @@ class ParticipantList extends React.Component {
             <div className="w-screen min-h-screen py-16 lg:px-10 px-1 relative bg-bold-blue ">
                 {(this.state.participants ? 
                     <>
-                        <PlusTable
-                            title="لیست حضور و غیاب افراد شرکت کننده کلاس درس"
-                            isLoading={this.state.loading}
-                            query={this.state.query}
-                            changeQuery={this.changeQuery}
-                            button={() => null}
-                            headers={['نام نام خانوادگی' , 'میانگین زمان حضور' ,'مدت زمان جلسه' , 'وضعیت']}
-                            body={() => {
-                                return (
-                                    <React.Fragment>
-                                        {
-                                            this.state.participants.map(x => {
-                                                return(
-                                                <tr key={x.id}>
-                                                    <td className="py-4">{x.firstName} {x.lastName}</td>
-                                                    <td className="py-4">{x.presentCount * 5} دقیقه</td>
-                                                    <td className="py-4">{x.checkCount * 5} دقیقه</td>
-                                                    <td className="py-4">{
-                                                        <div style={{direction : "rtl"}} className="text-white">
-                                                            <input 
-                                                                type="radio" 
-                                                                value="Present" 
-                                                                name={x.id + ''}
-                                                                checked={x.isPresent}
-                                                                onChange={(e) => this.handleStatusChanged(x.id , true , e)}
-                                                            /> حاضر
-                                
-                                                            <input 
-                                                                className="mr-4" 
-                                                                checked={!x.isPresent}
-                                                                onChange={(e) => this.handleStatusChanged(x.id , false , e)} 
-                                                                type="radio" 
-                                                                value="Absent" 
-                                                                name={x.id + ''} 
-                                                            /> غایب
-                                                        </div>
-                                                    }</td>
-                                                </tr>
-                                                )
-                                            })
-                                            
-                                        }
-                                    </React.Fragment>
-                                );
-                            }}
-                        />
+                        
                         <button onClick={(e) => this.handleSubmit(e)} className="text-white bg-greenish w-40 rounded-full">ثبت</button>
                     </>
                 : null )}

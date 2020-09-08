@@ -4,7 +4,7 @@ import {getTeacherSchedule } from '../../../../_actions/classScheduleActions'
 import { connect } from 'react-redux';
 import { loading } from '../../../../assets/icons'
 
-class Classes extends React.Component {
+class ClassSchedule extends React.Component {
 
     state = { loading: false , finished : true }
     sc = createRef()
@@ -44,4 +44,4 @@ const mapStateToProps = state => {
     return {user : state.auth.userInfo  , schedules : state.schedules.classSchedules , recentClass2 : state.meetingData.recentClass}
 }
 
-export default connect(mapStateToProps , {getTeacherSchedule })(Classes);
+export default connect(mapStateToProps , {getTeacherSchedule })(ClassSchedule);
