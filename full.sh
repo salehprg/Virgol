@@ -26,7 +26,7 @@ docker rm $IMAGE_REPO
 docker run \
     -p 8086:80 \
     -v VirgolExcels:/app/BulkData \
-    --restart=always \
+    --restart=on-failure \
     --name=$IMAGE_REPO \
     -e "ASPNETCORE_URLS=http://+" \
     -e "ASPNETCORE_ENVIRONMENT=Production" \
