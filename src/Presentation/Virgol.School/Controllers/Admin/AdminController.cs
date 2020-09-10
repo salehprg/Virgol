@@ -24,7 +24,6 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
-using static SchoolDataHelper;
 using ExcelDataReader;
 using Newtonsoft.Json;
 using Models.Users.Teacher;

@@ -40,6 +40,7 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
 
         MoodleApi moodleApi;
+        SchoolService schoolService;
         LDAP_db ldap;
         FarazSmsApi SMSApi;
         MyUserManager myUserManager;
@@ -57,6 +58,7 @@ namespace lms_with_moodle.Controllers
             SMSApi = new FarazSmsApi();
             ldap = new LDAP_db(appDbContext);
             myUserManager = new MyUserManager(userManager , appDbContext);
+            schoolService = new SchoolService(appDbContext);
         }
 
         [HttpGet]
@@ -264,7 +266,7 @@ namespace lms_with_moodle.Controllers
                 if(appDbContext.Schools.Where(x => x.SchoolType == schoolType).Count() >= adminDetail.SchoolLimit)
                     return BadRequest("شما حداکثر تعداد مدارس خود را ثبت کردید");
 
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
+                
 
                 bool melliCodeInterupt = myUserManager.CheckMelliCodeInterupt(inputData.MelliCode , 0);
                 bool phoneInterupt = myUserManager.CheckPhoneInterupt(inputData.managerPhoneNumber);
@@ -277,7 +279,7 @@ namespace lms_with_moodle.Controllers
 
     
                 inputData.SchoolType = schoolType;
-                SchoolModel schoolResult = await schoolDataHelper.CreateSchool(inputData);
+                SchoolModel schoolResult = await schoolService.CreateSchool(inputData);
 
                 ManagerDetail managerDetail = new ManagerDetail();
                 managerDetail.personalIdNumber = ConvertToPersian.PersianToEnglish(inputData.personalIdNumber);
@@ -506,9 +508,9 @@ namespace lms_with_moodle.Controllers
                 if(result.Count == 0)
                     return BadRequest("مقطع(مقاطع) انتخاب شده تکراریست");
 
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
+                SchoolService SchoolService = new SchoolService(appDbContext);
 
-                List<School_Bases> schoolBases = await schoolDataHelper.AddBaseToSchool(result);
+                List<School_Bases> schoolBases = await SchoolService.AddBaseToSchool(result);
 
                 List<School_BasesVW> basesView = new List<School_BasesVW>();
                 foreach (var basee in appDbContext.School_Bases.Where(x => x.School_Id == inputData.schoolId).ToList())
@@ -538,9 +540,9 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
+                SchoolService SchoolService = new SchoolService(appDbContext);
 
-                School_Bases basee = await schoolDataHelper.DeleteBaseFromSchool(baseId);
+                School_Bases basee = await SchoolService.DeleteBaseFromSchool(baseId);
 
                 return Ok(baseId);
 
@@ -643,7 +645,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
+                SchoolService SchoolService = new SchoolService(appDbContext);
 
                 List<School_StudyFields> result = new List<School_StudyFields>();
 
@@ -664,7 +666,7 @@ namespace lms_with_moodle.Controllers
                 if(result.Count == 0)
                     return BadRequest("رشته(های) انتخاب شده تکراریست");
 
-                List<School_StudyFields> schoolStudies = await schoolDataHelper.AddStudyFieldToSchool(result);
+                List<School_StudyFields> schoolStudies = await SchoolService.AddStudyFieldToSchool(result);
 
                 List<School_StudyFieldsVW> studies = new List<School_StudyFieldsVW>();
 
@@ -702,9 +704,9 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
+                SchoolService SchoolService = new SchoolService(appDbContext);
 
-                School_StudyFields studyField = await schoolDataHelper.DeleteStudyFieldFromSchool(studyFId);
+                School_StudyFields studyField = await SchoolService.DeleteStudyFieldFromSchool(studyFId);
                 
                 return Ok(studyFId);
 
@@ -896,62 +898,8 @@ namespace lms_with_moodle.Controllers
                 else
                 {
                     school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
-                }
-
-                School_Grades gradeModel = appDbContext.School_Grades.Where(x => x.Grade_Id == classModel.gradeId && x.School_Id == school.Id).FirstOrDefault();
-
-                int grade_moodleId = gradeModel.Moodle_Id;
-
-                int classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , grade_moodleId);
-                if(classMoodleId != -1)
-                {
-                    List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeModel.Grade_Id).ToList();
-                    List<School_Lessons> schoolLessons = new List<School_Lessons>();
-
-                    School_Class schoolClass = new School_Class();
-                    schoolClass.ClassName = classModel.ClassName;
-                    schoolClass.Grade_Id = gradeModel.Grade_Id;
-                    schoolClass.Grade_MoodleId = grade_moodleId;
-                    schoolClass.Moodle_Id = classMoodleId;
-                    schoolClass.School_Id = school.Id;
-
-                    appDbContext.School_Classes.Add(schoolClass);
-                    appDbContext.SaveChanges();
-
-                    schoolClass.Id = appDbContext.School_Classes.OrderByDescending(x => x.Id).FirstOrDefault().Id;
-
-                    foreach (var lesson in lessons)
-                    {
-                        int moodleId = await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + classMoodleId + ")", lesson.LessonName + " (" + school.SchoolName + "-" + classModel.ClassName + ")" , classMoodleId);
-
-                        School_Lessons schoolLesson = new School_Lessons();
-                        schoolLesson.Lesson_Id = lesson.Id;
-                        schoolLesson.Moodle_Id = moodleId;
-                        schoolLesson.School_Id = schoolId;
-                        schoolLesson.classId = schoolClass.Id;
-
-                        schoolLessons.Add(schoolLesson);
-                    }
                     
-                    appDbContext.School_Lessons.AddRange(schoolLessons);
-                    appDbContext.SaveChanges();
-
-                    int managerMoodleId = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault().Moodle_Id;
-                    
-                    List<EnrolUser> enrolsManager = new List<EnrolUser>();
-                    foreach (var lesson in schoolLessons)
-                    {
-                        EnrolUser enrol = new EnrolUser();
-                        enrol.lessonId = lesson.Moodle_Id;
-                        enrol.UserId = managerMoodleId;
-                        enrol.RoleId = 3;
-
-                        enrolsManager.Add(enrol);
-                    }
-
-                    await moodleApi.AssignUsersToCourse(enrolsManager);
-
-                    schoolClass.Id = appDbContext.School_Classes.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+                    School_Class schoolClass = await schoolService.AddClass(classModel , school);
 
                     return Ok(schoolClass);
                 }
@@ -1055,7 +1003,7 @@ namespace lms_with_moodle.Controllers
                 {
                     try
                     {
-                        SchoolDataHelper schoolDataHelper = new SchoolDataHelper(appDbContext);
+                        SchoolService SchoolService = new SchoolService(appDbContext);
                         UserModel user = appDbContext.Users.Where(x => x.UserName == schoolData.MelliCode).FirstOrDefault();
                         bool duplicateManager = (user != null);
 
@@ -1063,7 +1011,7 @@ namespace lms_with_moodle.Controllers
                         {
                             schoolData.SchoolType = schoolType;
 
-                            SchoolModel schoolResult = await schoolDataHelper.CreateSchool(schoolData);
+                            SchoolModel schoolResult = await SchoolService.CreateSchool(schoolData);
                             
                             UserModel manager = new UserModel();
                             manager.FirstName = schoolData.FirstName;

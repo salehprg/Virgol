@@ -6,6 +6,7 @@ export const StartMeeting = 'StartMeeting';
 export const JoinMeeting = 'JoinMeeting';
 export const EndMeeting = 'EndMeeting';
 export const GetParticipantList = 'GetParticipantList';
+export const GetRecordList = 'GetRecordList';
 
 //#region Manager
 export const GetAllActiveMeeting = 'GetAllActiveMeeting';

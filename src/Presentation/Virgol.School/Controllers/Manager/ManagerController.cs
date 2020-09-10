@@ -34,6 +34,7 @@ namespace lms_with_moodle.Controllers
 
         MoodleApi moodleApi;
         MyUserManager myUserManager;
+        ManagerService managerService;
         LDAP_db ldap;
         
         public ManagerController(UserManager<UserModel> _userManager 
@@ -52,6 +53,7 @@ namespace lms_with_moodle.Controllers
             ldap = new LDAP_db(appDbContext);
 
             myUserManager = new MyUserManager(userManager , appDbContext);
+            managerService = new ManagerService(appDbContext);
 
             
         }
@@ -855,24 +857,16 @@ namespace lms_with_moodle.Controllers
             {   
                 int schoolId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().School_Id;
 
-                List<UserDataModel> userModels = new List<UserDataModel>();
                 List<UserModel> result = new List<UserModel>();
-                BulkData data = new BulkData();
 
                 foreach(var studentId in studentIds)
                 {
                     UserModel studentModel = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
 
-                    var serialized = JsonConvert.SerializeObject(studentModel);
-                    UserDataModel dataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
-
-                    dataModel.studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == studentId).FirstOrDefault();
-                    
-                    userModels.Add(dataModel);
                     result.Add(studentModel);
                 }
 
-                await AssignUsersToClass(result , classId);
+                await managerService.AssignUsersToClass(result , classId);
 
                 return Ok(result);
             }
@@ -913,7 +907,7 @@ namespace lms_with_moodle.Controllers
                     userModels.Add(userModel);
                 }
 
-                await AssignUsersToClass(userModels , classId);
+                await managerService.AssignUsersToClass(userModels , classId);
 
                 return Ok(data);
             }
@@ -1168,57 +1162,6 @@ namespace lms_with_moodle.Controllers
             }
         }
         
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<bool> AssignUsersToClass(List<UserModel> userModels , int classId)
-        {
-            School_Class classModel = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
-            int classMoodleId = classModel.Moodle_Id;
-
-            List<School_studentClass> studentClasses = new List<School_studentClass>();
-            List<School_studentClass> duplicateStudentClass = new List<School_studentClass>();
-            List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
-            List<EnrolUser> enrolsData = new List<EnrolUser>();
-
-            foreach (var user in userModels)
-            {
-                
-                UserModel student = appDbContext.Users.Where(x => x.MelliCode == user.MelliCode).FirstOrDefault();
-                int userid = student.Id;
-
-                School_studentClass studentClass = new School_studentClass();
-
-                studentClass.ClassId = classId;
-                studentClass.UserId = userid;
-                
-
-                School_studentClass oldStudentClass = appDbContext.School_StudentClasses.Where(x => x.UserId == userid).FirstOrDefault();
-
-                if(oldStudentClass == null)
-                {
-                    if(appDbContext.Users.Where(x => x.Id == studentClass.UserId && x.SchoolId == classModel.School_Id).FirstOrDefault() != null)
-                    {
-                        studentClasses.Add(studentClass);
-                    }
-                    foreach(var course in courses)
-                    {
-                        EnrolUser enrolInfo = new EnrolUser();
-                        enrolInfo.lessonId = course.id;
-                        enrolInfo.RoleId = 5;
-                        enrolInfo.UserId = student.Moodle_Id;
-
-                        enrolsData.Add(enrolInfo);
-                    } 
-                } 
-            }
-
-            await moodleApi.AssignUsersToCourse(enrolsData);
-
-            appDbContext.School_StudentClasses.AddRange(studentClasses);
-            appDbContext.SaveChanges();
-
-            return true;
-            
-        }
 #endregion
     }
 }

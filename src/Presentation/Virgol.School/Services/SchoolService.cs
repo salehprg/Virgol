@@ -6,11 +6,11 @@ using lms_with_moodle.Helper;
 using Microsoft.Extensions.Options;
 using Models;
 
-public class SchoolDataHelper {
+public class SchoolService {
         private readonly AppDbContext appDbContext;
 
         MoodleApi moodleApi;
-        public SchoolDataHelper(AppDbContext _appdbContext)
+        public SchoolService(AppDbContext _appdbContext)
         {
             appDbContext = _appdbContext;
 
@@ -219,6 +219,64 @@ public class SchoolDataHelper {
             
         }
         
+        public async Task<School_Class> AddClass(ClassData classModel , SchoolModel school)
+        {
+            School_Grades gradeModel = appDbContext.School_Grades.Where(x => x.Grade_Id == classModel.gradeId && x.School_Id == school.Id).FirstOrDefault();
+
+            int grade_moodleId = gradeModel.Moodle_Id;
+
+            int classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , grade_moodleId);
+            if(classMoodleId != -1)
+            {
+                List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeModel.Grade_Id).ToList();
+                List<School_Lessons> schoolLessons = new List<School_Lessons>();
+
+                School_Class schoolClass = new School_Class();
+                schoolClass.ClassName = classModel.ClassName;
+                schoolClass.Grade_Id = gradeModel.Grade_Id;
+                schoolClass.Grade_MoodleId = grade_moodleId;
+                schoolClass.Moodle_Id = classMoodleId;
+                schoolClass.School_Id = school.Id;
+
+                appDbContext.School_Classes.Add(schoolClass);
+                appDbContext.SaveChanges();
+
+                foreach (var lesson in lessons)
+                {
+                    int moodleId = await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + classMoodleId + ")", lesson.LessonName + " (" + school.SchoolName + "-" + classModel.ClassName + ")" , classMoodleId);
+
+                    School_Lessons schoolLesson = new School_Lessons();
+                    schoolLesson.Lesson_Id = lesson.Id;
+                    schoolLesson.Moodle_Id = moodleId;
+                    schoolLesson.School_Id = school.Id;
+                    schoolLesson.classId = schoolClass.Id;
+
+                    schoolLessons.Add(schoolLesson);
+                }
+                
+                appDbContext.School_Lessons.AddRange(schoolLessons);
+                appDbContext.SaveChanges();
+
+                int managerMoodleId = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault().Moodle_Id;
+                
+                List<EnrolUser> enrolsManager = new List<EnrolUser>();
+                foreach (var lesson in schoolLessons)
+                {
+                    EnrolUser enrol = new EnrolUser();
+                    enrol.lessonId = lesson.Moodle_Id;
+                    enrol.UserId = managerMoodleId;
+                    enrol.RoleId = 3;
+
+                    enrolsManager.Add(enrol);
+                }
+
+                await moodleApi.AssignUsersToCourse(enrolsManager);
+
+                return schoolClass;
+            }
+
+            return null;
+        }
 
         // public async Task<CreateSchoolResult> CreateSchool_Grade(List<int> baseIds , List<int> studyFIds , List<int> gradeIds , int SchoolMoodleId)
         // {

@@ -6,6 +6,7 @@ import * as authType from './authTypes'
 import { worker } from "./workerActions";
 import {START, STOP} from "./workerTypes";
 
+const userToken = localStorage.getItem('userToken');
 
 export const GetAllActiveMeeting = token => async dispatch => {
 
@@ -140,6 +141,31 @@ export const GetRecentClass = token => async dispatch => {
         });
 
         dispatch({ type: Type.GetRecentClass, payload: response.data })
+
+        return true
+
+    } catch (e) {
+
+        console.log(e)
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+
+        return false
+
+    }
+
+}
+
+export const GetRecordList = (scheduleId) => async dispatch => {
+
+    try {
+        
+        const response = await lms.get(`/Meeting/GetRecordList?scheduleId=${scheduleId}` , {
+            headers: {
+                authorization: `Bearer ${userToken}`
+            }
+        });
+
+        dispatch({ type: Type.GetRecordList, payload: response.data })
 
         return true
 

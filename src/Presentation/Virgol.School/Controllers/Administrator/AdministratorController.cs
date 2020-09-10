@@ -24,7 +24,7 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
-using static SchoolDataHelper;
+using static SchoolService;
 using ExcelDataReader;
 using Models.Users.Teacher;
 using Newtonsoft.Json;
@@ -40,21 +40,30 @@ namespace lms_with_moodle.Controllers
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
+        private readonly AppDbContextBackup appDbContextBackup;
+        
 
+        SchoolService schoolService;
+        ClassScheduleService scheduleService;
+        ManagerService managerService;
         MoodleApi moodleApi;
         FarazSmsApi SMSApi;
         public AdministratorController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , AppDbContext _appdbContext)
+                                , AppDbContext _appdbContext , AppDbContextBackup _appDBBackup)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             signInManager =_signinManager;
             appDbContext = _appdbContext;
+            appDbContextBackup = _appDBBackup;
 
             moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
+            schoolService = new SchoolService(appDbContext);
+            scheduleService = new ClassScheduleService(appDbContext , moodleApi);
+            managerService = new ManagerService(appDbContext);
         }
 
 #region Admin
@@ -814,7 +823,103 @@ namespace lms_with_moodle.Controllers
 
 #endregion
      
-#region Sync Data
+#region Sync Data   
+
+    public class RestoreScheduleModel
+    {
+        public int oldId {get; set;}
+        public int newId {get; set;}
+    }
+    public async Task<IActionResult> RestoreClassData(int classId)
+    {
+        try
+        {
+            School_Class school_Class = appDbContextBackup.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
+
+            List<School_studentClass> studentClasses = appDbContextBackup.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
+
+            SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == school_Class.School_Id).FirstOrDefault();
+
+            ClassData classData = new ClassData();
+            classData.ClassName = school_Class.ClassName;
+            classData.gradeId = school_Class.Grade_Id;
+            
+            
+            // //First create Class
+            School_Class newSchoolClass = await schoolService.AddClass(classData , schoolModel);
+
+            // //Add Schedules To Class
+            List<Class_WeeklySchedule> classSchedules = appDbContextBackup.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList();
+            List<RestoreScheduleModel> restoreSchedules = new List<RestoreScheduleModel>();
+
+            foreach (var schedule in classSchedules)
+            {
+                RestoreScheduleModel restoreSchedule = new RestoreScheduleModel();
+                restoreSchedule.oldId = schedule.Id;
+
+                schedule.ClassId = newSchoolClass.Id;
+                UserModel oldTeacher = appDbContext.Users.Where(x => x.Id == schedule.TeacherId).FirstOrDefault();
+
+                if(oldTeacher != null)
+                {
+                    Class_WeeklySchedule classSchedule = await scheduleService.AddClassSchedule(schedule);
+
+                    if(classSchedule != null)
+                    {
+                        restoreSchedule.newId = classSchedule.Id;
+
+                        restoreSchedules.Add(restoreSchedule);
+                    }
+                }
+            }
+
+            // //Add Students To Class
+            // List<School_studentClass> studentClasses = appDbContextBackup.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
+
+            List<UserModel> result = new List<UserModel>();
+            foreach(var student in studentClasses)
+            {
+                UserModel studentModel = appDbContext.Users.Where(x => x.Id == student.UserId).FirstOrDefault();
+
+                if(studentModel != null)
+                {
+                    result.Add(studentModel);
+                }
+            }
+
+            bool assign = await managerService.AssignUsersToClass(result , newSchoolClass.Id);
+            
+
+            // //Change MeetingId in new Database
+            // classSchedules = appDbContextBackup.ClassWeeklySchedules.Where(x => x.ClassId == classId).OrderBy(x => x.Id).ToList(); // Refresh Data
+
+            // foreach (var schedule in classSchedules)
+            // {
+            //     List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList();
+            //     foreach (var meeting in meetings)
+            //     {
+            //         RestoreScheduleModel restore = restoreSchedules.Where(x => x.oldId == meeting.ScheduleId).FirstOrDefault();
+            //         if(restore != null)
+            //         {
+            //             int newId = restore.newId;
+            //             meeting.ScheduleId = newId;
+            //         }
+            //     }
+
+            //     appDbContext.Meetings.UpdateRange(meetings);
+            // }
+
+            // await appDbContext.SaveChangesAsync(); 
+        
+            return Ok(true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.StackTrace);
+            return BadRequest(ex.Message);
+            throw;
+        }
+    }
 
     public async Task<bool> SyncUserDetails()
     {

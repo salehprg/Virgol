@@ -412,12 +412,32 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [Authorize(Roles = "User")]
         [ProducesResponseType(typeof(List<Meeting>), 200)]
-        public async Task<IActionResult> GetRecordList(int meetingId) 
+        public async Task<IActionResult> GetRecordList(int scheduleId) 
         {
             try
             {
                 BBBApi bBApi = new BBBApi();
-                List<RecordInfo> recordsResponses = (await bBApi.GetMeetingRecords(meetingId.ToString())).recordings.recording;
+                List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == scheduleId).ToList();
+
+                ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
+
+                List<RecordInfo> recordsResponses = new List<RecordInfo>();
+                
+                meetings = meetings.OrderBy(x => x.Id).ToList();
+                foreach (var meeting in meetings)
+                {
+                    List<RecordInfo> records = (await bBApi.GetMeetingRecords(meeting.BBB_MeetingId.ToString())).recordings.recording;
+                    if(records.Count > 0)
+                    {
+                        records[0].name = classSchedule.OrgLessonName;
+                        records[0].url = records[0].playback.format[0].url;
+                        records[0].date = meeting.StartTime;
+
+                        recordsResponses.AddRange(records);
+                    }
+                    
+                }
+                
                     
                 return Ok(recordsResponses);
             }

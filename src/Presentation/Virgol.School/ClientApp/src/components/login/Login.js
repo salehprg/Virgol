@@ -53,7 +53,9 @@ class Login extends React.Component {
     onLogin = async formValues => {
         if (!this.state.logingin) {
             this.setState({logingin: true})
+
             const success = await this.props.login(formValues)
+
             if (!success) this.setState({ logingin: false })
         }
     }
@@ -80,7 +82,7 @@ class Login extends React.Component {
         if (this.state.panel === 'login') {
             return (
                 <>
-                    <form className="text-center" onSubmit={this.props.handleSubmit(this.onLogin)}>
+                    <form className="text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
                         <Field
                             name="username"
                             type="text"

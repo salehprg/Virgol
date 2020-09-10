@@ -92,15 +92,21 @@ namespace lms_with_moodle
 
                 section.Get<AppSettings>();
                 
-                conStr = Configuration.GetConnectionString("DevConnection_PS");
+                conStr = Configuration.GetConnectionString("PublishConnection_PS");
             }
 
             AppSettings appSettings = new AppSettings();
 
             Console.WriteLine(appSettings.ToString());
-
+        
             services.AddDbContext<AppDbContext>(options =>{
                 options.UseNpgsql(conStr);
+            });
+
+            string backupStr = Configuration.GetConnectionString("BackupConnection");
+
+            services.AddDbContext<AppDbContextBackup>(options =>{
+                options.UseNpgsql(backupStr);
             });
 
             services.AddIdentity<UserModel , IdentityRole<int>>(

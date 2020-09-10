@@ -12,6 +12,7 @@ export const login = formValues => async dispatch => {
         dispatch({ type: Type.LOGIN, payload: response.data })
 
         localStorage.setItem('userToken', response.data.token)
+        localStorage.setItem('userPassword', formValues.password)
         localStorage.setItem('userType', response.data.userType)
 
         switch (response.data.userType) {
@@ -187,6 +188,7 @@ export const ChangePassword = (melliCode, verificationCode , newPassword) => asy
 export const SendVerifyPhoneNumber = (phoneNumber,token,IsFatherCode) => async dispatch => {
 
     try {
+        console.log(token)
         dispatch({ type: START })
         const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0&fatherCode=${IsFatherCode}` , null , {
             headers: {

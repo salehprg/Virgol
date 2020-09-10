@@ -3,7 +3,8 @@ import {LOGOUT} from "../_actions/authTypes";
 
 const INITIAL_STATE = {
     meetingDetail : null,
-    participantsList : null
+    participantsList : null,
+    recordings : null
 }
 
 export default ( state = INITIAL_STATE, action ) => {
@@ -23,7 +24,10 @@ export default ( state = INITIAL_STATE, action ) => {
             return { ...state, participantsList: action.payload}
 
         case Type.GetAllActiveMeeting:
-            return{ ...state , activeMeetings : action.payload}
+            return { ...state , activeMeetings : action.payload}
+
+        case Type.GetRecordList:
+            return { ...state , recordings : action.payload}
 
         case LOGOUT: 
             return INITIAL_STATE

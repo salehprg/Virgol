@@ -5,7 +5,10 @@ import history from "../history";
 import Alert from "./Alert";
 import {CLEAR} from "../_actions/alertTypes";
 import Working from "./Working";
+
 import Login from "./login/Login";
+import LoginSSO from "./login/LoginSSO";
+
 import AdminDashboard from "./dashboards/admin/Dashboard";
 import NoFound from "./NoFound";
 import SchoolInfo from './dashboards/admin/schools/SchoolInfo'
@@ -55,6 +58,8 @@ class App extends React.Component {
                 <Router history={history}>
                     <Switch>
                         <Route path="/" exact component={Login} />
+                        <Route path="/SSO" exact component={LoginSSO} />
+
                         <Route path="/a" component={AdminDashboard} />
                         <Route path="/addNews" component={AddNews} />
                         <Route path="/news/:id" component={NewsInfo} />

@@ -3,6 +3,7 @@ import Modal from '../../../modals/Modal';
 import history from '../../../../history';
 import DeleteConfirm from '../../../modals/DeleteConfirm';
 import { edit, external_link, trash } from '../../../../assets/icons';
+import { connect } from 'react-redux';
 
 class LessonInfoModal extends React.Component {
 
@@ -117,9 +118,29 @@ class LessonInfoModal extends React.Component {
                             null
                         )}
                         <p className="text-center text-white my-4">
-                            <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
+                            {/* <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
                                ورود به فعالیت های درسی
-                            </a>
+                            </a> */}
+                            <form className="text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
+                                <input
+                                    hidden="true"
+                                    name="username"
+                                    type="text"
+                                    placeholder="نام کاربری"
+                                    value={this.props.user.userInformation.userName}
+                                />
+                                <input
+                                    hidden="true"
+                                    name="password"
+                                    type="text"
+                                    placeholder="رمز عبور"
+                                    value={localStorage.getItem('userPassword')}
+                                />
+                                <button className="relative w-1/2 bg-greenish rounded-full cursor-pointer p-2">
+                                    ورود به فعالیت های درسی
+                                </button>
+                            </form>
+
                             {(this.props.isTeacher ?
                             <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative w-full bg-purplish rounded-full cursor-pointer p-2 mx-2">
                                 نمایش دفتر کلاسی
@@ -139,4 +160,8 @@ class LessonInfoModal extends React.Component {
 
 }
 
-export default LessonInfoModal;
+const mapStateToProps = state => {
+    return {user : state.auth.userInfo}
+}
+
+export default connect(mapStateToProps , {})(LessonInfoModal);

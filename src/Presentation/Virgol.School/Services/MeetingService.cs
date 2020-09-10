@@ -57,6 +57,7 @@ public class MeetingService {
     {
         string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
 
+        duration += 20; // add 20 minutes Additional to the end of class
         Console.WriteLine(callBackUrl);
 
         if(meeting.Private)
@@ -109,7 +110,7 @@ public class MeetingService {
         float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
         float duration = (classSchedule.EndHour - currentTime) * 60;
 
-        bool result = await CreateRoom(meeting , duration);
+        bool result = await CreateRoom(meeting , 0);
 
         Console.WriteLine("room :" + result );
 
