@@ -12,6 +12,7 @@ IMAGE_REPO=${3:-virgol}
 IMAGE_TAG=${1:-latest}
 TAG_REVISION=0
 
+sudo git stash
 sudo git pull origin Beta
 sudo git checkout origin/Beta
 #sudo git checkout origin/master
