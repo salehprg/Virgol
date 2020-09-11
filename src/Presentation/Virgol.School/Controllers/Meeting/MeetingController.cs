@@ -426,14 +426,19 @@ namespace lms_with_moodle.Controllers
                 meetings = meetings.OrderBy(x => x.Id).ToList();
                 foreach (var meeting in meetings)
                 {
-                    List<RecordInfo> records = (await bBApi.GetMeetingRecords(meeting.BBB_MeetingId.ToString())).recordings.recording;
-                    if(records.Count > 0)
-                    {
-                        records[0].name = classSchedule.OrgLessonName;
-                        records[0].url = records[0].playback.format[0].url;
-                        records[0].date = meeting.StartTime;
+                    Recordings recordings = (await bBApi.GetMeetingRecords(meeting.BBB_MeetingId.ToString())).recordings;
 
-                        recordsResponses.AddRange(records);
+                    if(recordings != null)
+                    {
+                        List<RecordInfo> records = recordings.recording;
+                        if(records.Count > 0)
+                        {
+                            records[0].name = classSchedule.OrgLessonName;
+                            records[0].url = records[0].playback.format[0].url;
+                            records[0].date = meeting.StartTime;
+
+                            recordsResponses.AddRange(records);
+                        }
                     }
                     
                 }

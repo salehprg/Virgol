@@ -39,24 +39,30 @@ class RecorededSession extends React.Component {
                     headers={['ردیف', , 'نام' , 'تاریخ', 'ساعت', '', '']}
                     body={() => {
                         return (
+
                             (this.props.recordingsList ? 
-                            this.props.recordingsList.map((x,index) => {
-                                return (
+                                (this.props.recordingsList.length == 0 ?
                                     <tr>
-                                        <td className="py-4">{index + 1}</td>
-                                        <td className="py-4">{x.name} - جلسه {index + 1}</td>
-                                        <td className="py-4">1399/5/4</td>
-                                        <td className="py-4">8 تا 9</td>
-                                        <td className="py-4">
-                                            <button className="px-8 py-1 m-1 rounded-lg bg-greenish">دانلود</button>
-                                            <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">مشاهده</button>
-                                        </td>
+                                        <td className="py-4">هیچ کلاس ضبط شده ای وجود ندارد</td>
                                     </tr>
-                                )
-                            })
+                                :
+                                this.props.recordingsList.map((x,index) => {
+                                    return (
+                                        <tr>
+                                            <td className="py-4">{index + 1}</td>
+                                            <td className="py-4">{x.name} - جلسه {index + 1}</td>
+                                            <td className="py-4">1399/5/4</td>
+                                            <td className="py-4">8 تا 9</td>
+                                            <td className="py-4">
+                                                <button className="px-8 py-1 m-1 rounded-lg bg-greenish">دانلود</button>
+                                                <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">مشاهده</button>
+                                            </td>
+                                        </tr>
+                                    )
+                                }))
                             : 
                             <tr>
-                                <td className="py-4">هیچ کلاس ضبط شده ای وجود ندارد</td>
+                                <td className="py-4">درحال بارگذاری ...</td>
                             </tr>
                             )
                         );

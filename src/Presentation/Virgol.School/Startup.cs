@@ -92,7 +92,7 @@ namespace lms_with_moodle
 
                 section.Get<AppSettings>();
                 
-                conStr = Configuration.GetConnectionString("PublishConnection_PS");
+                conStr = Configuration.GetConnectionString("BackupConnection");
             }
 
             AppSettings appSettings = new AppSettings();

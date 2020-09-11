@@ -91,15 +91,27 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var meeting in meetings)
                 {
-                    List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meeting.Id && x.IsPresent).ToList();
+                    List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meeting.Id).ToList();
+
+                    ClassBook classBook = new ClassBook();
+
                     foreach (var participant in participantViews)
                     {
-                        ClassBook classBook = classBooks.Where(x => x.UserId == participant.UserId).FirstOrDefault();
-                        if(classBook != null)
+                        classBook = classBooks.Where(x => x.UserId == participant.UserId).FirstOrDefault();
+                        if(classBook != null && participant.IsPresent)
                         {
                             classBook.AbsentCount--;
                         }
+
+                        if(classBook != null)
+                        {
+                            if(classBook.ParticipantDetail == null)  
+                                classBook.ParticipantDetail = new List<ParticipantView>();
+
+                            classBook.ParticipantDetail.Add(participant);
+                        }
                     }
+
                 }
 
                 // var groupedUser = result

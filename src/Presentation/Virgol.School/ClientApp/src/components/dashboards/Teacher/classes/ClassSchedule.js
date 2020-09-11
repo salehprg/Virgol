@@ -41,7 +41,7 @@ class ClassSchedule extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user : state.auth.userInfo  , schedules : state.schedules.classSchedules , recentClass2 : state.meetingData.recentClass}
+    return {user : state.auth.userInfo  , schedules : state.schedules.classSchedules}
 }
 
 export default connect(mapStateToProps , {getTeacherSchedule })(ClassSchedule);
