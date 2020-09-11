@@ -13,6 +13,7 @@ IMAGE_ACCOUNT=${3:-goldenstarc}
 IMAGE_REPO=${4:-virgol}
 TAG_REVISION=0
 
+sudo git stash
 sudo git pull origin $GIT_BRANCH
 sudo git checkout origin/$GIT_BRANCH
 #sudo git checkout origin/master
