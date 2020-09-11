@@ -45,13 +45,16 @@ const   Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, child
             </motion.div>
             
             {
-                logoTitle == 0 ? 
+                logoTitle === 0 ?
                 <img src={`${process.env.PUBLIC_URL}/icons/sampad.png`} />
                 : 
-                logoTitle == 1 ?
+                logoTitle === 1 ?
                 <img src={`${process.env.PUBLIC_URL}/icons/RD.png`} /> 
                 : 
-                <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">{logo('w-16 mb-3 text-purplish mx-auto')}</h1>
+                <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">
+                    {/*{logo('w-16 mb-3 text-purplish mx-auto')}*/}
+                    <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
+                </h1>
             }
 
             <div className="w-full mt-10">
