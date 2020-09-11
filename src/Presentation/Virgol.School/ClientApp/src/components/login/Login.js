@@ -168,8 +168,9 @@ class Login extends React.Component {
             <div className="w-screen min-h-screen bg-black-blue py-16">
                 <div className="w-full max-w-350 mx-auto">
                     <div className="text-center mb-8">
-                        {logo('w-16 mb-3 text-purplish mx-auto')}
-                        <span className="text-xl text-white">ورود به سامانه ویرگول بتا</span>
+                        {/*{logo('w-16 mb-3 text-purplish mx-auto')}*/}
+                        <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
+                        <span className="text-xl text-white">ورود به سامانه آموزش از راه دور خراسان رضوی</span>
                     </div>
                     <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
                         {this.renderPanel()}

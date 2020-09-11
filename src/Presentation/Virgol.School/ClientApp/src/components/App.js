@@ -36,6 +36,7 @@ import MeetingResponse from './MeetingResponse/MeetingResponse';
 import ParticipantList from './MeetingResponse/ParticipantList';
 import SessionInfo from "./dashboards/Teacher/classes/SessionInfo";
 import RecorededSession from './dashboards/recordedSessions/RecordedSessions';
+import Copyright from "./Copyright";
 
 class App extends React.Component {
 
@@ -55,6 +56,7 @@ class App extends React.Component {
                 {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
                 {this.props.worker.status ? <Working /> : null}
 
+                <Copyright />
                 <Router history={history}>
                     <Switch>
                         <Route path="/" exact component={Login} />

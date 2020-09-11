@@ -57,6 +57,10 @@
     grid-template-columns: repeat(auto-fit, 100px);
 }
 
+.teacher-classes-cards {
+    grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+}
+
 .addStudentBtn {
     opacity: 0;
 }
