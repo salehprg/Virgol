@@ -4,6 +4,19 @@ import { connect } from "react-redux";
 
 class RecentClass extends React.Component {
 
+    options = [
+        { value: 1, label: 'شنبه' },
+        { value: 2, label: 'یکشنبه' },
+        { value: 3, label: 'دوشنبه' },
+        { value: 4, label: 'سه شنبه' },
+        { value: 5, label: 'چهار شنبه' },
+        { value: 6, label: 'پنجشنبه' },
+        { value: 7, label: 'جمعه' }
+    ];
+
+    getDayName = (dayType) => {
+        return this.options.find(x => x.value == dayType).label
+    }
 
     render() {
         const { title, pos , joinList , classes} = this.props
@@ -26,6 +39,7 @@ class RecentClass extends React.Component {
                                         className={x.className}
                                         onStart={() => this.props.onStart(x.bbB_MeetingId)}
                                         joinable={joinList}
+                                        day={this.getDayName(x.dayType)}
                                         startTime={`${~~x.startHour}:${(x.startHour - ~~x.startHour) * 60}`}
                                         endTime={`${~~x.endHour}:${(x.endHour - ~~x.endHour) * 60}`
                                         }
