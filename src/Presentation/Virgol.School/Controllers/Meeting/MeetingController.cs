@@ -35,7 +35,7 @@ namespace lms_with_moodle.Controllers
     {
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
-        private readonly MeetingService MeetingService;
+        private readonly MeetingService meetingService;
 
         MoodleApi moodleApi;
         LDAP_db ldap;
@@ -49,7 +49,7 @@ namespace lms_with_moodle.Controllers
 
             moodleApi = new MoodleApi();
             ldap = new LDAP_db(appDbContext);
-            MeetingService = new MeetingService(appDbContext);
+            meetingService = new MeetingService(appDbContext);
 
         }
 
@@ -126,7 +126,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 int userId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
-                Meeting meeting = await MeetingService.StartPrivateMeeting(roomName , userId);
+                Meeting meeting = await meetingService.StartPrivateMeeting(roomName , userId);
 
                 if(meeting != null)
                 {
@@ -155,7 +155,7 @@ namespace lms_with_moodle.Controllers
 
                 if(meeting != null)
                 {
-                    string url = await MeetingService.JoinMeeting(user , meeting.BBB_MeetingId , true);
+                    string url = await meetingService.JoinMeeting(user , meeting.BBB_MeetingId , true);
 
                     if(url != null)
                     {
@@ -191,19 +191,19 @@ namespace lms_with_moodle.Controllers
 
                 if(mixed)//if Teacher start Mixed Meeting
                 {
-                    int parentId = await MeetingService.StartSingleMeeting(classSchedule , teacherId);
+                    int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId);
                     List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
 
                     Console.WriteLine("Get mixed");
                     foreach (var schedule in mixedSchedules)
                     {
-                        await MeetingService.StartMixedMeeting(schedule , teacherId , parentId);
+                        await meetingService.StartMixedMeeting(schedule , teacherId , parentId);
                     }
                 }
                 else
                 {
                     Console.WriteLine("Start Single");
-                    int meetingId = await MeetingService.StartSingleMeeting(classSchedule , teacherId);
+                    int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId);
                     Console.WriteLine("mId = " + meetingId);
                 }
 
@@ -228,7 +228,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 
-                string URL = await MeetingService.JoinMeeting(user , meetingId);
+                string URL = await meetingService.JoinMeeting(user , meetingId);
 
                 if(URL != null)
                 {
@@ -255,7 +255,7 @@ namespace lms_with_moodle.Controllers
 
                 bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
-                bool result = await MeetingService.EndMeeting(bbbMeetingId , user.Id);
+                bool result = await meetingService.EndMeeting(bbbMeetingId , user.Id);
 
                 if(result)
                     return Ok("کلاس با موفقیت پایان یافت لطفا چند لحظه صبر نمایید");
@@ -280,7 +280,7 @@ namespace lms_with_moodle.Controllers
                 int userId = user.Id;
                 bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
-                List<MeetingView> recentClasses = MeetingService.GetComingMeeting(user);
+                List<MeetingView> recentClasses = meetingService.GetComingMeeting(user);
                                 
                 foreach (var classs in recentClasses)
                 {
@@ -313,38 +313,8 @@ namespace lms_with_moodle.Controllers
         {
             string userName = userManager.GetUserId(User);
             int managerId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
-            int schoolId = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault().Id;
-
-            List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == schoolId).ToList();
             
-            DateTime currentDateTime = MyDateTime.Now();
-
-            float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
-
-            int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
-
-            List<MeetingView> result = new List<MeetingView>();
-
-            foreach (var classs in classes)
-            {
-                List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.ClassId == classs.Id && x.DayType == dayOfWeek).ToList();
-                List<MeetingView> activeMeetings = appDbContext.MeetingViews.Where(x => x.ClassId == classs.Id && !x.Finished).ToList();
-
-                foreach (var schedule in schedules)
-                {
-                    MeetingView meetingVW = activeMeetings.Where(x => x.ScheduleId == schedule.Id).FirstOrDefault();
-                    if(meetingVW == null)
-                    {
-                        meetingVW = new MeetingView();
-
-                        var serialized = JsonConvert.SerializeObject(schedule);
-                        meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
-                    }
-
-                    result.Add(meetingVW);
-                }
-            }
-        
+            List<MeetingView> result = meetingService.GetAllActiveMeeting(managerId);
 
             var groupedMeetings = result
                     .GroupBy(x => x.ClassId)
@@ -366,7 +336,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
 
-                List<MeetingView> meetingViews = MeetingService.GetActiveMeeting(user);
+                List<MeetingView> meetingViews = meetingService.GetActiveMeeting(user);
                     
                 return Ok(meetingViews);
             }

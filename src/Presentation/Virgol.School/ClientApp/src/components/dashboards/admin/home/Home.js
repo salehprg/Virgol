@@ -59,7 +59,7 @@ class Home extends React.Component {
                         />
 
                         <CounterCard
-                            title="کلید"
+                            title="حداکثر مدارس"
                             icon={key}
                             number={this.props.dashboardInfo.keyCount}
                             bg="bg-greenish"

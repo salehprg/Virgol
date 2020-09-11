@@ -1023,7 +1023,9 @@ namespace lms_with_moodle.Controllers
                             manager.userTypeId = (int)UserType.Manager;
                             manager.ConfirmedAcc = true;
 
-                            string password = RandomPassword.GeneratePassword(true , true , true , 10);
+                            //string password = RandomPassword.GeneratePassword(true , true , true , 10);
+
+                            string password = manager.MelliCode;
 
                             bool resultManager = userManager.CreateAsync(manager , password).Result.Succeeded;
 

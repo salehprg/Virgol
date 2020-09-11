@@ -58,6 +58,26 @@ public class MyUserManager {
                 
                 if((await userManager.CreateAsync(user , (!string.IsNullOrEmpty(password) ? password : user.MelliCode))).Succeeded)
                 {
+                    switch(usersType)
+                    {
+                        case (int)UserType.Student :
+                            await userManager.AddToRoleAsync(user , "User");
+
+                            await SyncUserDetail(userData);
+                            break;
+
+                        case (int)UserType.Teacher :
+                            await userManager.AddToRolesAsync(user , new string[]{"User" , "Teacher"});
+                            await SyncUserDetail(userData , schoolId);
+                            break;
+
+                        case (int)UserType.Manager :
+                            await userManager.AddToRolesAsync(user , new string[]{"User" , "Manager"});
+
+                            await SyncUserDetail(userData);
+                            break;
+                    }
+                    
                     userData.Id = user.Id;
                     bool ldapResult = (usersType == (int)UserType.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
                     if(ldapResult)
@@ -66,26 +86,6 @@ public class MyUserManager {
                         if(moodleId != -1)
                         {
                             user.Moodle_Id = moodleId;
-
-                            switch(usersType)
-                            {
-                                case (int)UserType.Student :
-                                    await userManager.AddToRoleAsync(user , "User");
-
-                                    await SyncUserDetail(userData);
-                                    break;
-
-                                case (int)UserType.Teacher :
-                                    await userManager.AddToRolesAsync(user , new string[]{"User" , "Teacher"});
-                                    await SyncUserDetail(userData , schoolId);
-                                    break;
-
-                                case (int)UserType.Manager :
-                                    await userManager.AddToRolesAsync(user , new string[]{"User" , "Manager"});
-
-                                    await SyncUserDetail(userData);
-                                    break;
-                            }
 
                             appDbContext.Users.Update(user);
                             result.Add(userData);

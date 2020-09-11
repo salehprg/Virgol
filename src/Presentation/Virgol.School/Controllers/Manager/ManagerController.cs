@@ -34,6 +34,7 @@ namespace lms_with_moodle.Controllers
 
         MoodleApi moodleApi;
         MyUserManager myUserManager;
+        MeetingService meetingService;
         ManagerService managerService;
         LDAP_db ldap;
         
@@ -54,8 +55,7 @@ namespace lms_with_moodle.Controllers
 
             myUserManager = new MyUserManager(userManager , appDbContext);
             managerService = new ManagerService(appDbContext);
-
-            
+            meetingService = new MeetingService(appDbContext); 
         }
 
 
@@ -87,8 +87,12 @@ namespace lms_with_moodle.Controllers
                 }
 
                 int teacherCount = result.Count;
-
+                
                 int onlineClass = 0;
+
+                List<MeetingView> onlineClassList = meetingService.GetAllActiveMeeting(userModel.Id);
+
+                onlineClass = onlineClassList.Count;
 
                 return Ok(new{
                     classCount,

@@ -140,7 +140,7 @@ public class MeetingService {
         float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
         int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
 
-        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))   && x.DayType == dayOfWeek).ToList();
+        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))  && (x.DayType == (dayOfWeek - 1) || x.DayType == dayOfWeek)).ToList();
         List<MeetingView> recentClasses = new List<MeetingView>();
         
 
@@ -389,6 +389,44 @@ public class MeetingService {
 
         return result;
     }
+
+    public List<MeetingView> GetAllActiveMeeting(int managerId)
+    {
+        int schoolId = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault().Id;
+
+        List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == schoolId).ToList();
+        
+        DateTime currentDateTime = MyDateTime.Now();
+
+        float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
+
+        int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
+
+        List<MeetingView> result = new List<MeetingView>();
+
+        foreach (var classs in classes)
+        {
+            List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.ClassId == classs.Id && x.DayType == dayOfWeek).ToList();
+            List<MeetingView> activeMeetings = appDbContext.MeetingViews.Where(x => x.ClassId == classs.Id && !x.Finished).ToList();
+
+            foreach (var schedule in schedules)
+            {
+                MeetingView meetingVW = activeMeetings.Where(x => x.ScheduleId == schedule.Id).FirstOrDefault();
+                if(meetingVW == null)
+                {
+                    meetingVW = new MeetingView();
+
+                    var serialized = JsonConvert.SerializeObject(schedule);
+                    meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
+                }
+
+                result.Add(meetingVW);
+            }
+        }
+
+        return result;
+    }
+
     public List<MeetingView> GetAllMeeting()
     {
         List<MeetingView> meetingViews = new List<MeetingView>();
