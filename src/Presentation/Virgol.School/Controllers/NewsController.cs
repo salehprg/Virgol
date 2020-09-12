@@ -60,30 +60,120 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(NewsModel), 200)]
         public IActionResult GetIncommingNews()
         {
-            string userName = userManager.GetUserId(User);
-            UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
-            
-            string roleName ="";
-            if(userModel.userTypeId != (int)UserType.Student)
+            try
             {
-                roleName = userManager.GetRolesAsync(userModel).Result.Where(x => x != "User").FirstOrDefault();
+                string userName = userManager.GetUserId(User);
+                UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+                
+                string roleName ="";
+                if(userModel.userTypeId != (int)UserType.Student)
+                {
+                    roleName = userManager.GetRolesAsync(userModel).Result.Where(x => x != "User").FirstOrDefault();
+                }
+                else
+                {
+                    roleName = "User";
+                }
+
+                int userRoleId = roleManager.FindByNameAsync(roleName).Result.Id;
+
+                List<NewsModel> allowedNews = appDbContext.News.Where(x => x.AccessRoleId.Contains(userRoleId.ToString() + ",")).ToList();
+                List<NewsModel> result = new List<NewsModel>();
+
+                foreach (var news in allowedNews)
+                {
+                    int autherId = news.AutherId;
+                    UserModel auther = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault();
+
+                    if(auther != null)
+                    {
+                        List<string> tags = new List<string>();
+
+                        if(news.Tags != null)
+                        {
+                            tags = news.Tags.Split(",").ToList();
+                        }
+
+                        news.tagsStr = tags;
+                        
+                        if(auther.userTypeId == (int)UserType.Manager)
+                        {
+                            int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
+                            if(userModel.userTypeId == (int)UserType.Student)
+                            {
+                                if(userModel.SchoolId == schoolId)
+                                {
+                                    result.Add(news);
+                                }
+                            }
+                            else if(userModel.userTypeId == (int)UserType.Teacher)
+                            {
+                                string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
+                                if(schoolIds.Contains(schoolId + ","))
+                                {
+                                    result.Add(news);
+                                }
+                            }
+                        }
+                        else if(auther.userTypeId == (int)UserType.Admin)
+                        {
+                            int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == auther.Id).FirstOrDefault().SchoolsType;
+                            List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
+                            foreach (var school in schools)
+                            {
+                                if(userModel.userTypeId == (int)UserType.Teacher)
+                                {
+                                    string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
+                                    if(schoolIds.Contains(school.Id + ","))
+                                    {
+                                        result.Add(news);
+                                    }
+                                }
+                                else
+                                {
+                                    if(userModel.SchoolId == school.Id)
+                                    {
+                                        result.Add(news);
+                                    }
+                                }
+                            }
+                            
+                        }
+                        else if(auther.userTypeId == (int)UserType.Teacher)
+                        {
+                            //Because only students can see Teachers News we Should only check SchoolId
+                            string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == auther.Id).FirstOrDefault().SchoolsId;
+                            if(schoolIds.Contains(userModel.SchoolId + ","))
+                            {
+                                result.Add(news);
+                            }
+                        }
+                    }
+                }
+
+                return Ok(result.OrderByDescending(x => x.CreateTime));
             }
-            else
+            catch (Exception ex)
             {
-                roleName = "User";
+                Console.WriteLine("Error News : " + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
+                return BadRequest("مشکلی در دریافت اخبار بوجود آمد");
             }
+        }
 
-            int userRoleId = roleManager.FindByNameAsync(roleName).Result.Id;
-
-            List<NewsModel> allowedNews = appDbContext.News.Where(x => x.AccessRoleId.Contains(userRoleId.ToString() + ",")).ToList();
-            List<NewsModel> result = new List<NewsModel>();
-
-            foreach (var news in allowedNews)
+        [HttpGet]
+        [ProducesResponseType(typeof(NewsModel), 200)]
+        public IActionResult GetMyNews()
+        {
+            try
             {
-                int autherId = news.AutherId;
-                UserModel auther = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault();
+                string userName = userManager.GetUserId(User);
+                int UserId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
-                if(auther != null)
+                List<NewsModel> myNews = appDbContext.News.Where(x => x.AutherId == UserId).ToList();
+
+                foreach (var news in myNews)
                 {
                     List<string> tags = new List<string>();
 
@@ -93,121 +183,60 @@ namespace lms_with_moodle.Controllers
                     }
 
                     news.tagsStr = tags;
-                    
-                    if(auther.userTypeId == (int)UserType.Manager)
-                    {
-                        int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
-                        if(userModel.userTypeId == (int)UserType.Student)
-                        {
-                            if(userModel.SchoolId == schoolId)
-                            {
-                                result.Add(news);
-                            }
-                        }
-                        else if(userModel.userTypeId == (int)UserType.Teacher)
-                        {
-                            string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
-                            if(schoolIds.Contains(schoolId + ","))
-                            {
-                                result.Add(news);
-                            }
-                        }
-                    }
-                    else if(auther.userTypeId == (int)UserType.Admin)
-                    {
-                        int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == auther.Id).FirstOrDefault().SchoolsType;
-                        List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
-                        foreach (var school in schools)
-                        {
-                            if(userModel.userTypeId == (int)UserType.Teacher)
-                            {
-                                string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
-                                if(schoolIds.Contains(school.Id + ","))
-                                {
-                                    result.Add(news);
-                                }
-                            }
-                            else
-                            {
-                                if(userModel.SchoolId == school.Id)
-                                {
-                                    result.Add(news);
-                                }
-                            }
-                        }
-                        
-                    }
-                    else if(auther.userTypeId == (int)UserType.Teacher)
-                    {
-                        //Because only students can see Teachers News we Should only check SchoolId
-                        string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == auther.Id).FirstOrDefault().SchoolsId;
-                        if(schoolIds.Contains(userModel.SchoolId + ","))
-                        {
-                            result.Add(news);
-                        }
-                    }
                 }
+
+                return Ok(myNews.OrderByDescending(x => x.CreateTime));
             }
-
-            return Ok(result.OrderByDescending(x => x.CreateTime));
-        }
-
-        [HttpGet]
-        [ProducesResponseType(typeof(NewsModel), 200)]
-        public IActionResult GetMyNews()
-        {
-            string userName = userManager.GetUserId(User);
-            int UserId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
-
-            List<NewsModel> myNews = appDbContext.News.Where(x => x.AutherId == UserId).ToList();
-
-            foreach (var news in myNews)
+            catch (Exception ex)
             {
-                List<string> tags = new List<string>();
-
-                if(news.Tags != null)
-                {
-                    tags = news.Tags.Split(",").ToList();
-                }
-
-                news.tagsStr = tags;
+                Console.WriteLine("My news Error : " + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
+                return BadRequest("مشکلی در دریافت اخبار بوجود آمد");
             }
-
-            return Ok(myNews.OrderByDescending(x => x.CreateTime));
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(NewsModel), 200)]
         public IActionResult GetAccessRoleIds()
         {
-            List<IdentityRole<int>> roles = appDbContext.Roles.ToList();
-            List<IdentityRole<int>> viewRoles = new List<IdentityRole<int>>();
-
-            foreach (var role in roles)
+            try
             {
-                IdentityRole<int> editRole = new IdentityRole<int>();
-                editRole = role;
+                List<IdentityRole<int>> roles = appDbContext.Roles.ToList();
+                List<IdentityRole<int>> viewRoles = new List<IdentityRole<int>>();
 
-                switch(role.Name)
+                foreach (var role in roles)
                 {
-                    case "Manager":
-                        editRole.Name = "مدیر";
-                        break;
+                    IdentityRole<int> editRole = new IdentityRole<int>();
+                    editRole = role;
 
-                    case "Teacher":
-                        editRole.Name = "معلم";
-                        break;
-                    
-                    case "User":
-                        editRole.Name = "دانش آموز";
-                        break;
-                    
+                    switch(role.Name)
+                    {
+                        case "Manager":
+                            editRole.Name = "مدیر";
+                            break;
+
+                        case "Teacher":
+                            editRole.Name = "معلم";
+                            break;
+                        
+                        case "User":
+                            editRole.Name = "دانش آموز";
+                            break;
+                        
+                    }
+
+                    viewRoles.Add(editRole);
                 }
-
-                viewRoles.Add(editRole);
+                
+                return Ok(viewRoles);
             }
-            
-            return Ok(viewRoles);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace)    ;
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]

@@ -888,28 +888,6 @@ namespace lms_with_moodle.Controllers
             }
 
             bool assign = await managerService.AssignUsersToClass(result , newSchoolClass.Id);
-            
-
-            // //Change MeetingId in new Database
-            // classSchedules = appDbContextBackup.ClassWeeklySchedules.Where(x => x.ClassId == classId).OrderBy(x => x.Id).ToList(); // Refresh Data
-
-            // foreach (var schedule in classSchedules)
-            // {
-            //     List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList();
-            //     foreach (var meeting in meetings)
-            //     {
-            //         RestoreScheduleModel restore = restoreSchedules.Where(x => x.oldId == meeting.ScheduleId).FirstOrDefault();
-            //         if(restore != null)
-            //         {
-            //             int newId = restore.newId;
-            //             meeting.ScheduleId = newId;
-            //         }
-            //     }
-
-            //     appDbContext.Meetings.UpdateRange(meetings);
-            // }
-
-            // await appDbContext.SaveChangesAsync(); 
         
             return Ok(true);
         }
