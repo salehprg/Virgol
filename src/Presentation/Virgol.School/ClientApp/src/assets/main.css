@@ -708,9 +708,7 @@ video {
 }
 
 .teacher-classes-cards {
-    grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
-    justify-content: center;
-    direction: rtl;
+  grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
 }
 
 .addStudentBtn {
