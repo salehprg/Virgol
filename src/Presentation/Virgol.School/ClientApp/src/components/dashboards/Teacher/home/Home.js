@@ -7,10 +7,12 @@ import RecentClass from "../RecentClass/RecentClass";
 import { connect } from "react-redux";
 import {GetIncommingNews} from "../../../../_actions/newsActions"
 import {GetMeetingList , GetRecentClass , StartMeeting , EndMeeting , JoinMeeting } from "../../../../_actions/meetingActions"
+import Modal from "../../../modals/Modal";
+import Fieldish from "../../../field/Fieldish";
 
 class Home extends React.Component {
 
-    state = {loading : false}
+    state = {loading : false, newPrivateModal: false}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
@@ -42,11 +44,32 @@ class Home extends React.Component {
         this.componentDidMount()
         this.render()
     }
+
+    showPrivateModal = () => {
+        this.setState({ newPrivateModal: true })
+    }
+
+    hidePrivateModal = () => {
+        console.log("what")
+        this.setState({ newPrivateModal: false })
+    }
     
     render() {
         if(this.state.loading) return "درحال بارگداری اطلاعات ..."
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
+                {this.state.newPrivateModal ?
+                    <Modal cancel={this.hidePrivateModal}>
+                        <div onClick={(e) => e.stopPropagation()} className="w-11/12 rounded-lg bg-bold-blue text-center max-w-500 p-8">
+                            <input
+                                className="w-5/6 px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue"
+                                placeholder="نام کلاس خصوصی"
+                            />
+                            <button className="px-6 my-4 py-1 rounded-lg text-white bg-greenish">ایجاد کلاس</button>
+                        </div>
+                    </Modal>
+                    :
+                    null}
                 <div className="col-span-1 flex flex-col items-center justify-between">
                     <Hero userInfo={this.props.user.userInformation}
                           userDetail={this.props.user.userDetail}/>
@@ -55,6 +78,7 @@ class Home extends React.Component {
                         onStart={(id) => this.StatrMeeting(id)}
                         joinList={false}
                         teacher={true}
+                        newBtn={false}
                         classes={this.props.recentClass}
                         title="کلاس های پیش رو"
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
@@ -64,6 +88,8 @@ class Home extends React.Component {
                         onEnd={(bbbId) => this.EndMeeting(bbbId)}
                         joinList={true}
                         teacher={true}
+                        newBtn={true}
+                        btnAction={this.showPrivateModal}
                         classes={this.props.meetingList}
                         title="کلاس های فعال"
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"

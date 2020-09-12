@@ -37,6 +37,7 @@ import ParticipantList from './MeetingResponse/ParticipantList';
 import SessionInfo from "./dashboards/Teacher/classes/SessionInfo";
 import RecorededSession from './dashboards/recordedSessions/RecordedSessions';
 import Copyright from "./Copyright";
+import PrivateLogin from './login/PrivateLogin';
 
 class App extends React.Component {
 
@@ -61,8 +62,9 @@ class App extends React.Component {
                     <Switch>
                         <Route path="/" exact component={Login} />
                         <Route path="/SSO" exact component={LoginSSO} />
+                        <Route path="/PrivateClass/:id" exact component={PrivateLogin} />
 
-                        <Route path="/a" component={AdminDashboard} />
+                        <Route path="/a" component={AdminDashboard} />  
                         <Route path="/addNews" component={AddNews} />
                         <Route path="/news/:id" component={NewsInfo} />
                         <Route path="/newSchool" component={AddSchool} />

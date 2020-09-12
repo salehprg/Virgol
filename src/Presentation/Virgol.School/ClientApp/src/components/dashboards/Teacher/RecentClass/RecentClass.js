@@ -1,6 +1,5 @@
 import React from "react";
 import RecentClassDetail from "./ClassDetail";
-import { connect } from "react-redux";
 
 class RecentClass extends React.Component {
 
@@ -15,21 +14,23 @@ class RecentClass extends React.Component {
     ];
 
     getDayName = (dayType) => {
-        return this.options.find(x => x.value == dayType).label
+        return this.options.find(x => x.value === dayType).label
     }
 
     render() {
-        const { title, pos , joinList , classes } = this.props
+        const { title, pos , joinList, newBtn, btnAction, classes } = this.props
 
-        console.log(classes)
         return (
-            <div className={`${pos} w-full h-full my-4 px-6 py-4 text-right bg-dark-blue rounded-xl`}>
-                <p className="text-white">{title}</p>
+            <div className={`${pos} w-full h-full my-4 px-6 py-4 relative text-right bg-dark-blue rounded-xl`}>
+                <div className="w-full flex flex-row-reverse justify-between items-center">
+                    <p className="text-white">{title}</p>
+                    <button onClick={btnAction} className={`px-4 py-1 bg-greenish rounded-lg text-white ${newBtn ? '' : 'hidden'}`}>ایجاد کلاس خصوصی</button>
+                </div>
                 {(classes ? 
                     (
                         classes.length === 0 
                         ? 
-                        <span className="text-2xl text-grayish block text-center">هیچ کلاسی وجود ندارد</span> 
+                        <span className="text-2xl text-grayish block centerize">هیچ کلاسی وجود ندارد</span>
                         :
                         classes.map(x => {
                             return (
@@ -59,4 +60,4 @@ class RecentClass extends React.Component {
 
 }
 
-export default RecentClass
+export default RecentClass;
