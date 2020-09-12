@@ -124,13 +124,12 @@ public class MyUserManager {
                 IdentityResult chngPassword = await userManager.ResetPasswordAsync(oldData , token , newPassword);
                 if(chngPassword.Succeeded)
                 {
-                    ldap.EditEntry(oldData.UserName , "userPassword" , newPassword);
+                    ldap.ChangePassword(oldData.UserName , newPassword);
                 }
             }
 
-            ldap.EditEntry(oldData.MelliCode , "cn" , user.FirstName);
-            ldap.EditEntry(oldData.MelliCode , "sn" , user.LastName);
-            ldap.EditEntry(oldData.MelliCode , "givenName" , user.FirstName);
+            ldap.EditAttribute(oldData.MelliCode , "sn" , user.LastName);
+            ldap.EditAttribute(oldData.MelliCode , "givenName" , user.FirstName);
             
             if(!assignTeacher)
             {

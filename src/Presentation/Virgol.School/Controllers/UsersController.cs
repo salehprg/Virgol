@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Novell.Directory.Ldap;
+
 using System.Net;
 using System.Security.Cryptography;
 using System.Net.Http;
@@ -253,7 +253,7 @@ namespace lms_with_moodle.Controllers
                     IdentityResult chngPassword = await userManager.ResetPasswordAsync(user , token , newPassword);
                     if(chngPassword.Succeeded)
                     {
-                        ldap.EditEntry(user.UserName , "userPassword" , newPassword);
+                        ldap.ChangePassword(user.UserName , newPassword);
 
                         return Ok(true);
                     }
@@ -390,147 +390,158 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginUser([FromBody]InputModel inpuLogin)
         {
-            var Result = signInManager.PasswordSignInAsync(inpuLogin.Username , inpuLogin.Password , false , false).Result;
-
-            bool authResult = Result.Succeeded;
-
-            if(!authResult)
+            try
             {
+                bool authResult = false;
+
+                
                 string IdNumber = ldap.Authenticate(inpuLogin.Username , inpuLogin.Password);
                 authResult = (IdNumber != null ? true : false);
 
-                inpuLogin.Username = IdNumber;
-            }
-            
-            if(authResult)
-            {
-                UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
-
-                if(!userInformation.ConfirmedAcc)
+                if(!authResult)
                 {
-                    return StatusCode(423 , "حساب کاربری شما تایید نشده است");
+                    var Result = signInManager.PasswordSignInAsync(inpuLogin.Username , inpuLogin.Password , false , false).Result;
+
+                    authResult = Result.Succeeded;
                 }
-
-                object userDetail = null;
-
-                switch(userInformation.userTypeId)
-                {
-                    case (int)UserType.Student:
-                        SchoolModel school = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
-                        School_studentClass classs = appDbContext.School_StudentClasses.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                        School_Class classDetail = new School_Class();
-                        classDetail = (classs != null ? appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault() : classDetail);
-
-                        GradeModel grade = (classDetail.Grade_Id != 0 ? appDbContext.Grades.Where(x => x.Id == classDetail.Grade_Id).FirstOrDefault() : new GradeModel());
-
-                        userDetail = new {
-                            school,
-                            classDetail.ClassName,
-                            grade.GradeName
-                        };
-                        
-                        break;
-
-                    case (int)UserType.Teacher:
-                        userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
-                        break;
-
-                    case (int)UserType.Admin:
-                        userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                        break;
-
-                    case (int)UserType.Manager:
-                        userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                        break;
-                    
-                }
-
-                SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
-
-                int schoolType = (schoolModel != null ? schoolModel.SchoolType : 0);
-
-                if(schoolType == 0)
-                {
-                    try{
-                        schoolType = ((AdminDetail)userDetail).SchoolsType; 
-                    }catch{}
-                }
-
-
-                string schooltypeName = "";
-                if (schoolType == SchoolType.Sampad)
-                {
-                    schooltypeName = "استعداد های درخشان";
-                }
-                else if (schoolType == SchoolType.AmoozeshRahDor)
-                {
-                    schooltypeName = "آموزش از راه دور";
-                }
-                else if (schoolType == SchoolType.Gheyrdolati)
-                {
-                    schooltypeName = "غیر دولتی";
-                }
-                else if (schoolType == SchoolType.Dolati)
-                {
-                    schooltypeName = "دولتی";
-                }
-
-                userDetail = new {userDetail , schooltypeName };
-
-                var userRoleNames = new List<string>();
-
-                userRoleNames = userManager.GetRolesAsync(userInformation).Result.ToList();
-
-                List<Claim> authClaims = new List<Claim>()
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, userInformation.UserName),
-                    new Claim(JwtRegisteredClaimNames.GivenName, userInformation.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),          
-                };
-
-                foreach (var item in userRoleNames)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
-                }
-
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.JWTSecret));
-
-                var token = new JwtSecurityToken(
-                    issuer: "https://localhost:5001",
-                    audience: "https://localhost:5001",
-                    expires: DateTime.UtcNow.AddDays(1),
-                    claims: authClaims,  // Add user Roles to token
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    ) ;
-
-                StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                int baseId = (studentDetail != null ? studentDetail.BaseId : -1);
-
-                CategoryDetail category = new CategoryDetail();
-                if(baseId != -1)
-                {
-                    category = await moodleApi.getCategoryDetail(baseId);
-                }
-
-                bool completedProfile = userInformation.LatinFirstname != null && userInformation.LatinFirstname != null;
                 
-                Console.WriteLine("Login Succed");
-
-                //Get userTypeId information from UserType Class
-                return Ok(new
+                if(authResult)
                 {
-                    UserType = userInformation.userTypeId,
-                    category,
-                    completedProfile,
-                    BaseId = baseId,
-                    userInformation,
-                    userDetail,
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
-            }
+                    UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
 
-            return Unauthorized("Username Or Password Not Found");
+                    if(!userInformation.ConfirmedAcc)
+                    {
+                        return StatusCode(423 , "حساب کاربری شما تایید نشده است");
+                    }
+
+                    object userDetail = null;
+
+                    switch(userInformation.userTypeId)
+                    {
+                        case (int)UserType.Student:
+                            SchoolModel school = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
+                            School_studentClass classs = appDbContext.School_StudentClasses.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                            School_Class classDetail = new School_Class();
+                            classDetail = (classs != null ? appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault() : classDetail);
+
+                            GradeModel grade = (classDetail.Grade_Id != 0 ? appDbContext.Grades.Where(x => x.Id == classDetail.Grade_Id).FirstOrDefault() : new GradeModel());
+
+                            userDetail = new {
+                                school,
+                                classDetail.ClassName,
+                                grade.GradeName
+                            };
+                            
+                            break;
+
+                        case (int)UserType.Teacher:
+                            userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
+                            break;
+
+                        case (int)UserType.Admin:
+                            userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                            break;
+
+                        case (int)UserType.Manager:
+                            userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                            break;
+                        
+                    }
+
+                    SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
+
+                    int schoolType = (schoolModel != null ? schoolModel.SchoolType : 0);
+
+                    if(schoolType == 0)
+                    {
+                        try{
+                            schoolType = ((AdminDetail)userDetail).SchoolsType; 
+                        }catch{}
+                    }
+
+
+                    string schooltypeName = "";
+                    if (schoolType == SchoolType.Sampad)
+                    {
+                        schooltypeName = "استعداد های درخشان";
+                    }
+                    else if (schoolType == SchoolType.AmoozeshRahDor)
+                    {
+                        schooltypeName = "آموزش از راه دور";
+                    }
+                    else if (schoolType == SchoolType.Gheyrdolati)
+                    {
+                        schooltypeName = "غیر دولتی";
+                    }
+                    else if (schoolType == SchoolType.Dolati)
+                    {
+                        schooltypeName = "دولتی";
+                    }
+
+                    userDetail = new {userDetail , schooltypeName };
+
+                    var userRoleNames = new List<string>();
+
+                    userRoleNames = userManager.GetRolesAsync(userInformation).Result.ToList();
+
+                    List<Claim> authClaims = new List<Claim>()
+                    {
+                        new Claim(JwtRegisteredClaimNames.Sub, userInformation.UserName),
+                        new Claim(JwtRegisteredClaimNames.GivenName, userInformation.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),          
+                    };
+
+                    foreach (var item in userRoleNames)
+                    {
+                        authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
+                    }
+
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.JWTSecret));
+
+                    var token = new JwtSecurityToken(
+                        issuer: "https://localhost:5001",
+                        audience: "https://localhost:5001",
+                        expires: DateTime.UtcNow.AddDays(1),
+                        claims: authClaims,  // Add user Roles to token
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                        ) ;
+
+                    StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                    int baseId = (studentDetail != null ? studentDetail.BaseId : -1);
+
+                    CategoryDetail category = new CategoryDetail();
+                    if(baseId != -1)
+                    {
+                        category = await moodleApi.getCategoryDetail(baseId);
+                    }
+
+                    bool completedProfile = userInformation.LatinFirstname != null && userInformation.LatinFirstname != null;
+                    
+                    Console.WriteLine("Login Succed");
+
+                    //Get userTypeId information from UserType Class
+                    return Ok(new
+                    {
+                        UserType = userInformation.userTypeId,
+                        category,
+                        completedProfile,
+                        BaseId = baseId,
+                        userInformation,
+                        userDetail,
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        expiration = token.ValidTo
+                    });
+                }
+
+                return Unauthorized("Username Or Password Not Found");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Login Error : " + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return Unauthorized("Username Or Password Not Found");
+            }
         }
 
         //Sameple Data : Users/RegisterNewUser?Password=Saleh-1379   newUser post as json data
