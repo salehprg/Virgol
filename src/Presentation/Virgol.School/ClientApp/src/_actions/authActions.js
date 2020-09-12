@@ -8,6 +8,8 @@ import { START , STOP } from "./workerTypes";
 export const login = formValues => async dispatch => {
 
     try {
+        console.log(process.env);
+
         const response = await lms.post('/Users/LoginUser', formValues)
         dispatch({ type: Type.LOGIN, payload: response.data })
 
