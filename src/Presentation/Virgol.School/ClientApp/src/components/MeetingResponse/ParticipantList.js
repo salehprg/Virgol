@@ -27,7 +27,7 @@ class ParticipantList extends React.Component {
         })
 
         console.log(newStatus);
-        this.setState({participants : newStatus})
+        this.setState({participants : this.props.participants})
     }
 
     handleStatusChanged = (id , status , e)  => {

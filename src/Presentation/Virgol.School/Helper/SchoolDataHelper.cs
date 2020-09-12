@@ -8,16 +8,13 @@ using Models;
 
 public class SchoolDataHelper {
         private readonly AppDbContext appDbContext;
-        private readonly AppSettings appSettings;
 
         MoodleApi moodleApi;
-        public SchoolDataHelper(AppSettings _appsetting
-                                , AppDbContext _appdbContext)
+        public SchoolDataHelper(AppDbContext _appdbContext)
         {
-            appSettings = _appsetting;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi(appSettings);
+            moodleApi = new MoodleApi();
         }
 
         public class CreateSchoolResult

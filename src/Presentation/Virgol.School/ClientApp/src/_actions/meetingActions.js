@@ -225,6 +225,7 @@ export const JoinMeeting = (token,meetingId) => async dispatch => {
 
         dispatch({ type: STOP })
         dispatch(alert.success("درحال ورود به کلاس درس..."))
+        dispatch(alert.success("درصورتی که به کلاس وارد نشدید <<پاپ آپ>> مرورگر خودرا فعال کنید.  - تنها مرورگر قابل استفاده در دستگاه های اپل ، سافاری و مرورگر پیشنهادی در سایر دستگاه ها گوگل کروم میباشد"))
         window.open(response.data, '_blank');
         dispatch({ type: Type.JoinMeeting, payload: response.data })
 

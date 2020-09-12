@@ -18,17 +18,15 @@ namespace lms_with_moodle.Helper
 {
     public class MoodleApi {
         
-        private readonly AppSettings appSettings;
         static HttpClient client;
         string BaseUrl;
         string token;
-        public MoodleApi(AppSettings _appsetting)
+        public MoodleApi()
         {
-            appSettings = _appsetting;
             client = new HttpClient();   
 
-            BaseUrl = _appsetting.BaseUrl_moodle;
-            token = _appsetting.Token_moodle;
+            BaseUrl = AppSettings.BaseUrl_moodle;
+            token = AppSettings.Token_moodle;
         }
 
         async Task<HttpResponseModel> sendData (string data)
@@ -701,6 +699,7 @@ namespace lms_with_moodle.Helper
             }
             catch (System.Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return null;
                 throw;
             }

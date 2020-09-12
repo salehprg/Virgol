@@ -2,21 +2,26 @@ using System;
 
 public class MyDateTime {
 
-     static int Hour = 4;
-     static int Minute = 30;
+    static int Hour = 4;
+    static int Minute = 30;
 
     //For local test
     //static int Hour = 0;
     //static int Minute = 30;
-
     public static DateTime Now(){
         DateTime result = DateTime.UtcNow;
 
         result = result.AddHours(Hour);
         result = result.AddMinutes(Minute);
 
-        Console.WriteLine("UTC Now = " + DateTime.UtcNow);
-        Console.WriteLine("Date Now = " + DateTime.Now.Date);
+        string devStatus = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+        Console.WriteLine(devStatus);
+
+        if(devStatus == "Development")
+        {
+            result = DateTime.Now;
+        }
         
         return result;
     }

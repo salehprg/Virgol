@@ -32,7 +32,6 @@ namespace lms_with_moodle.Controllers
     [Route("api/[controller]/[action]")]
     public class UsersController : ControllerBase
     {
-        private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
@@ -45,20 +44,18 @@ namespace lms_with_moodle.Controllers
         public UsersController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , IOptions<AppSettings> _appsetting
                                 , AppDbContext _appdbContext)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             signInManager =_signinManager;
-            appSettings = _appsetting.Value;
             appDbContext = _appdbContext;
 
 
-            ldap = new LDAP_db(appSettings , appDbContext);
-            moodleApi = new MoodleApi(appSettings);
-            SMSApi = new FarazSmsApi(appSettings);
-            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
+            ldap = new LDAP_db(appDbContext);
+            moodleApi = new MoodleApi();
+            SMSApi = new FarazSmsApi();
+            myUserManager = new MyUserManager(userManager , appDbContext);
         }
         
 
@@ -119,7 +116,7 @@ namespace lms_with_moodle.Controllers
                 List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
 
                 userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
-                userCourses.ForEach(x => x.CourseUrl = appSettings.moddleCourseUrl + x.id);
+                userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
 
                 return Ok(userCourses);
             }
@@ -284,21 +281,33 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string idNumber = userManager.GetUserId(User);
-                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+                UserModel user = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault();
 
                 if(user.LatinFirstname != null && user.LatinLastname != null)
                     return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
- 
+
                 StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
 
+                if(studentDetail == null)
+                {
+                    var serialized = JsonConvert.SerializeObject(user);
+                    UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+
+                    studentDetail = new StudentDetail();
+                    studentDetail.UserId = user.Id;
+
+                    userData.studentDetail = studentDetail;
+
+                    await myUserManager.SyncUserDetail(userData);
+                }
                 studentDetail.BirthDate = userDataModel.studentDetail.BirthDate;
                 studentDetail.cityBirth = userDataModel.studentDetail.cityBirth;
                 studentDetail.FatherPhoneNumber = userDataModel.studentDetail.FatherPhoneNumber;
                 
                 appDbContext.StudentDetails.Update(studentDetail);
 
-                user.LatinFirstname = userDataModel.LatinFirstname;
-                user.LatinLastname = userDataModel.LatinLastname;
+                user.LatinFirstname = userDataModel.LatinFirstname.Trim();
+                user.LatinLastname = userDataModel.LatinLastname.Trim();
                 user.PhoneNumber = userDataModel.PhoneNumber;
 
                 appDbContext.Users.Update(user);
@@ -321,7 +330,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string idNumber = userManager.GetUserId(User);
-                UserModel user = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+                UserModel user = appDbContext.Users.Where(x => x.UserName == idNumber).FirstOrDefault();
 
                 if(user.LatinFirstname != null && user.LatinLastname != null)
                     return BadRequest("شما قبلا اطلاعات خودرا تکمیل کرده اید");
@@ -333,14 +342,27 @@ namespace lms_with_moodle.Controllers
  
                 TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault();
 
+                if(teacherDetail == null)
+                {
+                    var serialized = JsonConvert.SerializeObject(user);
+                    UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+
+                    teacherDetail = new TeacherDetail();
+                    teacherDetail.TeacherId = user.Id;
+
+                    userData.teacherDetail = teacherDetail;
+
+                    await myUserManager.SyncUserDetail(userData);
+                }
+
                 teacherDetail.birthDate = userDataModel.teacherDetail.birthDate;
                 teacherDetail.cityBirth = userDataModel.teacherDetail.cityBirth;
                 //teacherDetail.personalIdNUmber = userDataModel.teacherDetail.personalIdNUmber;
                 
                 appDbContext.TeacherDetails.Update(teacherDetail);
 
-                user.LatinFirstname = userDataModel.LatinFirstname;
-                user.LatinLastname = userDataModel.LatinLastname;
+                user.LatinFirstname = userDataModel.LatinFirstname.Trim();
+                user.LatinLastname = userDataModel.LatinLastname.Trim();
 
                 appDbContext.Users.Update(user);
                 appDbContext.SaveChanges();
@@ -350,9 +372,9 @@ namespace lms_with_moodle.Controllers
                 return Ok(true);
 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 #endregion
@@ -473,7 +495,7 @@ namespace lms_with_moodle.Controllers
                         authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
                     }
 
-                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWTSecret));
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.JWTSecret));
 
                     var token = new JwtSecurityToken(
                         issuer: "https://localhost:5001",
@@ -674,6 +696,7 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return BadRequest("در آپلود فایل مشکلی بوجود آمد");
             }
         }

@@ -25,7 +25,6 @@ namespace lms_with_moodle.Controllers
     public class ClassScheduleController : ControllerBase
     {
         
-        private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
         private readonly AppDbContext appDbContext;
         private readonly SignInManager<UserModel> signInManager;
@@ -37,17 +36,15 @@ namespace lms_with_moodle.Controllers
         public ClassScheduleController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , AppDbContext dbContext
-                                , IOptions<AppSettings> _appsetting)
+                                , AppDbContext dbContext)
         {
             userManager = _userManager;
             appDbContext = dbContext;
             signInManager =_signinManager;
             roleManager = _roleManager;
-            appSettings = _appsetting.Value;
 
-            moodleApi = new MoodleApi(appSettings);
-            ldap = new LDAP_db(appSettings , appDbContext);
+            moodleApi = new MoodleApi();
+            ldap = new LDAP_db(appDbContext);
 
             
         }
@@ -69,7 +66,7 @@ namespace lms_with_moodle.Controllers
                     foreach (var schedule in classScheduleViews)
                     {
                         int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
-                        schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
+                        schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
                     }
                 }
                 else
@@ -89,9 +86,9 @@ namespace lms_with_moodle.Controllers
                         foreach (var schedule in classScheduleViews)
                         {
                             int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
-                            schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
+                            schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
 
-                            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.LessonId == schedule.Id).ToList();
+                            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList();
                             int absenceCount = 0;
 
                             foreach (var meeting in meetings)
@@ -143,7 +140,7 @@ namespace lms_with_moodle.Controllers
                 foreach (var schedule in classScheduleViews)
                 {
                     int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
-                    schedule.moodleUrl = appSettings.moddleCourseUrl + moodleId;
+                    schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
                 }
 
                 var groupedSchedule = classScheduleViews
@@ -228,7 +225,7 @@ namespace lms_with_moodle.Controllers
                             await moodleApi.setCourseVisible(lessonMoodle_Id , true);
                             return Ok(scheduleView);
                         }
-
+                        
                         return BadRequest("افزودن ساعت با مشکل مواجه لطفا بعدا تلاش نمایدد");
                     }
                     else
@@ -304,6 +301,15 @@ namespace lms_with_moodle.Controllers
                         {
                             await moodleApi.setCourseVisible(lessonMoodleId , false);
                         }
+
+                        Meeting meeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).FirstOrDefault();
+                        if(meeting != null)
+                        {
+                            appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
+                            appDbContext.Meetings.Remove(meeting);
+                        }
+
+                        await appDbContext.SaveChangesAsync();
 
                         return Ok(scheduleId);
                     }

@@ -27,4 +27,36 @@ class RandomPassword
 
         return String.Join(null, _password);
     }
+
+    public static string GenerateGUID(bool useLowercase, bool useUppercase, bool useNumbers)
+    {
+        int passwordSize = 11;// ***-***-***
+
+        char[] _password = new char[passwordSize];
+        string charSet = ""; // Initialise to blank
+        System.Random _random = new Random();
+
+        // Build up the character set to choose from
+        if (useLowercase) charSet += LOWER_CASE;
+
+        if (useUppercase) charSet += UPPER_CAES;
+
+        if (useNumbers) charSet += NUMBERS;
+
+        for (int counter = 0; counter < passwordSize; counter++)
+        {
+            if(counter % 3 == 0)
+            {
+                _password[counter] = '-';
+            }
+            else
+            {
+                _password[counter] = charSet[_random.Next(charSet.Length - 1)];
+            }
+        }
+
+        return String.Join(null, _password);
+    }
+
+
 }

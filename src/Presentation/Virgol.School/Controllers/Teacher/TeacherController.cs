@@ -35,7 +35,6 @@ namespace lms_with_moodle.Controllers
         private readonly AppSettings appSettings;
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
-        private readonly RoleManager<IdentityRole<int>> roleManager;
 
         MoodleApi moodleApi;
         LDAP_db ldap;
@@ -49,8 +48,8 @@ namespace lms_with_moodle.Controllers
             appSettings = _appsetting.Value;
             userManager = _userManager;
 
-            moodleApi = new MoodleApi(appSettings);
-            ldap = new LDAP_db(appSettings , appDbContext);
+            moodleApi = new MoodleApi();
+            ldap = new LDAP_db(appDbContext);
 
         }
 
@@ -66,7 +65,7 @@ namespace lms_with_moodle.Controllers
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
                 List<ClassBook> classBooks = new List<ClassBook>();
-                List<MeetingView> meetings = appDbContext.MeetingViews.Where(x => x.LessonId == lessonId).ToList();
+                List<MeetingView> meetings = appDbContext.MeetingViews.Where(x => x.ScheduleId == lessonId).ToList();
 
                 int classId = appDbContext.ClassWeeklySchedules.Where(x => x.Id == lessonId).FirstOrDefault().ClassId;
 
@@ -164,7 +163,7 @@ namespace lms_with_moodle.Controllers
                 List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
 
                 userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
-                userCourses.ForEach(x => x.CourseUrl = appSettings.moddleCourseUrl + x.id);
+                userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
 
                 return Ok(userCourses);
             }

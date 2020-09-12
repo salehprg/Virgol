@@ -36,7 +36,6 @@ namespace lms_with_moodle.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
-        private readonly AppSettings appSettings;
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
@@ -49,19 +48,17 @@ namespace lms_with_moodle.Controllers
         public AdminController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , IOptions<AppSettings> _appsetting
                                 , AppDbContext _appdbContext)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             signInManager =_signinManager;
-            appSettings = _appsetting.Value;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi(appSettings);
-            SMSApi = new FarazSmsApi(appSettings);
-            ldap = new LDAP_db(appSettings , appDbContext);
-            myUserManager = new MyUserManager(userManager , appSettings , appDbContext);
+            moodleApi = new MoodleApi();
+            SMSApi = new FarazSmsApi();
+            ldap = new LDAP_db(appDbContext);
+            myUserManager = new MyUserManager(userManager , appDbContext);
         }
 
         [HttpGet]
@@ -170,7 +167,7 @@ namespace lms_with_moodle.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, item)); // Add Users role
                 }
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWTSecret));
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.JWTSecret));
 
                 var token = new JwtSecurityToken(
                     issuer: "https://localhost:5001",
@@ -383,7 +380,7 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
-                //await userManager.DeleteAsync(newSchool);
+                Console.WriteLine(ex.Message);
                 return BadRequest("خطای سیستمی رخ داد لطفا بعدا تلاش نمایید");
             }
         }

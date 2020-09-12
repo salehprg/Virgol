@@ -21,7 +21,8 @@ using Schedule;
 using Quartz.Spi;
 using Quartz;
 using Quartz.Impl;
-
+using System;
+using System.Collections.Generic;
 
 namespace lms_with_moodle
 {
@@ -36,6 +37,7 @@ namespace lms_with_moodle
         public readonly string AllowOrigin = "AllowOrigin";
         public readonly IWebHostEnvironment environment;
         public IConfiguration Configuration { get; }
+        public IConfigurationRoot configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -49,21 +51,57 @@ namespace lms_with_moodle
                 }
             ));
             
-            if(environment.IsDevelopment())
-            {
-                // services.AddDbContext<AppDbContext>(options =>
-                //     options.UseSqlServer(Configuration.GetConnectionString("PublishConnection")));
+            string conStr = "" ; 
 
-                services.AddDbContext<AppDbContext>(options =>{
-                    options.UseNpgsql(Configuration.GetConnectionString("DevConnection_PS"));
-                });
+            if(!environment.IsDevelopment())
+            {
+                IConfigurationSection section = Configuration.GetSection("AppSettings");
+
+                section.Get<AppSettings>();
+                
+                conStr = Configuration.GetConnectionString("PublishConnection_PS");
+
+                // string host = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_HOST");
+                // string name = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_NAME");
+                // string userName = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_USER");
+                // string password = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_PASSWORD");
+
+                // conStr = string.Format("Server={0};Database={1};Username={2};Password={3}" , host , name , userName ,password);
+                
+                // AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
+                // AppSettings.moddleCourseUrl = Environment.GetEnvironmentVariable("VIRGOL_MODDLE_COURSE_URL");
+                // AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
+                // AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
+                // AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
+                // AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
+                // AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");
+                // AppSettings.FarazAPI_Password = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_PASSWORD");
+                // AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
+                // AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
+                // AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
+                // AppSettings.LDAPServer = Environment.GetEnvironmentVariable("VIRGOL_LDAP_SERVER");
+                // AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));
+                // AppSettings.LDAPUserAdmin = Environment.GetEnvironmentVariable("VIRGOL_LDAP_USER_ADMIN");
+                // AppSettings.LDAPPassword = Environment.GetEnvironmentVariable("VIRGOL_LDAP_PASSWORD");
+                // AppSettings.ServerRootUrl = Environment.GetEnvironmentVariable("VIRGOL_SERVER_ROOT_URL");
+
             }
             else
             {
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseNpgsql(Configuration.GetConnectionString("PublishConnection_PS")));
-                    
+                IConfigurationSection section = Configuration.GetSection("AppSettings");
+
+                section.Get<AppSettings>();
+                
+                conStr = Configuration.GetConnectionString("DevConnection_PS");
             }
+
+            AppSettings appSettings = new AppSettings();
+
+            Console.WriteLine(appSettings.ToString());
+
+            services.AddDbContext<AppDbContext>(options =>{
+                options.UseNpgsql(conStr);
+            });
 
             services.AddIdentity<UserModel , IdentityRole<int>>(
                 options => 
@@ -78,12 +116,8 @@ namespace lms_with_moodle
                 .AddDefaultTokenProviders();
 
             
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
-
-            // configure jwt authentication
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.JWTSecret);
+            
+            var key = Encoding.ASCII.GetBytes(AppSettings.JWTSecret);
 
             services.AddAuthentication(x =>
             {
@@ -128,7 +162,7 @@ namespace lms_with_moodle
             services.AddSingleton<CheckAttendeeJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(CheckAttendeeJob),
-                cronExpression: "0 */2 * ? * * *"));
+                cronExpression: "0 */5 * ? * * *"));
 
 
             services.AddHostedService<QuartzHostedService>();
