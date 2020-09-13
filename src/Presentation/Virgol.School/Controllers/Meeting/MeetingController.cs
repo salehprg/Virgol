@@ -386,7 +386,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                BBBApi bBApi = new BBBApi();
+                BBBApi bBApi = new BBBApi(appDbContext , scheduleId);
                 List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == scheduleId).ToList();
 
                 ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();

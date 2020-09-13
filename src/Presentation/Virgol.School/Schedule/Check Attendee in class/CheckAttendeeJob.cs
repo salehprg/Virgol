@@ -33,70 +33,74 @@ namespace Schedule
                     var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
                     var appSetting = scope.ServiceProvider.GetService<IOptions<AppSettings>>().Value;
 
-                    BBBApi bbbApi = new BBBApi();
+                    BBBApi bbbApi = new BBBApi(dbContext);
+                    List<SchoolModel> schools = dbContext.Schools.ToList();
 
-                    MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
-                    List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
-
-                    if(meetingsResponse.meetings != null)
-                        newMeetingList = meetingsResponse.meetings.meeting; 
-
-                    List<Meeting> oldMeetingList = dbContext.Meetings.ToList(); //Meeting list in our database
-                    
-                    foreach(var newMeeting in newMeetingList)
+                    foreach (var school in schools)
                     {
-                        Meeting oldMeeting = oldMeetingList.Where(x => x.BBB_MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
-                        if(oldMeeting != null && !oldMeeting.Private) // it means current Meeting exist and active in our database 
+                        bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
+                        MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
+                        List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
+
+                        if(meetingsResponse.meetings != null)
+                            newMeetingList = meetingsResponse.meetings.meeting; 
+
+                        List<Meeting> oldMeetingList = dbContext.Meetings.ToList(); //Meeting list in our database
+                        
+                        foreach(var newMeeting in newMeetingList)
                         {
-                            foreach(var attendee in newMeeting.attendees.attendee.Where(x => x.role != "MODERATOR")) // Participant present in Online Course
+                            Meeting oldMeeting = oldMeetingList.Where(x => x.BBB_MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
+                            if(oldMeeting != null && !oldMeeting.Private) // it means current Meeting exist and active in our database 
                             {
-                                ParticipantInfo participantInfo = dbContext.ParticipantInfos.Where(x => x.MeetingId == oldMeeting.Id && x.UserId == attendee.userID).FirstOrDefault();
-                                if(participantInfo != null)
+                                foreach(var attendee in newMeeting.attendees.attendee.Where(x => x.role != "MODERATOR")) // Participant present in Online Course
                                 {
-                                    participantInfo.PresentCount++;
-                                    participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeeting.CheckCount + 1) * 100 ) > 70 ? true : false;
-                                    dbContext.ParticipantInfos.Update(participantInfo);
-                                }
-                                else
-                                {
-                                    ParticipantInfo newAttendee = new ParticipantInfo();
-                                    newAttendee.MeetingId = oldMeeting.Id;
-                                    newAttendee.UserId = attendee.userID;
-                                    newAttendee.PresentCount = 1;
+                                    ParticipantInfo participantInfo = dbContext.ParticipantInfos.Where(x => x.MeetingId == oldMeeting.Id && x.UserId == attendee.userID).FirstOrDefault();
+                                    if(participantInfo != null)
+                                    {
+                                        participantInfo.PresentCount++;
+                                        participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeeting.CheckCount + 1) * 100 ) > 70 ? true : false;
+                                        dbContext.ParticipantInfos.Update(participantInfo);
+                                    }
+                                    else
+                                    {
+                                        ParticipantInfo newAttendee = new ParticipantInfo();
+                                        newAttendee.MeetingId = oldMeeting.Id;
+                                        newAttendee.UserId = attendee.userID;
+                                        newAttendee.PresentCount = 1;
 
-                                    dbContext.ParticipantInfos.Add(newAttendee);
+                                        dbContext.ParticipantInfos.Add(newAttendee);
+                                    }
                                 }
+                                oldMeeting.CheckCount++;
+                                dbContext.Update(oldMeeting);
                             }
-                            oldMeeting.CheckCount++;
-                            dbContext.Update(oldMeeting);
+                            //use this for sync with moodle
+                            // else
+                            // {
+                            //     Meeting meeting = new Meeting();
+                            //     meeting.MeetingName = newMeeting.meetingName;
+                            //     meeting.BBB_MeetingId = newMeeting.meetingID;
+                            //     meeting.StartTime = DateTime.Now;
+                            //     meeting.ModeretorId = newMeeting.attendees.attendee.Where(x => x.role == "MODERATOR").FirstOrDefault().userID;
+                            //     meeting.Finished = false;
+                                
+                            //     dbContext.Meetings.Add(meeting);
+                            // }
                         }
-                        //use this for sync with moodle
-                        // else
-                        // {
-                        //     Meeting meeting = new Meeting();
-                        //     meeting.MeetingName = newMeeting.meetingName;
-                        //     meeting.BBB_MeetingId = newMeeting.meetingID;
-                        //     meeting.StartTime = DateTime.Now;
-                        //     meeting.ModeretorId = newMeeting.attendees.attendee.Where(x => x.role == "MODERATOR").FirstOrDefault().userID;
-                        //     meeting.Finished = false;
-                            
-                        //     dbContext.Meetings.Add(meeting);
-                        // }
-                    }
 
-                    foreach(var oldMeeting in oldMeetingList.Where(x => !x.Finished))
-                    {
-                        var closedMeeting = newMeetingList.Where(x => x.meetingID == oldMeeting.BBB_MeetingId).FirstOrDefault();
-                        if(closedMeeting == null) // it means a meeting has closed but its state in our database is Active
+                        foreach(var oldMeeting in oldMeetingList.Where(x => !x.Finished))
                         {
-                            oldMeeting.Finished = true;
-                            oldMeeting.EndTime = MyDateTime.Now();
-                            dbContext.Meetings.Update(oldMeeting);
-                            dbContext.SaveChanges();
+                            var closedMeeting = newMeetingList.Where(x => x.meetingID == oldMeeting.BBB_MeetingId).FirstOrDefault();
+                            if(closedMeeting == null) // it means a meeting has closed but its state in our database is Active
+                            {
+                                oldMeeting.Finished = true;
+                                oldMeeting.EndTime = MyDateTime.Now();
+                                dbContext.Meetings.Update(oldMeeting);
+                                dbContext.SaveChanges();
+                            }
                         }
+                        dbContext.SaveChanges();
                     }
-                    dbContext.SaveChanges();
-                    
                 }
             }
             catch(Exception ex)

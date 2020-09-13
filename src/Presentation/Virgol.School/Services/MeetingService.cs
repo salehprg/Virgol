@@ -77,7 +77,7 @@ public class MeetingService {
             }
         }
 
-        BBBApi bbbApi = new BBBApi();
+        BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
         MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , (bbbMeetingId == "" ? meeting.Id.ToString() : bbbMeetingId) , callBackUrl , (int)duration);
 
         Console.WriteLine(response.returncode);
@@ -292,7 +292,7 @@ public class MeetingService {
         if(meeting == null)
             return null;
 
-        BBBApi bbbApi = new BBBApi();
+        BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
         string classUrl = await bbbApi.JoinRoom(isModerator , meeting.BBB_MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
 
         if(classUrl != null)
@@ -313,7 +313,7 @@ public class MeetingService {
         if(meeting == null || meeting.Id == 0)
             return false;
 
-        BBBApi bbbApi = new BBBApi();
+        BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
         bool resultEnd = await bbbApi.EndRoom(bbbMeetingId);
 
         MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 

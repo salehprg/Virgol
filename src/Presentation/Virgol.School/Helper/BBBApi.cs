@@ -6,19 +6,35 @@ using System.Xml;
 using Newtonsoft.Json;
 using System.Web;
 using System.Net;
+using Models;
+using System.Linq;
 
 namespace lms_with_moodle.Helper
 {
     public class BBBApi {
         static HttpClient client;
-        string BaseUrl;
-        string token;
-        public BBBApi()
-        {
-            client = new HttpClient();   
+        string bbbUrl = "";
+        string bbbSecret = "";
+        AppDbContext appDbContext;
 
-            BaseUrl = AppSettings.BBBBaseUrl;
-            token = AppSettings.Token_moodle;
+        public BBBApi(AppDbContext _appDbContext , int scheduleId = 0)
+        {
+            client = new HttpClient(); 
+            appDbContext = _appDbContext;
+            
+            bbbUrl = AppSettings.VIRGOL_SCALELITE_BASE_URL;
+            bbbSecret = AppSettings.VIRGOL_SCALELITE_SECRET;
+
+            if(scheduleId != 0)
+            {
+                SetConnectionInfo(scheduleId);
+            }
+
+            if(AppSettings.BBB_Load_Balancer_Mode == "scalelite")
+            {
+                bbbUrl = AppSettings.VIRGOL_SCALELITE_BASE_URL;
+                bbbSecret = AppSettings.VIRGOL_SCALELITE_SECRET;
+            }
         }       
 
         async Task<string> sendData (string data , bool joinRoom = false)
@@ -41,9 +57,9 @@ namespace lms_with_moodle.Helper
             string checkSum = "";
             data = data.Replace("?" , "");
             
-            checkSum = SHA1Creator.sha1Creator(data + AppSettings.BBBSecret);
+            checkSum = SHA1Creator.sha1Creator(data + bbbSecret);
 
-            Uri uri = new Uri (BaseUrl + modifiedData + "checksum=" + checkSum.ToLower() );
+            Uri uri = new Uri (bbbUrl + modifiedData + "checksum=" + checkSum.ToLower() );
             if(joinRoom)
                 return uri.AbsoluteUri;
 
@@ -56,8 +72,15 @@ namespace lms_with_moodle.Helper
                 {  
                     XmlDocument xmlResponse = new XmlDocument();
                     xmlResponse.Load(await response.Content.ReadAsStreamAsync());
-                    var jsonObj = JsonConvert.SerializeXmlNode(xmlResponse , Newtonsoft.Json.Formatting.None , true);
+                    string jsonObj = JsonConvert.SerializeXmlNode(xmlResponse , Newtonsoft.Json.Formatting.None , true);
 
+                    if(jsonObj.Contains("?xml"))
+                    {
+                        string[] results = jsonObj.Split("}{");
+                        Console.WriteLine("{" + results[1]);
+
+                        return "{" + results[1];
+                    }
                     return jsonObj;
                 }  
                 else  
@@ -200,5 +223,30 @@ namespace lms_with_moodle.Helper
         }
         
 #endregion
+
+        public void SetConnectionInfo(string _bbbUrl , string _bbbSecret)
+        {
+            if(AppSettings.BBB_Load_Balancer_Mode == "seprate")
+            {
+                bbbUrl = _bbbUrl;
+                bbbSecret = _bbbSecret;
+            }
+        }
+    
+
+        private void SetConnectionInfo(int ScheduleId)
+        {
+            if(ScheduleId != 0 && AppSettings.BBB_Load_Balancer_Mode == "seprate")//Schedule id Private Meeting is 0
+            {
+                int classId = appDbContext.ClassScheduleView.Where(x => x.Id == ScheduleId).FirstOrDefault().ClassId;
+                int schoolId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().School_Id;
+
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+
+                bbbUrl = school.bbbURL;
+                bbbSecret = school.bbbSecret;
+            }
+        }
+    
     }
 }

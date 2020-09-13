@@ -77,8 +77,12 @@ namespace lms_with_moodle
                 AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");
                 AppSettings.FarazAPI_Password = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_PASSWORD");
                 AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
-                AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
-                AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
+                //AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
+                //AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
+                AppSettings.BBB_Load_Balancer_Mode = Environment.GetEnvironmentVariable("BBB_LOAD_BALANCER_MODE");
+                AppSettings.VIRGOL_SCALELITE_BASE_URL = Environment.GetEnvironmentVariable("VIRGOL_SCALELITE_BASE_URL");
+                AppSettings.VIRGOL_SCALELITE_SECRET = Environment.GetEnvironmentVariable("VIRGOL_SCALELITE_SECRET");
+
                 AppSettings.LDAPServer = Environment.GetEnvironmentVariable("VIRGOL_LDAP_SERVER");
                 AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));
                 AppSettings.LDAPUserAdmin = Environment.GetEnvironmentVariable("VIRGOL_LDAP_USER_ADMIN");

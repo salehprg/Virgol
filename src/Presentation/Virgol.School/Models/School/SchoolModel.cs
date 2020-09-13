@@ -19,5 +19,7 @@ public class SchoolModel {
     public int sexuality {get; set;}
     public bool SelfSign {get; set;}
     public bool RemindUser {get; set;}
+    public string bbbURL {get; set;}
+    public string bbbSecret {get; set;}
 
 }
