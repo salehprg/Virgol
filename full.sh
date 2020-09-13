@@ -15,8 +15,8 @@ TAG_REVISION=0
 
 sudo git stash
 sudo git pull origin $GIT_BRANCH
-sudo git checkout origin/$GIT_BRANCH
-#sudo git checkout origin/master
+# sudo git branch --track Beta origin/Beta
+# sudo git checkout Beta
 
 docker login
 docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG .
