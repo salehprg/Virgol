@@ -45,9 +45,9 @@ docker run \
     -e "VIRGOL_FARAZAPI_USERNAME=goldenstarc" \
     -e "VIRGOL_FARAZAPI_PASSWORD=hektug-fakbAm-0vypje" \
     -e "VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=" \
-    -e "VIRGOL_BBB_BASE_URL=https://b1.legace.ir/bigbluebutton/api/" \
-    -e "VIRGOL_BBB_SECRET=1b6s1esKbXNM82ussxx8OHJTenNvfkBu59tkHHADvqk" \
-    -e "VIRGOL_BBB_CALLBACK_URL=/meetingResponse/" \
+    -e "BBB_LOAD_BALANCER_MODE=separate" \
+    -e "VIRGOL_SCALELITE_BASE_URL=https://b1.legace.ir/bigbluebutton/api/" \
+    -e "VIRGOL_SCALELITE_SECRET=1b6s1esKbXNM82ussxx8OHJTenNvfkBu59tkHHADvqk" \
     -e "VIRGOL_JWT_SECRET=Saleh Secret Key" \
     -e "VIRGOL_LDAP_SERVER=ldap.legace.ir" \
     -e "VIRGOL_LDAP_PORT=389" \
@@ -55,3 +55,7 @@ docker run \
     -e "VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24" \
     -e "REACT_APP_HOMEPAGE_TITLE=Virgooool" \
     -d $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
+
+    #  -e "VIRGOL_BBB_BASE_URL=" \
+    # -e "VIRGOL_BBB_SECRET=1b6s1esKbXNM82ussxx8OHJTenNvfkBu59tkHHADvqk" \
+    # -e "VIRGOL_BBB_CALLBACK_URL=/meetingResponse/" \
