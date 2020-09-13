@@ -18,7 +18,7 @@ sudo git pull origin $GIT_BRANCH
 # sudo git branch --track Beta origin/Beta
 # sudo git checkout Beta
 
-docker login
+sudo docker login
 docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG .
 docker tag  $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG  $IMAGE_ACCOUNT/$IMAGE_REPO:latest
 docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
