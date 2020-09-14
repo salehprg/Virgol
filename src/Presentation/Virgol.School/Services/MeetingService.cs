@@ -142,7 +142,8 @@ public class MeetingService {
         float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
         int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
 
-        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))  && (x.DayType == (dayOfWeek - 1) || x.DayType == dayOfWeek)).ToList();
+        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))  && x.DayType == dayOfWeek 
+                                                                                        || x.DayType == dayOfWeek + 1).ToList();
         List<MeetingView> recentClasses = new List<MeetingView>();
         
 
@@ -331,7 +332,10 @@ public class MeetingService {
 
         if(resultEnd)
         {
-            List<Meeting> oldMeetings = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId || x.Id == int.Parse(bbbMeetingId)).ToList();// Use for mixed meeting Id
+            int parsedId = 0;
+            int.TryParse(bbbMeetingId , out parsedId);
+
+            List<Meeting> oldMeetings = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId || x.Id == parsedId).ToList();// Use for mixed meeting Id
 
             foreach (var oldMeeting in oldMeetings)
             {
