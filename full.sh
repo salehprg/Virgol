@@ -37,15 +37,15 @@ docker run \
     -e "VIRGOL_DATABASE_NAME=LMS" \
     -e "VIRGOL_DATABASE_USER=postgres" \
     -e "VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24" \
-    -e "VIRGOL_MODDLE_COURSE_URL=https://moodle/course/view.php?id=" \
-    -e "VIRGOL_MOODLE_BASE_URL=https://moodle/webservice/rest/server.php?moodlewsrestformat=json" \
+    -e "VIRGOL_MODDLE_COURSE_URL=https://moodle.legace.ir/course/view.php?id=" \
+    -e "VIRGOL_MOODLE_BASE_URL=https://moodle.legace.ir/webservice/rest/server.php?moodlewsrestformat=json" \
     -e "VIRGOL_MOODLE_TOKEN=616ed6bc394212692b03ea59b7f94670" \
     -e "VIRGOL_FARAZAPI_URL=http://rest.ippanel.com" \
     -e "VIRGOL_FARAZAPI_SENDER_NUMBER=+98500010707" \
     -e "VIRGOL_FARAZAPI_USERNAME=goldenstarc" \
     -e "VIRGOL_FARAZAPI_PASSWORD=hektug-fakbAm-0vypje" \
     -e "VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=" \
-    -e "BBB_LOAD_BALANCER_MODE=separate" \
+    -e "VIRGOL_BBB_LOAD_BALANCER_MODE=separate" \
     -e "VIRGOL_SCALELITE_BASE_URL=https://b1.legace.ir/bigbluebutton/api/" \
     -e "VIRGOL_SCALELITE_SECRET=1b6s1esKbXNM82ussxx8OHJTenNvfkBu59tkHHADvqk" \
     -e "VIRGOL_JWT_SECRET=Saleh Secret Key" \
