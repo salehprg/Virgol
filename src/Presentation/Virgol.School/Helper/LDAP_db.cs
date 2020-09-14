@@ -3,83 +3,36 @@ using lms_with_moodle.Helper;
 using Microsoft.Extensions.Options;
 using Models.User;
 using Models.InputModel;
-//
+using Novell.Directory.Ldap;
 using System.Collections.Generic;
 using Models;
 using Newtonsoft.Json;
-using System.DirectoryServices;
-using System.Security.Cryptography;
 
 namespace lms_with_moodle.Helper
 {
     public class LDAP_db {
-        //LdapConnection ldapConn;
+        LdapConnection ldapConn;
         AppDbContext appDbContext;
-        private DirectoryEntry ldap;
 
         string containerName = "ou=people,dc=legace,dc=ir";
         public LDAP_db (AppDbContext _appDbContext)
         {
             appDbContext = _appDbContext;
 
-            //ldapConn= new LdapConnection();
+            // Creating an LdapConnection instance 
+            ldapConn= new LdapConnection();
+
             
-            string Server = string.Format("LDAP://{0}:{1}/{2}" , AppSettings.LDAPServer, AppSettings.LDAPPort , containerName);
-
-            DirectoryEntry de = new DirectoryEntry(Server, AppSettings.LDAPUserAdmin, AppSettings.LDAPPassword);
-            de.AuthenticationType = AuthenticationTypes.None;
-
-            ldap = de;
-
-
-        }   
-
-        
-        public string Authenticate(string userName , string password)
-        {
-            try
-            {
-                DirectorySearcher deSearch = new DirectorySearcher();
-                deSearch.SearchRoot = ldap;
-                deSearch.Filter = "(&(|(uniqueIdentifier="+userName+")(cn="+userName+"))(userPassword={SHA}"+toSHA(password)+"))";
-
-                SearchResultCollection results = deSearch.FindAll();
-                if (results.Count == 0)
-                {
-                    deSearch.Filter = "(&(|(uniqueIdentifier="+userName+")(cn="+userName+"))(userPassword="+password+"))";
-                    results = deSearch.FindAll();
-                }
-                
-                if (results.Count == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    ResultPropertyValueCollection path = results[0].Properties["employeeNumber"];
-                    if(path.Count > 0)
-                    {
-                        string employeeID = path[0].ToString();
-                        return employeeID;
-                    }
-                    
-                    return null;;
-                }            
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
         }
+
         public bool AddUserToLDAP(UserModel user , string password = "")
         {
             try
             {
-                // if(!ldapConn.Connected)
-                //     ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
-                // //Bind function will Bind the user object Credentials to the Server
-                // ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
                 
                 bool hasMail = false;
                 string uniqueMailId = user.MelliCode;
@@ -112,56 +65,39 @@ namespace lms_with_moodle.Helper
                         title = "Teacher";
                         break;
                 }
+                //Creates the List attributes of the entry and add them to attribute set 
+                LdapAttributeSet attributeSet = new LdapAttributeSet();
+                attributeSet.Add( new LdapAttribute("objectclass", new string[] {"organizationalPerson" ,
+                                                                                "PostfixBookMailAccount"
+                                                                                ,"extensibleObject"
+                                                                                ,"person"
+                                                                                ,"top"}));
 
-                /// 1. Create user account
-                DirectoryEntries users = ldap.Children;
-                DirectoryEntry newuser = users.Add("cn=" + user.MelliCode, "organizationalPerson");
-                /// 2. Set properties
+                
+                attributeSet.Add( new LdapAttribute("cn", user.FirstName));
+                attributeSet.Add( new LdapAttribute("sn", user.LastName));
 
-                                                                            // ,"PostfixBookMailAccount"
-                                                                            // ,"extensibleObject"
-                                                                            // ,"person"
-                                                                            // ,"top"
+                attributeSet.Add( new LdapAttribute("mail", mailAddress));
 
-                SetProperty(newuser,"sn", user.LastName);
-                //SetProperty(newuser,"cn", name);
-                newuser.CommitChanges();
+                attributeSet.Add( new LdapAttribute("givenName", user.FirstName));
+                attributeSet.Add( new LdapAttribute("employeeNumber", user.MelliCode));
+                attributeSet.Add( new LdapAttribute("mailEnabled", "TRUE"));
+                attributeSet.Add( new LdapAttribute("mailGidNumber", "5000"));
+                attributeSet.Add( new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress));
+                attributeSet.Add( new LdapAttribute("mailQuota", "10240"));
+                attributeSet.Add( new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir"));
+                attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
+                attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
+                attributeSet.Add( new LdapAttribute("title", title));
+                attributeSet.Add( new LdapAttribute("userPassword", (password != "" ? password : user.MelliCode)));
+                attributeSet.Add( new LdapAttribute("uniqueIdentifier", new string[]{ user.MelliCode , uniqueMailId }));
+                
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + user.MelliCode + "," + containerName;      
+                LdapEntry newEntry = new LdapEntry( dn, attributeSet );
 
-                SetProperty(newuser , "objectClass" , new string[]{"top" , "person" , "extensibleObject"} );
-
-                newuser.RefreshCache();
-
-                SetProperty(newuser , "objectClass" , "PostfixBookMailAccount" , true);
-
-                SetProperty(newuser,"employeeNumber",user.MelliCode);
-                SetProperty(newuser,"givenName" , user.FirstName);
-
-                SetProperty(newuser,"mail", mailAddress);
-                SetProperty(newuser,"mailEnabled", "TRUE");
-                SetProperty(newuser,"mailGidNumber", "5000");
-                SetProperty(newuser,"mailHomeDirectory", "/srv/vmail/"+mailAddress);
-                SetProperty(newuser,"mailQuota", "10240");
-                SetProperty(newuser,"mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
-                SetProperty(newuser,"mailUidNumber", "5000");
-                SetProperty(newuser,"mailUidNumber", "5000");
-                SetProperty(newuser,"title", title);
-                SetProperty(newuser,"cn" , uniqueMailId);
-                newuser.CommitChanges();
-
-                newuser.RefreshCache();
-                /// 3. Set password
-                SetPassword(newuser , user.MelliCode);
-
-                newuser.RefreshCache();
-                /// 4. Enable account
-                //EnableAccount(newuser);
-                /// 5. Add user account to groups
-                //AddUserToGroup(newuser, group);
-                /// 6. Create a mailbox in Microsoft Exchange
-                //GenerateMailBox(login);
-
-                newuser.Close();
-                ldap.Close();
+                //Add the entry to the directory
+                ldapConn.Add( newEntry );
 
                 if(hasMail)
                 {
@@ -182,19 +118,27 @@ namespace lms_with_moodle.Helper
                 //ldapConn.Disconnect();
             }
         }
-        public void ChangePassword(string userName , string newPassword)
-        {
-            DirectoryEntries users = ldap.Children;
-            DirectoryEntry editUser = users.Find("cn=" + userName);
 
-            SetPassword(editUser , newPassword);
-        }
-
-        public bool AddAtribute(string IdNumbr , string attrName , string attrValue)
+        public bool AddEntry(string IdNumbr , string attrName , string attrValue)
         {
             try
             {
-                
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute attr =  new LdapAttribute(attrName, attrValue);
+
+                mods.Add(new LdapModification(LdapModification.Add , attr));
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + IdNumbr + "," + containerName;      
+
+                //Add the entry to the directory
+                ldapConn.Modify(dn , mods.ToArray());
 
                 return true;
             }
@@ -208,24 +152,26 @@ namespace lms_with_moodle.Helper
                 //ldapConn.Disconnect();
             }
         }
-        public bool EditAttribute(string IdNumber , string attrName , string newAttrValue , string pAttrValue = "")
+        public bool EditAttribute(string IdNumbr , string attrName , string attrValue)
         {
             try
             {
-                DirectoryEntries users = ldap.Children;
-                DirectoryEntry editUser = users.Find("cn=" + IdNumber);
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
-                int index = editUser.Properties[attrName].IndexOf(pAttrValue);
-                if(index >= 0)
-                {
-                    editUser.Properties[attrName][index] = newAttrValue;
-                }
-                else
-                {
-                    SetProperty(editUser , attrName , newAttrValue , true);
-                }
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
 
-                editUser.CommitChanges();
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute attr =  new LdapAttribute(attrName, attrValue);
+
+                mods.Add(new LdapModification(LdapModification.Replace , attr));
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + IdNumbr + "," + containerName;      
+
+                //Edit the entry in the directory
+                ldapConn.Modify(dn , mods.ToArray());
 
                 return true;
             }
@@ -239,16 +185,24 @@ namespace lms_with_moodle.Helper
                 //ldapConn.Disconnect();
             }
         }
-        
-        
         public bool DeleteEntry(string IdNumber)
         {
             try
             {
-                DirectoryEntries users = ldap.Children;
-                DirectoryEntry deleteUser = users.Find("cn=" + IdNumber);
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
                 
-                users.Remove(deleteUser);
+                // DN of the entry to be added
+                
+                string dn = "uniqueIdentifier=" + IdNumber + "," + containerName;      
+
+
+                //Add the entry to the directory
+                ldapConn.Delete(dn);
+
                 return true;
             }
             catch(Exception ex)
@@ -262,28 +216,155 @@ namespace lms_with_moodle.Helper
             }
         }
 
-
-        public bool CheckUserData(string userName)
+        public string Authenticate(string userName , string password)
         {
-            DirectorySearcher deSearch = new DirectorySearcher();
-            deSearch.SearchRoot = ldap;
-            deSearch.Filter = "(uniqueIdentifier=" + userName + ")";
-
-            SearchResultCollection results = deSearch.FindAll();
-            if(results.Count > 0)
+            try
             {
-                ResultPropertyValueCollection path = results[0].Properties["employeeNumber"];
-                string employeeID = path[0].ToString();
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+                
+                // DN of the entry to be added
+                LdapAttribute attrPassword = new LdapAttribute("userPassword", password);
+                
+                string searchFilter = "(&" + 
+                                        "(uniqueIdentifier=" + userName + ")" +
+                                        "(userPassword=" + password + ")" +
+                                        ")";
+                                        
+                ILdapSearchResults lsc = ldapConn.Search(containerName,LdapConnection.ScopeSub,searchFilter,null,false);
+
+                while(lsc.HasMore())
+                {
+                    LdapEntry nextEntry = null;
+                    try 
+                    {
+                        nextEntry = lsc.Next(); 
+                    } 
+                    catch(LdapException e) 
+                    { 
+                        Console.WriteLine("Error: " + e.LdapErrorMessage);
+                        //Exception is thrown, go for next entry
+                        continue; 
+                    } 
+
+                    LdapAttributeSet attributeSet = nextEntry.GetAttributeSet();
+
+                    System.Collections.IEnumerator ienum = attributeSet.GetEnumerator();
+
+                    string idNumber = "";
+                    while(ienum.MoveNext())
+                    { 
+                        LdapAttribute attribute = (LdapAttribute)ienum.Current;
+                        if(attribute.Name == "employeeNumber")
+                        {
+                            idNumber = attribute.StringValue;
+                        }
+                    }
+
+                    return idNumber;
+                }
+
+                return null;
+                
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+        public bool ChangePassword(string UserName, string newPassword)
+        {
+            try
+            {
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute attr =  new LdapAttribute("userPassword", newPassword);
+
+                mods.Add(new LdapModification(LdapModification.Replace , attr));
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + UserName + "," + containerName;      
+
+                //Edit the entry in the directory
+                ldapConn.Modify(dn , mods.ToArray());
 
                 return true;
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                //ldapConn.Disconnect();
+            }
+        }
+        
+        public bool CheckUserData(string userName)
+        {
+            if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+            //Bind function will Bind the user object Credentials to the Server
+            ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);       
             
+            string searchFilter = "(uniqueIdentifier=" + userName + ")";
+                                    
+            ILdapSearchResults lsc=ldapConn.Search(containerName,LdapConnection.ScopeSub,searchFilter,null,false);
+
+            while(lsc.HasMore())
+            {
+                LdapEntry nextEntry = null;
+                try 
+                {
+                    nextEntry = lsc.Next(); 
+                } 
+                catch(LdapException e) 
+                { 
+                    Console.WriteLine("Error: " + e.LdapErrorMessage);
+                    //Exception is thrown, go for next entry
+                    continue; 
+                } 
+
+                LdapAttributeSet attributeSet = nextEntry.GetAttributeSet();
+
+                System.Collections.IEnumerator ienum = attributeSet.GetEnumerator();
+
+                string idNumber = "";
+                while(ienum.MoveNext())
+                { 
+                    LdapAttribute attribute = (LdapAttribute)ienum.Current;
+                    if(attribute.Name == "employeeNumber")
+                    {
+                        idNumber = attribute.StringValue;
+                    }
+                }
+
+                return !string.IsNullOrEmpty(idNumber);
+            }
+
             return false;
         }
         public bool AddMail(UserModel user)
         {
             try
             {
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+
                 string uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
                                                                 , user.LatinLastname 
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
@@ -291,18 +372,24 @@ namespace lms_with_moodle.Helper
 
                 string mailAddress = uniqueMailId + "@legace.ir";
 
-                DirectoryEntries users = ldap.Children;
-                DirectoryEntry editUser = users.Find("cn=" + user.MelliCode);
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute mail = new LdapAttribute("mail", mailAddress);
+                LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
+                LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
 
-                SetProperty(editUser ,"mail", mailAddress);
-                SetProperty(editUser ,"mailHomeDirectory", "/srv/vmail/"+mailAddress);
-                SetProperty(editUser ,"mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
+                LdapAttribute uniqueId = new LdapAttribute("uniqueIdentifier", uniqueMailId);
 
-                SetProperty(editUser ,"cn", uniqueMailId , true);
+                mods.Add(new LdapModification(LdapModification.Add , mail));
+                mods.Add(new LdapModification(LdapModification.Add , uniqueId));
+                mods.Add(new LdapModification(LdapModification.Replace , mailHDir));
+                mods.Add(new LdapModification(LdapModification.Replace , mailSTRDir));
 
-                editUser.CommitChanges();
-                editUser.Close();
-                ldap.Close();
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + user.MelliCode + "," + containerName;      
+
+                //Add the entry to the directory
+                ldapConn.Modify(dn , mods.ToArray());
 
                 user.Email = mailAddress;
                 appDbContext.Users.Update(user);
@@ -329,10 +416,24 @@ namespace lms_with_moodle.Helper
         {
             try
             {
-                DirectoryEntries users = ldap.Children;
-                DirectoryEntry editUser = users.Find("cn=" + oldUsername);
-                
-                editUser.Rename("cn=" + newUserName);
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute newUid = new LdapAttribute("uniqueIdentifier", newUserName);
+                LdapAttribute previousUid = new LdapAttribute("uniqueIdentifier", oldUsername);
+
+                mods.Add(new LdapModification(LdapModification.Delete , previousUid));
+                mods.Add(new LdapModification(LdapModification.Add , newUid));
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + oldUsername + "," + containerName;      
+
+                //Add the entry to the directory
+                ldapConn.Modify(dn , mods.ToArray());
 
                 return true;
             }
@@ -347,6 +448,7 @@ namespace lms_with_moodle.Helper
             }
         }
         
+
         ///<summary>
         ///don't change email in Database before call this methode by yourSelf
         ///</summary>
@@ -360,15 +462,6 @@ namespace lms_with_moodle.Helper
             return DoEditMail(null , user);
         }
 
-
-        private void SetPassword(DirectoryEntry usr , string _Password)
-        {
-            
-            object[] password = new object[] { toSHA(_Password) };
-
-            SetProperty(usr , "userPassword" , "{SHA}"+toSHA(_Password));
-            usr.CommitChanges();
-        }
         private bool DoEditMail(UserModel userModel = null , UserDataModel userDataModel = null)
         {
             try
@@ -385,6 +478,12 @@ namespace lms_with_moodle.Helper
                     user = userModel;
                 }
 
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+
                 string uniqueMailId = string.Format("{0}.{1}.{2}" , user.LatinFirstname 
                                                                 , user.LatinLastname 
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
@@ -392,16 +491,31 @@ namespace lms_with_moodle.Helper
 
                 string mailAddress = uniqueMailId + "@legace.ir";
 
-                DirectoryEntries users = ldap.Children;
-                DirectoryEntry editUser = users.Find("cn=" + user.UserName);
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute mail = new LdapAttribute("mail", mailAddress);
+                LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
+                LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
 
-                SetProperty(editUser , "mail", mailAddress);
-                SetProperty(editUser , "mailHomeDirectory", "/srv/vmail/"+mailAddress);
-                SetProperty(editUser , "mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
+                LdapAttribute uniqueId = new LdapAttribute("uniqueIdentifier", uniqueMailId);
+                LdapAttribute previousEmail = null;
+                if(user.Email != null)
+                    previousEmail = new LdapAttribute("uniqueIdentifier", user.Email.Split("@")[0]);
 
-                EditAttribute(user.UserName , "cn" , mailAddress , user.Email.Split("@")[0]);
+                mods.Add(new LdapModification(LdapModification.Replace , mail));
 
-                editUser.CommitChanges();
+                if(previousEmail != null)
+                    mods.Add(new LdapModification(LdapModification.Delete , previousEmail));
+                    
+                mods.Add(new LdapModification(LdapModification.Add , uniqueId));
+                mods.Add(new LdapModification(LdapModification.Replace , mailHDir));
+                mods.Add(new LdapModification(LdapModification.Replace , mailSTRDir));
+
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + user.MelliCode + "," + containerName;      
+
+                //Add the entry to the directory
+                ldapConn.Modify(dn , mods.ToArray());
 
                 user.Email = mailAddress;
                 appDbContext.Users.Update(user);
@@ -419,36 +533,6 @@ namespace lms_with_moodle.Helper
                 //ldapConn.Disconnect();
             }
         }
-        private void SetProperty(DirectoryEntry de, string PropertyName, string PropertyValue , bool duplicate = false)
-        {
-            if (PropertyValue != null)
-            {
-                if (de.Properties.Contains(PropertyName) && !duplicate)
-                {
-                    de.Properties[PropertyName][0] = PropertyValue;
-                }
-                else
-                {
-                    de.Properties[PropertyName].Add(PropertyValue);
-                }
-            }
-        }
-        private void SetProperty(DirectoryEntry de, string PropertyName, string[] PropertyValues)
-        {
-            foreach (var value in PropertyValues)
-            {
-                de.RefreshCache();
-                de.Properties[PropertyName].Add(value);
-                de.CommitChanges();
-            }
-        }
-        private string toSHA(string password)
-        {
-            var sha1 = new SHA1Managed();
-            var hashedpassword = Convert.ToBase64String(sha1.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)));
-
-            return hashedpassword;
-        }
-
+        
     }
 }
