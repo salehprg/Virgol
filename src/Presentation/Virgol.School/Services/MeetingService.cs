@@ -42,6 +42,7 @@ public class MeetingService {
             meeting.StartTime = timeNow;
             meeting.ScheduleId = scheduleId;
             meeting.TeacherId = teacherId;
+            meeting.Finished = true;
 
             appDbContext.Meetings.Add(meeting);
             appDbContext.SaveChanges();
@@ -59,7 +60,8 @@ public class MeetingService {
     {
         string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
 
-        duration += 20; // add 20 minutes Additional to the end of class
+        //duration += 20; // add 20 minutes Additional to the end of class
+        duration = 0; // add 20 minutes Additional to the end of class
         Console.WriteLine(callBackUrl);
 
         if(meeting.Private)
@@ -142,8 +144,10 @@ public class MeetingService {
         float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
         int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
 
-        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))  && x.DayType == dayOfWeek 
-                                                                                        || x.DayType == dayOfWeek + 1).ToList();
+        // List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))  && x.DayType == dayOfWeek 
+        //                                                                                 || x.DayType == dayOfWeek + 1).ToList();
+
+        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && x.DayType == dayOfWeek) || x.DayType == dayOfWeek + 1).ToList();                                                                          
         List<MeetingView> recentClasses = new List<MeetingView>();
         
 
