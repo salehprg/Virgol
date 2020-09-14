@@ -50,7 +50,6 @@ class Home extends React.Component {
     }
 
     hidePrivateModal = () => {
-        console.log("what")
         this.setState({ newPrivateModal: false })
     }
     
