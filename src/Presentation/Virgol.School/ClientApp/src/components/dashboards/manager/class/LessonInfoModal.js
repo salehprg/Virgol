@@ -136,9 +136,9 @@ class LessonInfoModal extends React.Component {
                                     placeholder="رمز عبور"
                                     value={localStorage.getItem('userPassword')}
                                 /> */}
-                                <a href={"https://localhost:5001/SSO"} className="relative w-1/2 bg-greenish rounded-full cursor-pointer p-2">
+                                <button onClick={() => history.push("/SSO")} className="relative w-1/2 bg-greenish rounded-full cursor-pointer p-2">
                                     ورود به فعالیت های درسی
-                                </a>
+                                </button>
                             {/* </form> */}
 
                             {(this.props.isTeacher ?
