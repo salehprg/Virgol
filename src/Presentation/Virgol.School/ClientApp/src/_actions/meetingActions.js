@@ -180,6 +180,37 @@ export const GetRecordList = (scheduleId) => async dispatch => {
 
 }
 
+export const CreatePrivateRoom = (roomName) => async dispatch => {
+
+    try {
+        
+        console.log(userToken);
+
+        dispatch({ type: START })
+        const response = await lms.put(`/Meeting/CreatePrivateRoom?roomName=${roomName}` , null , {
+            headers: {
+                authorization: `Bearer ${userToken}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success("کلاس خصوصی با موفقیت ایجاد شد"))
+        dispatch({ type: Type.StartMeeting, payload: response.data })
+
+        return true
+
+    } catch (e) {
+
+        console.log(e)
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+
+        return false
+
+    }
+
+}
+
 export const StartMeeting = (token,lessonId) => async dispatch => {
 
     try {
@@ -231,6 +262,37 @@ export const EndMeeting = (token,bbbMeetingId) => async dispatch => {
         console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
+
+        return false
+
+    }
+
+}
+
+export const JoinPrivateRoom = (token,roomGUID) => async dispatch => {
+
+    try {
+        
+        dispatch({ type: START })
+        const response = await lms.post(`/Meeting/JoinPrivateRoom?roomGUID=${roomGUID}` , null , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success("درحال ورود به کلاس خصوصی..."))
+        dispatch(alert.success("درصورتی که به کلاس وارد نشدید <<پاپ آپ>> مرورگر خودرا فعال کنید.  - تنها مرورگر قابل استفاده در دستگاه های اپل ، سافاری و مرورگر پیشنهادی در سایر دستگاه ها گوگل کروم میباشد"))
+        window.open(response.data, '_blank');
+        dispatch({ type: Type.JoinMeeting, payload: response.data })
+
+        return true
+
+    } catch (e) {
+
+        console.log(e)
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
 
         return false
 

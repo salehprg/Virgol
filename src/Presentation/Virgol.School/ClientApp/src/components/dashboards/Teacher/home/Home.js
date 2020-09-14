@@ -6,7 +6,7 @@ import Feed from "../../feed/Feed";
 import RecentClass from "../RecentClass/RecentClass";
 import { connect } from "react-redux";
 import {GetIncommingNews} from "../../../../_actions/newsActions"
-import {GetMeetingList , GetRecentClass , StartMeeting , EndMeeting , JoinMeeting } from "../../../../_actions/meetingActions"
+import {GetMeetingList , GetRecentClass , CreatePrivateRoom , StartMeeting , EndMeeting , JoinMeeting } from "../../../../_actions/meetingActions"
 import Modal from "../../../modals/Modal";
 import Fieldish from "../../../field/Fieldish";
 
@@ -53,6 +53,12 @@ class Home extends React.Component {
         this.setState({ newPrivateModal: false })
     }
     
+    createPrivateRoom = async (roomName) => {
+        await this.props.CreatePrivateRoom(this.state.privateName)
+        this.componentDidMount()
+        this.render()
+    }
+
     render() {
         if(this.state.loading) return "درحال بارگداری اطلاعات ..."
         return (
@@ -61,10 +67,12 @@ class Home extends React.Component {
                     <Modal cancel={this.hidePrivateModal}>
                         <div onClick={(e) => e.stopPropagation()} className="w-11/12 rounded-lg bg-bold-blue text-center max-w-500 p-8">
                             <input
-                                className="w-5/6 px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue"
+                                value={this.state.privateName}
+                                onChange={(e) => this.setState({privateName : e.target.value})}
+                                className="w-5/6 px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue text-right text-white"
                                 placeholder="نام کلاس خصوصی"
                             />
-                            <button className="px-6 my-4 py-1 rounded-lg text-white bg-greenish">ایجاد کلاس</button>
+                            <button onClick={() => this.createPrivateRoom()} className="px-6 my-4 py-1 rounded-lg text-white bg-greenish">ایجاد کلاس</button>
                         </div>
                     </Modal>
                     :
@@ -112,4 +120,4 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting ,
-                                             EndMeeting , JoinMeeting , GetIncommingNews })(Home);
+                                             EndMeeting , JoinMeeting , GetIncommingNews , CreatePrivateRoom })(Home);

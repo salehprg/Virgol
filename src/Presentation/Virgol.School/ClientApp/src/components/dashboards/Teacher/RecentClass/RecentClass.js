@@ -1,5 +1,6 @@
 import React from "react";
 import RecentClassDetail from "./ClassDetail";
+import PrivateClass from "./PrivateClass";
 
 class RecentClass extends React.Component {
 
@@ -34,6 +35,7 @@ class RecentClass extends React.Component {
                         :
                         classes.map(x => {
                             return (
+                                (x.classId ?
                                 <RecentClassDetail
                                     text={(joinList ? x.meetingName : x.orgLessonName)}
                                     schoolName={x.schoolName}
@@ -46,6 +48,14 @@ class RecentClass extends React.Component {
                                     endTime={`${~~x.endHour}:${((x.endHour - ~~x.endHour) * 60 == 0 ? '00' : (x.endHour - ~~x.endHour) * 60)}`
                                     }
                                 />
+                                :
+                                <PrivateClass
+                                    text={(joinList ? x.meetingName : x.orgLessonName)}
+                                    onStart={() => this.props.onStart(x.id)}
+                                    onEnd={() => this.props.onEnd(x.bbB_MeetingId)}
+                                    guid={x.bbB_MeetingId}
+                                />
+                                )
                             );
                         })
                     )
