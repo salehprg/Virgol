@@ -36,6 +36,9 @@ class TeacherDashboard extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state.active !== this.props.location.pathname.split('/')[2]) {
             this.setState({ active: this.props.location.pathname.split('/')[2] })
+            if (window.innerWidth < 1024) {
+                this.setState({ sidebar: false })
+            }
         }
     }
 

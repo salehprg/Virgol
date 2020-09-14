@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {logo, menu, x} from "../../../assets/icons";
 
 
-const   Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, children }) => {
+const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, children }) => {
 
     const sidebarVar = {
         open: {
