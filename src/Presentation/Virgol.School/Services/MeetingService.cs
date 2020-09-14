@@ -42,7 +42,7 @@ public class MeetingService {
             meeting.StartTime = timeNow;
             meeting.ScheduleId = scheduleId;
             meeting.TeacherId = teacherId;
-            meeting.Finished = true;
+            meeting.Finished = false;
 
             appDbContext.Meetings.Add(meeting);
             appDbContext.SaveChanges();
