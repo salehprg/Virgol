@@ -284,13 +284,33 @@ namespace lms_with_moodle.Controllers
                                 
                 foreach (var classs in recentClasses)
                 {
-                    if(classs.BBB_MeetingId != null)
+                    if(!isTeacher)
                     {
-                        classs.started = true;
+                        DateTime timeNow = MyDateTime.Now();
+                        float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
+
+                        if(currentTime <= classs.EndHour && currentTime >= (classs.StartHour - 0.25))
+                        {
+                            if(classs.BBB_MeetingId != null)
+                            {
+                                classs.started = true;
+                            }
+                            else
+                            {
+                                classs.started = false;
+                            }
+                        }
                     }
                     else
                     {
-                        classs.started = false;
+                        if(classs.BBB_MeetingId != null)
+                        {
+                            classs.started = true;
+                        }
+                        else
+                        {
+                            classs.started = false;
+                        }
                     }
                 }
             
