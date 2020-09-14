@@ -144,8 +144,10 @@ public class MeetingService {
         float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
         int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
 
-        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))  && x.DayType == dayOfWeek 
-                                                                                        || x.DayType == dayOfWeek + 1).ToList();
+        // List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && currentTime >= (x.StartHour - 0.25))  && x.DayType == dayOfWeek 
+        //                                                                                 || x.DayType == dayOfWeek + 1).ToList();
+
+        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && x.DayType == dayOfWeek) || x.DayType == dayOfWeek + 1).ToList();                                                                          
         List<MeetingView> recentClasses = new List<MeetingView>();
         
 
