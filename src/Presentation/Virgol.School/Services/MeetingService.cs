@@ -48,8 +48,10 @@ public class MeetingService {
 
             return meeting;
         }
-        catch
+        catch(Exception ex)
         {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
             return null;
         }
     }
