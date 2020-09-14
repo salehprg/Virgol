@@ -5,6 +5,7 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 import {GetAllActiveMeeting} from '../../../../_actions/meetingActions'
 import getColor from "../../../../assets/colors";
 import TrackerLessonInfo from "./TrackerLessonInfo";
+import {onGoing} from "../../../../assets/icons";
 
 class Tracker extends React.Component {
 
@@ -71,6 +72,12 @@ class Tracker extends React.Component {
         this.setState({ lessonInfo: null , showLessonInfo : false})
     }
 
+    showOnGoing = (lessonDetail) => {
+        if (lessonDetail) {
+            if (lessonDetail.bbB_MeetingId) return <span className="w-full relative mt-2">{onGoing('w-6 centerize')}</span>
+        }
+        return null;
+    }
 
     render() {
         const layout = this.state.layout.concat(this.state.lessons);
@@ -93,8 +100,9 @@ class Tracker extends React.Component {
                         <GridLayout className="layout" layout={layout} cols={34} rowHeight={50} width={1800}>
                             {layout.map(x => {
                                 return (
-                                    <div onClick={() => this.showLessonInfo(x.i)} className={`pointer overflow-hidden border border-white text-center text-white ${x.c}`} key={x.i}>
+                                    <div onClick={() => this.showLessonInfo(x.i)} className={`pointer overflow-hidden border flex flex-col justify-center border-white text-center text-white ${x.c}`} key={x.i}>
                                         <p className="text-center">{x.name}</p>
+                                        {this.showOnGoing(x.lessonDetail)}
                                     </div>
                                 );
                             })}

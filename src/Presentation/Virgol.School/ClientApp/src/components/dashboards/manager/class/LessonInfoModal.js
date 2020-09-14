@@ -14,8 +14,8 @@ class LessonInfoModal extends React.Component {
     componentDidMount = async () =>{
 
         const times = [];
-        var startTime = 7.0;
-        var endTime = 22.0;
+        var startTime = 0.0;
+        var endTime = 24.0;
         var step = 0.25;//Every 15 minute
 
         for(var i = startTime ;i <= endTime ;i += step){

@@ -11,9 +11,7 @@ import News from "./News/News";
 import adminTeachers from "./Teachers/adminTeachers";
 import adminStudents from "./Students/adminStudents";
 import protectedAdmin from "../../protectedRoutes/protectedAdmin";
-import Tracker from "../manager/tracker/Tracker";
 import { connect } from "react-redux";
-
 
 class Dashboard extends React.Component {
 
@@ -39,6 +37,9 @@ class Dashboard extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state.active !== this.props.location.pathname.split('/')[2]) {
             this.setState({ active: this.props.location.pathname.split('/')[2] })
+            if (window.innerWidth < 1024) {
+                this.setState({ sidebar: false })
+            }
         }
     }
 
