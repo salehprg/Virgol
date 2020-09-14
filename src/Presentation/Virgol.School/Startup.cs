@@ -79,7 +79,7 @@ namespace lms_with_moodle
                 AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
                 //AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
                 //AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
-                AppSettings.BBB_Load_Balancer_Mode = Environment.GetEnvironmentVariable("BBB_LOAD_BALANCER_MODE");
+                AppSettings.VIRGOL_BBB_LOAD_BALANCER_MODE = Environment.GetEnvironmentVariable("VIRGOL_BBB_LOAD_BALANCER_MODE");
                 AppSettings.VIRGOL_SCALELITE_BASE_URL = Environment.GetEnvironmentVariable("VIRGOL_SCALELITE_BASE_URL");
                 AppSettings.VIRGOL_SCALELITE_SECRET = Environment.GetEnvironmentVariable("VIRGOL_SCALELITE_SECRET");
 
@@ -107,6 +107,21 @@ namespace lms_with_moodle
                 options.UseNpgsql(conStr);
             });
 
+            // try
+            // {
+            //     Console.WriteLine("Make sure that Environment Variable are ok ? (y/n)");
+            //     string status = Console.ReadLine();
+            //     if(status.ToLower() == "n")
+            //     {
+            //         Console.WriteLine("Please set Environment Variable");
+            //         throw new Exception("Build was canceled by user");
+            //     }
+            // }
+            // catch(Exception ex)
+            // {
+            //     throw ;
+            // }
+            
             string backupStr = Configuration.GetConnectionString("BackupConnection");
 
             services.AddDbContext<AppDbContextBackup>(options =>{
