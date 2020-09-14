@@ -1,5 +1,6 @@
 import Axios from "axios";
-import React from "react";
+import React, { createRef } from "react";
+import { connect } from "react-redux";
 import lms from "../../apis/lms";
 import {loading, logo} from "../../assets/icons";
 
@@ -14,33 +15,43 @@ class LoginSSO extends React.Component {
         IdNumer: null
     }
 
+    formRef = createRef();
+
     componentDidMount() {
         var bodyFormData = new FormData();
-        bodyFormData.append('username', 'admin');
-        bodyFormData.append('password', 'yK!@#PwuVg2zzVv');
+
+        this.formRef.current.submit()
+
+        // bodyFormData.append('username', 'admin');
+        // bodyFormData.append('password', 'yK!@#PwuVg2zzVv');
 
     }
 
     render() {
         return (
-            <form className="text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
+            <form ref={this.formRef} className="text-center" action="https://moodle.legace.ir/login/index.php" method="POST"  >
                 <input
+                    hidden="true"
                     name="username"
                     type="text"
                     placeholder="نام کاربری"
+                    value={this.props.user.userInformation.userName}
                 />
                 <input
+                    hidden="true"
                     name="password"
                     type="text"
                     placeholder="رمز عبور"
+                    value={localStorage.getItem('userPassword')}
                 />
-                <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
-                    {this.state.logingin ? loading('w-6 text-white') : 'ورود'}
-                </button>
             </form>
         );
     }
 
 }
 
-export default LoginSSO;
+const mapStateToProps = state => {
+    return {user : state.auth.userInfo}
+}
+
+export default connect(mapStateToProps)(LoginSSO);
