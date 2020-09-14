@@ -29,7 +29,7 @@ class LoginSSO extends React.Component {
 
     render() {
         return (
-            <form ref={this.formRef} className="text-center" action="https://moodle.legace.ir/login/index.php" method="POST"  >
+            <form ref={this.formRef} className="text-center" action={process.env.REACT_APP_MOODLE_URL} method="POST"  >
                 <input
                     hidden="true"
                     name="username"
