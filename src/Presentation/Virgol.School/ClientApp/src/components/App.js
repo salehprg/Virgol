@@ -45,6 +45,11 @@ class App extends React.Component {
         history.listen((location, action) => {
             this.props.dispatch({ type: CLEAR });
         });
+        if (process.env.REACT_APP_RAHE_DOOR !== "true") {
+            document.title = "سامانه ویرگول";
+        } else {
+            document.title = "سامانه آموزش از راه دور استان خراسان رضوی";
+        }
     }
 
     fadeAlert = () => {
