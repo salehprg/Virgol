@@ -10,11 +10,10 @@ using Newtonsoft.Json;
 
 public class MeetingService {
     AppDbContext appDbContext;
-    MoodleApi moodleApi;
     public MeetingService(AppDbContext _appDbContext)
     {
         appDbContext = _appDbContext;
-        moodleApi = new MoodleApi();
+
     }
 
 #region Private Functions
@@ -27,7 +26,7 @@ public class MeetingService {
             int scheduleId = classSchedule.Id;
             int moodleId = appDbContext.School_Lessons.Where(x => x.classId == classSchedule.ClassId && x.Lesson_Id == classSchedule.LessonId).FirstOrDefault().Moodle_Id;
 
-            CourseDetail lessonDetail = await moodleApi.GetCourseDetail(moodleId);
+            string displayName = string.Format("{0} - {1} ({2})" , classSchedule.OrgLessonName , classSchedule.SchoolName , classSchedule.ClassName);
 
             DateTime timeNow = MyDateTime.Now();
 
@@ -35,7 +34,7 @@ public class MeetingService {
             int newMeetingNo = meetings.Count + 1;
 
             if(meetingName == "")
-                meetingName = lessonDetail.displayname + " جلسه " + newMeetingNo;
+                meetingName = displayName + " جلسه " + newMeetingNo;
 
             Meeting meeting = new Meeting();
             meeting.MeetingName = meetingName;

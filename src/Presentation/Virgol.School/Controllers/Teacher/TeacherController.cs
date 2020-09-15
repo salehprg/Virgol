@@ -37,7 +37,6 @@ namespace lms_with_moodle.Controllers
         private readonly UserManager<UserModel> userManager;
 
         MoodleApi moodleApi;
-        LDAP_db ldap;
         
         public TeacherController(AppDbContext dbContext
                                 , IOptions<AppSettings> _appsetting
@@ -49,7 +48,6 @@ namespace lms_with_moodle.Controllers
             userManager = _userManager;
 
             moodleApi = new MoodleApi();
-            ldap = new LDAP_db(appDbContext);
 
         }
 

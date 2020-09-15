@@ -37,8 +37,6 @@ namespace lms_with_moodle.Controllers
         private readonly UserManager<UserModel> userManager;
         private readonly MeetingService meetingService;
 
-        MoodleApi moodleApi;
-        LDAP_db ldap;
         
         public MeetingController(AppDbContext dbContext
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -47,8 +45,6 @@ namespace lms_with_moodle.Controllers
             appDbContext = dbContext;
             userManager = _userManager;
 
-            moodleApi = new MoodleApi();
-            ldap = new LDAP_db(appDbContext);
             meetingService = new MeetingService(appDbContext);
 
         }

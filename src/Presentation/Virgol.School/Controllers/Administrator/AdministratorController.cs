@@ -46,7 +46,6 @@ namespace lms_with_moodle.Controllers
         SchoolService schoolService;
         ClassScheduleService scheduleService;
         ManagerService managerService;
-        MoodleApi moodleApi;
         FarazSmsApi SMSApi;
         public AdministratorController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -59,7 +58,7 @@ namespace lms_with_moodle.Controllers
             appDbContext = _appdbContext;
             appDbContextBackup = _appDBBackup;
 
-            moodleApi = new MoodleApi();
+            MoodleApi moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
             schoolService = new SchoolService(appDbContext);
             scheduleService = new ClassScheduleService(appDbContext , moodleApi);

@@ -39,8 +39,6 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
 
-        LDAP_db ldap;
-        MoodleApi moodleApi;
         FarazSmsApi SMSApi;
         MyUserManager myUserManager;
         public AdminController(UserManager<UserModel> _userManager 
@@ -53,9 +51,7 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
-            ldap = new LDAP_db(appDbContext);
             myUserManager = new MyUserManager(userManager , appDbContext);
         }
 

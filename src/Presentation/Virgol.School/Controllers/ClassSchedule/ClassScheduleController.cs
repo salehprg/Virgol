@@ -32,7 +32,6 @@ namespace lms_with_moodle.Controllers
         private readonly ClassScheduleService classScheduleService;
 
         MoodleApi moodleApi;
-        LDAP_db ldap;
         
         public ClassScheduleController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -45,7 +44,7 @@ namespace lms_with_moodle.Controllers
             roleManager = _roleManager;
 
             moodleApi = new MoodleApi();
-            ldap = new LDAP_db(appDbContext);
+
             classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
 
             

@@ -168,6 +168,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.StackTrace);
                 Console.WriteLine(ex.Message);
 
                 return null;

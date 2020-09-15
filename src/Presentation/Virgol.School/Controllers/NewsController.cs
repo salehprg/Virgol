@@ -36,9 +36,7 @@ namespace lms_with_moodle.Controllers
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
-        private readonly LDAP_db ldap;
 
-        MoodleApi moodleApi;
         FarazSmsApi SMSApi;
         public NewsController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -50,9 +48,6 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             appDbContext = _appdbContext;
 
-
-            ldap = new LDAP_db(appDbContext);
-            moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
         }
         
