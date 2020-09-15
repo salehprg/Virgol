@@ -394,15 +394,14 @@ namespace lms_with_moodle.Controllers
             {
                 bool authResult = false;
 
-                
-                string IdNumber = ldap.Authenticate(inpuLogin.Username , inpuLogin.Password);
-                authResult = (IdNumber != null ? true : false);
+                var Result = signInManager.PasswordSignInAsync(inpuLogin.Username , inpuLogin.Password , false , false).Result;
+
+                authResult = Result.Succeeded;
 
                 if(!authResult)
                 {
-                    var Result = signInManager.PasswordSignInAsync(inpuLogin.Username , inpuLogin.Password , false , false).Result;
-
-                    authResult = Result.Succeeded;
+                    string IdNumber = ldap.Authenticate(inpuLogin.Username , inpuLogin.Password);
+                    authResult = (IdNumber != null ? true : false);
                 }
                 
                 if(authResult)
