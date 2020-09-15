@@ -12,8 +12,6 @@ class MeetingResponse extends React.Component {
     componentDidMount = async () => {
         var userType = localStorage.getItem("userType")
 
-        console.log(userType)
-
         if(userType == 1)
         {
             history.push("/s/dashboard")
