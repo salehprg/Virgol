@@ -21,7 +21,8 @@ sudo git pull origin $GIT_BRANCH
 sudo docker login
 docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG .
 docker tag  $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG  $IMAGE_ACCOUNT/$IMAGE_REPO:latest
-docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
+docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG 
+docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
 docker stop $IMAGE_REPO
 docker rm $IMAGE_REPO
 docker run \
