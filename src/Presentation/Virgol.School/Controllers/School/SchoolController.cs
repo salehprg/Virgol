@@ -900,17 +900,17 @@ namespace lms_with_moodle.Controllers
                 else
                 {
                     school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
-                    
-                    School_Class schoolClass = await schoolService.AddClass(classModel , school);
-
-                    return Ok(schoolClass);
                 }
 
-                return BadRequest("ایجاد کلاس با مشکل مواجه شد");
+                School_Class schoolClass = await schoolService.AddClass(classModel , school);
+
+                return Ok(schoolClass);
+
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return BadRequest("ایجاد کلاس با مشکل مواجه شد");
             }
         }
     
