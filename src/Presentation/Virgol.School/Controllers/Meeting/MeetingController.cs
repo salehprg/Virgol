@@ -280,15 +280,21 @@ namespace lms_with_moodle.Controllers
                 int userId = user.Id;
                 bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
+                DateTime currentDateTime = MyDateTime.Now();
+                float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
+                int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
+
                 List<MeetingView> recentClasses = meetingService.GetComingMeeting(user);
                                 
+                if(!isTeacher)
+                {
+                    recentClasses = recentClasses.Where(x => x.DayType == dayOfWeek).ToList();
+                }
+
                 foreach (var classs in recentClasses)
                 {
                     if(!isTeacher)
                     {
-                        DateTime timeNow = MyDateTime.Now();
-                        float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
-
                         if(currentTime <= classs.EndHour && currentTime >= (classs.StartHour - 0.25))
                         {
                             if(classs.BBB_MeetingId != null)
@@ -314,9 +320,21 @@ namespace lms_with_moodle.Controllers
                     }
                 }
             
-                recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
+                recentClasses = recentClasses.OrderBy(x => x.DayType).ToList();
 
-                return Ok(recentClasses);
+                var groupedMeetings = recentClasses
+                    .GroupBy(x => x.DayType).Select(grp => grp.ToList()).ToList();
+
+                for (int i = 0; i <  groupedMeetings.Count ; i++)
+                {
+                    groupedMeetings[i] = groupedMeetings[i].OrderBy(x => x.StartHour).ToList();
+                }
+
+                var result = new List<MeetingView>();
+
+                groupedMeetings.ForEach(x => result.AddRange(x));
+
+                return Ok(result);
             }
             catch(Exception ex)
             {
@@ -336,6 +354,8 @@ namespace lms_with_moodle.Controllers
             
             List<MeetingView> result = meetingService.GetAllActiveMeeting(managerId);
 
+            result = result.OrderBy(x => x.ClassName).ToList();
+            
             var groupedMeetings = result
                     .GroupBy(x => x.ClassId)
                     .Select(grp => grp.ToList())
@@ -357,7 +377,12 @@ namespace lms_with_moodle.Controllers
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
 
                 List<MeetingView> meetingViews = meetingService.GetActiveMeeting(user);
-                    
+
+                meetingViews = meetingViews.OrderBy(x => x.DayType).ToList();
+
+
+                meetingViews = meetingViews.OrderBy(x => x.StartHour).ToList();
+
                 return Ok(meetingViews);
             }
             catch(Exception ex)

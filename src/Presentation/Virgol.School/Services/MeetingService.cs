@@ -112,7 +112,13 @@ public class MeetingService {
 
         DateTime timeNow = MyDateTime.Now();
         float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
-        float duration = (classSchedule.EndHour - currentTime) * 60;
+        float duration = Math.Abs((classSchedule.EndHour - currentTime)) * 60;
+        int dayofWeek = MyDateTime.convertDayOfWeek(timeNow);
+
+        if(classSchedule.DayType >= dayofWeek)
+        {
+            duration += Math.Abs(classSchedule.DayType - dayofWeek) * 1440;
+        }
 
         bool result = await CreateRoom(meeting , 0);
 

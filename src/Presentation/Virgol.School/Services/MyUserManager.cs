@@ -148,7 +148,7 @@ public class MyUserManager {
             user.userTypeId = oldData.userTypeId;
 
             if(user.LatinFirstname != null && user.LatinLastname != null)
-                ldap.EditMail(user);
+                ldap.EditMail(oldData);
 
             await SyncUserDetail(user , schoolId);
 

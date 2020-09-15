@@ -160,6 +160,7 @@ namespace lms_with_moodle.Controllers
                     result = AllStudent;
                 }
 
+                result = result.OrderBy(x => x.LastName).ToList();
                 return Ok(result);
             }
             catch(Exception ex)
@@ -655,6 +656,7 @@ namespace lms_with_moodle.Controllers
                     }
                 }
 
+                result = result.OrderBy(x => x.LastName).ToList();
                 return Ok(result);
             }
             catch(Exception ex)
@@ -843,6 +845,8 @@ namespace lms_with_moodle.Controllers
                 int managerId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
                 //We set IdNumber as userId in Token
                 List<StudentViewModel> studentClass = appDbContext.StudentViews.Where(x => x.ClassId == classId).ToList();
+
+                studentClass = studentClass.OrderBy(x => x.LastName).ToList();
 
                 return Ok(studentClass);
             }

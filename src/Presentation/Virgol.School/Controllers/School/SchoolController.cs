@@ -189,6 +189,7 @@ namespace lms_with_moodle.Controllers
                     schools.Add(schoolVW);
                 }
 
+                schools = schools.OrderBy(x => x.SchoolName).ToList();
                 return Ok(schools);
             }
             catch(Exception ex)
@@ -866,6 +867,7 @@ namespace lms_with_moodle.Controllers
                     classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList();
                 }
 
+                classes = classes.OrderBy(x => x.ClassName).ToList();
                 return Ok(classes);
             }
             catch(Exception ex)

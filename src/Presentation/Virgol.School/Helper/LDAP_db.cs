@@ -464,10 +464,12 @@ namespace lms_with_moodle.Helper
 
         private bool DoEditMail(UserModel userModel = null , UserDataModel userDataModel = null)
         {
+            string mailAddress = "";
+            UserModel user = new UserModel();
+
             try
             {
-                UserModel user = new UserModel();
-
+                
                 if(userModel == null)
                 {
                     var serialized = JsonConvert.SerializeObject(userDataModel);
@@ -489,7 +491,7 @@ namespace lms_with_moodle.Helper
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
 
 
-                string mailAddress = uniqueMailId + "@legace.ir";
+                mailAddress = uniqueMailId + "@legace.ir";
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute mail = new LdapAttribute("mail", mailAddress);
@@ -530,7 +532,7 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                //ldapConn.Disconnect();
+                
             }
         }
         

@@ -324,7 +324,7 @@ namespace lms_with_moodle.Controllers
                 if(newManager == null ) //melliCode changed and should remove oldManager then add newManager
                 {
                     if(model.password == null || model.password.Trim() == null)
-                        return BadRequest("رمز عبور مدیر جدید به درستی وارد نشده است");
+                        return BadRequest("لطفا برای ساخت مدیر جدید رمزعبور مدیر را هم وارد نمایید");
 
                     if(model.password.Length < 8)
                         return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
@@ -338,6 +338,7 @@ namespace lms_with_moodle.Controllers
                     }
                     model.UserName = model.MelliCode;
 
+                    model.ConfirmedAcc = true;
                     UserDataModel userDataModel = new  UserDataModel();
                     var serialized = JsonConvert.SerializeObject(model);
                     userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
@@ -446,7 +447,8 @@ namespace lms_with_moodle.Controllers
                         }
                     }
                 }
-
+                
+                result = result.OrderBy(x => x.LastName).ToList();
                 return Ok(result);
             }
             catch(Exception ex)
@@ -471,7 +473,7 @@ namespace lms_with_moodle.Controllers
 
                 List<StudentViewModel> result = appDbContext.StudentViews.Where(x => x.SchoolType == schoolType).ToList();
 
-
+                result = result.OrderBy(x => x.LastName).ToList();
                 return Ok(result);
             }
             catch(Exception ex)

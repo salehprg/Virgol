@@ -13,14 +13,11 @@ public class MyDateTime {
     public static DateTime Now(){
         DateTime result = DateTime.UtcNow;
         DateTime ntpTime = GetNtpTime();
-        Console.WriteLine("Ntp Time : " + ntpTime);
 
         result = result.AddHours(Hour);
         result = result.AddMinutes(Minute);
 
         string devStatus = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-        Console.WriteLine(devStatus);
 
         if(devStatus == "Development")
         {
