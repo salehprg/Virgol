@@ -58,10 +58,11 @@ namespace lms_with_moodle.Controllers
             appDbContext = _appdbContext;
             appDbContextBackup = _appDBBackup;
 
-            MoodleApi moodleApi = new MoodleApi();
+            //MoodleApi moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
             schoolService = new SchoolService(appDbContext);
-            scheduleService = new ClassScheduleService(appDbContext , moodleApi);
+            //scheduleService = new ClassScheduleService(appDbContext , moodleApi);
+            scheduleService = new ClassScheduleService(appDbContext);
             managerService = new ManagerService(appDbContext);
         }
 
@@ -898,6 +899,11 @@ namespace lms_with_moodle.Controllers
         }
     }
 
+    public async Task<bool> SyncMoodleLDAP()
+    {
+        MyUserManager myUserManager = new MyUserManager(userManager , appDbContext);
+        return await myUserManager.SyncUserData(appDbContext.Users.ToList());
+    }
     public async Task<bool> SyncUserDetails()
     {
         MyUserManager myUserManager = new MyUserManager(userManager , appDbContext);

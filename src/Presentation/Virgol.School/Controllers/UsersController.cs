@@ -38,7 +38,7 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
         private readonly LDAP_db ldap;
 
-        MoodleApi moodleApi;
+        //MoodleApi moodleApi;
         MyUserManager myUserManager;
         FarazSmsApi SMSApi;
         public UsersController(UserManager<UserModel> _userManager 
@@ -53,7 +53,7 @@ namespace lms_with_moodle.Controllers
 
 
             ldap = new LDAP_db(appDbContext);
-            moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
             myUserManager = new MyUserManager(userManager , appDbContext);
         }
@@ -69,38 +69,40 @@ namespace lms_with_moodle.Controllers
         {
             
             //userManager getuserid get MelliCode field of user beacause we set in token
-            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
+            // int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
 
-            if(UserId != -1)
-            {
-                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
-                var groupedCategory = userCourses.GroupBy(course => course.categoryId).ToList(); //لیستی برای بدست اوردن ایدی دسته بندی ها
+            // if(UserId != -1)
+            // {
+            //     List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
+            //     var groupedCategory = userCourses.GroupBy(course => course.categoryId).ToList(); //لیستی برای بدست اوردن ایدی دسته بندی ها
 
-                List<CategoryDetail> categoryDetails = new List<CategoryDetail>();
+            //     List<CategoryDetail> categoryDetails = new List<CategoryDetail>();
 
-                foreach(var id in groupedCategory)
-                {
-                    List<float> grades = id.Select(x => x.Score).ToList(); //نمرات موجود در دستبه بندی 
+            //     foreach(var id in groupedCategory)
+            //     {
+            //         List<float> grades = id.Select(x => x.Score).ToList(); //نمرات موجود در دستبه بندی 
 
-                    float sum = 0;
-                    foreach(var grade in grades)
-                    {
-                        sum += grade; // جمع نمرات
-                    }
-                    float avverage = sum / grades.Count;
+            //         float sum = 0;
+            //         foreach(var grade in grades)
+            //         {
+            //             sum += grade; // جمع نمرات
+            //         }
+            //         float avverage = sum / grades.Count;
         
-                    CategoryDetail categoryDetail = await moodleApi.getCategoryDetail(id.Key);
-                    categoryDetail.Avverage = avverage;
-                    categoryDetail.CourseCount = id.Count();
+            //         CategoryDetail categoryDetail = await moodleApi.getCategoryDetail(id.Key);
+            //         categoryDetail.Avverage = avverage;
+            //         categoryDetail.CourseCount = id.Count();
                     
-                    categoryDetails.Add(categoryDetail);
-                }
+            //         categoryDetails.Add(categoryDetail);
+            //     }
 
-                return Ok(categoryDetails.Where(x => x.ParentCategory != 0));
-            }
-            else{
-                return BadRequest();
-            }
+            //     return Ok(categoryDetails.Where(x => x.ParentCategory != 0));
+            // }
+            // else{
+            //     return BadRequest();
+            // }
+
+            return Ok(true);
         }
 
         [HttpGet]
@@ -109,21 +111,23 @@ namespace lms_with_moodle.Controllers
         public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
         {
             
-            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
+            // int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
 
-            if(UserId != -1)
-            {
-                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
+            // if(UserId != -1)
+            // {
+            //     List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
 
-                userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
-                userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
+            //     userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
+            //     userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
 
-                return Ok(userCourses);
-            }
-            else
-            {
-                return BadRequest();
-            }
+            //     return Ok(userCourses);
+            // }
+            // else
+            // {
+            //     return BadRequest();
+            // }
+
+            return Ok(true);
         }
 
         [HttpPost]
@@ -511,7 +515,7 @@ namespace lms_with_moodle.Controllers
                     CategoryDetail category = new CategoryDetail();
                     if(baseId != -1)
                     {
-                        category = await moodleApi.getCategoryDetail(baseId);
+                        //category = await moodleApi.getCategoryDetail(baseId);
                     }
 
                     bool completedProfile = userInformation.LatinFirstname != null && userInformation.LatinFirstname != null;
@@ -709,30 +713,32 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
         public async Task<IActionResult> GetAllCategory()
         {
-            try
-            {
+            // try
+            // {
                 
-                List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories(-1);
-                List<CategoryDetail> Categories = new List<CategoryDetail>();
+            //     List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories(-1);
+            //     List<CategoryDetail> Categories = new List<CategoryDetail>();
 
-                foreach(var cat in result)
-                {
-                    if(cat.id != 1)  // Miscellaneous Category
-                    {
-                        CategoryDetail cateDetail = new CategoryDetail();
-                        cateDetail.Id = cat.id;
-                        cateDetail.Name = cat.name;
+            //     foreach(var cat in result)
+            //     {
+            //         if(cat.id != 1)  // Miscellaneous Category
+            //         {
+            //             CategoryDetail cateDetail = new CategoryDetail();
+            //             cateDetail.Id = cat.id;
+            //             cateDetail.Name = cat.name;
 
-                        Categories.Add(cateDetail);
-                    }
-                }
+            //             Categories.Add(cateDetail);
+            //         }
+            //     }
 
-                return Ok(Categories);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            //     return Ok(Categories);
+            // }
+            // catch(Exception ex)
+            // {
+            //     return BadRequest(ex.Message);
+            // }
+
+            return Ok(true);
         }
 
         [HttpGet]

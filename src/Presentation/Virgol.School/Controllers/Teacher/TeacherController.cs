@@ -36,7 +36,7 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
 
-        MoodleApi moodleApi;
+        //MoodleApi moodleApi;
         
         public TeacherController(AppDbContext dbContext
                                 , IOptions<AppSettings> _appsetting
@@ -47,7 +47,7 @@ namespace lms_with_moodle.Controllers
             appSettings = _appsetting.Value;
             userManager = _userManager;
 
-            moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi();
 
         }
 
@@ -137,28 +137,30 @@ namespace lms_with_moodle.Controllers
         {
             
             //userManager getuserid get MelliCode field of user beacause we set in token
-            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
+            // int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
 
-            if(UserId != -1)
-            {
-                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
-                var groupedCategory = userCourses.GroupBy(course => course.categoryId).ToList(); //لیستی برای بدست اوردن ایدی دسته بندی ها
+            // if(UserId != -1)
+            // {
+            //     List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
+            //     var groupedCategory = userCourses.GroupBy(course => course.categoryId).ToList(); //لیستی برای بدست اوردن ایدی دسته بندی ها
 
-                List<CategoryDetail> categoryDetails = new List<CategoryDetail>();
+            //     List<CategoryDetail> categoryDetails = new List<CategoryDetail>();
 
-                foreach(var id in groupedCategory)
-                {
-                    CategoryDetail categoryDetail = await moodleApi.getCategoryDetail(id.Key);
-                    categoryDetail.CourseCount = id.Count();
+            //     foreach(var id in groupedCategory)
+            //     {
+            //         CategoryDetail categoryDetail = await moodleApi.getCategoryDetail(id.Key);
+            //         categoryDetail.CourseCount = id.Count();
                     
-                    categoryDetails.Add(categoryDetail);
-                }
+            //         categoryDetails.Add(categoryDetail);
+            //     }
 
-                return Ok(categoryDetails.Where(x => x.ParentCategory != 0).ToList());
-            }
-            else{
-                return BadRequest();
-            }
+            //     return Ok(categoryDetails.Where(x => x.ParentCategory != 0).ToList());
+            // }
+            // else{
+            //     return BadRequest();
+            // }
+
+            return Ok(true);
         }
 
         [HttpGet]
@@ -166,21 +168,23 @@ namespace lms_with_moodle.Controllers
         public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
         {
             
-            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
+            // int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
 
-            if(UserId != -1)
-            {
-                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
+            // if(UserId != -1)
+            // {
+            //     List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
 
-                userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
-                userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
+            //     userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
+            //     userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
 
-                return Ok(userCourses);
-            }
-            else
-            {
-                return BadRequest();
-            }
+            //     return Ok(userCourses);
+            // }
+            // else
+            // {
+            //     return BadRequest();
+            // }
+
+            return Ok(true);
         }
 
 #endregion
@@ -190,42 +194,44 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(List<ScoresReport>), 200)]
         public async Task<IActionResult> GetGradesInCourse(int CourseId) 
         {
-            try
-            {
-                List<AssignmentGrades_moodle> allGrades = await moodleApi.getAllGradesInCourse(CourseId);
-                List<ScoresReport> gradeReports = new List<ScoresReport>();
+            // try
+            // {
+            //     List<AssignmentGrades_moodle> allGrades = await moodleApi.getAllGradesInCourse(CourseId);
+            //     List<ScoresReport> gradeReports = new List<ScoresReport>();
 
-                foreach(var grade in allGrades)
-                {
-                    ScoresReport gradeReport = new ScoresReport();
+            //     foreach(var grade in allGrades)
+            //     {
+            //         ScoresReport gradeReport = new ScoresReport();
 
-                    List<ScoreDetails> scoreDetails = new List<ScoreDetails>();
-                    float totalGrade = 0;
+            //         List<ScoreDetails> scoreDetails = new List<ScoreDetails>();
+            //         float totalGrade = 0;
 
-                    foreach(var detail in grade.gradeitems.Where(x => x.itemmodule == "quiz" || x.itemmodule == "assign"))
-                    {
-                        ScoreDetails gradeDetail = new ScoreDetails();
-                        gradeDetail.ActivityGrade = detail.graderaw;
-                        gradeDetail.ActivityName = detail.itemname;
+            //         foreach(var detail in grade.gradeitems.Where(x => x.itemmodule == "quiz" || x.itemmodule == "assign"))
+            //         {
+            //             ScoreDetails gradeDetail = new ScoreDetails();
+            //             gradeDetail.ActivityGrade = detail.graderaw;
+            //             gradeDetail.ActivityName = detail.itemname;
 
-                        scoreDetails.Add(gradeDetail);
+            //             scoreDetails.Add(gradeDetail);
 
-                        totalGrade += detail.graderaw;
-                    }
+            //             totalGrade += detail.graderaw;
+            //         }
 
-                    gradeReport.FullName = grade.userfullname;
-                    gradeReport.scoreDetails = scoreDetails;
-                    gradeReport.TotalGrade = totalGrade;
+            //         gradeReport.FullName = grade.userfullname;
+            //         gradeReport.scoreDetails = scoreDetails;
+            //         gradeReport.TotalGrade = totalGrade;
 
-                    gradeReports.Add(gradeReport);
-                }
+            //         gradeReports.Add(gradeReport);
+            //     }
                 
-                return Ok(gradeReports);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            //     return Ok(gradeReports);
+            // }
+            // catch(Exception ex)
+            // {
+            //     return BadRequest(ex.Message);
+            // }
+
+            return Ok(true);
         }
 #endregion
 

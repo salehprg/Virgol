@@ -31,7 +31,7 @@ namespace lms_with_moodle.Controllers
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly ClassScheduleService classScheduleService;
 
-        MoodleApi moodleApi;
+        //MoodleApi moodleApi;
         
         public ClassScheduleController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -43,9 +43,10 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             roleManager = _roleManager;
 
-            moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi();
 
-            classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
+            //classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
+            classScheduleService = new ClassScheduleService(appDbContext);
 
             
         }
@@ -273,7 +274,9 @@ namespace lms_with_moodle.Controllers
                     teacher.lessonId = lessonMoodleId;
                     teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
 
-                    bool unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
+                    //bool unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
+                    bool unassignTeacher = true;
+
                     if(unassignTeacher)
                     {
                         appDbContext.ClassWeeklySchedules.Remove(classSchedule);
@@ -281,7 +284,7 @@ namespace lms_with_moodle.Controllers
 
                         if(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId && x.LessonId == classSchedule.LessonId).FirstOrDefault() == null)
                         {
-                            await moodleApi.setCourseVisible(lessonMoodleId , false);
+                            //await moodleApi.setCourseVisible(lessonMoodleId , false);
                         }
 
                         Meeting meeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).FirstOrDefault();

@@ -39,7 +39,7 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
 
-        MoodleApi moodleApi;
+        //MoodleApi moodleApi;
         SchoolService schoolService;
         LDAP_db ldap;
         FarazSmsApi SMSApi;
@@ -54,7 +54,7 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
             ldap = new LDAP_db(appDbContext);
             myUserManager = new MyUserManager(userManager , appDbContext);
@@ -408,7 +408,8 @@ namespace lms_with_moodle.Controllers
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
 
-                bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
+                //bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
+                bool removeCat = true;
 
                 if(removeCat)
                 {
@@ -937,7 +938,7 @@ namespace lms_with_moodle.Controllers
                     oldClass.Id = classMoodleId;
                     oldClass.Name = schoolClass.ClassName;
                     
-                    await moodleApi.EditCategory(oldClass);
+                    //await moodleApi.EditCategory(oldClass);
 
                     appDbContext.School_Classes.Update(schoolClass);
                     appDbContext.SaveChanges();
@@ -960,7 +961,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
-                await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
+                //await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
 
                 appDbContext.School_Classes.Remove(schoolClass);
                 appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList());
@@ -1043,12 +1044,15 @@ namespace lms_with_moodle.Controllers
                                 bool userToMoodle = false;
                                 if(ldapUser)
                                 {
-                                    userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
+                                    //userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
+                                    userToMoodle = true;
                                 }
 
                                 if(userToMoodle)
                                 {
-                                    int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
+                                    //int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
+                                    int userMoodle_id = 0;
+
                                     manager.Moodle_Id = userMoodle_id;
 
                                     appDbContext.Users.Update(manager);

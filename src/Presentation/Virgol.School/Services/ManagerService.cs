@@ -7,11 +7,11 @@ using Models.User;
 
 public class ManagerService {
     AppDbContext appDbContext;
-    MoodleApi moodleApi;
+    //MoodleApi moodleApi;
     public ManagerService(AppDbContext _appDbContext)
     {
         appDbContext = _appDbContext;
-        moodleApi = new MoodleApi();
+        //moodleApi = new MoodleApi();
     }
     public async Task<bool> AssignUsersToClass(List<UserModel> userModels , int classId)
     {
@@ -20,7 +20,7 @@ public class ManagerService {
 
         List<School_studentClass> studentClasses = new List<School_studentClass>();
         List<School_studentClass> duplicateStudentClass = new List<School_studentClass>();
-        List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
+        //List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
         List<EnrolUser> enrolsData = new List<EnrolUser>();
 
         foreach (var user in userModels)
@@ -43,19 +43,19 @@ public class ManagerService {
                 {
                     studentClasses.Add(studentClass);
                 }
-                foreach(var course in courses)
-                {
-                    EnrolUser enrolInfo = new EnrolUser();
-                    enrolInfo.lessonId = course.id;
-                    enrolInfo.RoleId = 5;
-                    enrolInfo.UserId = student.Moodle_Id;
+                // foreach(var course in courses)
+                // {
+                //     EnrolUser enrolInfo = new EnrolUser();
+                //     enrolInfo.lessonId = course.id;
+                //     enrolInfo.RoleId = 5;
+                //     enrolInfo.UserId = student.Moodle_Id;
 
-                    enrolsData.Add(enrolInfo);
-                } 
+                //     enrolsData.Add(enrolInfo);
+                // } 
             } 
         }
 
-        await moodleApi.AssignUsersToCourse(enrolsData);
+        //await moodleApi.AssignUsersToCourse(enrolsData);
 
         await appDbContext.School_StudentClasses.AddRangeAsync(studentClasses);
         await appDbContext.SaveChangesAsync();

@@ -14,14 +14,14 @@ using Newtonsoft.Json;
 public class MyUserManager {
     UserManager<UserModel> userManager;
     AppDbContext appDbContext;
-    MoodleApi moodleApi;
+    //MoodleApi moodleApi;
     LDAP_db ldap;
 
     public MyUserManager(UserManager<UserModel> _userManager , AppDbContext _appDbContext = null)
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
-        moodleApi = new MoodleApi();
+       // moodleApi = new MoodleApi();
         ldap = new LDAP_db(_appDbContext);
     }
 
@@ -58,6 +58,7 @@ public class MyUserManager {
                 
                 if((await userManager.CreateAsync(user , (!string.IsNullOrEmpty(password) ? password : user.MelliCode))).Succeeded)
                 {
+                    userData.Id = user.Id;
                     switch(usersType)
                     {
                         case (int)UserType.Student :
@@ -80,9 +81,11 @@ public class MyUserManager {
                     
                     userData.Id = user.Id;
                     bool ldapResult = (usersType == (int)UserType.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
+                    //bool ldapResult = true;
                     if(ldapResult)
                     {
-                        moodleId = await moodleApi.CreateUser(user);
+                        //moodleId = await moodleApi.CreateUser(user);
+                        moodleId = 0;
                         if(moodleId != -1)
                         {
                             user.Moodle_Id = moodleId;
@@ -164,7 +167,7 @@ public class MyUserManager {
         try
         {
             if(ldap.DeleteEntry(user.MelliCode))
-                await moodleApi.DeleteUser(user.Moodle_Id);
+                //await moodleApi.DeleteUser(user.Moodle_Id);
 
             await userManager.RemoveFromRoleAsync(user , "User");
             await userManager.RemoveFromRoleAsync(user , "Teacher");
@@ -247,10 +250,12 @@ public class MyUserManager {
                     ldap.AddUserToLDAP(user , user.MelliCode);
                 }
 
-                int moodleId = await moodleApi.GetUserId(user.MelliCode);
+                //int moodleId = await moodleApi.GetUserId(user.MelliCode);
+                int moodleId = 0;
                 if(moodleId == -1)
                 {
-                    user.Moodle_Id = await moodleApi.CreateUser(user);
+                    //user.Moodle_Id = await moodleApi.CreateUser(user);
+                    user.Moodle_Id = 0;
                 }
                 else
                 {

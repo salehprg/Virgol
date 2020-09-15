@@ -32,7 +32,7 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
 
-        MoodleApi moodleApi;
+        //MoodleApi moodleApi;
         MyUserManager myUserManager;
         MeetingService meetingService;
         ManagerService managerService;
@@ -50,7 +50,7 @@ namespace lms_with_moodle.Controllers
             roleManager = _roleManager;
             appSettings = _appsetting.Value;
 
-            moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi();
             ldap = new LDAP_db(appDbContext);
 
             myUserManager = new MyUserManager(userManager , appDbContext);
@@ -431,12 +431,14 @@ namespace lms_with_moodle.Controllers
                     bool createUser = false;
                     if(ldapUser)
                     {
-                        createUser = await moodleApi.CreateUsers(new List<UserModel>(){SelectedUser});
+                        //createUser = await moodleApi.CreateUsers(new List<UserModel>(){SelectedUser});
+                        createUser = true;
                     }
 
                     if(createUser)
                     {
-                        int userMoodle_id = await moodleApi.GetUserId(SelectedUser.MelliCode);
+                        //int userMoodle_id = await moodleApi.GetUserId(SelectedUser.MelliCode);
+                        int userMoodle_id = 0;
                         if(userMoodle_id != -1)
                         {
                             SelectedUser.Moodle_Id = userMoodle_id;
@@ -482,23 +484,23 @@ namespace lms_with_moodle.Controllers
             try
             {
                 //کلی اشتباه منظقی هست در کد باید اصلاح شود
-                List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(users[0].gradeId); //because All user will be add to same category
-                List<EnrolUser> enrolsData = new List<EnrolUser>();
+                // List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(users[0].gradeId); //because All user will be add to same category
+                // List<EnrolUser> enrolsData = new List<EnrolUser>();
 
-                foreach(var enrolUser in users)
-                {
-                    foreach(var course in courses)
-                    {
-                        EnrolUser enrolInfo = new EnrolUser();
-                        enrolInfo.lessonId = course.id;
-                        enrolInfo.RoleId = enrolUser.RoleId;
-                        enrolInfo.UserId = enrolUser.UserId;
+                // foreach(var enrolUser in users)
+                // {
+                //     foreach(var course in courses)
+                //     {
+                //         EnrolUser enrolInfo = new EnrolUser();
+                //         enrolInfo.lessonId = course.id;
+                //         enrolInfo.RoleId = enrolUser.RoleId;
+                //         enrolInfo.UserId = enrolUser.UserId;
 
-                        enrolsData.Add(enrolInfo);
-                    }  
-                }
+                //         enrolsData.Add(enrolInfo);
+                //     }  
+                // }
 
-                await moodleApi.AssignUsersToCourse(enrolsData);
+                // await moodleApi.AssignUsersToCourse(enrolsData);
                 return Ok(true);
             }
             catch(Exception ex)
@@ -514,23 +516,24 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(users[0].gradeId); //because All user will be remove from same category
-                List<EnrolUser> enrolsData = new List<EnrolUser>();
+                // List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(users[0].gradeId); //because All user will be remove from same category
+                // List<EnrolUser> enrolsData = new List<EnrolUser>();
                     
-                foreach(var enrolUser in users)
-                {
+                // foreach(var enrolUser in users)
+                // {
 
-                    foreach(var course in courses)
-                    {
-                        EnrolUser enrolInfo = new EnrolUser();
-                        enrolInfo.lessonId = course.id;
-                        enrolInfo.UserId = enrolUser.UserId;
+                //     foreach(var course in courses)
+                //     {
+                //         EnrolUser enrolInfo = new EnrolUser();
+                //         enrolInfo.lessonId = course.id;
+                //         enrolInfo.UserId = enrolUser.UserId;
 
-                        enrolsData.Add(enrolInfo);
-                    }
-                }
+                //         enrolsData.Add(enrolInfo);
+                //     }
+                // }
 
-                bool result = await moodleApi.UnAssignUsersFromCourse(enrolsData);
+                // bool result = await moodleApi.UnAssignUsersFromCourse(enrolsData);
+                bool result = true;
                 return Ok(result);
             }
             catch(Exception ex)
@@ -545,21 +548,22 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(bool), 400)]
         public async Task<IActionResult> AssignUsersToCourse([FromBody]EnrolUser[] users)
         {
-            bool result = await moodleApi.AssignUsersToCourse(users.ToList());
+            // bool result = await moodleApi.AssignUsersToCourse(users.ToList());
+            bool result = true;
             
-            foreach(var enrolUser in users)
-            {
-                if(enrolUser.RoleId == 3)
-                {
-                    //Initialize teacherCourse Info
-                    TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
-                    teacherCourseInfo.CourseId = enrolUser.lessonId;
-                    teacherCourseInfo.TeacherId = enrolUser.UserId;//if we set teacher UserId came from our database
+            // foreach(var enrolUser in users)
+            // {
+            //     if(enrolUser.RoleId == 3)
+            //     {
+            //         //Initialize teacherCourse Info
+            //         TeacherCourseInfo teacherCourseInfo = new TeacherCourseInfo();
+            //         teacherCourseInfo.CourseId = enrolUser.lessonId;
+            //         teacherCourseInfo.TeacherId = enrolUser.UserId;//if we set teacher UserId came from our database
 
-                    appDbContext.TeacherCourse.Add(teacherCourseInfo);
-                    appDbContext.SaveChanges();
-                }
-            }
+            //         appDbContext.TeacherCourse.Add(teacherCourseInfo);
+            //         appDbContext.SaveChanges();
+            //     }
+            // }
 
             if(result)
             {
@@ -579,15 +583,16 @@ namespace lms_with_moodle.Controllers
             try
             {
                 //UserId is id in moodle
-                bool resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {user});
+                // bool resultUnAssign = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>() {user});
+                bool resultUnAssign = true;
 
-                if(user.RoleId == 3)
-                {
-                    TeacherCourseInfo teacherCourse = appDbContext.TeacherCourse.Where(x => x.CourseId == user.lessonId).FirstOrDefault(); //Because every course should have one teacher
+                // if(user.RoleId == 3)
+                // {
+                //     TeacherCourseInfo teacherCourse = appDbContext.TeacherCourse.Where(x => x.CourseId == user.lessonId).FirstOrDefault(); //Because every course should have one teacher
 
-                    appDbContext.TeacherCourse.Remove(teacherCourse);
-                    appDbContext.SaveChanges();
-                }
+                //     appDbContext.TeacherCourse.Remove(teacherCourse);
+                //     appDbContext.SaveChanges();
+                // }
 
                 return Ok(true);
             }
@@ -812,7 +817,7 @@ namespace lms_with_moodle.Controllers
                         }
                     }
 
-                    await moodleApi.UnAssignUsersFromCourse(unEnrolData);
+                    //await moodleApi.UnAssignUsersFromCourse(unEnrolData);
                     // await myUserManager.DeleteUser(teacher);
 
                     // appDbContext.TeacherCourse.RemoveRange(appDbContext.TeacherCourse.Where(x => x.TeacherId == teacher.Id));
@@ -935,8 +940,8 @@ namespace lms_with_moodle.Controllers
                 int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
 
                 List<School_studentClass> studentClasses = new List<School_studentClass>();
-                List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
-                List<EnrolUser> enrolsData = new List<EnrolUser>();
+                //List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
+                //List<EnrolUser> enrolsData = new List<EnrolUser>();
 
                 foreach (var userid in userIds)
                 {
@@ -945,17 +950,17 @@ namespace lms_with_moodle.Controllers
 
                     studentClasses.Add(studentClass);
 
-                    foreach(var course in courses)
-                    {
-                        EnrolUser enrolInfo = new EnrolUser();
-                        enrolInfo.lessonId = course.id;
-                        enrolInfo.UserId = moodelId;
+                    // foreach(var course in courses)
+                    // {
+                    //     EnrolUser enrolInfo = new EnrolUser();
+                    //     enrolInfo.lessonId = course.id;
+                    //     enrolInfo.UserId = moodelId;
 
-                        enrolsData.Add(enrolInfo);
-                    }  
+                    //     enrolsData.Add(enrolInfo);
+                    // }  
                 }
 
-                await moodleApi.UnAssignUsersFromCourse(enrolsData);
+                //await moodleApi.UnAssignUsersFromCourse(enrolsData);
 
                 appDbContext.School_StudentClasses.RemoveRange(studentClasses);
                 appDbContext.SaveChanges();

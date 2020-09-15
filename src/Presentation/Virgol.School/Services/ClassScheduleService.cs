@@ -9,12 +9,13 @@ using Models.User;
 public class ClassScheduleService {
 
     AppDbContext appDbContext;
-    MoodleApi moodleApi;
+    //MoodleApi moodleApi;
 
-    public ClassScheduleService (AppDbContext _appDbContext , MoodleApi _moodleApi)
+    //public ClassScheduleService (AppDbContext _appDbContext , MoodleApi _moodleApi)
+    public ClassScheduleService (AppDbContext _appDbContext)
     {
         appDbContext = _appDbContext;
-        moodleApi = _moodleApi;
+        //moodleApi = _moodleApi;
     }
 
     public object CheckInteruptSchedule(Class_WeeklySchedule classSchedule)
@@ -62,14 +63,15 @@ public class ClassScheduleService {
 
             List<UserModel> users = new List<UserModel>();
 
-            bool enrolment = await moodleApi.AssignUsersToCourse(enrolUsers);
+            //bool enrolment = await moodleApi.AssignUsersToCourse(enrolUsers);
+            bool enrolment = true;
 
             if(enrolment)
             {
                 appDbContext.ClassWeeklySchedules.Add(classSchedule);
                 appDbContext.SaveChanges();
 
-                await moodleApi.setCourseVisible(lessonMoodle_Id , true);
+               // await moodleApi.setCourseVisible(lessonMoodle_Id , true);
 
                 return classSchedule;
             }   
