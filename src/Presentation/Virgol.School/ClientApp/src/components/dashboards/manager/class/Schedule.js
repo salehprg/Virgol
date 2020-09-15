@@ -55,7 +55,6 @@ class Schedule extends React.Component {
         })
 
         this.setState({lessons : lessons})
-
         
     }
 

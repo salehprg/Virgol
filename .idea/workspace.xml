@@ -22,9 +22,6 @@
     <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/sidebar/Sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/sidebar/Sidebar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +38,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
   <component name="ProjectId" id="1fvCvWX9GPek4R9pqXMe5HoBy8S" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -54,6 +57,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2020.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -82,6 +86,8 @@
       <workItem from="1600025881818" duration="3420000" />
       <workItem from="1600082752250" duration="1362000" />
       <workItem from="1600102192800" duration="7917000" />
+      <workItem from="1600114210750" duration="4087000" />
+      <workItem from="1600120000821" duration="306000" />
     </task>
     <servers />
   </component>
@@ -112,10 +118,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1600109330886" />
-    <state x="455" y="129" width="600" height="534" key="find.popup" timestamp="1600110022578">
+    <state x="455" y="129" width="718" height="534" key="find.popup" timestamp="1600120035516">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="455" y="129" width="600" height="534" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1600110022578" />
+    <state x="455" y="129" width="718" height="534" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1600120035516" />
     <state x="425" y="187" key="run.anything.popup" timestamp="1599827956185">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

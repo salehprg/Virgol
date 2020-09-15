@@ -29,7 +29,7 @@ class ClassSchedule extends React.Component {
         return (
             <div ref={this.sc} className="overflow-auto">
                 <Schedule
-                    isTeacher={true}
+                    isTeacher={false}
                     editable={false}
                     // lessons={this.props.schedules}
                     lessons={this.props.schedules}           
