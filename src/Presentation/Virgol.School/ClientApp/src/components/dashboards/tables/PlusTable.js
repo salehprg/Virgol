@@ -8,15 +8,19 @@ import ReactTooltip from "react-tooltip";
 class PlusTable extends React.Component {
 
     render() {
-        const { isLoading, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body , isPaginate = true} = this.props
+        const { isLoading, searchable, cardsPerPage, totalCards, paginate, currentPage, query, changeQuery, sample, sampleLink, button, excel, handleExcel, title, headers, body , isPaginate = true} = this.props
         return (
             <div className="w-full">
                 <div className="flex sm:flex-row-reverse flex-col justify-start sm:items-stretch items-end mb-4">
-                    <Searchish
-                        className="w-full max-w-250 ml-4 sm:mb-0 mb-4"
-                        query={query}
-                        changeQuery={changeQuery}
-                    />
+                    {searchable ?
+                        <Searchish
+                            className="w-full max-w-250 ml-4 sm:mb-0 mb-4"
+                            query={query}
+                            changeQuery={changeQuery}
+                        />
+                        :
+                        null
+                    }
                     {button()}
                     {excel ?
                         <>
