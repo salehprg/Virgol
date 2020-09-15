@@ -60,9 +60,9 @@ public class MeetingService {
     {
         string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
 
-        //duration += 20; // add 20 minutes Additional to the end of class
-        duration = 0; // add 20 minutes Additional to the end of class
-        Console.WriteLine(callBackUrl);
+        duration += 20; // add 20 minutes Additional to the end of class
+        //duration = 0; // add 20 minutes Additional to the end of class
+        //Console.WriteLine(callBackUrl);
 
         if(meeting.Private)
         {
@@ -112,15 +112,18 @@ public class MeetingService {
 
         DateTime timeNow = MyDateTime.Now();
         float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
+
         float duration = Math.Abs((classSchedule.EndHour - currentTime)) * 60;
         int dayofWeek = MyDateTime.convertDayOfWeek(timeNow);
 
-        if(classSchedule.DayType >= dayofWeek)
+        if(classSchedule.DayType > dayofWeek)//Start meeting for tommorow
         {
-            duration += Math.Abs(classSchedule.DayType - dayofWeek) * 1440;
+            duration = 0.0f;
+            duration += (24 - currentTime) * 60;
+            duration += classSchedule.EndHour * 60;
         }
 
-        bool result = await CreateRoom(meeting , 0);
+        bool result = await CreateRoom(meeting , duration);
 
         Console.WriteLine("room :" + result );
 
