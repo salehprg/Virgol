@@ -6,7 +6,8 @@ import Feed from "../../feed/Feed";
 import RecentClass from "../RecentClass/RecentClass";
 import { connect } from "react-redux";
 import {GetIncommingNews} from "../../../../_actions/newsActions"
-import {GetMeetingList , GetRecentClass , CreatePrivateRoom , StartMeeting , EndMeeting , JoinMeeting } from "../../../../_actions/meetingActions"
+import {GetMeetingList , GetRecentClass , CreatePrivateRoom , StartMeeting , EndMeeting , JoinMeeting , JoinPrivateRoom} from "../../../../_actions/meetingActions"
+import {ShowSuccess} from '../../../../_actions/alertActions'
 import Modal from "../../../modals/Modal";
 import Fieldish from "../../../field/Fieldish";
 
@@ -43,6 +44,13 @@ class Home extends React.Component {
         await this.props.JoinMeeting(this.props.user.token , id)
         this.componentDidMount()
         this.render()
+    }
+
+    copyPrivateUrl = (bbbId) => {
+        var rootURL = window.location.origin.toString()
+
+        navigator.clipboard.writeText(`${rootURL}/PrivateClass/${bbbId}`)
+        this.props.ShowSuccess("!کپی شد")
     }
 
     showPrivateModal = () => {
@@ -93,6 +101,7 @@ class Home extends React.Component {
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
                     <RecentClass
+                        onJoinPrivate = {(bbbId) => this.copyPrivateUrl(bbbId)}
                         onStart={(id) => this.JoinMeeting(id)}
                         onEnd={(bbbId) => this.EndMeeting(bbbId)}
                         joinList={true}
@@ -122,4 +131,5 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting ,
-                                             EndMeeting , JoinMeeting , GetIncommingNews , CreatePrivateRoom })(Home);
+                                             EndMeeting , JoinMeeting , GetIncommingNews , CreatePrivateRoom 
+                                            , JoinPrivateRoom , ShowSuccess})(Home);

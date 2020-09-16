@@ -59,26 +59,12 @@ public class MeetingService {
     {
         string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
 
-        duration += 20; // add 20 minutes Additional to the end of class
+        if(meeting.Private)
+            callBackUrl = AppSettings.ServerRootUrl;
+
+        duration += (duration != 0 ? 20 : 0); // add 20 minutes Additional to the end of class
         //duration = 0; // add 20 minutes Additional to the end of class
         //Console.WriteLine(callBackUrl);
-
-        if(meeting.Private)
-        {
-            UserModel user = appDbContext.Users.Where(x => x.Id == meeting.TeacherId).FirstOrDefault();
-
-            Console.WriteLine("Private");
-
-            callBackUrl = AppSettings.ServerRootUrl ;
-            if(user.userTypeId == (int)UserType.Teacher)
-            {
-                callBackUrl += "/t/dashboard";
-            }
-            else if(user.userTypeId == (int)UserType.Manager)
-            {
-                callBackUrl += "/m/dashboard";
-            }
-        }
 
         BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
         MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , (bbbMeetingId == "" ? meeting.Id.ToString() : bbbMeetingId) , callBackUrl , (int)duration);

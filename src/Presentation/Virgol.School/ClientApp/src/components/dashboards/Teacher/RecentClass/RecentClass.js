@@ -51,7 +51,7 @@ class RecentClass extends React.Component {
                                 :
                                 <PrivateClass
                                     text={(joinList ? x.meetingName : x.orgLessonName)}
-                                    onStart={() => this.props.onStart(x.id)}
+                                    onStart={() => this.props.onJoinPrivate(x.bbB_MeetingId)}
                                     onEnd={() => this.props.onEnd(x.bbB_MeetingId)}
                                     guid={x.bbB_MeetingId}
                                 />

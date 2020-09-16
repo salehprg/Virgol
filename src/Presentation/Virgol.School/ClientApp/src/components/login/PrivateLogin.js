@@ -2,6 +2,7 @@ import React from 'react';
 import {Field, reduxForm} from "redux-form";
 import { connect } from 'react-redux';
 import { login } from "../../_actions/authActions";
+import { JoinPrivateRoom } from "../../_actions/meetingActions";
 import Fieldish from '../field/Fieldish';
 import Passish from '../field/Passish';
 import {loading, logo} from '../../assets/icons';
@@ -45,7 +46,9 @@ class PrivateLogin extends React.Component {
     onLogin = async formValues => {
         if (!this.state.logingin) {
             this.setState({logingin: true})
-
+            
+            var token = await this.props.login(formValues , false)
+            await this.props.JoinPrivateRoom(token , this.props.match.params.id)
             // const success = await this.props.login(formValues)
 
             // if (!success) this.setState({ logingin: false })
@@ -103,4 +106,4 @@ const formWrapped = reduxForm({
     validate
 })(PrivateLogin);
 
-export default connect(null)(formWrapped);
+export default connect(null , {JoinPrivateRoom , login} )(formWrapped);

@@ -138,7 +138,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher,Manager,Admin")]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> JoinPrivateRoom(string roomGUID) 
         {

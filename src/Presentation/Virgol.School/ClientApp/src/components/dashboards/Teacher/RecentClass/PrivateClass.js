@@ -1,8 +1,8 @@
 import React from "react";
 import getColor from "../../../../assets/colors";
 
-const PrivateClass = ({ text,guid , onEnd , onStart }) => {
-
+const PrivateClass = ({ text, onEnd , onStart }) => {
+    
     return (
         <div className="w-full py-2 mt-6 border-b border-grayish">
             <div className="w-full flex flex-row justify-between items-center">

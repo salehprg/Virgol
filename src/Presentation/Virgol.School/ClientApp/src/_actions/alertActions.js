@@ -12,6 +12,11 @@ const clear = () => {
     return { type: CLEAR }
 }
 
+export const ShowSuccess = (message) => async dispatch => {
+
+    dispatch(alert.success(message))
+}
+
 export const alert = {
     success,
     error,
