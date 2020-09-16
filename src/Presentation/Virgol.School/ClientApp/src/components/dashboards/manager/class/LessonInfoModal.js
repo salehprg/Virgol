@@ -110,13 +110,26 @@ class LessonInfoModal extends React.Component {
                         </p>
                         : null)}
 
-                        {(this.props.canEdit ?
-                                <div onClick={() => this.showDelete()} className="w-12 h-12 relative bg-redish rounded-full cursor-pointer">
-                                    {trash('w-6 text-white centerize')}
-                                </div>
-                                :
-                            null
-                        )}
+                        <div className="w-full flex sm:flex-row flex-col-reverse items-center justify-center">
+                            {(this.props.canEdit ?
+                                    <div onClick={() => this.showDelete()} className="w-12 h-12 relative bg-redish rounded-full cursor-pointer">
+                                        {trash('w-6 text-white centerize')}
+                                    </div>
+                                    :
+                                    null
+                            )}
+
+                            <button onClick={() => history.push("/SSO")} className="relative bg-greenish rounded-full text-white cursor-pointer px-3 py-2 mx-2 sm:my-0 my-2">
+                                ورود به فعالیت های درسی
+                            </button>
+
+                            {(this.props.isTeacher ?
+                                <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative text-white bg-purplish rounded-full cursor-pointer px-3 py-2">
+                                    نمایش دفتر کلاسی
+                                </a>
+                                : null )}
+                        </div>
+
                         <p className="text-center text-white my-4">
                             {/* <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
                                ورود به فعالیت های درسی
@@ -136,16 +149,7 @@ class LessonInfoModal extends React.Component {
                                     placeholder="رمز عبور"
                                     value={localStorage.getItem('userPassword')}
                                 /> */}
-                                <button onClick={() => history.push("/SSO")} className="relative w-1/2 bg-greenish rounded-full cursor-pointer p-2">
-                                    ورود به فعالیت های درسی
-                                </button>
                             {/* </form> */}
-
-                            {(this.props.isTeacher ?
-                            <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative w-full bg-purplish rounded-full cursor-pointer p-2 mx-2">
-                                نمایش دفتر کلاسی
-                            </a>
-                            : null )}
                         </p>
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}

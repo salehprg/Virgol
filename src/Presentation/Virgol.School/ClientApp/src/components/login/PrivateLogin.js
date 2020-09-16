@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { login } from "../../_actions/authActions";
 import Fieldish from '../field/Fieldish';
 import Passish from '../field/Passish';
-import {loading} from '../../assets/icons';
+import {loading, logo} from '../../assets/icons';
 
 class PrivateLogin extends React.Component {
 
@@ -58,8 +58,12 @@ class PrivateLogin extends React.Component {
                 <div className="w-full max-w-350 mx-auto">
                     <div className="text-center mb-8">
                         {/*{logo('w-16 mb-3 text-purplish mx-auto')}*/}
-                        <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
-                        <span className="text-xl text-white">ورود به سامانه آموزش از راه دور خراسان رضوی</span>
+                        {process.env.REACT_APP_RAHE_DOOR === "true" ?
+                            <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
+                            :
+                            logo('w-24 mx-auto mb-3 text-purplish')
+                        }
+                        <span className="text-xl text-white">ورود به کلاس خصوصی</span>
                     </div>
                     <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
                     <form className="text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
