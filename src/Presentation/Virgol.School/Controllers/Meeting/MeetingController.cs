@@ -58,6 +58,15 @@ namespace lms_with_moodle.Controllers
             string userName = userManager.GetUserId(User);
             int userId = appDbContext.Users.Where(x => x.MelliCode == userName).FirstOrDefault().Id;
 
+            Meeting meeting = appDbContext.Meetings.Where(x => x.Id == meetingId).FirstOrDefault();
+
+            if(meeting != null)
+            {
+                string bbbId = meeting.BBB_MeetingId;
+
+                await meetingService.EndMeeting(bbbId , userId);
+            }
+
             List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meetingId && x.UserId != userId).ToList();
             int? classId = appDbContext.MeetingViews.Where(x => x.Id == meetingId).FirstOrDefault().ClassId;
             

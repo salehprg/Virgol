@@ -151,10 +151,15 @@ namespace lms_with_moodle.Helper
             {
                 name = HttpUtility.UrlEncode(name).ToUpper();
                 //https://myapp.example.com/callback?meetingID=test01
-                
+
+                string notify = "<a href='" + callbackUrl + "' target='_self'>معلم گرامی  برای اتمام کلاس و ورود به صفحه حضور و غیاب خودکار روی این لینک کلیک کنید</a>";
+
+                string notifyEncoded = WebUtility.UrlEncode(notify);
                 string urlEncoded = WebUtility.UrlEncode(callbackUrl);
 
-                string FunctionName = string.Format("create?allowStartStopRecording=true&record=true&attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}&duration={2}&logoutURL={3}" , name , meetingId , duration.ToString(), urlEncoded );
+                string FunctionName = string.Format("create?allowStartStopRecording=true&record=true&attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}&duration={2}&logoutURL={3}&welcome={4}"
+                                                     , name , meetingId , duration.ToString(), urlEncoded , notifyEncoded );
+                
                 string data = FunctionName;
 
                 string _response = await sendData(data);

@@ -62,8 +62,8 @@ public class MeetingService {
         if(meeting.Private)
             callBackUrl = AppSettings.ServerRootUrl;
 
-        duration += (duration != 0 ? 20 : 0); // add 20 minutes Additional to the end of class
-        //duration = 0; // add 20 minutes Additional to the end of class
+        duration += (duration != 0 ? 5 : 0); // add 5 minutes Additional to the end of class
+        //duration = 0; // add 5 minutes Additional to the end of class
         //Console.WriteLine(callBackUrl);
 
         BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
