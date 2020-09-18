@@ -133,6 +133,7 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
