@@ -289,7 +289,7 @@ public class MeetingService {
             meeting = appDbContext.Meetings.Where(x => x.BBB_MeetingId == bbbMeetingId).FirstOrDefault();
         }
 
-        bool isModerator = user.Id == meeting.TeacherId;
+        bool isModerator = (user.Id == meeting.TeacherId || user.userTypeId == (int)UserType.Manager);
 
         if(meeting == null)
             return null;

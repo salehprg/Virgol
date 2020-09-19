@@ -43,7 +43,6 @@ namespace lms_with_moodle.Helper
         public static string VIRGOL_SCALELITE_BASE_URL { get; set; }
         public static string VIRGOL_SCALELITE_SECRET { get; set; }
 
-
         public static string ServerRootUrl { get; set; }
 
 

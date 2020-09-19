@@ -18,6 +18,7 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
+        console.log(process.env)
         this.props.logout()
     }
 

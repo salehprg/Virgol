@@ -23,6 +23,7 @@ using Quartz;
 using Quartz.Impl;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace lms_with_moodle
 {
@@ -98,6 +99,7 @@ namespace lms_with_moodle
                 
                 conStr = Configuration.GetConnectionString("BackupConnection");
             }
+           
 
             AppSettings appSettings = new AppSettings();
 
