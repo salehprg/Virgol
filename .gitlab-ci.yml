@@ -125,8 +125,8 @@ push:
     - echo $CI_DEPLOY_USER
     - echo $CI_REGISTRY_IMAGE
     - echo $CI_DEPLOY_PASSWORD
-    - docker build --pull --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
     - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    - docker build --pull --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     # - docker push $IMAGE_URL:$TAG
 
