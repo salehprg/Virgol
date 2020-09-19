@@ -121,8 +121,9 @@ push:
   services:
     - docker:dind
   script:
-    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    # - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
     - docker build --pull -t $IMAGE_URL:$TAG .
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
     - docker push $IMAGE_URL:$TAG
 
 deploy:
