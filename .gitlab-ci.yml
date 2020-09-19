@@ -92,7 +92,7 @@ stages:
 before_script:
   - "cd src"
   - "dotnet restore"
-  - "cd /src/Presentation/Virgol.School"
+  - "cd Presentation/Virgol.School"
   #  - "dotnet restore --packages $NUGET_PACKAGES_DIRECTORY"
 
 build:
