@@ -31,7 +31,7 @@ variables:
 # In this example there are only two stages.
 # Initially, the project will be built and then tested.
 stages:
-  # - push
+  - push
   - deploy
 
 # stages:
@@ -115,18 +115,18 @@ stages:
 #     - "apt install -y nodejs"
 #     - "dotnet test --no-restore"
 
-# push:
-#   stage: push
-#   image: docker:latest
-#   services:
-#     - docker:dind
-#   script:
-#     # - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
-#     # - docker build --pull --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
-#     # - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     - docker build --pull -t $IMAGE_URL:$TAG .
-#     - docker push $IMAGE_URL:$TAG
+push:
+  stage: push
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    # - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    # - docker build --pull --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    # - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --pull -t $IMAGE_URL:$TAG .
+    - docker push $IMAGE_URL:$TAG
 
 deploy:
   stage: deploy
