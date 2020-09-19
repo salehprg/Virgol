@@ -31,11 +31,15 @@ variables:
 # In this example there are only two stages.
 # Initially, the project will be built and then tested.
 stages:
-  # - build
-  # - test
   - push
   - deploy
 
+# stages:
+#   - build
+#   - test
+#   - push
+#   - deploy
+  
 # ### Define global cache rule
 #
 # Before building the project, all dependencies (e.g. third-party NuGet packages)
