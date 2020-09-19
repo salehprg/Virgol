@@ -13,7 +13,7 @@
 # See other available tags for .NET Core: https://hub.docker.com/r/microsoft/dotnet
 # Learn more about Docker tags: https://docs.docker.com/glossary/?term=tag
 # and the Docker itself: https://opensource.com/resources/what-docker
-image: microsoft/dotnet:latest
+image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
 # ### Define variables
 #
@@ -90,7 +90,6 @@ stages:
 #
 # Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/index.html
 before_script:
-  - "ls"
   - "cd $SOURCE_CODE_PATH"
   # - "dotnet restore --packages $NUGET_PACKAGES_DIRECTORY"
 
@@ -126,6 +125,7 @@ push:
   services:
     - docker:dind
   script:
+    - "cd .."
     - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
     - docker build --pull -t $IMAGE_URL:$TAG .
     - docker push $IMAGE_URL:$TAG
