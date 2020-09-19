@@ -1,13 +1,11 @@
 kind: ExternalService
-name: virgol2
+name: virgol-beta
 spec:
-  image: goldenstarc/virgol:latest
-  # image: ${IMAGE_URL}:${TAG}
+  image: ${IMAGE_URL}:${TAG}
   image_pull_policy: Always
   image_pull_secret: $SEC_NAME
-  # domains:
-  #    - name: virgol.legace.ir
-  #    - name: online.hadaf-gostar.ir
+  domains:
+     - name: beta.legace.ir
   port: 80
   volume_mounts:
     - mount_path: /app/BulkData

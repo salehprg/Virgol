@@ -121,7 +121,10 @@ push:
   services:
     - docker:dind
   script:
-    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    # - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    # - docker build --pull --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    # - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build --pull -t $IMAGE_URL:$TAG .
     - docker push $IMAGE_URL:$TAG
 
@@ -133,4 +136,5 @@ deploy:
   script:
     - pip install fandogh_cli --upgrade
     - fandogh login --username $FAN_USR --password $FAN_PASS
-    - ./deployment/scripts/deploy-to-fandogh.sh
+    - cd deployment/scripts
+    - bash deploy-to-fandogh.sh
