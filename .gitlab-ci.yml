@@ -93,22 +93,26 @@ stages:
 # in the root of project repository, so its content can be cached.
 #
 # Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/index.html
-before_script:
-  - "cd src"
-  - "dotnet restore"
-  - "curl -sL https://deb.nodesource.com/setup_lts.x | bash - "
-  - "apt install -y nodejs"
+#before_script:
   # - "cd Presentation/Virgol.School"
   #  - "dotnet restore --packages $NUGET_PACKAGES_DIRECTORY"
 
 # build:
 #   stage: build
 #   script:
+#     - "cd src"
+#     - "dotnet restore"
+#     - "curl -sL https://deb.nodesource.com/setup_lts.x | bash - "
+#     - "apt install -y nodejs"
 #     - "dotnet build --no-restore"
 
 # tests:
 #   stage: test
 #   script:
+#     - "cd src"
+#     - "dotnet restore"
+#     - "curl -sL https://deb.nodesource.com/setup_lts.x | bash - "
+#     - "apt install -y nodejs"
 #     - "dotnet test --no-restore"
 
 push:
@@ -117,7 +121,6 @@ push:
   services:
     - docker:dind
   script:
-    - "cd .."
     - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
     - docker build --pull -t $IMAGE_URL:$TAG .
     - docker push $IMAGE_URL:$TAG
