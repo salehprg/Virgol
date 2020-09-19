@@ -122,9 +122,10 @@ push:
     - docker:dind
   script:
     # - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    # - docker build --pull --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    # - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --pull --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker build --pull -t $IMAGE_URL:$TAG .
     - docker push $IMAGE_URL:$TAG
 
 deploy:
