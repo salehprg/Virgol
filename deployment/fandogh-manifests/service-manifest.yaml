@@ -1,5 +1,5 @@
 kind: ExternalService
-name: virgol2
+name: virgol-beta
 spec:
   image: ${IMAGE_URL}:${TAG}
   image_pull_policy: Always
