@@ -22,7 +22,7 @@ RUN dotnet restore Virgol.sln
 WORKDIR /src/Presentation/Virgol.School 
 
 # build project   
-RUN dotnet build Virgol.School.csproj -c Release
+RUN dotnet build Virgol.School.csproj --no-restore -c Release
 
 
 # # build plugins
