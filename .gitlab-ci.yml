@@ -106,7 +106,7 @@ build:
   # where it is located (e.g. 'dotnet build ./src/ConsoleApp').
   # Only one project path can be passed as a parameter to 'dotnet build' command.
   script:
-    - "dotnet build Virgol.School.csproj -c Release"
+    - "dotnet build --no-restore"
 
 tests:
   stage: test
