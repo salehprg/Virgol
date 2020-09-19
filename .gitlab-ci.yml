@@ -92,6 +92,8 @@ stages:
 before_script:
   - "cd src"
   - "dotnet restore"
+  - "curl -sL https://deb.nodesource.com/setup_lts.x | bash - "
+  - "apt install -y nodejs"
   # - "cd Presentation/Virgol.School"
   #  - "dotnet restore --packages $NUGET_PACKAGES_DIRECTORY"
 
