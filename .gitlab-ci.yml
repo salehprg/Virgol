@@ -24,7 +24,7 @@ variables:
   NUGET_PACKAGES_DIRECTORY: ".nuget"
   # 3) A relative path to the source code from project repository root.
   # NOTE: Please edit this path so it matches the structure of your project!
-  SOURCE_CODE_PATH: "/src/Presentation/Virgol.School"
+  SOURCE_CODE_PATH: "/src/"
 
 # ### Define stage list
 #
@@ -90,8 +90,9 @@ stages:
 #
 # Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/index.html
 before_script:
+  - "ls"
   - "cd $SOURCE_CODE_PATH"
-  - "dotnet restore --packages $NUGET_PACKAGES_DIRECTORY"
+  # - "dotnet restore --packages $NUGET_PACKAGES_DIRECTORY"
 
 build:
   stage: build
