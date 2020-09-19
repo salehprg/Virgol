@@ -31,8 +31,8 @@ variables:
 # In this example there are only two stages.
 # Initially, the project will be built and then tested.
 stages:
-  - build
-  - test
+  # - build
+  # - test
   - push
   - deploy
 
