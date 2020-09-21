@@ -45,34 +45,38 @@ namespace Schedule
                         if(meetingsResponse.meetings != null)
                             newMeetingList = meetingsResponse.meetings.meeting; 
 
-                        List<Meeting> oldMeetingList = dbContext.Meetings.ToList(); //Meeting list in our database
+                        List<MeetingView> oldMeetingList = dbContext.MeetingViews.Where(x => x.School_Id == school.Id).ToList(); //Meeting list in our database
                         
                         foreach(var newMeeting in newMeetingList)
                         {
-                            Meeting oldMeeting = oldMeetingList.Where(x => x.BBB_MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
-                            if(oldMeeting != null && !oldMeeting.Private) // it means current Meeting exist and active in our database 
+                            MeetingView oldMeeting = oldMeetingList.Where(x => x.BBB_MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
+                            if(oldMeeting != null)
                             {
-                                foreach(var attendee in newMeeting.attendees.attendee.Where(x => x.role != "MODERATOR")) // Participant present in Online Course
+                                Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeeting.Id).FirstOrDefault();
+                                if(!oldMeetingInfo.Private) // it means current Meeting exist and active in our database 
                                 {
-                                    ParticipantInfo participantInfo = dbContext.ParticipantInfos.Where(x => x.MeetingId == oldMeeting.Id && x.UserId == attendee.userID).FirstOrDefault();
-                                    if(participantInfo != null)
+                                    foreach(var attendee in newMeeting.attendees.attendee.Where(x => x.role != "MODERATOR")) // Participant present in Online Course
                                     {
-                                        participantInfo.PresentCount++;
-                                        participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeeting.CheckCount + 1) * 100 ) > 70 ? true : false;
-                                        dbContext.ParticipantInfos.Update(participantInfo);
-                                    }
-                                    else
-                                    {
-                                        ParticipantInfo newAttendee = new ParticipantInfo();
-                                        newAttendee.MeetingId = oldMeeting.Id;
-                                        newAttendee.UserId = attendee.userID;
-                                        newAttendee.PresentCount = 1;
+                                        ParticipantInfo participantInfo = dbContext.ParticipantInfos.Where(x => x.MeetingId == oldMeeting.Id && x.UserId == attendee.userID).FirstOrDefault();
+                                        if(participantInfo != null)
+                                        {
+                                            participantInfo.PresentCount++;
+                                            participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeeting.CheckCount + 1) * 100 ) > 70 ? true : false;
+                                            dbContext.ParticipantInfos.Update(participantInfo);
+                                        }
+                                        else
+                                        {
+                                            ParticipantInfo newAttendee = new ParticipantInfo();
+                                            newAttendee.MeetingId = oldMeeting.Id;
+                                            newAttendee.UserId = attendee.userID;
+                                            newAttendee.PresentCount = 1;
 
-                                        dbContext.ParticipantInfos.Add(newAttendee);
+                                            dbContext.ParticipantInfos.Add(newAttendee);
+                                        }
                                     }
+                                    oldMeeting.CheckCount++;
+                                    dbContext.Update(oldMeeting);
                                 }
-                                oldMeeting.CheckCount++;
-                                dbContext.Update(oldMeeting);
                             }
                             //use this for sync with moodle
                             // else
@@ -93,9 +97,11 @@ namespace Schedule
                             var closedMeeting = newMeetingList.Where(x => x.meetingID == oldMeeting.BBB_MeetingId).FirstOrDefault();
                             if(closedMeeting == null) // it means a meeting has closed but its state in our database is Active
                             {
-                                oldMeeting.Finished = true;
-                                oldMeeting.EndTime = MyDateTime.Now();
-                                dbContext.Meetings.Update(oldMeeting);
+                                Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeeting.Id).FirstOrDefault();
+
+                                oldMeetingInfo.Finished = true;
+                                oldMeetingInfo.EndTime = MyDateTime.Now();
+                                dbContext.Meetings.Update(oldMeetingInfo);
                                 dbContext.SaveChanges();
                             }
                         }
