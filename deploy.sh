@@ -44,4 +44,5 @@ docker run \
     -e "VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir" \
     -e "VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24" \
     -e "VIRGOL_NTP_SERVER_URL=ir.pool.ntp.org" \
+    -e "REACT_APP_TestEnv=test1234" \
     -d $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG

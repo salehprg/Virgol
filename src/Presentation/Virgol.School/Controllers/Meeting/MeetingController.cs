@@ -142,6 +142,7 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 return BadRequest(ex.Message);
             }
@@ -187,11 +188,9 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
-                Console.WriteLine(teacherId);
 
                 ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
                 
-                Console.WriteLine(classSchedule.Id);
 
                 bool mixed = (classSchedule.MixedId != 0 ? true : false); // if Teacher start mixed class
 
@@ -200,7 +199,6 @@ namespace lms_with_moodle.Controllers
                     int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId);
                     List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
 
-                    Console.WriteLine("Get mixed");
                     foreach (var schedule in mixedSchedules)
                     {
                         await meetingService.StartMixedMeeting(schedule , teacherId , parentId);
@@ -208,16 +206,13 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    Console.WriteLine("Start Single");
                     int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId);
-                    Console.WriteLine("mId = " + meetingId);
                 }
 
                 return Ok(true);
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Source);
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 return BadRequest(ex.Message);
@@ -345,6 +340,7 @@ namespace lms_with_moodle.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine("Back : Error" + ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 return BadRequest(ex.Message);
             }

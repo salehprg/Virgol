@@ -910,6 +910,7 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 return BadRequest("ایجاد کلاس با مشکل مواجه شد");
             }
@@ -1077,6 +1078,7 @@ namespace lms_with_moodle.Controllers
                     }
                     catch(Exception ex){
                         Console.WriteLine(ex.Message);
+                        Console.WriteLine(ex.StackTrace);
                     }
                 }
 
@@ -1085,6 +1087,7 @@ namespace lms_with_moodle.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 return false;
             }

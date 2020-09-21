@@ -520,7 +520,7 @@ namespace lms_with_moodle.Controllers
 
                     bool completedProfile = userInformation.LatinFirstname != null && userInformation.LatinFirstname != null;
                     
-                    Console.WriteLine("Login Succed");
+                    
 
                     //Get userTypeId information from UserType Class
                     return Ok(new
@@ -703,6 +703,7 @@ namespace lms_with_moodle.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return BadRequest("در آپلود فایل مشکلی بوجود آمد");
             }
         }
@@ -825,6 +826,7 @@ namespace lms_with_moodle.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }

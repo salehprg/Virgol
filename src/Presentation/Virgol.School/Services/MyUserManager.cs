@@ -266,6 +266,7 @@ public class MyUserManager {
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
@@ -366,6 +367,7 @@ public class MyUserManager {
         catch(Exception ex)
         {
             Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             return false;
         }
         

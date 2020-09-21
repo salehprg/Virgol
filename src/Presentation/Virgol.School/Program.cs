@@ -15,7 +15,7 @@ namespace lms_with_moodle
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
-            Console.Write(Directory.GetCurrentDirectory());
+            //Console.Write(Directory.GetCurrentDirectory());
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
