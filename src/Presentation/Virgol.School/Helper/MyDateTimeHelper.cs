@@ -4,7 +4,7 @@ using GuerrillaNtp;
 
 public class MyDateTime {
 
-    static int Hour = 4;
+    static int Hour = 3;
     static int Minute = 30;
 
     //For local test
