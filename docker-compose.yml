@@ -12,7 +12,7 @@ services:
       - ASPNETCORE_URLS=http://+ # ;https://+
       - ASPNETCORE_ENVIRONMENT=Production
       - NODE_ENV=production
-      - VIRGOL_SERVER_ROOT_URL=http://lms.legace.ir
+      - VIRGOL_SERVER_ROOT_URL=https://lms.legace.ir
       - VIRGOL_DATABASE_TYPE=postgres
       - VIRGOL_DATABASE_HOST=postgres
       - VIRGOL_DATABASE_NAME=LMS
