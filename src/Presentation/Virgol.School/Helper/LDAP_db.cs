@@ -111,6 +111,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -145,6 +146,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -178,6 +180,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -208,6 +211,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -246,6 +250,7 @@ namespace lms_with_moodle.Helper
                     catch(LdapException e) 
                     { 
                         Console.WriteLine("Error: " + e.LdapErrorMessage);
+                        Console.WriteLine(e.StackTrace);
                         //Exception is thrown, go for next entry
                         continue; 
                     } 
@@ -273,6 +278,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return null;
             }
         }
@@ -302,6 +308,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -332,6 +339,7 @@ namespace lms_with_moodle.Helper
                 catch(LdapException e) 
                 { 
                     Console.WriteLine("Error: " + e.LdapErrorMessage);
+                    Console.WriteLine(e.StackTrace);
                     //Exception is thrown, go for next entry
                     continue; 
                 } 
@@ -400,6 +408,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -440,6 +449,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -528,6 +538,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally

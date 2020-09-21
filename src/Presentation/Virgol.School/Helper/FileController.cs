@@ -155,6 +155,7 @@ public class FileController {
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 BulkData bulkData = new BulkData();
                 bulkData.schoolData = null;
@@ -304,6 +305,7 @@ public class FileController {
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 BulkData bulkData = new BulkData();
                 bulkData.schoolData = null;

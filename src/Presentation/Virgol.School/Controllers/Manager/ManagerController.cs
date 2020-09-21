@@ -1167,6 +1167,7 @@ namespace lms_with_moodle.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 BulkData bulkData = new BulkData();
                 bulkData.errors = new List<string>{"خطا در بارگذاری اطلاعات لطفا بعدا تلاش نمایید"};

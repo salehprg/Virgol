@@ -77,7 +77,6 @@ namespace lms_with_moodle.Helper
                     if(jsonObj.Contains("?xml"))
                     {
                         string[] results = jsonObj.Split("}{");
-                        Console.WriteLine("{" + results[1]);
 
                         return "{" + results[1];
                     }
@@ -92,6 +91,7 @@ namespace lms_with_moodle.Helper
             catch (System.Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return null;
             }
             
@@ -116,6 +116,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 return null;
             }
@@ -139,6 +140,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 return null;
             }
@@ -163,8 +165,6 @@ namespace lms_with_moodle.Helper
                 string data = FunctionName;
 
                 string _response = await sendData(data);
-
-                Console.WriteLine(_response);
 
                 var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
                 
@@ -199,6 +199,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 return null;
             }
@@ -222,6 +223,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
                 return false;
             }

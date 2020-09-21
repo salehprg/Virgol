@@ -376,6 +376,7 @@ namespace lms_with_moodle.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return BadRequest("خطای سیستمی رخ داد لطفا بعدا تلاش نمایید");
             }
         }

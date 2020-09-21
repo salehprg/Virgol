@@ -80,6 +80,7 @@ public class ClassScheduleService {
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
             return null;
         }

@@ -64,12 +64,10 @@ public class MeetingService {
 
         duration += (duration != 0 ? 5 : 0); // add 5 minutes Additional to the end of class
         //duration = 0; // add 5 minutes Additional to the end of class
-        //Console.WriteLine(callBackUrl);
 
         BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
         MeetingsResponse response = await bbbApi.CreateRoom(meeting.MeetingName , (bbbMeetingId == "" ? meeting.Id.ToString() : bbbMeetingId) , callBackUrl , (int)duration);
 
-        Console.WriteLine(response.returncode);
 
         if(response.returncode != "FAILED" && !meeting.Private)
         {
@@ -77,13 +75,11 @@ public class MeetingService {
             appDbContext.Meetings.Update(meeting);
             await appDbContext.SaveChangesAsync();
 
-             Console.WriteLine("True Non-Private");
 
             return true;
         }
         else if(response.returncode != "FAILED" && meeting.Private)
         {
-            Console.WriteLine("True Private");
             return true;
         }
 
@@ -93,7 +89,6 @@ public class MeetingService {
     {
         Meeting meeting = await CreateInDb(classSchedule , teacherId);
 
-        Console.WriteLine(meeting.Id);
 
         DateTime timeNow = MyDateTime.Now();
         float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
@@ -110,11 +105,9 @@ public class MeetingService {
 
         bool result = await CreateRoom(meeting , duration);
 
-        Console.WriteLine("room :" + result );
 
         if(result)
         {
-            Console.WriteLine("Succeed !");
             return meeting;
         }
         
@@ -255,8 +248,6 @@ public class MeetingService {
     public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId)
     {   
         Meeting meeting = await StartMeeting(classSchedule , teacherId);
-
-        Console.WriteLine(meeting != null);
 
         if(meeting != null)
         {

@@ -97,6 +97,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
 
@@ -154,6 +155,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
 
@@ -182,6 +184,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return -1;
             }
 
@@ -203,6 +206,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return null;
             }
 
@@ -243,6 +247,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return null;
             }
         }
@@ -280,6 +285,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
@@ -309,6 +315,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
@@ -346,6 +353,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return -1;
             }
         }
@@ -380,6 +388,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return ex.Message;
             }
         }
@@ -409,6 +418,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return ex.Message;
             }
         }
@@ -436,6 +446,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return ex.Message;
             }
         }
@@ -473,6 +484,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return ex.Message;
             }
         }
@@ -505,6 +517,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return ex.Message;
             }
         }
@@ -578,6 +591,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return -1;
             }
         }
@@ -599,6 +613,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
@@ -640,6 +655,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         } 
@@ -665,6 +681,7 @@ namespace lms_with_moodle.Helper
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         } 
@@ -703,6 +720,7 @@ namespace lms_with_moodle.Helper
             catch (System.Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return null;
                 throw;
             }
@@ -756,6 +774,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return null;
             }
         }
