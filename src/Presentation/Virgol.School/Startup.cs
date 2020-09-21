@@ -115,11 +115,15 @@ namespace lms_with_moodle
 
             string[] envs = {"REACT_APP_RAHE_DOOR=" + AppSettings.REACT_APP_RAHE_DOOR ,
                             "REACT_APP_FAVICON_NAME=" + AppSettings.REACT_APP_FAVICON_NAME,
-                            "REACT_APP_MOODLE_URL=" + AppSettings.REACT_APP_MOODLE_URL};
+                            "REACT_APP_MOODLE_URL=" + AppSettings.REACT_APP_MOODLE_URL,
+                            "REACT_APP_Test=test1234"};
+
+            Console.WriteLine("React Env :" + AppSettings.REACT_APP_RAHE_DOOR + " " + AppSettings.REACT_APP_FAVICON_NAME + " " + AppSettings.REACT_APP_MOODLE_URL);
 
             if(!File.Exists("./ClientApp/.env"))
             {
-                File.Create("./ClientApp/.env");
+                FileStream fs = File.Create("./ClientApp/.env");
+                fs.Close();
             }
 
             File.WriteAllLines("./ClientApp/.env" , envs);

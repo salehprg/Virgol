@@ -18,7 +18,10 @@
                 "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "REACT_APP_RAHE_DOOR": "true",
+                "REACT_APP_FAVICON_NAME": "favname",
+                "REACT_APP_MOODLE_URL": "https://moodle.legace.ir/login/index.php"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
