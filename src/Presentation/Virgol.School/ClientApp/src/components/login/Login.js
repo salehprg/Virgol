@@ -166,24 +166,27 @@ class Login extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen bg-black-blue py-16">
-                <div className="w-full max-w-350 mx-auto">
-                    <div className="text-center mb-8">
-                        {/*{logo('w-16 mb-3 text-purplish mx-auto')}*/}
-                        {process.env.REACT_APP_RAHE_DOOR === "true" ?
-                            <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
-                            :
-                            logo('w-24 mx-auto mb-3 text-purplish')
-                        }
-                        <span className="text-xl text-white">
-                            {process.env.REACT_APP_RAHE_DOOR === "true" ? 'ورود به سامانه آموزش از راه دور خراسان رضوی' : 'ورود به سامانه ویرگول'}
-                        </span>
-                    </div>
-                    <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
-                        {this.renderPanel()}
+            <>
+                <div className="w-screen min-h-screen bg-black-blue py-16">
+                    <div className="w-full max-w-350 mx-auto">
+                        <div className="text-center mb-8">
+                            {/*{logo('w-16 mb-3 text-purplish mx-auto')}*/}
+                            {process.env.REACT_APP_RAHE_DOOR === "true" ?
+                                <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
+                                :
+                                logo('w-24 mx-auto mb-3 text-purplish')
+                            }
+                            <span className="text-xl text-white">
+                                {process.env.REACT_APP_RAHE_DOOR === "true" ? 'ورود به سامانه آموزش از راه دور خراسان رضوی' : 'ورود به سامانه ویرگول'}
+                            </span>
+                        </div>
+                        <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
+                            {this.renderPanel()}
+                        </div>
                     </div>
                 </div>
-            </div>
+                <span style={{position : "fixed" , bottom : 0 }} class="w-screen bg-black-blue text-white mb-2 ml-3">{process.env.REACT_APP_VERSION}</span>
+            </>
         );
     }
 

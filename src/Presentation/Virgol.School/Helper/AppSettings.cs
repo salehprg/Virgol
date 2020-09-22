@@ -46,6 +46,7 @@ namespace lms_with_moodle.Helper
         public static string REACT_APP_RAHE_DOOR { get; set; }
         public static string REACT_APP_FAVICON_NAME { get; set; }
         public static string REACT_APP_MOODLE_URL { get; set; }
+        public static string REACT_APP_VERSION { get; set; }
 
 
         public static string ServerRootUrl { get; set; }
