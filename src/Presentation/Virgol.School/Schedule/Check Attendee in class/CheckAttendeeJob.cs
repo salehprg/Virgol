@@ -110,7 +110,7 @@ namespace Schedule
                             {
                                 Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeeting.Id).FirstOrDefault();
 
-                                oldMeetingInfo.Finished = true;
+                                //oldMeetingInfo.Finished = true;
                                 oldMeetingInfo.EndTime = MyDateTime.Now();
                                 dbContext.Meetings.Update(oldMeetingInfo);
                                 dbContext.SaveChanges();
