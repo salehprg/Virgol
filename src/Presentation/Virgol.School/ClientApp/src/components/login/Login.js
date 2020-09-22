@@ -185,7 +185,7 @@ class Login extends React.Component {
                         </div>
                     </div>
                 </div>
-                <span style={{position : "fixed" , bottom : 0 }} class="w-screen bg-black-blue text-white mb-2 ml-3">{process.env.REACT_APP_VERSION}</span>
+                <span style={{position : "fixed" , bottom : 0 }} class="w-screen bg-black-blue text-white mb-2 ml-3">process.env.REACT_APP_VERSION</span>
             </>
         );
     }
