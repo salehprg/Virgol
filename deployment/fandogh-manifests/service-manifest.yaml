@@ -72,3 +72,5 @@ spec:
       value : favicon_virgool
     - name : REACT_APP_MOODLE_URL
       value : https://moodle.legace.ir/login/index.php
+    - name : REACT_APP_VERSION
+      value : نسخه 1.4.6 آزمایشی
