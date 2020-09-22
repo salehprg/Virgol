@@ -27,7 +27,7 @@ spec:
     - name: VIRGOL_DATABASE_HOST
       value: db.legace.ir
     - name: VIRGOL_DATABASE_NAME
-      value: LMS
+      value: LMS_Beta
     - name: VIRGOL_DATABASE_USER
       value: postgres
     - name: VIRGOL_DATABASE_PASSWORD
