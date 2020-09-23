@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../../../modals/Modal';
 import Select from 'react-select';
-import TimeKeeper from 'react-timekeeper';
+import Switch from 'react-switch';
 import {getAllTeachers } from '../../../../_actions/managerActions'
 import {AddClassSchedule , getClassLessons} from '../../../../_actions/classScheduleActions'
 import { connect } from 'react-redux';
@@ -10,7 +10,7 @@ class AddLesson extends React.Component {
 
     state = { selectedCourse: null, selectedTeacher: null , selectedDay : 0
              , selectedStartTime: null, selectedEndTime: null, loading : false ,
-            teachers : [] , lessons : [] , times : []};
+            teachers : [] , lessons : [] , times : [], weekly: true, week: 'Fard'};
 
     componentDidMount = async () =>{
         this.setState({loading : true})
@@ -70,6 +70,14 @@ class AddLesson extends React.Component {
     handleChangeEnd = selectedEndTime => {
         this.setState({ selectedEndTime });
     };
+
+    handleWeeklyChange = (checked) => {
+        this.setState({ weekly: !checked });
+    }
+
+    handleWeek = (week) => {
+        this.setState({ week })
+    }
 
     onAddSchedule = async () => {
 
@@ -187,6 +195,23 @@ class AddLesson extends React.Component {
                             :
                             null
                         }
+
+                        <div className="w-1/2 mx-auto my-4 flex flex-row-reverse justify-between items-center">
+                            <p className="text-white">هفته در میان</p>
+                            <Switch
+                                onChange={this.handleWeeklyChange}
+                                checked={!this.state.weekly}
+                                className="react-switch"
+                                uncheckedIcon={false}
+                                checkedIcon={false}
+                            />
+                        </div>
+
+                        <div className={`w-1/2 mx-auto my-4 flex flex-row-reverse justify-between items-center ${this.state.weekly ? 'hidden' : 'block'}`}>
+                            <span className="text-white">هفته</span>
+                            <span onClick={() => this.handleWeek('Zoj')} className={`w-1/3 text-center py-1 cursor-pointer border-2 ${this.state.week === 'Zoj' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>زوج</span>
+                            <span onClick={() => this.handleWeek('Fard')} className={`w-1/3 text-center py-1 cursor-pointer border-2 ${this.state.week === 'Fard' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>فرد</span>
+                        </div>
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}
                         {/*<input type="number" name="startMin" placeholder="دقیقه" onChange={this.onHandleInput} value={this.state.startMin} />*/}
