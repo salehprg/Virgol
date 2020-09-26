@@ -47,9 +47,18 @@ class Schedule extends React.Component {
             if(day && day.length > 0)
             {
                 (day.map(lesson => {
+                    var lessonY = lesson.dayType;
+
+                    if(lessons.find(ls => ls.lessonDetail.dayType == lesson.dayType && //Check same day
+                        ((ls.lessonDetail.startHour >= lesson.startHour && ls.lessonDetail.startHour < lesson.endHour) || // Check oldClass Start time between new class Time
+                            (ls.lessonDetail.startHour <= lesson.startHour && ls.lessonDetail.endHour > lesson.startHour))))
+                    {
+                        lessonY += 0.5;
+                    }   
+
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
-                    h: 1 , lessonDetail : lesson , static: true})
+                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: lessonY, w: (lesson.endHour - lesson.startHour) * 2,
+                    h: (lesson.weekly != 0 ? 0.5 : 1) , lessonDetail : lesson , static: true})
                 }))
             }
         })
@@ -103,7 +112,7 @@ class Schedule extends React.Component {
                     {layout.map(x => {
                         return (
                             <div ref={this.sc} onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
-                                <p className="text-center">{x.name}</p>
+                                <p className="text-center" style={{textOverflow : "ellipsis" , overflow : "hidden" , whiteSpace : "nowrap"}}>{x.name}</p>
                             </div>
                         );
                     })}

@@ -10,7 +10,7 @@ class AddLesson extends React.Component {
 
     state = { selectedCourse: null, selectedTeacher: null , selectedDay : 0
              , selectedStartTime: null, selectedEndTime: null, loading : false ,
-            teachers : [] , lessons : [] , times : [], weekly: true, week: 'Fard'};
+            teachers : [] , lessons : [] , times : [], weekly: true, week: '0'};
 
     componentDidMount = async () =>{
         this.setState({loading : true})
@@ -72,7 +72,7 @@ class AddLesson extends React.Component {
     };
 
     handleWeeklyChange = (checked) => {
-        this.setState({ weekly: !checked });
+        this.setState({ weekly: !checked , week : "1"});
     }
 
     handleWeek = (week) => {
@@ -88,7 +88,8 @@ class AddLesson extends React.Component {
                 lessonId : this.state.selectedCourse.value,
                 teacherId : this.state.selectedTeacher.value,
                 startHour : this.state.selectedStartTime.value,
-                endHour : this.state.selectedEndTime.value
+                endHour : this.state.selectedEndTime.value,
+                weekly : parseInt(this.state.week)
             }
 
             this.props.addLesson(classSchedule);
@@ -209,8 +210,8 @@ class AddLesson extends React.Component {
 
                         <div className={`w-1/2 mx-auto my-4 flex flex-row-reverse justify-between items-center ${this.state.weekly ? 'hidden' : 'block'}`}>
                             <span className="text-white">هفته</span>
-                            <span onClick={() => this.handleWeek('Zoj')} className={`w-1/3 text-center py-1 cursor-pointer border-2 ${this.state.week === 'Zoj' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>زوج</span>
-                            <span onClick={() => this.handleWeek('Fard')} className={`w-1/3 text-center py-1 cursor-pointer border-2 ${this.state.week === 'Fard' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>فرد</span>
+                            <span onClick={() => this.handleWeek('1')} className={`w-1/3 text-center py-1 cursor-pointer border-2 ${this.state.week === '1' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>زوج</span>
+                            <span onClick={() => this.handleWeek('2')} className={`w-1/3 text-center py-1 cursor-pointer border-2 ${this.state.week === '2' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>فرد</span>
                         </div>
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}

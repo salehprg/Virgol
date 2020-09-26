@@ -37,9 +37,18 @@ class Tracker extends React.Component {
             if(classs && classs.length > 0)
             {
                 (classs.map(lesson => {
+                    var offsetY = 1;
+
+                    if(schedules.find(ls => ls.lessonDetail.classId == lesson.classId && //Check same day
+                        ((ls.lessonDetail.startHour >= lesson.startHour && ls.lessonDetail.startHour < lesson.endHour) || // Check oldClass Start time between new class Time
+                            (ls.lessonDetail.startHour <= lesson.startHour && ls.lessonDetail.endHour > lesson.startHour))))
+                    {
+                        offsetY = 1.5;
+                    }  
+
                     schedules.push({i: 'l' + lesson.id , name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.id)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: index + 1, w: (lesson.endHour - lesson.startHour) * 2,
-                    h: 1 , lessonDetail : lesson , static: true})
+                    c: `bg-${getColor(lesson.id)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: index + offsetY, w: (lesson.endHour - lesson.startHour) * 2,
+                    h: (lesson.weekly != 0 ? 0.5 : 1) , lessonDetail : lesson , static: true})
                 }))
             }
         })
