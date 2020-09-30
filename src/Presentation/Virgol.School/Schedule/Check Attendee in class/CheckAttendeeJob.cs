@@ -26,6 +26,7 @@ namespace Schedule
 
         public Task Execute(IJobExecutionContext exContext)
         {
+            SchoolModel errorSchool = new SchoolModel();
             try
             {
                 using(var scope = _provider.CreateScope())
@@ -38,6 +39,8 @@ namespace Schedule
 
                     foreach (var school in schools)
                     {
+                        errorSchool = school;
+
                         bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
                         MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
                         List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
@@ -136,6 +139,7 @@ namespace Schedule
             }
             catch(Exception ex)
             {
+                Console.WriteLine("Error on : SchoolId = " + errorSchool.Id);
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }
