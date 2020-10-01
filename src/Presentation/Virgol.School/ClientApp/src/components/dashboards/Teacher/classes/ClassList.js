@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import {getTeacherSchedule } from '../../../../_actions/classScheduleActions'
+import {GetScheduleList } from '../../../../_actions/teacherActions'
 import ClassCard from "./ClassCard";
 
 class ClassList extends React.Component {
@@ -9,7 +9,7 @@ class ClassList extends React.Component {
 
     componentDidMount = async () => {
         this.setState({ loading: true })
-        await this.props.getTeacherSchedule(this.props.user.token )
+        await this.props.GetScheduleList(this.props.user.token )
         this.setState({ loading: false })
 
         const _classesLists = [];
@@ -30,7 +30,7 @@ class ClassList extends React.Component {
         return (
             <div className="grid my-8 teacher-classes-cards">
                 {(this.state.classesLists ? 
-                this.state.classesLists.map(x => {
+                this.props.schedules.map(x => {
                     return(
                         <ClassCard
                             lessonId={x.lessonId}
@@ -49,7 +49,7 @@ class ClassList extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user : state.auth.userInfo  , schedules : state.schedules.classSchedules}
+    return {user : state.auth.userInfo  , schedules : state.teacherData.scheduleList}
 }
 
-export default connect(mapStateToProps , {getTeacherSchedule })(ClassList);
+export default connect(mapStateToProps , {GetScheduleList })(ClassList);

@@ -32,3 +32,30 @@ export const GetClassBook = (token , lessonId) => async dispatch => {
     }
 
 }
+
+export const GetScheduleList = (token ) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        
+        const response = await lms.get(`/Teacher/GetScheduleList` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.GetScheduleList, payload: response.data })
+
+        return true
+
+    } catch (e) 
+    {
+
+        console.log(e.response)
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        return false
+    }
+
+}
+

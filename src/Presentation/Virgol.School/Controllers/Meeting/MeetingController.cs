@@ -434,27 +434,38 @@ namespace lms_with_moodle.Controllers
             try
             {
                 BBBApi bBApi = new BBBApi(appDbContext , scheduleId);
-                List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == scheduleId).ToList();
+                List<Meeting> meetings = new List<Meeting>();
 
                 ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
+
+                //Get schedule ids that same lessonId and TeacherId to specific classSchedule
+                List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.TeacherId == classSchedule.TeacherId && x.LessonId == classSchedule.LessonId && x.ClassId == classSchedule.ClassId).ToList();
+
+                foreach (var schedule in schedules)
+                {
+                    meetings.AddRange(appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList());
+                }
 
                 List<RecordInfo> recordsResponses = new List<RecordInfo>();
                 
                 meetings = meetings.OrderBy(x => x.Id).ToList();
                 foreach (var meeting in meetings)
                 {
-                    Recordings recordings = (await bBApi.GetMeetingRecords(meeting.BBB_MeetingId.ToString())).recordings;
-
-                    if(recordings != null)
+                    if(meeting.BBB_MeetingId != null)
                     {
-                        List<RecordInfo> records = recordings.recording;
-                        if(records.Count > 0)
-                        {
-                            records[0].name = classSchedule.OrgLessonName;
-                            records[0].url = records[0].playback.format[0].url;
-                            records[0].date = meeting.StartTime;
+                        Recordings recordings = (await bBApi.GetMeetingRecords(meeting.BBB_MeetingId.ToString())).recordings;
 
-                            recordsResponses.AddRange(records);
+                        if(recordings != null)
+                        {
+                            List<RecordInfo> records = recordings.recording;
+                            if(records.Count > 0)
+                            {
+                                records[0].name = classSchedule.OrgLessonName;
+                                records[0].url = records[0].playback.format[0].url;
+                                records[0].date = meeting.StartTime;
+
+                                recordsResponses.AddRange(records);
+                            }
                         }
                     }
                     

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Net;
 using GuerrillaNtp;
 
@@ -12,7 +13,6 @@ public class MyDateTime {
     //static int Minute = 30;
     public static DateTime Now(){
         DateTime result = DateTime.UtcNow;
-        DateTime ntpTime = GetNtpTime();
 
         result = result.AddHours(Hour);
         result = result.AddMinutes(Minute);
@@ -25,6 +25,18 @@ public class MyDateTime {
         }
         
         return result;
+    }
+
+    ///<summary>
+    ///1 = Fard , 0 = Zoj
+    ///</summary>
+    public int OddEven_Week(DateTime time)
+    {
+        CultureInfo culture = new CultureInfo("fa-Ir");
+        Calendar calendar = culture.Calendar;
+
+        int weekCount = calendar.GetWeekOfYear(time , CalendarWeekRule.FirstDay , DayOfWeek.Saturday);
+        return weekCount % 2;
     }
 
     public static int convertDayOfWeek(DateTime time)

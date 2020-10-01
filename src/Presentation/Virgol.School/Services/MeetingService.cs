@@ -30,8 +30,17 @@ public class MeetingService {
 
             DateTime timeNow = MyDateTime.Now();
 
-            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.TeacherId == teacherId && x.ScheduleId == scheduleId).ToList();
-            int newMeetingNo = meetings.Count + 1;
+            List<ClassScheduleView> scheduleViews = appDbContext.ClassScheduleView.Where(x => x.LessonId == classSchedule.LessonId && x.ClassId == classSchedule.ClassId && x.TeacherId == classSchedule.TeacherId).ToList();
+            
+            List<Meeting> result = new List<Meeting>();
+            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.TeacherId == teacherId).ToList();
+
+            foreach (var schedule in scheduleViews)
+            {
+                result.AddRange(meetings.Where(x => x.ScheduleId == schedule.Id).ToList());
+            }
+
+            int newMeetingNo = result.Count + 1;
 
             if(meetingName == "")
                 meetingName = displayName + " جلسه " + newMeetingNo;

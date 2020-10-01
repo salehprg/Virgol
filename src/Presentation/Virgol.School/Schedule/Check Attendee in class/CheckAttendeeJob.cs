@@ -39,107 +39,116 @@ namespace Schedule
 
                     foreach (var school in schools)
                     {
-                        errorSchool = school;
-
-                        bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
-                        MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
-                        List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
-
-                        if(meetingsResponse.meetings != null)
-                            newMeetingList = meetingsResponse.meetings.meeting; 
-
-                        List<MeetingView> oldMeetingList = dbContext.MeetingViews.Where(x => x.School_Id == school.Id).ToList(); //Meeting list in our database
-                        
-                        foreach(var newMeeting in newMeetingList)
+                        try
                         {
-                            MeetingView oldMeetingVW = oldMeetingList.Where(x => x.BBB_MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
-                            if(oldMeetingVW != null)
+                            errorSchool = school;
+
+                            bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
+                            MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
+                            List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
+
+                            if(meetingsResponse.meetings != null)
+                                newMeetingList = meetingsResponse.meetings.meeting; 
+
+                            List<MeetingView> oldMeetingList = dbContext.MeetingViews.Where(x => x.School_Id == school.Id).ToList(); //Meeting list in our database
+                            
+                            foreach(var newMeeting in newMeetingList)
                             {
-                                Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeetingVW.Id).FirstOrDefault();
-                                if(!oldMeetingInfo.Private) // it means current Meeting exist and active in our database 
+                                MeetingView oldMeetingVW = oldMeetingList.Where(x => x.BBB_MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
+                                if(oldMeetingVW != null)
                                 {
-                                    if(newMeeting.attendees != null)
+                                    Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeetingVW.Id).FirstOrDefault();
+                                    if(!oldMeetingInfo.Private) // it means current Meeting exist and active in our database 
                                     {
-                                        foreach(var attendee in newMeeting.attendees.attendee.Where(x => x.role != "MODERATOR")) // Participant present in Online Course
+                                        if(newMeeting.attendees != null)
                                         {
-                                            int bbbUserId = -1;
-                                            int.TryParse(attendee.userID , out bbbUserId);
-                                            if(bbbUserId != -1)
+                                            foreach(var attendee in newMeeting.attendees.attendee.Where(x => x.role != "MODERATOR")) // Participant present in Online Course
                                             {
-                                                ParticipantInfo participantInfo = dbContext.ParticipantInfos.Where(x => x.MeetingId == oldMeetingVW.Id && x.UserId == bbbUserId).FirstOrDefault();
-                                                if(participantInfo != null)
+                                                int bbbUserId = -1;
+                                                int.TryParse(attendee.userID , out bbbUserId);
+                                                if(bbbUserId != -1)
                                                 {
-                                                    participantInfo.PresentCount++;
-                                                    participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeetingVW.CheckCount + 1) * 100 ) > 70 ? true : false;
-                                                    dbContext.ParticipantInfos.Update(participantInfo);
-                                                }
-                                                else
-                                                {
+                                                    ParticipantInfo participantInfo = dbContext.ParticipantInfos.Where(x => x.MeetingId == oldMeetingVW.Id && x.UserId == bbbUserId).FirstOrDefault();
+                                                    if(participantInfo != null)
+                                                    {
+                                                        participantInfo.PresentCount++;
+                                                        participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeetingVW.CheckCount + 1) * 100 ) > 70 ? true : false;
+                                                        dbContext.ParticipantInfos.Update(participantInfo);
+                                                    }
+                                                    else
+                                                    {
 
-                                                    ParticipantInfo newAttendee = new ParticipantInfo();
-                                                    newAttendee.MeetingId = oldMeetingVW.Id;
-                                                    newAttendee.UserId = bbbUserId;
-                                                    newAttendee.PresentCount = 1;
+                                                        ParticipantInfo newAttendee = new ParticipantInfo();
+                                                        newAttendee.MeetingId = oldMeetingVW.Id;
+                                                        newAttendee.UserId = bbbUserId;
+                                                        newAttendee.PresentCount = 1;
 
-                                                    dbContext.ParticipantInfos.Add(newAttendee);
+                                                        dbContext.ParticipantInfos.Add(newAttendee);
+                                                    }
                                                 }
                                             }
+                                            oldMeetingInfo.CheckCount++;
+                                            dbContext.Update(oldMeetingInfo);
                                         }
-                                        oldMeetingInfo.CheckCount++;
-                                        dbContext.Update(oldMeetingInfo);
                                     }
                                 }
+                                //use this for sync with moodle
+                                // else
+                                // {
+                                //     Meeting meeting = new Meeting();
+                                //     meeting.MeetingName = newMeeting.meetingName;
+                                //     meeting.BBB_MeetingId = newMeeting.meetingID;
+                                //     meeting.StartTime = DateTime.Now;
+                                //     meeting.ModeretorId = newMeeting.attendees.attendee.Where(x => x.role == "MODERATOR").FirstOrDefault().userID;
+                                //     meeting.Finished = false;
+                                    
+                                //     dbContext.Meetings.Add(meeting);
+                                // }
                             }
-                            //use this for sync with moodle
-                            // else
-                            // {
-                            //     Meeting meeting = new Meeting();
-                            //     meeting.MeetingName = newMeeting.meetingName;
-                            //     meeting.BBB_MeetingId = newMeeting.meetingID;
-                            //     meeting.StartTime = DateTime.Now;
-                            //     meeting.ModeretorId = newMeeting.attendees.attendee.Where(x => x.role == "MODERATOR").FirstOrDefault().userID;
-                            //     meeting.Finished = false;
-                                
-                            //     dbContext.Meetings.Add(meeting);
-                            // }
-                        }
 
-                        oldMeetingList = oldMeetingList.Where(x => !x.Finished).ToList();
+                            oldMeetingList = oldMeetingList.Where(x => !x.Finished).ToList();
 
-                        foreach(var oldMeeting in oldMeetingList)
-                        {
-                            var closedMeeting = newMeetingList.Where(x => x.meetingID == oldMeeting.BBB_MeetingId).FirstOrDefault();
-                            if(closedMeeting == null) // it means a meeting has closed but its state in our database is Active
+                            foreach(var oldMeeting in oldMeetingList)
                             {
-                                Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeeting.Id).FirstOrDefault();
+                                var closedMeeting = newMeetingList.Where(x => x.meetingID == oldMeeting.BBB_MeetingId).FirstOrDefault();
+                                if(closedMeeting == null) // it means a meeting has closed but its state in our database is Active
+                                {
+                                    Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeeting.Id).FirstOrDefault();
 
-                                //oldMeetingInfo.Finished = true;
-                                oldMeetingInfo.EndTime = MyDateTime.Now();
-                                dbContext.Meetings.Update(oldMeetingInfo);
-                                dbContext.SaveChanges();
+                                    //oldMeetingInfo.Finished = true;
+                                    oldMeetingInfo.EndTime = MyDateTime.Now();
+                                    dbContext.Meetings.Update(oldMeetingInfo);
+                                    dbContext.SaveChanges();
+                                }
                             }
-                        }
 
-                        foreach (var newMeeting in newMeetingList)
-                        {
-                            int meetingId = 0;
-                            int.TryParse(newMeeting.meetingID , out meetingId);
-
-                            var meeting = dbContext.Meetings.Where(x => (x.BBB_MeetingId == newMeeting.meetingID || x.Id == meetingId) && x.Finished).FirstOrDefault();
-                            if(meeting != null)
+                            foreach (var newMeeting in newMeetingList)
                             {
-                                meeting.Finished = false;
-                                meeting.BBB_MeetingId = newMeeting.meetingID;
-                                dbContext.Meetings.Update(meeting);
+                                int meetingId = 0;
+                                int.TryParse(newMeeting.meetingID , out meetingId);
+
+                                var meeting = dbContext.Meetings.Where(x => (x.BBB_MeetingId == newMeeting.meetingID || x.Id == meetingId) && x.Finished).FirstOrDefault();
+                                if(meeting != null)
+                                {
+                                    meeting.Finished = false;
+                                    meeting.BBB_MeetingId = newMeeting.meetingID;
+                                    dbContext.Meetings.Update(meeting);
+                                }
                             }
+                            dbContext.SaveChanges();
                         }
-                        dbContext.SaveChanges();
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error on : SchoolId = " + errorSchool.Id);
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
+                        }
                     }
                 }
             }
             catch(Exception ex)
             {
-                Console.WriteLine("Error on : SchoolId = " + errorSchool.Id);
+                
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }

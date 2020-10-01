@@ -129,7 +129,40 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize( Roles = "Teacher")]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        public IActionResult GetScheduleList()
+        {
+            try
+            {   
+                string userName = userManager.GetUserId(User);
+                int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                //We set IdNumber as userId in Token
+                
+                List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId).ToList();
+                var groupedSchedule = new List<ClassScheduleView>();
 
+                foreach (var schedule in classScheduleViews)
+                {
+                    int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
+
+                    if(groupedSchedule.Where(x => x.ClassId == schedule.ClassId && x.LessonId == schedule.LessonId).FirstOrDefault() == null)
+                    {
+                        groupedSchedule.Add(schedule);
+                    }
+                }
+
+                
+
+                return Ok(groupedSchedule);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 #region Category
         [HttpGet]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]

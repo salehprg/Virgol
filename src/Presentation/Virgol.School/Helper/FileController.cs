@@ -8,32 +8,43 @@ using Models.InputModel;
 using Models.User;
 
 public class FileController {
-        public static string dataDirectory = "BulkData";
-        public static async Task<bool> UploadFile(IFormFile file , string FileName)
+        public static string DefaultDataDirectory = "BulkData";
+        public static async Task<bool> UploadFile(IFormFile file , string FileName , string dirName = "")
         {
-            bool result = false;
-
-            if (file != null)
+            try
             {
-                if (file.Length > 0)
+                bool result = false;
+                string dataDirectory = (dirName != "" ? dirName : DefaultDataDirectory);
+
+                if (file != null)
                 {
-                    string path = Path.Combine(dataDirectory, FileName);
-
-                    if(!Directory.Exists(dataDirectory))
+                    if (file.Length > 0)
                     {
-                        Directory.CreateDirectory(dataDirectory);
+                        string path = Path.Combine(dataDirectory, FileName);
+
+                        if(!Directory.Exists(dataDirectory))
+                        {
+                            Directory.CreateDirectory(dataDirectory);
+                        }
+
+                        var fs = new FileStream(path, FileMode.Create);
+                        await file.CopyToAsync(fs);
+
+                        fs.Close();
+
+                        result = true;
                     }
-
-                    var fs = new FileStream(path, FileMode.Create);
-                    await file.CopyToAsync(fs);
-
-                    fs.Close();
-
-                    result = true;
                 }
-            }
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return false;
+            }
         }
 
         public static BulkData excelReader_School(string fileName)
@@ -46,7 +57,7 @@ public class FileController {
                 //2 - Check valid data
                 //3 - Add user to Database
                 //3.1 - don't add duplicate username 
-                fileName = dataDirectory + "/" + fileName;
+                fileName = DefaultDataDirectory + "/" + fileName;
 
                 List<CreateSchoolData> excelSchools = new List<CreateSchoolData>();
 
@@ -175,7 +186,7 @@ public class FileController {
                 //2 - Check valid data
                 //3 - Add user to Database
                 //3.1 - don't add duplicate username 
-                fileName = dataDirectory + "/" + fileName;
+                fileName = DefaultDataDirectory + "/" + fileName;
 
                 List<UserDataModel> excelStudents = new List<UserDataModel>();
 
