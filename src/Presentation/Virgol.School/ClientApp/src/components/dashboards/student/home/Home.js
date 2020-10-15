@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Hero from "../../admin/home/Hero";
 import CounterCard from "../../admin/home/CounterCard";
 import {home, key, user, users} from "../../../../assets/icons";
@@ -27,7 +28,7 @@ class Home extends React.Component {
     }
     
     render() {
-        if(this.state.loading) return "درحال بارگداری اطلاعات ..."
+        if(this.state.loading) return this.props.t('loading')
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
                 <div className="col-span-1 flex flex-col justify-between">
@@ -38,14 +39,14 @@ class Home extends React.Component {
                         onStart={(id) => this.JoinMeeting(id)}
                         joinList={true}
                         classes={this.props.recentClass}
-                        title="کلاس های فعال"
+                        title={this.props.t('activeClasses')}
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
                 </div>
 
                 <Feed
                     news={this.props.inNews}
-                    title="آخرین اخبار "
+                    title={this.props.t('studentsNews')}
                     pos="col-span-1"
                 />
             </div>
@@ -58,4 +59,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , inNews : state.newsData.incomeNews, recentClass : state.meetingData.recentClass }
 }
 
-export default connect(mapStateToProps, {GetIncommingNews , GetRecentClass , JoinMeeting  })(Home);
+const cwrapped = connect(mapStateToProps, {GetIncommingNews , GetRecentClass , JoinMeeting  })(Home);
+
+export default withTranslation()(cwrapped);

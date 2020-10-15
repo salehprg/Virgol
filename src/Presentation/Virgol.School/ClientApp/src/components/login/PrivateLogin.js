@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next'
 import {Field, reduxForm} from "redux-form";
 import { connect } from 'react-redux';
 import { login } from "../../_actions/authActions";
@@ -66,24 +67,24 @@ class PrivateLogin extends React.Component {
                             :
                             logo('w-24 mx-auto mb-3 text-purplish')
                         }
-                        <span className="text-xl text-white">ورود به کلاس خصوصی</span>
+                        <span className="text-xl text-white">{this.props.t('enterPrivateClass')}</span>
                     </div>
                     <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
                     <form className="text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
                         <Field
                             name="username"
                             type="text"
-                            placeholder="نام کاربری"
+                            placeholder={this.props.t('username')}
                             component={this.renderInputs}
                         />
                         <Field
                             name="password"
                             type={this.state.passVisibility ? 'text' : 'password'}
-                            placeholder="گذرواژه"
+                            placeholder={this.props.t('password')}
                             component={this.renderPassword}
                         />
                         <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
-                            {this.state.logingin ? loading('w-6 text-white') : 'ورود'}
+                            {this.state.logingin ? loading('w-6 text-white') : this.props.t('enter')}
                         </button>
                     </form>
                     </div>
@@ -106,4 +107,6 @@ const formWrapped = reduxForm({
     validate
 })(PrivateLogin);
 
-export default connect(null , {JoinPrivateRoom , login} )(formWrapped);
+const cwrapped = connect(null , {JoinPrivateRoom , login} )(formWrapped);
+
+export default withTranslation()(cwrapped);

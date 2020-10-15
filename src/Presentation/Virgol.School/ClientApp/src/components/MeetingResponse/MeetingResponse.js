@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next'
 import { Route, Switch } from "react-router-dom";
 import { loading } from "../../assets/icons";
 import history from '../../history'
@@ -29,11 +30,11 @@ class MeetingResponse extends React.Component {
     render() {
         return (
             <div>
-                درحال انتقال ...
+                {this.props.t('forwarding')}
             </div>
         )
     }
 
 }
 
-export default MeetingResponse;
+export default withTranslation()(MeetingResponse);

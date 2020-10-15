@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import PlusTable from "../../tables/PlusTable";
 import {edit, external_link, loading, trash} from "../../../../assets/icons";
 import history from "../../../../history";
@@ -53,7 +54,7 @@ class Schools extends React.Component {
                 <ReactTooltip />
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                    title={this.props.t('deleteConfirm')}
                     confirm={this.deleteSchool}
                     cancel={() => this.setState({ showDeleteModal: false, deleteFieldId: null, deleteCatId: null })}
                 /> 
@@ -61,12 +62,12 @@ class Schools extends React.Component {
                 null
                 }
                 <PlusTable
-                    title="لیست مدارس تحت پوشش"
+                    title={this.props.t('coveredSchools')}
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
-                    excel="بارگذاری اکسل مدارس"
-                    sample="بارگیری نمونه اکسل مدارس"
+                    excel={this.props.t('uploadSchoolsExcel')}
+                    sample={this.props.t('downloadSchoolsExcelSample')}
                     sampleLink="/samples/SchoolTemplate.xlsx"
                     handleExcel={this.submitExcel}
                     cardsPerPage={this.state.itemsPerPage}
@@ -78,7 +79,7 @@ class Schools extends React.Component {
                             <button onClick={() => history.push('/newSchool')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>
                         );
                     }}
-                    headers={['نام مدرسه', 'کد', 'نوع', 'مدیر', '' , '']}
+                    headers={[this.props.t('schoolName'), this.props.t('code'), this.props.t('type'), this.props.t('manager'), '', '']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -92,13 +93,13 @@ class Schools extends React.Component {
                                                 <td>{x.schoolIdNumber}</td>
                                                 <td>{x.schoolTypeName}</td>
                                                 <td>{x.firstName} {x.lastName}</td>
-                                                <td data-tip="ورود به عنوان مدیر مدرسه" onClick={() => this.redirect(x.id)} className="cursor-pointer">
+                                                <td data-tip={this.props.t('enterAsManager')} onClick={() => this.redirect(x.id)} className="cursor-pointer">
                                                     {external_link('w-6 text-white ')}
                                                 </td>
-                                                <td data-tip="ویرایش" className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
+                                                <td data-tip={this.props.t('edit')} className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>
-                                                <td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                <td data-tip={this.props.t('delete')} onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                                     {trash('w-6 text-white ')}
                                                 </td>
                                             </tr>
@@ -121,4 +122,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , schools: state.schoolData.schools}
 }
 
-export default connect(mapStateToProps, { getSchools , RemoveSchool , RedirectAdmin , AddBulkSchool })(Schools);
+const cwrapped = connect(mapStateToProps, { getSchools , RemoveSchool , RedirectAdmin , AddBulkSchool })(Schools);
+
+export default withTranslation()(cwrapped);

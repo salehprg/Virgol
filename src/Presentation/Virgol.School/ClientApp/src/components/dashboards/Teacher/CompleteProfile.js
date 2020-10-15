@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker2';
 import history from '../../../history'
 import Add from '../../field/Add';
@@ -46,22 +47,22 @@ class CompleteProfile extends React.Component {
             <div>
                 <Add
                     onCancel={() => history.push('/')}
-                    title={"لطفا اطلاعات پروفایل خودرا تکمیل نمایید"}
+                    title={this.props.t('completeProfile')}
                 >
                     <form className="w-full text-right " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         <p className="text-right text-white mb-6 text-xl">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</p>
-                        <p className="text-right text-white mb-6 text-xl">کد پرسنلی : {this.props.user.userDetail.userDetail.personalIdNUmber}</p>
+                        <p className="text-right text-white mb-6 text-xl">{this.props.t('personelCode')} : {this.props.user.userDetail.userDetail.personalIdNUmber}</p>
                         <Field
                             name="latinFirstname"
                             type="text"
-                            placeholder="نام لاتین"
+                            placeholder={this.props.t('latinFirstName')}
                             component={this.renderInputs}
                             extra={"w-40 my-4 mx-2"}
                         />
                         <Field
                             name="latinLastname"
                             type="text"
-                            placeholder="نام خانوادگی لاتین"
+                            placeholder={this.props.t('latinLastname')}
                             component={this.renderInputs}
                             extra={"w-40 my-4"}
                         />
@@ -75,11 +76,11 @@ class CompleteProfile extends React.Component {
                         <Field
                             name="cityBirth"
                             type="text"
-                            placeholder="شهر محل تولد"
+                            placeholder={this.props.t('birthPlace')}
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />
-                        <p className="text-right text-white mb-4 text-xl">تاریخ تولد : </p>
+                        <p className="text-right text-white mb-4 text-xl">{this.props.t('birthDate')} :</p>
                         <DatePicker
                             timePicker={false}
                             isGregorian={false}
@@ -88,7 +89,7 @@ class CompleteProfile extends React.Component {
                         ></DatePicker>
                         
 
-                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
+                    <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
                     </form>
                 </Add>
             </div>
@@ -125,5 +126,6 @@ const formWrapped = reduxForm({
 })(CompleteProfile)
 
 const authWrapped = protectedTeacher(formWrapped)
+const cwrapped = connect(mapStateToProps , {CompleteTeacherProfile})(authWrapped);
 
-export default connect(mapStateToProps , {CompleteTeacherProfile})(authWrapped);
+export default withTranslation()(cwrapped);

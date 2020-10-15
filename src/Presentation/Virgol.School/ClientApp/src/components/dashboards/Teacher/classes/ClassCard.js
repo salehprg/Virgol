@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 import getColor from "../../../../assets/colors";
 import history from "../../../../history";
+import { withTranslation } from 'react-i18next';
 
 class ClassCard extends React.Component {
 
@@ -19,8 +20,8 @@ class ClassCard extends React.Component {
                 <p onClick={() => this.ssoLogin()} className="text-center cursor-pointer text-white text-2xl font-vb">{title}</p>
                 <p className="text-white text-center">{school + " - " + nameOfClass}</p>
                 <div onClick={(e) => e.stopPropagation()} className="flex flex-row justify-evenly mt-6">
-                    <Link className="w-5/12 py-1 text-center text-white" to={`/session/${scheduleId}`}>دفتر نمره</Link>
-                    <Link className="w-5/12 py-1 text-center text-white" to={`/recordedSessions/${scheduleId}`}>لیست جلسات</Link>
+        <Link className="w-5/12 py-1 text-center text-white" to={`/session/${scheduleId}`}>{this.props.t('lessonInfoBook')}</Link>
+        <Link className="w-5/12 py-1 text-center text-white" to={`/recordedSessions/${scheduleId}`}>{this.props.t('sessionList')}</Link>
                 </div>
                 {/* <form ref={this.formRef} className="text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
                     <input
@@ -47,5 +48,6 @@ class ClassCard extends React.Component {
 const mapStateToProps = state => {
     return {user : state.auth.userInfo}
 }
+const cwrapped = connect(mapStateToProps)(ClassCard);
 
-export default connect(mapStateToProps)(ClassCard);
+export default withTranslation()(cwrapped);

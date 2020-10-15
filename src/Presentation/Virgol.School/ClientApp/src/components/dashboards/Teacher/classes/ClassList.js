@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import { connect } from "react-redux";
 import {GetScheduleList } from '../../../../_actions/teacherActions'
 import ClassCard from "./ClassCard";
@@ -41,7 +42,7 @@ class ClassList extends React.Component {
                         />
                     )
                 })
-                : "درحال بارگداری ..." )}
+                : this.props.t('loading') )}
             </div>
         );
     }
@@ -51,5 +52,6 @@ class ClassList extends React.Component {
 const mapStateToProps = state => {
     return {user : state.auth.userInfo  , schedules : state.teacherData.scheduleList}
 }
+const cwrapped = connect(mapStateToProps , {GetScheduleList })(ClassList);
 
-export default connect(mapStateToProps , {GetScheduleList })(ClassList);
+export default withTranslation()(cwrapped);

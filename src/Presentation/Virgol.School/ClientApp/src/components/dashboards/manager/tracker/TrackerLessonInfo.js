@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import Modal from '../../../modals/Modal';
 import history from '../../../../history';
 import {JoinMeeting} from '../../../../_actions/meetingActions'
@@ -36,13 +37,13 @@ class TrackerLessonInfo extends React.Component {
     }
 
     options = [
-        { value: 1, label: 'شنبه' },
-        { value: 2, label: 'یکشنبه' },
-        { value: 3, label: 'دوشنبه' },
-        { value: 4, label: 'سه شنبه' },
-        { value: 5, label: 'چهار شنبه' },
-        { value: 6, label: 'پنجشنبه' },
-        { value: 7, label: 'جمعه' }
+        { value: 1, label: this.props.t('saturday') },
+        { value: 2, label: this.props.t('sunday') },
+        { value: 3, label: this.props.t('monsday') },
+        { value: 4, label: this.props.t('tuesday') },
+        { value: 5, label: this.props.t('wednesday') },
+        { value: 6, label: this.props.t('thursday') },
+        { value: 7, label: this.props.t('friday') }
     ];
 
     // times = [
@@ -86,7 +87,7 @@ class TrackerLessonInfo extends React.Component {
             <React.Fragment>
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                    title={this.props.t('deleteConfirm')}
                     confirm={() => this.props.onDelete()}
                     cancel={() => this.setState({ showDeleteModal: false})}
                 /> 
@@ -96,7 +97,7 @@ class TrackerLessonInfo extends React.Component {
                 <Modal cancel={this.props.cancel}>
                     <div onClick={(e) => e.stopPropagation()} className="w-11/12 max-w-500 rounded-lg bg-dark-blue px-4 py-6">
                         <div>
-                            <h2 className="text-center text-white my-4 text-2xl">جزییات ساعت درسی</h2>
+                            <h2 className="text-center text-white my-4 text-2xl">{this.props.t('lessonInfo')}</h2>
                         </div>
                       
                         <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.orgLessonName}</p>
@@ -104,20 +105,20 @@ class TrackerLessonInfo extends React.Component {
 
                         {(this.state.times.length > 0 ?
                         <p className="text-center text-white my-4">
-                            {` ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.props.lessonInfo.lessonDetail.weekly == 2 ? 'هفته های فرد' : this.props.lessonInfo.lessonDetail.weekly == 1 ? 'هفته های زوج' : 'هر هفته'} ${this.options.find(x => x.value === this.props.lessonInfo.lessonDetail.dayType).label}   از ساعت ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} تا ساعت `}
+                            {` ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.props.lessonInfo.lessonDetail.weekly == 2 ? this.props.t('oddWeeks') : this.props.lessonInfo.lessonDetail.weekly == 1 ? this.props.t('evenWeeks') : this.props.t('weekly')} ${this.options.find(x => x.value === this.props.lessonInfo.lessonDetail.dayType).label} ${this.props.t('fromTime')} ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} ${this.props.t('toTime')} `}
                         </p>
                         : null)}
 
                         {(this.props.lessonInfo.lessonDetail.bbB_MeetingId ? 
                             <>
-                                <p className="text-center text-greenish text-xl my-4 rounded-full">درحال برگزاری</p>
-                                <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.bbB_MeetingId)} >ورود به کلاس آنلاین</button>
+                                <p className="text-center text-greenish text-xl my-4 rounded-full">{this.props.t('loading')}</p>
+                                <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.bbB_MeetingId)} >{this.props.t('enterOnlineClass')}</button>
                             </>
                         : 
                         null
                         )}
 
-                        <p className="text-center text-white my-4">کلاس {this.props.lessonInfo.lessonDetail.className}</p>
+                        <p className="text-center text-white my-4">{this.props.t('class')} {this.props.lessonInfo.lessonDetail.className}</p>
 
                     </div>
                 </Modal>        
@@ -131,4 +132,6 @@ const mapStateToProps = state => {
     return {user : state.auth.userInfo}
 }
 
-export default connect(mapStateToProps , {JoinMeeting})(TrackerLessonInfo);
+const cwarpped = connect(mapStateToProps , {JoinMeeting})(TrackerLessonInfo);
+
+export default withTranslation()(cwarpped);

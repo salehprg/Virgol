@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Hero from "../../admin/home/Hero";
 import CounterCard from "../../admin/home/CounterCard";
 import {home, key, user, users} from "../../../../assets/icons";
@@ -50,7 +51,7 @@ class Home extends React.Component {
         var rootURL = window.location.origin.toString()
 
         navigator.clipboard.writeText(`${rootURL}/PrivateClass/${bbbId}`)
-        this.props.ShowSuccess("!کپی شد")
+        this.props.ShowSuccess(this.props.t('copied'))
     }
 
     showPrivateModal = () => {
@@ -70,7 +71,7 @@ class Home extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return "درحال بارگداری اطلاعات ..."
+        if(this.state.loading) return this.props.t('loading')
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
                 {this.state.newPrivateModal ?
@@ -80,9 +81,9 @@ class Home extends React.Component {
                                 value={this.state.privateName}
                                 onChange={(e) => this.setState({privateName : e.target.value})}
                                 className="w-5/6 px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue text-right text-white"
-                                placeholder="نام کلاس خصوصی"
+                                placeholder={this.props.t('privateClassName')}
                             />
-                            <button onClick={() => this.createPrivateRoom()} className="px-6 my-4 py-1 rounded-lg text-white bg-greenish">ایجاد کلاس</button>
+                            <button onClick={() => this.createPrivateRoom()} className="px-6 my-4 py-1 rounded-lg text-white bg-greenish">{this.props.t('createClass')}</button>
                         </div>
                     </Modal>
                     :
@@ -97,7 +98,7 @@ class Home extends React.Component {
                         teacher={true}
                         newBtn={false}
                         classes={this.props.recentClass}
-                        title="کلاس های پیش رو"
+                        title={this.props.t('comingClasses')}
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
                     <RecentClass
@@ -109,13 +110,13 @@ class Home extends React.Component {
                         newBtn={true}
                         btnAction={this.showPrivateModal}
                         classes={this.props.meetingList}
-                        title="کلاس های فعال"
+                        title={this.props.t('activeClasses')}
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
                 </div>
                 <Feed
                     news={this.props.inNews}
-                    title="اخبار و اطلاعیه ها"
+                    title={this.props.t('studentNews')}
                     pos="col-span-1"
                 />
             </div>
@@ -129,7 +130,8 @@ const mapStateToProps = state => {
                                         recentClass : state.meetingData.recentClass ,
                                         inNews : state.newsData.incomeNews }
 }
+const cwrapped = connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting ,
+    EndMeeting , JoinMeeting , GetIncommingNews , CreatePrivateRoom 
+   , JoinPrivateRoom , ShowSuccess})(Home);
 
-export default connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting ,
-                                             EndMeeting , JoinMeeting , GetIncommingNews , CreatePrivateRoom 
-                                            , JoinPrivateRoom , ShowSuccess})(Home);
+export default withTranslation()(cwrapped);

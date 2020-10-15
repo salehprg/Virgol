@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Modal from "../../../modals/Modal";
 import Searchish from "../../../field/Searchish";
 import {getAllStudents } from "../../../../_actions/managerActions"
@@ -46,7 +47,7 @@ class AddStudent extends React.Component {
             <Modal cancel={this.props.cancel}>
                 <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
                     <span className={`px-6 py-1 mx-2 my-2 text-white`}>
-                        لیست دانش آموزان بدون کلاس
+                        {this.props.t('noClassStudents')}
                     </span>
                     <Searchish
                         className="mx-auto max-w-350"
@@ -79,10 +80,10 @@ class AddStudent extends React.Component {
                     </div>
                     <div className="flex mt-8 flex-row items-center">
                         <button onClick={this.addStudentToSchool} className="px-6 py-1 mx-1 border-2 border-transparent rounded-lg bg-greenish text-white">
-                            ذخیره
+                            {this.props.t('save')}
                         </button>
                         <button onClick={this.props.cancel} className="px-6 mx-1 py-1 rounded-lg border-2 border-grayish text-grayish">
-                            لغو
+                            {this.props.t('cancel')}
                         </button>
                     </div>
                 </div>
@@ -96,4 +97,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , students: state.managerData.students }
 }
 
-export default connect(mapStateToProps, { getAllStudents  })(AddStudent);
+const cwrapped = connect(mapStateToProps, { getAllStudents  })(AddStudent);
+
+export default withTranslation()(cwrapped);
