@@ -76,7 +76,7 @@ class Schools extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/newSchool')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">مدرسه جدید</button>
+                        <button onClick={() => history.push('/newSchool')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addSchool')}</button>
                         );
                     }}
                     headers={[this.props.t('schoolName'), this.props.t('code'), this.props.t('type'), this.props.t('manager'), '', '']}
