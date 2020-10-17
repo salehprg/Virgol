@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Tablish from "../../tables/Tablish";
 import {arrow_left, check_circle, edit, trash} from "../../../../assets/icons";
 import {GetClassBook}  from "../../../../_actions/teacherActions"
@@ -32,18 +33,18 @@ class SessionInfo extends React.Component {
                     <div onClick={() => history.push(this.redirectUrl())} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-8 rounded-lg border-2 border-purplish">
                         {arrow_left('w-6 centerize text-purplish')}
                     </div>
-                    <p className="text-right text-xl text-white">{this.props.lessonDetail ? `${this.props.lessonDetail.orgLessonName} - مدرسه ${this.props.lessonDetail.schoolName} - کلاس ${this.props.lessonDetail.className}` : null}</p>
+                    <p className="text-right text-xl text-white">{this.props.lessonDetail ? `${this.props.lessonDetail.orgLessonName} - ${this.props.t('school')} ${this.props.lessonDetail.schoolName} - ${this.props.t('class')} ${this.props.lessonDetail.className}` : null}</p>
                     {(this.props.classBookData ?
                     <div className="mx-auto rounded-lg bg-dark-blue mt-4 py-4 px-8">
                         <Tablish
-                            headers={['نام', 'کد ملی', 'ایمیل', 'تعداد غیبت', 'نمره']}
+                            headers={[this.props.t('name'), this.props.t('nationCode'), this.props.t('email'), this.props.t('absents'), this.props.t('point')]}
                             body={() => {
                                 return (
                                     this.props.classBookData.map(x =>
                                         <tr>
                                             <td className="py-4">{x.firstName} {x.lastName}</td>
                                             <td>{x.melliCode}</td>
-                                            <td>{x.email ? x.email : "ندارد"}</td>
+                                            <td>{x.email ? x.email : this.props.t('notAvailable')}</td>
                                             <td>{x.absentCount}</td>
                                             <td>{x.score}</td>
                                         </tr>
@@ -52,7 +53,7 @@ class SessionInfo extends React.Component {
                             }}
                         />
                     </div>
-                    : <p className="text-right text-white">درحال بارگذاری ...</p> )}
+                    : <p className="text-right text-white">{this.props.t('loading')}</p> )}
                 </div>
             </div>
         );
@@ -66,5 +67,6 @@ const mapStateToProps = state => {
         lessonDetail : state.teacherData.classBook ? state.teacherData.classBook.lessonDetail : null,
     }
 }
+const cwrapped = connect(mapStateToProps , {GetClassBook})(SessionInfo)
 
-export default connect(mapStateToProps , {GetClassBook})(SessionInfo)
+export default withTranslation()(cwrapped);

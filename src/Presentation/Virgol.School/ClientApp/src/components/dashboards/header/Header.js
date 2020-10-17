@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import ReactToolTip from 'react-tooltip'
 import { connect } from 'react-redux';
 import { logout } from "../../../_actions/authActions";
@@ -29,7 +30,7 @@ class Header extends React.Component {
 
     render() {
         return (
-            <div onClick={() => this.setState({ logoutConfirm: false })} className="w-full flex md:flex-row-reverse flex-col justify-between items-center">
+            <div className="w-full flex md:flex-row-reverse flex-col justify-between items-center">
                 <ReactToolTip />
                 <div className="flex flex-row-reverse justify-start items-start">
                     <Notification />
@@ -54,20 +55,22 @@ class Header extends React.Component {
                             {/*    </a>*/}
                             {/*    {video("w-6 text-white cursor-pointer")}*/}
                             {/*</div>*/}
-                            <div data-tip="زبان - به زودی" className="relative mx-1">
+                            {/* <div className="relative mx-1">
                                 {globe("w-6 text-white cursor-pointer")}
-                            </div>
-                            <div data-tip="پشتیبانی" className="relative mx-1">
+                            </div> */}
+                            {/* <span className={`mx-2 cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge != 'ar' ? 'text-greenish' : 'text-white'}`}>فارسی</span>
+                            <span onClick={() => this.props.i18n.changeLanguage('ar')} className={`mx-2 cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge == 'ar' ? 'text-greenish' : 'text-white'}`}>العربیه</span> */}
+                            <div data-tip={this.props.t('support')} className="relative mx-1">
                                 <a className="absolute top-0 bottom-0 right-0 left-0" href="mailto:support@legace.ir">
                                 </a>
                                 {headphones("w-6 text-white cursor-pointer")}
                             </div>
-                            <div data-tip="سامانه پست الکترونیکی" className="relative mx-1">
+                            <div data-tip={this.props.t('webmail')} className="relative mx-1">
                                 <a target="_blank" rel="noopener noreferrer" className="absolute top-0 bottom-0 right-0 left-0" href="https://webmail.legace.ir/">
                                 </a>
                                 {mail("w-6 text-white cursor-pointer")}
                             </div>
-                            <div data-tip="خروج" onClick={this.props.logout} className="relative mx-1">
+                            <div data-tip={this.props.t('exit')} onClick={this.props.logout} className="relative mx-1">
                                 {log_out("w-6 text-white cursor-pointer")}
                             </div>
                         </div>
@@ -84,4 +87,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo }
 }
 
-export default connect(mapStateToProps, { logout })(Header);
+const cwrapped = connect(mapStateToProps, { logout })(Header);
+
+export default withTranslation()(cwrapped);

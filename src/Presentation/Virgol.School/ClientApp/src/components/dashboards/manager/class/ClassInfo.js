@@ -1,4 +1,5 @@
 import React, {createRef} from 'react'
+import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom'
 import { motion } from "framer-motion";
 import Schedule from './Schedule'
@@ -130,7 +131,7 @@ class ClassInfo extends React.Component {
                 {this.state.addStudent ? <AddStudent onAddStudent={(dataIds) => this.onAddStudent(dataIds)} cancel={() => this.setState({addStudent : false})} /> : null}
                 {this.state.showDeleteModal ? 
                     <DeleteConfirm
-                        title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                        title={this.props.t('deleteConfirm')}
                         confirm={this.DeleteClass}
                         cancel={() => this.setState({ showDeleteModal: false})}
                     /> 
@@ -139,7 +140,7 @@ class ClassInfo extends React.Component {
                 }
                 {this.state.showUnAssignModal ? 
                     <DeleteConfirm
-                        title={`آیا از حذف ${this.props.students.find(x => x.id == this.state.selectedStd).firstName} ${this.props.students.find(x => x.id == this.state.selectedStd).lastName} از کلاس مطمعن هستید ؟`}
+                        title={this.props.t('deleteFromClassConfirm')}
                         confirm={this.unAssignStudent}
                         cancel={() => this.setState({ showUnAssignModal: false , selectedStd : 0})}
                     /> 
@@ -156,7 +157,7 @@ class ClassInfo extends React.Component {
                 null
                 }
                 <div className="addStudent lg:row-start-1 row-start-2 w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
-                     <p className="text-xl text-white mb-8">لیست دانش آموزان</p>
+            <p className="text-xl text-white mb-8">{this.props.t('studentsList')}</p>
                     {/* <label htmlFor="excel" className="px-1 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">*/}
                     {/*    {plus('w-4')}*/}
                     {/*</label>*/}
@@ -167,10 +168,10 @@ class ClassInfo extends React.Component {
                     {/*    className="hidden"*/}
                     {/*    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"*/}
                     {/*/>*/}
-                     {(this.state.loading ? "درحال بارگذاری ..." :
+                     {(this.state.loading ? this.props.t('loading') :
                         (!this.props.students || this.props.students.length === 0 ? 
                             <div className="flex flex-row-reverse justify-between items-center">
-                                <p className="text-center text-white">لیست دانش آموزان خالیست</p>
+                                <p className="text-center text-white"> {this.props.t('emptyStudentsList')} </p>
                             </div>
                         :
                         this.props.students.map(std => {
@@ -200,7 +201,7 @@ class ClassInfo extends React.Component {
                                         variants={this.addVariant}
                             >
                                 <label htmlFor="excel" className="px-6 mb-4 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">
-                                    بارگذاری فایل اکسل
+                                    {this.props.t('uploadExcel')}
                                 </label>
                                 <input
                                     onChange={(e) => this.handleExcel(e.target.files[0])}
@@ -210,7 +211,7 @@ class ClassInfo extends React.Component {
                                     accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                                 />
 
-                                <button onClick={() => this.setState({addStudent : true})} className="w-5/6 cursor-pointer mt-4 py-1 border-2 border-purplish text-purplish rounded-lg">افزودن تکی</button>
+                        <button onClick={() => this.setState({addStudent : true})} className="w-5/6 cursor-pointer mt-4 py-1 border-2 border-purplish text-purplish rounded-lg">{this.props.t('addSingle')}</button>
                             </motion.div>
                         </div>
                     </div>
@@ -245,7 +246,7 @@ class ClassInfo extends React.Component {
                         </div>
                     </div>
                     <div className="my-8">
-                        <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2">افزودن درس</button>
+                        <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2"> {this.props.t('addLesson')} </button>
                         <div ref={this.sc} className="border-2 border-dark-blue overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
@@ -277,6 +278,8 @@ const mapStateToProps = state => {
 
 const authWrapped = protectedManager(ClassInfo)
 
-export default connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
-                                        DeleteClassSchedule , getClassSchedule , UnAssignUserFromClass ,
-                                        AssignUserToClass , AssignUserListToClass , deleteClass , editClass})(authWrapped);
+const cwrapped = connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
+    DeleteClassSchedule , getClassSchedule , UnAssignUserFromClass ,
+    AssignUserToClass , AssignUserListToClass , deleteClass , editClass})(authWrapped);
+
+export default withTranslation()(cwrapped);

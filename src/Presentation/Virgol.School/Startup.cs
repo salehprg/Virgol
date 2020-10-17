@@ -23,6 +23,8 @@ using Quartz;
 using Quartz.Impl;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace lms_with_moodle
 {
@@ -55,35 +57,44 @@ namespace lms_with_moodle
 
             if(!environment.IsDevelopment())
             {
-                IConfigurationSection section = Configuration.GetSection("AppSettings");
+                // IConfigurationSection section = Configuration.GetSection("AppSettings");
 
-                section.Get<AppSettings>();
+                // section.Get<AppSettings>();
                 
-                conStr = Configuration.GetConnectionString("PublishConnection_PS");
+                // conStr = Configuration.GetConnectionString("PublishConnection_PS");
 
-                // string host = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_HOST");
-                // string name = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_NAME");
-                // string userName = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_USER");
-                // string password = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_PASSWORD");
+                string host = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_HOST");
+                string name = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_NAME");
+                string userName = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_USER");
+                string password = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_PASSWORD");
 
-                // conStr = string.Format("Server={0};Database={1};Username={2};Password={3}" , host , name , userName ,password);
+                conStr = string.Format("Server={0};Database={1};Username={2};Password={3}" , host , name , userName ,password);
                 
-                // AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
-                // AppSettings.moddleCourseUrl = Environment.GetEnvironmentVariable("VIRGOL_MODDLE_COURSE_URL");
-                // AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
-                // AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
-                // AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
-                // AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
-                // AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");
-                // AppSettings.FarazAPI_Password = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_PASSWORD");
-                // AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
-                // AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
-                // AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
-                // AppSettings.LDAPServer = Environment.GetEnvironmentVariable("VIRGOL_LDAP_SERVER");
-                // AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));
-                // AppSettings.LDAPUserAdmin = Environment.GetEnvironmentVariable("VIRGOL_LDAP_USER_ADMIN");
-                // AppSettings.LDAPPassword = Environment.GetEnvironmentVariable("VIRGOL_LDAP_PASSWORD");
-                // AppSettings.ServerRootUrl = Environment.GetEnvironmentVariable("VIRGOL_SERVER_ROOT_URL");
+                AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
+                AppSettings.moddleCourseUrl = Environment.GetEnvironmentVariable("VIRGOL_MODDLE_COURSE_URL");
+                AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
+                AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
+                AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
+                AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
+                AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");
+                AppSettings.FarazAPI_Password = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_PASSWORD");
+                AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
+                //AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
+                //AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
+                AppSettings.VIRGOL_BBB_LOAD_BALANCER_MODE = Environment.GetEnvironmentVariable("VIRGOL_BBB_LOAD_BALANCER_MODE");
+                AppSettings.VIRGOL_SCALELITE_BASE_URL = Environment.GetEnvironmentVariable("VIRGOL_SCALELITE_BASE_URL");
+                AppSettings.VIRGOL_SCALELITE_SECRET = Environment.GetEnvironmentVariable("VIRGOL_SCALELITE_SECRET");
+
+                AppSettings.LDAPServer = Environment.GetEnvironmentVariable("VIRGOL_LDAP_SERVER");
+                AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));
+                AppSettings.LDAPUserAdmin = Environment.GetEnvironmentVariable("VIRGOL_LDAP_USER_ADMIN");
+                AppSettings.LDAPPassword = Environment.GetEnvironmentVariable("VIRGOL_LDAP_PASSWORD");
+                AppSettings.ServerRootUrl = Environment.GetEnvironmentVariable("VIRGOL_SERVER_ROOT_URL");
+
+                AppSettings.REACT_APP_RAHE_DOOR = Environment.GetEnvironmentVariable("REACT_APP_RAHE_DOOR");
+                AppSettings.REACT_APP_FAVICON_NAME = Environment.GetEnvironmentVariable("REACT_APP_FAVICON_NAME");
+                AppSettings.REACT_APP_MOODLE_URL = Environment.GetEnvironmentVariable("REACT_APP_MOODLE_URL");
+                AppSettings.REACT_APP_VERSION = Environment.GetEnvironmentVariable("REACT_APP_VERSION");
 
             }
             else
@@ -92,15 +103,54 @@ namespace lms_with_moodle
 
                 section.Get<AppSettings>();
                 
-                conStr = Configuration.GetConnectionString("DevConnection_PS");
+                conStr = Configuration.GetConnectionString("BackupConnection");
             }
+           
 
             AppSettings appSettings = new AppSettings();
 
             Console.WriteLine(appSettings.ToString());
-
+        
             services.AddDbContext<AppDbContext>(options =>{
                 options.UseNpgsql(conStr);
+            });
+
+            List<string> fileNames = Directory.GetFiles("./ClientApp/build" , "*.js" , SearchOption.AllDirectories).ToList();
+
+            foreach (var filename in fileNames)
+            {
+                string text = File.ReadAllText(filename);
+
+                if(text.IndexOf("API_URL:\"https://lms.legace.ir/api/\"") != -1)
+                {
+                    text = text.Replace("REACT_APP_FAVICON_NAME:\"REACT_APP_FAVICON_NAME\"", "REACT_APP_FAVICON_NAME:\""+AppSettings.REACT_APP_FAVICON_NAME+"\"");
+                    text = text.Replace("REACT_APP_MOODLE_URL:\"REACT_APP_MOODLE_URL\"", "REACT_APP_MOODLE_URL:\""+AppSettings.REACT_APP_MOODLE_URL+"\"");
+                    text = text.Replace("REACT_APP_RAHE_DOOR:\"REACT_APP_RAHE_DOOR\"", "REACT_APP_RAHE_DOOR:\""+AppSettings.REACT_APP_RAHE_DOOR+"\"");
+                    text = text.Replace("process.env.REACT_APP_VERSION", AppSettings.REACT_APP_VERSION);
+                    text = text.Replace("process.env.REACT_APP_MOODLE_URL", AppSettings.REACT_APP_MOODLE_URL);
+                    text = text.Replace("API_URL:\"https://lms.legace.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api\"");
+                    File.WriteAllText(filename , text);
+                }
+            }
+            // try
+            // {
+            //     Console.WriteLine("Make sure that Environment Variable are ok ? (y/n)");
+            //     string status = Console.ReadLine();
+            //     if(status.ToLower() == "n")
+            //     {
+            //         Console.WriteLine("Please set Environment Variable");
+            //         throw new Exception("Build was canceled by user");
+            //     }
+            // }
+            // catch(Exception ex)
+            // {
+            //     throw ;
+            // }
+            
+            string backupStr = Configuration.GetConnectionString("BackupConnection");
+
+            services.AddDbContext<AppDbContextBackup>(options =>{
+                options.UseNpgsql(backupStr);
             });
 
             services.AddIdentity<UserModel , IdentityRole<int>>(

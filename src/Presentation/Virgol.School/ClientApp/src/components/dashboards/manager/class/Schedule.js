@@ -1,4 +1,5 @@
 import React, { createRef } from 'react';
+import { withTranslation } from 'react-i18next';
 import ReactTooltip from 'react-tooltip';
 import { motion } from 'framer-motion'
 import GridLayout from 'react-grid-layout';
@@ -11,13 +12,13 @@ import getColor from "../../../../assets/colors";
 class Schedule extends React.Component {
 
     state = { layout: [
-        {i: "a", name: "شنبه", x: 33, y: 1, w: 2, h: 1, static: true},
-        {i: "b", name: "یکشنبه", x: 33, y: 2, w: 2, h: 1, static: true},
-        {i: "c", name: "دوشنبه", x: 33, y: 3, w: 2, h: 1, static: true},
-        {i: "d", name: "سه شنبه", x: 33, y: 4, w: 2, h: 1, static: true},
-        {i: "e", name: "چهار شنبه", x: 33, y: 5, w: 2, h: 1, static: true},
-        {i: "f", name: "پنج شنبه", x: 33, y: 6, w: 2, h: 1, static: true},
-        {i: "g", name: "جمعه", x: 33, y: 7, w: 2, h: 1, static: true},
+        {i: "a", name: this.props.t('saturday'), x: 33, y: 1, w: 2, h: 1, static: true},
+        {i: "b", name: this.props.t('sunday'), x: 33, y: 2, w: 2, h: 1, static: true},
+        {i: "c", name: this.props.t('monsday'), x: 33, y: 3, w: 2, h: 1, static: true},
+        {i: "d", name: this.props.t('tuesday'), x: 33, y: 4, w: 2, h: 1, static: true},
+        {i: "e", name: this.props.t('wednesday'), x: 33, y: 5, w: 2, h: 1, static: true},
+        {i: "f", name: this.props.t('thursday'), x: 33, y: 6, w: 2, h: 1, static: true},
+        {i: "g", name: this.props.t('friday'), x: 33, y: 7, w: 2, h: 1, static: true},
         {i: "t1", name: "07:00", x: 30, y: 0, w: 2, h: 1, static: true},
         {i: "t2", name: "08:00", x: 28, y: 0, w: 2, h: 1, static: true},
         {i: "t3", name: "09:00", x: 26, y: 0, w: 2, h: 1, static: true},
@@ -47,15 +48,23 @@ class Schedule extends React.Component {
             if(day && day.length > 0)
             {
                 (day.map(lesson => {
+                    var lessonY = lesson.dayType;
+
+                    if(lessons.find(ls => ls.lessonDetail.dayType == lesson.dayType && //Check same day
+                        ((ls.lessonDetail.startHour >= lesson.startHour && ls.lessonDetail.startHour < lesson.endHour) || // Check oldClass Start time between new class Time
+                            (ls.lessonDetail.startHour <= lesson.startHour && ls.lessonDetail.endHour > lesson.startHour))))
+                    {
+                        lessonY += 0.5;
+                    }   
+
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: lesson.dayType, w: (lesson.endHour - lesson.startHour) * 2,
-                    h: 1 , lessonDetail : lesson , static: true})
+                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: lessonY, w: (lesson.endHour - lesson.startHour) * 2,
+                    h: (lesson.weekly != 0 ? 0.5 : 1) , lessonDetail : lesson , static: true})
                 }))
             }
         })
 
         this.setState({lessons : lessons})
-
         
     }
 
@@ -104,7 +113,7 @@ class Schedule extends React.Component {
                     {layout.map(x => {
                         return (
                             <div ref={this.sc} onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
-                                <p className="text-center">{x.name}</p>
+                                <p className="text-center" style={{textOverflow : "ellipsis" , overflow : "hidden" , whiteSpace : "nowrap"}}>{x.name}</p>
                             </div>
                         );
                     })}
@@ -115,4 +124,4 @@ class Schedule extends React.Component {
 
 }
 
-export default Schedule;
+export default withTranslation()(Schedule);

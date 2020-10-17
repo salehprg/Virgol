@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import {Field, reduxForm, reset} from "redux-form";
 import {briefcase, loading, slash} from "../../../../assets/icons";
@@ -79,7 +80,7 @@ class Grades extends React.Component {
             <div className="w-full mt-10 pb-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ تمامی درس های زیرمجموعه پاک خواهند شد و این عمل قابلیت بازگشت ندارد!"
+                    title={this.props.t('deleteConfirm')}
                     confirm={this.confirmDelete}
                     cancel={() => this.setState({ showDeleteModal: false, deleteFieldId: null, deleteCatId: null })}
                 /> 
@@ -87,7 +88,7 @@ class Grades extends React.Component {
                 null
                 }
 
-                {(!this.props.schoolLessonInfo ? "... درحال بارگذاری اطلاعات" :
+                {(!this.props.schoolLessonInfo ? this.props.t('loading') :
                 <div className="w-full rounded-lg min-h-90 lg:col-span-3 col-span-1">
                     <div className="mt-8 overflow-auto">
                         <BaseManager
@@ -115,7 +116,7 @@ class Grades extends React.Component {
                         />
                     </div>
                     <div className="w-full mt-8 p-4 bg-dark-blue rounded-xl">
-                        <p className="text-right text-white">لیست کل کلاس ها</p>
+                        <p className="text-right text-white"> {this.props.t('classList')} </p>
                         <div dir="rtl" className="w-full   grid all-classes">
                             {(this.props.allClass ?
                                     this.props.allClass.map(x => {
@@ -146,5 +147,7 @@ const mapStateToProps = state => {
                                     allClass : state.schoolData.allClass}
 }
 
-export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , 
-                                            GetSchool_Grades , getLessons , getClassList , getAllClass , addNewClass})(Grades);
+const cwarpped = connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , 
+    GetSchool_Grades , getLessons , getClassList , getAllClass , addNewClass})(Grades);
+
+export default withTranslation()(cwarpped);

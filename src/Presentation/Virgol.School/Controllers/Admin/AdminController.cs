@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Novell.Directory.Ldap;
 using System.Net;
 using System.Security.Cryptography;
 using System.Net.Http;
@@ -24,7 +23,6 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
-using static SchoolDataHelper;
 using ExcelDataReader;
 using Newtonsoft.Json;
 using Models.Users.Teacher;
@@ -41,8 +39,6 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
 
-        LDAP_db ldap;
-        MoodleApi moodleApi;
         FarazSmsApi SMSApi;
         MyUserManager myUserManager;
         public AdminController(UserManager<UserModel> _userManager 
@@ -55,9 +51,7 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
-            ldap = new LDAP_db(appDbContext);
             myUserManager = new MyUserManager(userManager , appDbContext);
         }
 
@@ -326,7 +320,7 @@ namespace lms_with_moodle.Controllers
                 if(newManager == null ) //melliCode changed and should remove oldManager then add newManager
                 {
                     if(model.password == null || model.password.Trim() == null)
-                        return BadRequest("رمز عبور مدیر جدید به درستی وارد نشده است");
+                        return BadRequest("لطفا برای ساخت مدیر جدید رمزعبور مدیر را هم وارد نمایید");
 
                     if(model.password.Length < 8)
                         return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
@@ -340,6 +334,7 @@ namespace lms_with_moodle.Controllers
                     }
                     model.UserName = model.MelliCode;
 
+                    model.ConfirmedAcc = true;
                     UserDataModel userDataModel = new  UserDataModel();
                     var serialized = JsonConvert.SerializeObject(model);
                     userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
@@ -381,6 +376,7 @@ namespace lms_with_moodle.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return BadRequest("خطای سیستمی رخ داد لطفا بعدا تلاش نمایید");
             }
         }
@@ -448,7 +444,8 @@ namespace lms_with_moodle.Controllers
                         }
                     }
                 }
-
+                
+                result = result.OrderBy(x => x.LastName).ToList();
                 return Ok(result);
             }
             catch(Exception ex)
@@ -473,7 +470,7 @@ namespace lms_with_moodle.Controllers
 
                 List<StudentViewModel> result = appDbContext.StudentViews.Where(x => x.SchoolType == schoolType).ToList();
 
-
+                result = result.OrderBy(x => x.LastName).ToList();
                 return Ok(result);
             }
             catch(Exception ex)

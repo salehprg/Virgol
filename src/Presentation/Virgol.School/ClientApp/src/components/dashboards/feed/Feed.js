@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import News from "./News";
 import { connect } from "react-redux";
 import protectedAdmin from "../../protectedRoutes/protectedAdmin";
@@ -15,13 +16,13 @@ class Feed extends React.Component {
         const { title, pos } = this.props
 
         return (
-            <div className={`${pos} w-full h-85 px-6 py-4 text-right bg-dark-blue rounded-xl`}>
+            <div className={`${pos} w-full h-85 overflow-auto px-6 py-4 text-right bg-dark-blue rounded-xl`}>
                 <p className="text-white">{title}</p>
                 {
                     (
                         this.props.news.length == 0 
                         ? 
-                        <span className="text-2xl text-grayish block text-center">هیچ اخباری وجود ندارد</span> 
+                    <span className="text-2xl text-grayish block text-center">{this.props.t('noNews')}</span> 
                         :
                         this.props.news.map(x => {
                             return (
@@ -34,12 +35,10 @@ class Feed extends React.Component {
                         })
                     )
                 }
-                
-            
             </div>
         );
     }
 
 }
 
-export default Feed
+export default withTranslation()(Feed);

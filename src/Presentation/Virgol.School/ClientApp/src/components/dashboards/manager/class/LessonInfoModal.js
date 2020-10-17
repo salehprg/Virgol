@@ -1,8 +1,10 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import Modal from '../../../modals/Modal';
 import history from '../../../../history';
 import DeleteConfirm from '../../../modals/DeleteConfirm';
 import { edit, external_link, trash } from '../../../../assets/icons';
+import { connect } from 'react-redux';
 
 class LessonInfoModal extends React.Component {
 
@@ -13,8 +15,8 @@ class LessonInfoModal extends React.Component {
     componentDidMount = async () =>{
 
         const times = [];
-        var startTime = 7.0;
-        var endTime = 22.0;
+        var startTime = 0.0;
+        var endTime = 24.0;
         var step = 0.25;//Every 15 minute
 
         for(var i = startTime ;i <= endTime ;i += step){
@@ -31,13 +33,13 @@ class LessonInfoModal extends React.Component {
 
 
     options = [
-        { value: 1, label: 'شنبه' },
-        { value: 2, label: 'یکشنبه' },
-        { value: 3, label: 'دوشنبه' },
-        { value: 4, label: 'سه شنبه' },
-        { value: 5, label: 'چهار شنبه' },
-        { value: 6, label: 'پنجشنبه' },
-        { value: 7, label: 'جمعه' }
+        { value: 1, label: this.props.t('saturday') },
+        { value: 2, label: this.props.t('sunday') },
+        { value: 3, label: this.props.t('monsday') },
+        { value: 4, label: this.props.t('tuesday') },
+        { value: 5, label: this.props.t('wednesday') },
+        { value: 6, label: this.props.t('thursday') },
+        { value: 7, label: this.props.t('friday') }
     ];
 
     // times = [
@@ -81,7 +83,7 @@ class LessonInfoModal extends React.Component {
             <React.Fragment>
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                    title={this.props.t('deleteConfirm')}
                     confirm={() => this.props.onDelete()}
                     cancel={() => this.setState({ showDeleteModal: false})}
                 /> 
@@ -91,40 +93,64 @@ class LessonInfoModal extends React.Component {
                 <Modal cancel={this.props.cancel}>
                     <div onClick={(e) => e.stopPropagation()} className="w-11/12 max-w-500 rounded-lg bg-dark-blue px-4 py-6">
                         <div>
-                            <h2 className="text-center text-white my-4 text-2xl">جزییات ساعت درسی</h2>
+                            <h2 className="text-center text-white my-4 text-2xl"> {this.props.t('lessonInfo')} </h2>
                         </div>
                       
                         <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.orgLessonName}</p>
                         {(!this.props.isTeacher || this.props.isManager ? <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.firstName + " " + this.props.lessonInfo.lessonDetail.lastName}</p> : null )}
-                        {(!this.props.isTeacher ? <p className="text-center text-white my-4">تعداد غیبت : {this.props.lessonInfo.lessonDetail.absenceCount}</p>  
+                        {(!this.props.isTeacher ? <p className="text-center text-white my-4">{this.props.t('absents')} : {this.props.lessonInfo.lessonDetail.absenceCount}</p>  
                         : 
-                        (!this.props.isManager ? <p className="text-center text-white my-4">مدرسه {this.props.lessonInfo.lessonDetail.schoolName} (کلاس {this.props.lessonInfo.lessonDetail.className})</p> : null)
+                        (!this.props.isManager ? <p className="text-center text-white my-4">{this.props.t('school')} {this.props.lessonInfo.lessonDetail.schoolName} ({this.props.t('class')} {this.props.lessonInfo.lessonDetail.className})</p> : null)
                         )}
 
-                        {(this.props.isManager ? <p className="text-center text-white my-4">(کلاس {this.props.lessonInfo.lessonDetail.className})</p> : null)}
+                        {(this.props.isManager ? <p className="text-center text-white my-4">({this.props.t('class')} {this.props.lessonInfo.lessonDetail.className})</p> : null)}
 
                         {(this.state.times.length > 0 ?
                         <p className="text-center text-white my-4">
-                            {`${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.options.find(x => x.value === this.props.lessonInfo.lessonDetail.dayType).label} از ساعت ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} تا ساعت `}
+                            {`${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.props.lessonInfo.lessonDetail.weekly == 2 ? this.props.t('oddWeeks') : this.props.lessonInfo.lessonDetail.weekly == 1 ? this.props.t('evenWeeks') : this.props.t('weekly')} ${this.options.find(x => x.value === this.props.lessonInfo.lessonDetail.dayType).label} ${this.props.t('fromTime')} ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} ${this.props.t('toTime')} `}
                         </p>
                         : null)}
 
-                        {(this.props.canEdit ?
-                                <div onClick={() => this.showDelete()} className="w-12 h-12 relative bg-redish rounded-full cursor-pointer">
-                                    {trash('w-6 text-white centerize')}
-                                </div>
-                                :
-                            null
-                        )}
-                        <p className="text-center text-white my-4">
-                            <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
-                               ورود به فعالیت های درسی
-                            </a>
+                        <div className="w-full flex sm:flex-row flex-col-reverse items-center justify-center">
+                            {(this.props.canEdit ?
+                                    <div onClick={() => this.showDelete()} className="w-12 h-12 relative bg-redish rounded-full cursor-pointer">
+                                        {trash('w-6 text-white centerize')}
+                                    </div>
+                                    :
+                                    null
+                            )}
+
+                            <button onClick={() => history.push("/SSO")} className="relative bg-greenish rounded-full text-white cursor-pointer px-3 py-2 mx-2 sm:my-0 my-2">
+                                {this.props.t('enterLessonActivities')}
+                            </button>
+
                             {(this.props.isTeacher ?
-                            <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative w-full bg-purplish rounded-full cursor-pointer p-2 mx-2">
-                                نمایش دفتر کلاسی
-                            </a>
-                            : null )}
+                                <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative text-white bg-purplish rounded-full cursor-pointer px-3 py-2">
+                                    {this.props.t('showClassInfo')}
+                                </a>
+                                : null )}
+                        </div>
+
+                        <p className="text-center text-white my-4">
+                            {/* <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
+                               ورود به فعالیت های درسی
+                            </a> */}
+                            {/* <form className="text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
+                                <input
+                                    hidden="true"
+                                    name="username"
+                                    type="text"
+                                    placeholder="نام کاربری"
+                                    value={this.props.user.userInformation.userName}
+                                />
+                                <input
+                                    hidden="true"
+                                    name="password"
+                                    type="text"
+                                    placeholder="رمز عبور"
+                                    value={localStorage.getItem('userPassword')}
+                                /> */}
+                            {/* </form> */}
                         </p>
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}
@@ -139,4 +165,10 @@ class LessonInfoModal extends React.Component {
 
 }
 
-export default LessonInfoModal;
+const mapStateToProps = state => {
+    return {user : state.auth.userInfo}
+}
+
+const cwrapped = connect(mapStateToProps , {})(LessonInfoModal);
+
+export default withTranslation()(cwrapped);

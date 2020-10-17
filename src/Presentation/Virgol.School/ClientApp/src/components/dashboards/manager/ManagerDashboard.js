@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import {Switch, Route, Redirect} from 'react-router-dom';
 import history from "../../../history";
 import protectedManager from "../../protectedRoutes/protectedManager";
@@ -38,6 +39,9 @@ class ManagerDashboard extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state.active !== this.props.location.pathname.split('/')[2]) {
             this.setState({ active: this.props.location.pathname.split('/')[2] })
+            if (window.innerWidth < 1024) {
+                this.setState({ sidebar: false })
+            }
         }
     }
 
@@ -50,7 +54,7 @@ class ManagerDashboard extends React.Component {
     }
 
     render() {
-        if (this.state.loading) return "درحال بارگذاری اطلاعات"
+        if (this.state.loading) return this.props.t('loading')
         return (
             <div className="w-screen min-h-screen">
                 <Sidebar
@@ -59,50 +63,50 @@ class ManagerDashboard extends React.Component {
                     active={this.state.active}
                     logoTitle={this.props.dashboardInfo.school  ? this.props.dashboardInfo.school.schoolType : -1}
                     title={(this.props.dashboardInfo && this.props.dashboardInfo.school && this.props.user.userDetail ? 
-                        `مدرسه ${this.props.user.userDetail.schooltypeName} 
-                        ${this.props.dashboardInfo.school.sexuality == 0 ? "دخترانه" : "پسرانه"}  
+                        `${this.props.t('school')} ${this.props.user.userDetail.schooltypeName} 
+                        ${this.props.dashboardInfo.school.sexuality == 0 ? this.props.t('masculine') : this.props.t('feminine')}  
                         ${this.props.dashboardInfo.school.schoolName}`
                     : null)}
                 >
                     <SidebarCard
                         active={this.state.active}
                         code="dashboard"
-                        title="پیشخوان"
+                        title={this.props.t('dashboard')}
                         icon={layout}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="bases"
-                        title="مدیریت کلاس"
+                        title={this.props.t('manageClasses')}
                         icon={bell}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="tracker"
-                        title="کلاس های مجازی"
+                        title={this.props.t('virtualClasses')}
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="teachers"
-                        title="معلمان"
+                        title={this.props.t('teachers')}
                         icon={users}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="students"
-                        title="دانش آموزان"
+                        title={this.props.t('students')}
                         icon={users}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="news"
-                        title="اخبار من"
+                        title={this.props.t('news')}
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
@@ -131,4 +135,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , dashboardInfo : state.managerData.dashboardInfo}
 }
 
-export default connect(mapStateToProps)(protectedManager(ManagerDashboard))
+const cwrapped = connect(mapStateToProps)(protectedManager(ManagerDashboard))
+
+export default withTranslation()(cwrapped);

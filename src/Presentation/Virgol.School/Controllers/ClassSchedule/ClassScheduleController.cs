@@ -29,9 +29,9 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
         private readonly SignInManager<UserModel> signInManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
+        private readonly ClassScheduleService classScheduleService;
 
-        MoodleApi moodleApi;
-        LDAP_db ldap;
+        //MoodleApi moodleApi;
         
         public ClassScheduleController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -43,8 +43,10 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             roleManager = _roleManager;
 
-            moodleApi = new MoodleApi();
-            ldap = new LDAP_db(appDbContext);
+            //moodleApi = new MoodleApi();
+
+            //classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
+            classScheduleService = new ClassScheduleService(appDbContext);
 
             
         }
@@ -175,6 +177,76 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+#region MixedSchedules
+
+        [HttpPut]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddMixedClassSchedule([FromBody]List<Class_WeeklySchedule> classSchedules , string MixedName)
+        {
+            try
+            {
+                bool mixedCreated = false;
+                MixedSchedule mixedSchedule = new MixedSchedule();
+
+                foreach (var classSchedule in classSchedules)
+                {
+                    if(classSchedule.EndHour <= classSchedule.StartHour)
+                        return BadRequest("ساعت درس به درستی انتخاب نشده است");
+                        
+                    if(classSchedule.TeacherId == 0)
+                        return BadRequest("معلمی انتخاب شده است");
+                        
+                    if(classSchedule.ClassId != 0)
+                    {
+                        //Check for interupt class Schedule
+                        object result = classScheduleService.CheckInteruptSchedule(classSchedule);
+                        bool noInterupt = false;
+
+                        try{noInterupt = (bool)result;}catch{}
+
+                        if(noInterupt)
+                        {
+                            if(!mixedCreated)
+                            {
+                                mixedSchedule.MixedName = MixedName;
+                                
+                                await appDbContext.MixedSchedules.AddAsync(mixedSchedule);
+                                await appDbContext.SaveChangesAsync();
+
+                                mixedCreated = true;
+                            }
+                            
+                            classSchedule.MixedId = mixedSchedule.Id;
+                            Class_WeeklySchedule schedule = await classScheduleService.AddClassSchedule(classSchedule);
+
+                            ClassScheduleView classScheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == schedule.Id).FirstOrDefault();
+
+                            if(classScheduleView != null)
+                            {
+                                return Ok(classScheduleView);
+                            }
+                            
+                            return BadRequest("افزودن ساعت با مشکل مواجه لطفا بعدا تلاش نمایدد");
+                        }
+                        else
+                        {
+                            return BadRequest((string)result);
+                        }
+                    }
+
+                    return BadRequest("کلاسی انتخاب شده است");
+                }
+
+                return BadRequest("خطا در افزودن کلاس");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
+#endregion
 
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]
@@ -192,38 +264,19 @@ namespace lms_with_moodle.Controllers
                 if(classSchedule.ClassId != 0)
                 {
                     //Check for interupt class Schedule
-                    object result = CheckInteruptSchedule(classSchedule);
+                    object result = classScheduleService.CheckInteruptSchedule(classSchedule);
                     bool noInterupt = false;
 
                     try{noInterupt = (bool)result;}catch{}
 
                     if(noInterupt)
                     {
-                        int lessonMoodle_Id = appDbContext.School_Lessons.Where(x => x.classId == classSchedule.ClassId && x.Lesson_Id == classSchedule.LessonId).FirstOrDefault().Moodle_Id;
+                        Class_WeeklySchedule schedule = await classScheduleService.AddClassSchedule(classSchedule);
+                        ClassScheduleView classScheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == schedule.Id).FirstOrDefault();
 
-                        List<EnrolUser> enrolUsers = new List<EnrolUser>();
-
-                        EnrolUser teacher = new EnrolUser();
-                        teacher.lessonId = lessonMoodle_Id;
-                        teacher.RoleId = 3;
-                        teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
-
-                        enrolUsers.Add(teacher);
-
-                        List<UserModel> users = new List<UserModel>();
-
-                        bool enrolment = await moodleApi.AssignUsersToCourse(enrolUsers);
-                        if(enrolment)
+                        if(classScheduleView != null)
                         {
-                            appDbContext.ClassWeeklySchedules.Add(classSchedule);
-                            appDbContext.SaveChanges();
-
-                            int classScheduleId = appDbContext.ClassWeeklySchedules.OrderByDescending(x => x.Id).FirstOrDefault().Id;
-
-                            ClassScheduleView scheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == classScheduleId).FirstOrDefault();
-
-                            await moodleApi.setCourseVisible(lessonMoodle_Id , true);
-                            return Ok(scheduleView);
+                            return Ok(classScheduleView);
                         }
                         
                         return BadRequest("افزودن ساعت با مشکل مواجه لطفا بعدا تلاش نمایدد");
@@ -252,7 +305,7 @@ namespace lms_with_moodle.Controllers
                 if(classSchedule.Id != 0)
                 {
                     //Check for interupt class Schedule
-                    object result = CheckInteruptSchedule(classSchedule);
+                    object result = classScheduleService.CheckInteruptSchedule(classSchedule);
                     if((bool)result)
                     {
                         appDbContext.ClassWeeklySchedules.Update(classSchedule);
@@ -291,7 +344,9 @@ namespace lms_with_moodle.Controllers
                     teacher.lessonId = lessonMoodleId;
                     teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
 
-                    bool unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
+                    //bool unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
+                    bool unassignTeacher = true;
+
                     if(unassignTeacher)
                     {
                         appDbContext.ClassWeeklySchedules.Remove(classSchedule);
@@ -299,7 +354,7 @@ namespace lms_with_moodle.Controllers
 
                         if(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId && x.LessonId == classSchedule.LessonId).FirstOrDefault() == null)
                         {
-                            await moodleApi.setCourseVisible(lessonMoodleId , false);
+                            //await moodleApi.setCourseVisible(lessonMoodleId , false);
                         }
 
                         Meeting meeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).FirstOrDefault();
@@ -325,36 +380,6 @@ namespace lms_with_moodle.Controllers
             }
         }
         
-        #region Functions
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public object CheckInteruptSchedule(Class_WeeklySchedule classSchedule)
-        {
-            int classIntruptCount = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId &&
-                                                                                x.DayType == classSchedule.DayType && //Check same day
-                                                                                ((x.StartHour >= classSchedule.StartHour && x.StartHour < classSchedule.EndHour) || // Check oldClass Start time between new class Time
-                                                                                    (x.StartHour <= classSchedule.StartHour && x.EndHour > classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
-                    ).Count();
-
-            if(classIntruptCount > 0)
-            {
-                return "ساعت ایجاد شده با درس دیگر تداخل دارد";
-            }
-            else
-            {
-                int teacherIntruptCount = appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == classSchedule.TeacherId &&
-                                                                        x.DayType == classSchedule.DayType && //Check same day
-                                                                        ((x.StartHour >= classSchedule.StartHour && x.StartHour < classSchedule.EndHour) || // Check oldClass Start time between new class Time
-                                                                            (x.StartHour <= classSchedule.StartHour && x.EndHour > classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
-                ).Count();
-                if(teacherIntruptCount > 0)
-                {
-                    return "ساعت ایجاد شده با درس دیگر این معلم تداخل دارد";
-                }
-            }
-
-            return true;
-        }
-        #endregion
         
 #endregion   
 

@@ -30,9 +30,9 @@ class RandomPassword
 
     public static string GenerateGUID(bool useLowercase, bool useUppercase, bool useNumbers)
     {
-        int passwordSize = 11;// ***-***-***
+        int GUIDSize = 11;// ***-***-***
 
-        char[] _password = new char[passwordSize];
+        char[] _GUID = new char[GUIDSize];
         string charSet = ""; // Initialise to blank
         System.Random _random = new Random();
 
@@ -43,19 +43,19 @@ class RandomPassword
 
         if (useNumbers) charSet += NUMBERS;
 
-        for (int counter = 0; counter < passwordSize; counter++)
+        for (int counter = 1; counter <= GUIDSize; counter++)
         {
-            if(counter % 3 == 0)
+            if(counter % 4 == 0)
             {
-                _password[counter] = '-';
+                _GUID[counter - 1] = '-';
             }
             else
             {
-                _password[counter] = charSet[_random.Next(charSet.Length - 1)];
+                _GUID[counter - 1] = charSet[_random.Next(charSet.Length - 1)];
             }
         }
 
-        return String.Join(null, _password);
+        return String.Join(null, _GUID);
     }
 
 

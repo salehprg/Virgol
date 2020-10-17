@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Add from "../../../field/Add";
 import { Link } from 'react-router-dom'
 import Select from 'react-select';
@@ -19,9 +20,9 @@ class AddNews extends React.Component {
     state = { showManagerInfo: true , tags : []}
 
     options = [
-        { value: 4, label: 'مدیران مدارس' },
-        { value: 3, label: 'دانش آموزان' },
-        { value: 2, label: 'معلمان' }
+        { value: 4, label: this.props.t('schoolManagers') },
+        { value: 3, label: this.props.t('students') },
+        { value: 2, label: this.props.t('teachers') }
     ];
 
     renderInputs = ({ input, meta, type, placeholder , extra }) => {
@@ -55,7 +56,6 @@ class AddNews extends React.Component {
     };
 
     onSubmit = async (formValues) => {
-        console.log("خبر")
         if(this.state.Receivers)
         {
             formValues.AccessRoleIdList = [this.state.Receivers.value];
@@ -65,7 +65,7 @@ class AddNews extends React.Component {
         }
         else
         {
-            this.props.ShowError("گیرنده ای انتخاب نشده است")
+            this.props.ShowError(this.props.t('sendNewsErrorNoReciever'))
         }
     }
 
@@ -75,13 +75,13 @@ class AddNews extends React.Component {
                 isNews={true}
                 newsClassName={"w-2/4"}
                 onCancel={() => history.push('/a/news')}
-                title="انتشار خبر"
+                title={this.props.t('sendNews')}
             >
             <form className="w-full " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
                 <Field
                     name="message"
                     type="text"
-                    placeholder="متن خبر"
+                    placeholder={this.props.t('newsText')}
                     extra={"w-full my-4 mx-2 h-40"}
                     component={this.renderTextArea}
                 />
@@ -89,7 +89,7 @@ class AddNews extends React.Component {
                     name="tags"
                     type="text"
                     onChange={(e) => this.setState({tags : e.target.value.split(",")})}
-                    placeholder="تگ هارا با , از هم جدا کنید"
+                    placeholder={this.props.t('tagsInfo')}
                     extra={"w-2/4 my-4 mx-2"}
                     component={this.renderInputs}
                 />
@@ -98,7 +98,7 @@ class AddNews extends React.Component {
                     value={this.state.Receivers}
                     onChange={this.handleChangeDay}
                     options={this.options}
-                    placeholder="گیرنده"
+                    placeholder={this.props.t('reciever')}
                 />
                 <div className="w-3/4 flex flex-wrap justify-start items-center">
                     {(this.state.tags.length > 0
@@ -118,7 +118,7 @@ class AddNews extends React.Component {
                 </div>
                 
 
-                <button type="submit" className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">افزودن</button>
+                <button type="submit" className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg"> {this.props.t('add')} </button>
             </form> 
             </Add>
         );
@@ -145,5 +145,6 @@ const formWrapped = reduxForm({
 }, mapStateToProps)(AddNews)
 
 const authWrapped = protectedAdmin(formWrapped)
+const cwrapped = connect(mapStateToProps,{CreateNews , ShowError})(authWrapped);
 
-export default connect(mapStateToProps,{CreateNews , ShowError})(authWrapped);
+export default withTranslation()(cwrapped);

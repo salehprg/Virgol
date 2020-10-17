@@ -4,7 +4,7 @@ import {getTeacherSchedule } from '../../../../_actions/classScheduleActions'
 import { connect } from 'react-redux';
 import { loading } from '../../../../assets/icons'
 
-class Classes extends React.Component {
+class ClassSchedule extends React.Component {
 
     state = { loading: false , finished : true }
     sc = createRef()
@@ -29,7 +29,7 @@ class Classes extends React.Component {
         return (
             <div ref={this.sc} className="overflow-auto">
                 <Schedule
-                    isTeacher={true}
+                    isTeacher={false}
                     editable={false}
                     // lessons={this.props.schedules}
                     lessons={this.props.schedules}           
@@ -41,7 +41,7 @@ class Classes extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user : state.auth.userInfo  , schedules : state.schedules.classSchedules , recentClass2 : state.meetingData.recentClass}
+    return {user : state.auth.userInfo  , schedules : state.schedules.classSchedules}
 }
 
-export default connect(mapStateToProps , {getTeacherSchedule })(Classes);
+export default connect(mapStateToProps , {getTeacherSchedule })(ClassSchedule);

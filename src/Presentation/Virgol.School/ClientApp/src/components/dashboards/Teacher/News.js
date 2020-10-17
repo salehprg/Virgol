@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Hero from "../admin/home/Hero";
 import CounterCard from "../admin/home/CounterCard";
 import {home, key, loading, user, users} from "../../../assets/icons";
@@ -23,7 +24,7 @@ class News extends React.Component {
             <div style={{direction : "rtl"}} className="grid sm:grid-cols-4 grid-cols-4 gap-4 py-6">
                 <Feed
                     news={this.props.inNews}
-                    title="اخبار و اطلاعیه ها"
+                    title={this.props.t('studentsNews')}
                     pos="row-start-4 sm:row-start-auto col-span-3 row-span-3"
                 />
             </div>
@@ -35,5 +36,6 @@ class News extends React.Component {
 const mapStateToProps = state => {
     return {user: state.auth.userInfo , inNews : state.newsData.incomeNews }
 }
+const cwrapped = connect(mapStateToProps, { GetIncommingNews })(News);
 
-export default connect(mapStateToProps, { GetIncommingNews })(News);
+export default withTranslation()(cwrapped);

@@ -2,8 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import {logo, menu, x} from "../../../assets/icons";
 
-
-const   Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, children }) => {
+const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, children }) => {
 
     const sidebarVar = {
         open: {
@@ -45,14 +44,21 @@ const   Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, child
             </motion.div>
             
             {
-                logoTitle == 0 ? 
+                process.env.REACT_APP_RAHE_DOOR !== "true" ?
+                    logo('w-16 my-3 text-purplish mx-auto')
+                    :
+                logoTitle === 0 ?
                 <img src={`${process.env.PUBLIC_URL}/icons/sampad.png`} />
                 : 
-                logoTitle == 1 ?
+                logoTitle === 1 ?
                 <img src={`${process.env.PUBLIC_URL}/icons/RD.png`} /> 
                 : 
-                <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">{logo('w-16 mb-3 text-purplish mx-auto')}</h1>
+                <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">
+                    <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
+                </h1>
             }
+
+
 
             <div className="w-full mt-10">
                 {children}

@@ -5,15 +5,22 @@ import { alert } from "./alertActions";
 import * as Type from './authTypes'
 import { START , STOP } from "./workerTypes";
 
-export const login = formValues => async dispatch => {
+export const login = (formValues , autoRedirect = true) => async dispatch => {
 
     try {
+        console.log(process.env);
+
         const response = await lms.post('/Users/LoginUser', formValues)
+
+        if(!autoRedirect)
+            return response.data.token
+
         dispatch({ type: Type.LOGIN, payload: response.data })
 
         localStorage.setItem('userToken', response.data.token)
-        localStorage.setItem('userType', response.data.userType)
-
+        localStorage.setItem('userPassword', formValues.password)
+        localStorage.setItem('userType', response.data.userType)      
+        
         switch (response.data.userType) {
             case 1: {
                 if(!response.data.completedProfile)
@@ -187,6 +194,7 @@ export const ChangePassword = (melliCode, verificationCode , newPassword) => asy
 export const SendVerifyPhoneNumber = (phoneNumber,token,IsFatherCode) => async dispatch => {
 
     try {
+        console.log(token)
         dispatch({ type: START })
         const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0&fatherCode=${IsFatherCode}` , null , {
             headers: {

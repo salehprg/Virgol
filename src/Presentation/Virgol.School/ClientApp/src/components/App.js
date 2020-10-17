@@ -5,7 +5,10 @@ import history from "../history";
 import Alert from "./Alert";
 import {CLEAR} from "../_actions/alertTypes";
 import Working from "./Working";
+
 import Login from "./login/Login";
+import LoginSSO from "./login/LoginSSO";
+
 import AdminDashboard from "./dashboards/admin/Dashboard";
 import NoFound from "./NoFound";
 import SchoolInfo from './dashboards/admin/schools/SchoolInfo'
@@ -32,6 +35,9 @@ import TeacherNewsInfo from './dashboards/Teacher/News/NewsInfo';
 import MeetingResponse from './MeetingResponse/MeetingResponse';
 import ParticipantList from './MeetingResponse/ParticipantList';
 import SessionInfo from "./dashboards/Teacher/classes/SessionInfo";
+import RecorededSession from './dashboards/recordedSessions/RecordedSessions';
+import Copyright from "./Copyright";
+import PrivateLogin from './login/PrivateLogin';
 
 class App extends React.Component {
 
@@ -39,6 +45,11 @@ class App extends React.Component {
         history.listen((location, action) => {
             this.props.dispatch({ type: CLEAR });
         });
+        if (process.env.REACT_APP_RAHE_DOOR !== "true") {
+            document.title = "سامانه ویرگول";
+        } else {
+            document.title = "سامانه آموزش از راه دور استان خراسان رضوی";
+        }
     }
 
     fadeAlert = () => {
@@ -51,10 +62,14 @@ class App extends React.Component {
                 {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
                 {this.props.worker.status ? <Working /> : null}
 
+                {/*<Copyright />*/}
                 <Router history={history}>
                     <Switch>
                         <Route path="/" exact component={Login} />
-                        <Route path="/a" component={AdminDashboard} />
+                        <Route path="/SSO" exact component={LoginSSO} />
+                        <Route path="/PrivateClass/:id" exact component={PrivateLogin} />
+
+                        <Route path="/a" component={AdminDashboard} />  
                         <Route path="/addNews" component={AddNews} />
                         <Route path="/news/:id" component={NewsInfo} />
                         <Route path="/newSchool" component={AddSchool} />
@@ -72,6 +87,8 @@ class App extends React.Component {
                         
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
+
+                        <Route path="/recordedSessions/:id" component={RecorededSession} />
 
                         <Route path="/t" component={TeacherDashboard} />
                         <Route path="/addNewsTeacher" component={AddNewsTeacher} />

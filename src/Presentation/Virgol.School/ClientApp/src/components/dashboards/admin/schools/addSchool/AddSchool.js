@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Add from "../../../../field/Add";
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -45,7 +46,7 @@ class AddSchool extends React.Component {
                 // className="max-w-md"
                 newsClassName={"max-w-md w-11/12 "}
                 onCancel={() => history.push('/a/schools')}
-                title="افزودن مدرسه"
+                title={this.props.t('addSchool')}
             >
                 {this.state.showManagerInfo || !this.props.managerInfo ? 
                 <form className="w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
@@ -53,23 +54,23 @@ class AddSchool extends React.Component {
                     <Field
                         name="schoolName"
                         type="text"
-                        placeholder="نام مدرسه"
+                        placeholder={this.props.t('schoolName')}
                         extra={"w-3/4 ml-1 my-4"}
                         component={this.renderInputs}
                     />
                     <Field
                         name="schoolIdNumber"
                         type="text"
-                        placeholder="کد مدرسه"
+                        placeholder={this.props.t('code')}
                         extra={"w-1/4 mr-1 my-4"}
                         component={this.renderInputs}
                     />
                 </div>
 
                 <div className="w-full my-4 flex justify-between items-center">
-                    <span className="text-white">جنسیت مدرسه:</span>
-                    <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>دخترانه</span>
-                    <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>پسرانه</span>
+                    <span className="text-white"> {this.props.t('gender')} </span>
+                    <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}> {this.props.t('feminine')} </span>
+                    <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}> {this.props.t('masculine')} </span>
                 </div>
                 
                 {/*<div className="text-white">*/}
@@ -96,7 +97,7 @@ class AddSchool extends React.Component {
                     <Field
                         name="firstName"
                         type="text"
-                        placeholder="نام مدیر"
+                        placeholder={this.props.t('managerFirstName')}
                         extra={"w-1/2 my-4 mx-2"}
                         component={this.renderInputs}
                     />
@@ -104,7 +105,7 @@ class AddSchool extends React.Component {
                         name="lastName"
                         type="text"
                         extra={"w-1/2 my-4"}
-                        placeholder="نام خانوادگی مدیر"
+                        placeholder={this.props.t('managerLastName')}
                         component={this.renderInputs}
                     />
                 </div>
@@ -112,7 +113,7 @@ class AddSchool extends React.Component {
                     <Field
                         name="latinFirstname"
                         type="text"
-                        placeholder="نام لاتین"
+                        placeholder={this.props.t('latinFirstName')}
                         extra={"w-1/2 my-4 mx-2"}
                         component={this.renderInputs}
                     />
@@ -120,7 +121,7 @@ class AddSchool extends React.Component {
                         name="latinLastname"
                         type="text"
                         extra={"w-1/2 my-4"}
-                        placeholder="نام خانوادگی لاتین "
+                        placeholder={this.props.t('latinLastName')}
                         component={this.renderInputs}
                     />
                 </div>
@@ -128,43 +129,43 @@ class AddSchool extends React.Component {
                     name="managerPhoneNumber"
                     type="text"
                     extra={"w-full my-4"}
-                    placeholder="شماره همراه مدیر"
+                    placeholder={this.props.t('managerPhoneNumber')}
                     component={this.renderInputs}
                 />
                 <div className="w-full flex flex-row justify-between items-center">
                     <Field
                         name="melliCode"
                         type="text"
-                        placeholder="کدملی مدیر"
+                        placeholder={this.props.t('managerNationCode')}
                         extra={"w-1/2 ml-1 my-4"}
                         component={this.renderInputs}
                     />
                     <Field
                         name="personalIdNumber"
                         type="text"
-                        placeholder="کد پرسنلی مدیر"
+                        placeholder={this.props.t('managerPersonelCode')}
                         extra={"w-1/2 mr-1 my-4"}
                         component={this.renderInputs}
                     />
                 </div>
 
-                <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">افزودن</button>
+                <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg"> {this.props.t('add')} </button>
             </form> 
                 : 
                 <div className="p-6 border-2 border-dashed border-dark-blue">
                     {check_circle('w-1/4 mx-auto text-greenish')}
                     <p className="text-center text-greenish">
-                        مدرسه جدید با موفقیت ایجاد شد. مدیر مدرسه میتواند با نام کاربری و گذرواژه زیر وارد پنل مدیریت مدرسه شود
+                        {this.props.t('schoolCreated')}
                     </p>
                     <ManagerGenerated 
-                        title="نام کاربری"
+                        title={this.props.t('username')}
                         value={this.props.managerInfo.melliCode}
                     />
                     <ManagerGenerated 
-                        title="گدرواژه"
+                        title={this.props.t('password')}
                         value={this.props.managerInfo.password}
                     />
-                    <button type="button" className="w-full px-4 py-2 border-2 border-sky-blue text-sky-blue" onClick={() => history.push(`/school/${this.props.managerInfo.schoolId}`)}>افزودن مقاطع، رشته ها و دروس</button>
+                    <button type="button" className="w-full px-4 py-2 border-2 border-sky-blue text-sky-blue" onClick={() => history.push(`/school/${this.props.managerInfo.schoolId}`)}> {this.props.t('addingLessons')} </button>
                 </div>
                 }
             </Add>
@@ -201,5 +202,6 @@ const formWrapped = reduxForm({
 }, mapStateToProps)(AddSchool)
 
 const authWrapped = protectedAdmin(formWrapped)
+const cwrapped = connect(mapStateToProps,{CreateSchool})(authWrapped);
 
-export default connect(mapStateToProps,{CreateSchool})(authWrapped);
+export default withTranslation()(cwrapped);

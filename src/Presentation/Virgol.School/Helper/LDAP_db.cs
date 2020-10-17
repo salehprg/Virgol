@@ -111,6 +111,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -132,7 +133,7 @@ namespace lms_with_moodle.Helper
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute attr =  new LdapAttribute(attrName, attrValue);
 
-                mods.Add(new LdapModification(LdapModification.ADD , attr));
+                mods.Add(new LdapModification(LdapModification.Add , attr));
 
                 // DN of the entry to be added
                 string dn = "uniqueIdentifier=" + IdNumbr + "," + containerName;      
@@ -145,6 +146,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -152,7 +154,7 @@ namespace lms_with_moodle.Helper
                 //ldapConn.Disconnect();
             }
         }
-        public bool EditEntry(string IdNumbr , string attrName , string attrValue)
+        public bool EditAttribute(string IdNumbr , string attrName , string attrValue)
         {
             try
             {
@@ -165,7 +167,7 @@ namespace lms_with_moodle.Helper
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute attr =  new LdapAttribute(attrName, attrValue);
 
-                mods.Add(new LdapModification(LdapModification.REPLACE , attr));
+                mods.Add(new LdapModification(LdapModification.Replace , attr));
 
                 // DN of the entry to be added
                 string dn = "uniqueIdentifier=" + IdNumbr + "," + containerName;      
@@ -178,6 +180,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -208,6 +211,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -234,23 +238,24 @@ namespace lms_with_moodle.Helper
                                         "(userPassword=" + password + ")" +
                                         ")";
                                         
-                LdapSearchResults lsc=ldapConn.Search(containerName,LdapConnection.SCOPE_SUB,searchFilter,null,false);
+                ILdapSearchResults lsc = ldapConn.Search(containerName,LdapConnection.ScopeSub,searchFilter,null,false);
 
-                while(lsc.hasMore())
+                while(lsc.HasMore())
                 {
                     LdapEntry nextEntry = null;
                     try 
                     {
-                        nextEntry = lsc.next(); 
+                        nextEntry = lsc.Next(); 
                     } 
                     catch(LdapException e) 
                     { 
                         Console.WriteLine("Error: " + e.LdapErrorMessage);
+                        Console.WriteLine(e.StackTrace);
                         //Exception is thrown, go for next entry
                         continue; 
                     } 
 
-                    LdapAttributeSet attributeSet = nextEntry.getAttributeSet();
+                    LdapAttributeSet attributeSet = nextEntry.GetAttributeSet();
 
                     System.Collections.IEnumerator ienum = attributeSet.GetEnumerator();
 
@@ -273,10 +278,45 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return null;
             }
         }
+        public bool ChangePassword(string UserName, string newPassword)
+        {
+            try
+            {
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
 
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+
+                List<LdapModification> mods = new List<LdapModification>();
+                LdapAttribute attr =  new LdapAttribute("userPassword", newPassword);
+
+                mods.Add(new LdapModification(LdapModification.Replace , attr));
+
+                // DN of the entry to be added
+                string dn = "uniqueIdentifier=" + UserName + "," + containerName;      
+
+                //Edit the entry in the directory
+                ldapConn.Modify(dn , mods.ToArray());
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return false;
+            }
+            finally
+            {
+                //ldapConn.Disconnect();
+            }
+        }
+        
         public bool CheckUserData(string userName)
         {
             if(!ldapConn.Connected)
@@ -287,23 +327,24 @@ namespace lms_with_moodle.Helper
             
             string searchFilter = "(uniqueIdentifier=" + userName + ")";
                                     
-            LdapSearchResults lsc=ldapConn.Search(containerName,LdapConnection.SCOPE_SUB,searchFilter,null,false);
+            ILdapSearchResults lsc=ldapConn.Search(containerName,LdapConnection.ScopeSub,searchFilter,null,false);
 
-            while(lsc.hasMore())
+            while(lsc.HasMore())
             {
                 LdapEntry nextEntry = null;
                 try 
                 {
-                    nextEntry = lsc.next(); 
+                    nextEntry = lsc.Next(); 
                 } 
                 catch(LdapException e) 
                 { 
                     Console.WriteLine("Error: " + e.LdapErrorMessage);
+                    Console.WriteLine(e.StackTrace);
                     //Exception is thrown, go for next entry
                     continue; 
                 } 
 
-                LdapAttributeSet attributeSet = nextEntry.getAttributeSet();
+                LdapAttributeSet attributeSet = nextEntry.GetAttributeSet();
 
                 System.Collections.IEnumerator ienum = attributeSet.GetEnumerator();
 
@@ -346,10 +387,10 @@ namespace lms_with_moodle.Helper
 
                 LdapAttribute uniqueId = new LdapAttribute("uniqueIdentifier", uniqueMailId);
 
-                mods.Add(new LdapModification(LdapModification.ADD , mail));
-                mods.Add(new LdapModification(LdapModification.ADD , uniqueId));
-                mods.Add(new LdapModification(LdapModification.REPLACE , mailHDir));
-                mods.Add(new LdapModification(LdapModification.REPLACE , mailSTRDir));
+                mods.Add(new LdapModification(LdapModification.Add , mail));
+                mods.Add(new LdapModification(LdapModification.Add , uniqueId));
+                mods.Add(new LdapModification(LdapModification.Replace , mailHDir));
+                mods.Add(new LdapModification(LdapModification.Replace , mailSTRDir));
 
 
                 // DN of the entry to be added
@@ -367,6 +408,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -393,8 +435,8 @@ namespace lms_with_moodle.Helper
                 LdapAttribute newUid = new LdapAttribute("uniqueIdentifier", newUserName);
                 LdapAttribute previousUid = new LdapAttribute("uniqueIdentifier", oldUsername);
 
-                mods.Add(new LdapModification(LdapModification.DELETE , previousUid));
-                mods.Add(new LdapModification(LdapModification.ADD , newUid));
+                mods.Add(new LdapModification(LdapModification.Delete , previousUid));
+                mods.Add(new LdapModification(LdapModification.Add , newUid));
 
                 // DN of the entry to be added
                 string dn = "uniqueIdentifier=" + oldUsername + "," + containerName;      
@@ -407,6 +449,7 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
@@ -431,10 +474,12 @@ namespace lms_with_moodle.Helper
 
         private bool DoEditMail(UserModel userModel = null , UserDataModel userDataModel = null)
         {
+            string mailAddress = "";
+            UserModel user = new UserModel();
+
             try
             {
-                UserModel user = new UserModel();
-
+                
                 if(userModel == null)
                 {
                     var serialized = JsonConvert.SerializeObject(userDataModel);
@@ -456,7 +501,7 @@ namespace lms_with_moodle.Helper
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
 
 
-                string mailAddress = uniqueMailId + "@legace.ir";
+                mailAddress = uniqueMailId + "@legace.ir";
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute mail = new LdapAttribute("mail", mailAddress);
@@ -468,14 +513,14 @@ namespace lms_with_moodle.Helper
                 if(user.Email != null)
                     previousEmail = new LdapAttribute("uniqueIdentifier", user.Email.Split("@")[0]);
 
-                mods.Add(new LdapModification(LdapModification.REPLACE , mail));
+                mods.Add(new LdapModification(LdapModification.Replace , mail));
 
                 if(previousEmail != null)
-                    mods.Add(new LdapModification(LdapModification.DELETE , previousEmail));
+                    mods.Add(new LdapModification(LdapModification.Delete , previousEmail));
                     
-                mods.Add(new LdapModification(LdapModification.ADD , uniqueId));
-                mods.Add(new LdapModification(LdapModification.REPLACE , mailHDir));
-                mods.Add(new LdapModification(LdapModification.REPLACE , mailSTRDir));
+                mods.Add(new LdapModification(LdapModification.Add , uniqueId));
+                mods.Add(new LdapModification(LdapModification.Replace , mailHDir));
+                mods.Add(new LdapModification(LdapModification.Replace , mailSTRDir));
 
 
                 // DN of the entry to be added
@@ -493,11 +538,12 @@ namespace lms_with_moodle.Helper
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
             finally
             {
-                //ldapConn.Disconnect();
+                
             }
         }
         

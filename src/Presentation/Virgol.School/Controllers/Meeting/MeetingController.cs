@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Novell.Directory.Ldap;
+
 using System.Net;
 using System.Security.Cryptography;
 using System.Net.Http;
@@ -29,16 +29,16 @@ using System.Globalization;
 
 namespace lms_with_moodle.Controllers
 {
+    
     [ApiController]
+    [Authorize(Roles = "User")]
     [Route("api/[controller]/[action]")]
     public class MeetingController : ControllerBase
     {
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
-        private readonly MeetingService MeetingService;
+        private readonly MeetingService meetingService;
 
-        MoodleApi moodleApi;
-        LDAP_db ldap;
         
         public MeetingController(AppDbContext dbContext
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -47,9 +47,7 @@ namespace lms_with_moodle.Controllers
             appDbContext = dbContext;
             userManager = _userManager;
 
-            moodleApi = new MoodleApi();
-            ldap = new LDAP_db(appDbContext);
-            MeetingService = new MeetingService(appDbContext);
+            meetingService = new MeetingService(appDbContext);
 
         }
 
@@ -62,8 +60,17 @@ namespace lms_with_moodle.Controllers
             string userName = userManager.GetUserId(User);
             int userId = appDbContext.Users.Where(x => x.MelliCode == userName).FirstOrDefault().Id;
 
+            Meeting meeting = appDbContext.Meetings.Where(x => x.Id == meetingId).FirstOrDefault();
+
+            if(meeting != null)
+            {
+                string bbbId = meeting.MeetingId;
+
+                await meetingService.EndMeeting(bbbId , userId);
+            }
+
             List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meetingId && x.UserId != userId).ToList();
-            int classId = appDbContext.MeetingViews.Where(x => x.Id == meetingId).FirstOrDefault().ClassId;
+            int? classId = appDbContext.MeetingViews.Where(x => x.Id == meetingId).FirstOrDefault().ClassId;
             
             List<School_studentClass> studentClasses = appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
 
@@ -104,7 +111,6 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public IActionResult SubmitReview(int meetingId , int Score , string description) 
         {
@@ -116,7 +122,9 @@ namespace lms_with_moodle.Controllers
 
 #region Meeting
 
-        [HttpPost]
+    #region Private
+
+        [HttpPut]
         [Authorize(Roles = "Teacher,Manager,Admin")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> CreatePrivateRoom(string roomName) 
@@ -126,7 +134,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 int userId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
-                Meeting meeting = await MeetingService.StartPrivateMeeting(roomName , userId);
+                Meeting meeting = await meetingService.StartPrivateMeeting(roomName , userId);
 
                 if(meeting != null)
                 {
@@ -137,52 +145,6 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpPost]
-        [Authorize(Roles = "Teacher")]
-        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
-        public async Task<IActionResult> StartMeeting(int lessonId) 
-        {
-            try
-            {
-                string userName = userManager.GetUserId(User);
-                int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
-
-                Console.WriteLine(teacherId);
-
-                ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
-                
-                Console.WriteLine(classSchedule.Id);
-
-                bool mixed = (classSchedule.MixedId != 0 ? true : false); // if Teacher start mixed class
-
-                if(mixed)//if Teacher start Mixed Meeting
-                {
-                    int parentId = await MeetingService.StartSingleMeeting(classSchedule , teacherId);
-                    List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
-
-                    Console.WriteLine("Get mixed");
-                    foreach (var schedule in mixedSchedules)
-                    {
-                        await MeetingService.StartMixedMeeting(schedule , teacherId , parentId);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Start Single");
-                    int meetingId = await MeetingService.StartSingleMeeting(classSchedule , teacherId);
-                    Console.WriteLine("mId = " + meetingId);
-                }
-
-                return Ok(true);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Source);
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 return BadRequest(ex.Message);
@@ -190,7 +152,89 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User,Teacher")]
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public async Task<IActionResult> JoinPrivateRoom(string roomGUID) 
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+
+                Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == roomGUID).FirstOrDefault();
+
+                if(meeting != null)
+                {
+                    string url = await meetingService.JoinMeeting(user , meeting.MeetingId , true);
+
+                    if(url != null)
+                    {
+                        return Ok(url);
+                    }
+                }
+
+                return BadRequest("کلاس مورد نظر وجود ندارد");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+    #endregion
+
+    #region Meeting Action
+
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public async Task<IActionResult> StartMeeting(int lessonId , string serviceType) 
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+
+
+                ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
+                
+                bool mixed = (classSchedule.MixedId != 0 ? true : false); // if Teacher start mixed class
+
+                if(mixed)//if Teacher start Mixed Meeting
+                {
+                    MixedSchedule mixedSchedule = appDbContext.MixedSchedules.Where(x => x.Id == classSchedule.MixedId).FirstOrDefault();
+
+                    if(mixedSchedule != null)
+                    {
+                        classSchedule.OrgLessonName = mixedSchedule.MixedName;
+
+                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
+                        //Get all schedules have same MixedId according to Selected Schedule
+                        List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
+
+                        foreach (var schedule in mixedSchedules)
+                        {
+                            schedule.OrgLessonName = mixedSchedule.MixedName;
+                            await meetingService.StartMixedMeeting(schedule , teacherId , parentId , serviceType);
+                        }
+                    }
+                }
+                else
+                {
+                    int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
+                }
+
+                return Ok(true);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> JoinMeeting(string meetingId) 
         {
@@ -199,7 +243,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 
-                string URL = await MeetingService.JoinMeeting(user , meetingId);
+                string URL = await meetingService.JoinMeeting(user , meetingId);
 
                 if(URL != null)
                 {
@@ -226,7 +270,7 @@ namespace lms_with_moodle.Controllers
 
                 bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
-                bool result = await MeetingService.EndMeeting(bbbMeetingId , user.Id);
+                bool result = await meetingService.EndMeeting(bbbMeetingId , user.Id);
 
                 if(result)
                     return Ok("کلاس با موفقیت پایان یافت لطفا چند لحظه صبر نمایید");
@@ -240,83 +284,17 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User,Teacher")]
-        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
-        public IActionResult GetRecentClass() 
-        {
-            try
-            {
-                string userName = userManager.GetUserId(User);
-                UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
-                int userId = user.Id;
-                bool isTeacher = user.userTypeId == (int)UserType.Teacher;
-
-                List<MeetingView> recentClasses = MeetingService.GetComingMeeting(user);
-                                
-                foreach (var classs in recentClasses)
-                {
-                    if(classs.BBB_MeetingId != null)
-                    {
-                        classs.started = true;
-                    }
-                    else
-                    {
-                        classs.started = false;
-                    }
-                }
-            
-                recentClasses = recentClasses.OrderBy(x => x.StartHour).Take(5).ToList();
-
-                return Ok(recentClasses);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine("Back : Error" + ex.Message);
-
-                return BadRequest(ex.Message);
-            }
-        }
-        
-        [HttpGet]
         [Authorize(Roles = "Manager")]
         [ProducesResponseType(typeof(List<ParticipantView>), 200)]
         public IActionResult GetAllActiveMeeting() 
         {
             string userName = userManager.GetUserId(User);
             int managerId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
-            int schoolId = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault().Id;
-
-            List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == schoolId).ToList();
             
-            DateTime currentDateTime = MyDateTime.Now();
+            List<MeetingView> result = meetingService.GetAllActiveMeeting(managerId);
 
-            float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
-
-            int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
-
-            List<MeetingView> result = new List<MeetingView>();
-
-            foreach (var classs in classes)
-            {
-                List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.ClassId == classs.Id && x.DayType == dayOfWeek).ToList();
-                List<MeetingView> activeMeetings = appDbContext.MeetingViews.Where(x => x.ClassId == classs.Id && !x.Finished).ToList();
-
-                foreach (var schedule in schedules)
-                {
-                    MeetingView meetingVW = activeMeetings.Where(x => x.ScheduleId == schedule.Id).FirstOrDefault();
-                    if(meetingVW == null)
-                    {
-                        meetingVW = new MeetingView();
-
-                        var serialized = JsonConvert.SerializeObject(schedule);
-                        meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
-                    }
-
-                    result.Add(meetingVW);
-                }
-            }
-        
-
+            result = result.OrderBy(x => x.ClassName).ToList();
+            
             var groupedMeetings = result
                     .GroupBy(x => x.ClassId)
                     .Select(grp => grp.ToList())
@@ -324,7 +302,6 @@ namespace lms_with_moodle.Controllers
 
             return Ok(groupedMeetings);
         }
-
 
         [HttpGet]
         [Authorize(Roles = "Teacher")]
@@ -337,8 +314,13 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
 
-                List<MeetingView> meetingViews = MeetingService.GetActiveMeeting(user);
-                    
+                List<MeetingView> meetingViews = meetingService.GetActiveMeeting(user);
+
+                meetingViews = meetingViews.OrderBy(x => x.DayType).ToList();
+
+
+                meetingViews = meetingViews.OrderBy(x => x.StartHour).ToList();
+
                 return Ok(meetingViews);
             }
             catch(Exception ex)
@@ -380,16 +362,132 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+    #endregion
+#endregion
+
         [HttpGet]
         [Authorize(Roles = "Teacher")]
-        [ProducesResponseType(typeof(List<Meeting>), 200)]
-        public async Task<IActionResult> GetRecordList(int meetingId) 
+        [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
+        public IActionResult GetRecentClass() 
         {
             try
             {
+                string userName = userManager.GetUserId(User);
+                UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+                int userId = user.Id;
+                bool isTeacher = user.userTypeId == (int)UserType.Teacher;
 
-                BBBApi bBApi = new BBBApi();
-                List<RecordInfo> recordsResponses = (await bBApi.GetMeetingRecords(meetingId.ToString())).recordings.recording;
+                DateTime currentDateTime = MyDateTime.Now();
+                float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
+                int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
+
+                List<MeetingView> recentClasses = meetingService.GetComingMeeting(user);
+                                
+                if(!isTeacher)
+                {
+                    recentClasses = recentClasses.Where(x => x.DayType == dayOfWeek).ToList();
+                }
+
+                foreach (var classs in recentClasses)
+                {
+                    if(!isTeacher)
+                    {
+                        if(currentTime <= classs.EndHour && currentTime >= (classs.StartHour - 0.25))
+                        {
+                            if(classs.MeetingId != null)
+                            {
+                                classs.started = true;
+                            }
+                            else
+                            {
+                                classs.started = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(classs.MeetingId != null)
+                        {
+                            classs.started = true;
+                        }
+                        else
+                        {
+                            classs.started = false;
+                        }
+                    }
+                }
+            
+                recentClasses = recentClasses.OrderBy(x => x.DayType).ToList();
+
+                var groupedMeetings = recentClasses
+                    .GroupBy(x => x.DayType).Select(grp => grp.ToList()).ToList();
+
+                for (int i = 0; i <  groupedMeetings.Count ; i++)
+                {
+                    groupedMeetings[i] = groupedMeetings[i].OrderBy(x => x.StartHour).ToList();
+                }
+
+                var result = new List<MeetingView>();
+
+                groupedMeetings.ForEach(x => result.AddRange(x));
+
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Back : Error" + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return BadRequest(ex.Message);
+            }
+        }
+        
+#region Recordings
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<Meeting>), 200)]
+        public async Task<IActionResult> GetRecordList(int scheduleId) 
+        {
+            try
+            {
+                BBBApi bBApi = new BBBApi(appDbContext , scheduleId);
+                List<Meeting> meetings = new List<Meeting>();
+
+                ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
+
+                //Get schedule ids that same lessonId and TeacherId to specific classSchedule
+                List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.TeacherId == classSchedule.TeacherId && x.LessonId == classSchedule.LessonId && x.ClassId == classSchedule.ClassId).ToList();
+
+                foreach (var schedule in schedules)
+                {
+                    meetings.AddRange(appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList());
+                }
+
+                List<RecordInfo> recordsResponses = new List<RecordInfo>();
+                
+                meetings = meetings.OrderBy(x => x.Id).ToList();
+                foreach (var meeting in meetings)
+                {
+                    if(meeting.MeetingId != null)
+                    {
+                        Recordings recordings = (await bBApi.GetMeetingRecords(meeting.MeetingId.ToString())).recordings;
+
+                        if(recordings != null)
+                        {
+                            List<RecordInfo> records = recordings.recording;
+                            if(records.Count > 0)
+                            {
+                                records[0].name = classSchedule.OrgLessonName;
+                                records[0].url = records[0].playback.format[0].url;
+                                records[0].date = meeting.StartTime;
+
+                                recordsResponses.AddRange(records);
+                            }
+                        }
+                    }
+                    
+                }
+                
                     
                 return Ok(recordsResponses);
             }
@@ -399,7 +497,60 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> EditRecording(int recordId)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message)             ;
+                Console.WriteLine(ex.StackTrace);
+
+                return BadRequest(ex.Message);
+                throw;
+            }
+        }
 #endregion
 
+#region PreSlide
+
+        public async Task<IActionResult> UploadPreSlide([FromForm]IFormCollection preSlide)
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                int userId = appDbContext.Users.Where(x => x.MelliCode == userName).FirstOrDefault().Id;
+
+                bool FileOk = await FileController.UploadFile(preSlide.Files[0] , preSlide.Files[0].FileName , "PreSlides");
+
+                if(FileOk)
+                {
+                    DocumentModel document = new DocumentModel();
+                    document.docName = "PreSlides" + preSlide.Files[0].FileName;
+                    document.userId = userId;
+                    document.uploadTime = MyDateTime.Now();
+                    
+                    await appDbContext.Documents.AddAsync(document);
+                    await appDbContext.SaveChangesAsync();
+
+                    return Ok(true);
+                }
+
+                return Ok(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return BadRequest(ex.Message);
+            }
+                
+        }
+#endregion
+    
     }
 }

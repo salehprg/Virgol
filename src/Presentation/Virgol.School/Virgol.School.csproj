@@ -9,7 +9,9 @@
     <RootNamespace>lms_with_moodle</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Novell.Directory.Ldap" Version="*"/>
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard2_0" Version="*"/>
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="*"/>
+    <PackageReference Include="GuerrillaNtp" Version="1.4.2"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4"/>
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.4"/>
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="3.1.4"/>
@@ -24,6 +26,8 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1"/>
     <PackageReference Include="Quartz" Version="3.0.7"/>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4"/>
+    <PackageReference Include="System.DirectoryServices" Version="*"/>
+
   </ItemGroup>
   <ItemGroup>
     <Content Remove="$(SpaRoot)**"/>

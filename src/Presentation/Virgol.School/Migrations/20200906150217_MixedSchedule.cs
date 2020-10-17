@@ -7,11 +7,11 @@ namespace lms_with_moodle.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "MixedId",
-                table: "ClassWeeklySchedules",
-                nullable: false,
-                defaultValue: 0);
+            // migrationBuilder.AddColumn<int>(
+            //     name: "MixedId",
+            //     table: "ClassWeeklySchedules",
+            //     nullable: false,
+            //     defaultValue: 0);
 
             migrationBuilder.CreateTable(
                 name: "MixedSchedules",
@@ -34,9 +34,9 @@ namespace lms_with_moodle.Migrations
             migrationBuilder.DropTable(
                 name: "MixedSchedules");
 
-            migrationBuilder.DropColumn(
-                name: "MixedId",
-                table: "ClassWeeklySchedules");
+            // migrationBuilder.DropColumn(
+            //     name: "MixedId",
+            //     table: "ClassWeeklySchedules");
         }
     }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 public class Recordings{
-    [JsonConverter(typeof(SingleValueArrayConverter<MeetingInfo>))]
+    [JsonConverter(typeof(SingleValueArrayConverter<RecordInfo>))]
     public List<RecordInfo> recording { get; set; }
 }
 public class RecordsResponse {

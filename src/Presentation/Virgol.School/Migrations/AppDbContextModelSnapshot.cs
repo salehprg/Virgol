@@ -32,6 +32,9 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("SchoolsType")
                         .HasColumnType("integer");
 
+                    b.Property<string>("TypeName")
+                        .HasColumnType("text");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
@@ -190,6 +193,27 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("CourseNotifies");
                 });
 
+            modelBuilder.Entity("DocumentModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("docName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("uploadTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Documents");
+                });
+
             modelBuilder.Entity("GradeModel", b =>
                 {
                     b.Property<int>("Id")
@@ -266,9 +290,6 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("AttendeeCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("BBB_MeetingId")
-                        .HasColumnType("text");
-
                     b.Property<int>("CheckCount")
                         .HasColumnType("integer");
 
@@ -277,6 +298,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<bool>("Finished")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("MeetingId")
+                        .HasColumnType("text");
 
                     b.Property<string>("MeetingName")
                         .HasColumnType("text");
@@ -289,6 +313,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("ScheduleId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ServiceType")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
@@ -311,22 +338,19 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("AttendeeCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("BBB_MeetingId")
-                        .HasColumnType("text");
-
                     b.Property<int>("CheckCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ClassId")
+                    b.Property<int?>("ClassId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ClassName")
                         .HasColumnType("text");
 
-                    b.Property<int>("DayType")
+                    b.Property<int?>("DayType")
                         .HasColumnType("integer");
 
-                    b.Property<float>("EndHour")
+                    b.Property<float?>("EndHour")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("EndTime")
@@ -339,6 +363,9 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MeetingId")
                         .HasColumnType("text");
 
                     b.Property<string>("MeetingName")
@@ -356,16 +383,19 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("SchoolName")
                         .HasColumnType("text");
 
-                    b.Property<int>("School_Id")
+                    b.Property<int?>("School_Id")
                         .HasColumnType("integer");
 
-                    b.Property<float>("StartHour")
+                    b.Property<float?>("StartHour")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("weekly")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -511,12 +541,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<string>("MixedName")
                         .HasColumnType("text");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -892,6 +916,12 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<bool>("SelfSign")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("bbbSecret")
+                        .HasColumnType("text");
+
+                    b.Property<string>("bbbURL")
+                        .HasColumnType("text");
 
                     b.Property<int>("sexuality")
                         .HasColumnType("integer");

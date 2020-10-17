@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import {Switch, Route, Redirect} from 'react-router-dom';
 import protectedStudent from "../../protectedRoutes/protectedStudent";
 import history from "../../../history";
@@ -34,6 +35,9 @@ class StudentDashboard extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state.active !== this.props.location.pathname.split('/')[2]) {
             this.setState({ active: this.props.location.pathname.split('/')[2] })
+            if (window.innerWidth < 1024) {
+                this.setState({ sidebar: false })
+            }
         }
     }
 
@@ -46,7 +50,7 @@ class StudentDashboard extends React.Component {
     }
 
     render() {
-        if (this.state.loading) return "درحال بارگذاری اطلاعات"
+        if (this.state.loading) return this.props.t('loading')
         return (
             <div className="w-screen min-h-screen">
                 <Sidebar
@@ -59,14 +63,14 @@ class StudentDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="dashboard"
-                        title="پیشخوان"
+                        title={this.props.t('dashboard')}
                         icon={layout}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="classes"
-                        title="برنامه کلاسی"
+                        title={this.props.t('schedule')}
                         icon={layout}
                         changeActive={this.changeActive}
                     />
@@ -90,5 +94,6 @@ class StudentDashboard extends React.Component {
 const mapStateToProps = state => {
     return {user: state.auth.userInfo  }
 }
+const cwrapped = connect(mapStateToProps, {})(protectedStudent(StudentDashboard));
 
-export default connect(mapStateToProps, {})(protectedStudent(StudentDashboard));
+export default withTranslation()(cwrapped);

@@ -40,6 +40,7 @@ namespace Models
         public DbSet<State> States {get; set;}
         public DbSet<City> Cities {get; set;}
         public DbSet<Region> Regions {get; set;}
+        public DbSet<DocumentModel> Documents {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}

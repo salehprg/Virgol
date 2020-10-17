@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Hero from "../../admin/home/Hero";
 import CounterCard from "../../admin/home/CounterCard";
 import {home, key, user, users} from "../../../../assets/icons";
@@ -6,11 +7,14 @@ import Feed from "../../feed/Feed";
 import RecentClass from "../RecentClass/RecentClass";
 import { connect } from "react-redux";
 import {GetIncommingNews} from "../../../../_actions/newsActions"
-import {GetMeetingList , GetRecentClass , StartMeeting , EndMeeting , JoinMeeting } from "../../../../_actions/meetingActions"
+import {GetMeetingList , GetRecentClass , CreatePrivateRoom , StartMeeting , EndMeeting , JoinMeeting , JoinPrivateRoom} from "../../../../_actions/meetingActions"
+import {ShowSuccess} from '../../../../_actions/alertActions'
+import Modal from "../../../modals/Modal";
+import Fieldish from "../../../field/Fieldish";
 
 class Home extends React.Component {
 
-    state = {loading : false}
+    state = {loading : false, newPrivateModal: false}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
@@ -42,11 +46,48 @@ class Home extends React.Component {
         this.componentDidMount()
         this.render()
     }
+
+    copyPrivateUrl = (bbbId) => {
+        var rootURL = window.location.origin.toString()
+
+        navigator.clipboard.writeText(`${rootURL}/PrivateClass/${bbbId}`)
+        this.props.ShowSuccess(this.props.t('copied'))
+    }
+
+    showPrivateModal = () => {
+        this.setState({ newPrivateModal: true })
+    }
+
+    hidePrivateModal = () => {
+        this.setState({ newPrivateModal: false })
+    }
     
+    createPrivateRoom = async () => {
+        await this.props.CreatePrivateRoom(this.state.privateName)
+        this.hidePrivateModal()
+        this.setState({privateName : ""})
+        this.componentDidMount()
+        this.render()
+    }
+
     render() {
-        if(this.state.loading) return "درحال بارگداری اطلاعات ..."
+        if(this.state.loading) return this.props.t('loading')
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
+                {this.state.newPrivateModal ?
+                    <Modal cancel={this.hidePrivateModal}>
+                        <div onClick={(e) => e.stopPropagation()} className="w-11/12 rounded-lg bg-bold-blue text-center max-w-500 p-8">
+                            <input
+                                value={this.state.privateName}
+                                onChange={(e) => this.setState({privateName : e.target.value})}
+                                className="w-5/6 px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue text-right text-white"
+                                placeholder={this.props.t('privateClassName')}
+                            />
+                            <button onClick={() => this.createPrivateRoom()} className="px-6 my-4 py-1 rounded-lg text-white bg-greenish">{this.props.t('createClass')}</button>
+                        </div>
+                    </Modal>
+                    :
+                    null}
                 <div className="col-span-1 flex flex-col items-center justify-between">
                     <Hero userInfo={this.props.user.userInformation}
                           userDetail={this.props.user.userDetail}/>
@@ -55,23 +96,27 @@ class Home extends React.Component {
                         onStart={(id) => this.StatrMeeting(id)}
                         joinList={false}
                         teacher={true}
+                        newBtn={false}
                         classes={this.props.recentClass}
-                        title="کلاس های پیش رو"
+                        title={this.props.t('comingClasses')}
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
                     <RecentClass
+                        onJoinPrivate = {(bbbId) => this.copyPrivateUrl(bbbId)}
                         onStart={(id) => this.JoinMeeting(id)}
                         onEnd={(bbbId) => this.EndMeeting(bbbId)}
                         joinList={true}
                         teacher={true}
+                        newBtn={true}
+                        btnAction={this.showPrivateModal}
                         classes={this.props.meetingList}
-                        title="کلاس های فعال"
+                        title={this.props.t('activeClasses')}
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
                 </div>
                 <Feed
                     news={this.props.inNews}
-                    title="اخبار و اطلاعیه ها"
+                    title={this.props.t('studentNews')}
                     pos="col-span-1"
                 />
             </div>
@@ -85,6 +130,8 @@ const mapStateToProps = state => {
                                         recentClass : state.meetingData.recentClass ,
                                         inNews : state.newsData.incomeNews }
 }
+const cwrapped = connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting ,
+    EndMeeting , JoinMeeting , GetIncommingNews , CreatePrivateRoom 
+   , JoinPrivateRoom , ShowSuccess})(Home);
 
-export default connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting ,
-                                             EndMeeting , JoinMeeting , GetIncommingNews })(Home);
+export default withTranslation()(cwrapped);

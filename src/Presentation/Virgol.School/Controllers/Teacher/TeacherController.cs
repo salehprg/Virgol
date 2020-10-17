@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Novell.Directory.Ldap;
+
 using System.Net;
 using System.Security.Cryptography;
 using System.Net.Http;
@@ -36,8 +36,7 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
 
-        MoodleApi moodleApi;
-        LDAP_db ldap;
+        //MoodleApi moodleApi;
         
         public TeacherController(AppDbContext dbContext
                                 , IOptions<AppSettings> _appsetting
@@ -48,8 +47,7 @@ namespace lms_with_moodle.Controllers
             appSettings = _appsetting.Value;
             userManager = _userManager;
 
-            moodleApi = new MoodleApi();
-            ldap = new LDAP_db(appDbContext);
+            //moodleApi = new MoodleApi();
 
         }
 
@@ -91,15 +89,27 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var meeting in meetings)
                 {
-                    List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meeting.Id && x.IsPresent).ToList();
+                    List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meeting.Id).ToList();
+
+                    ClassBook classBook = new ClassBook();
+
                     foreach (var participant in participantViews)
                     {
-                        ClassBook classBook = classBooks.Where(x => x.UserId == participant.UserId).FirstOrDefault();
-                        if(classBook != null)
+                        classBook = classBooks.Where(x => x.UserId == participant.UserId).FirstOrDefault();
+                        if(classBook != null && participant.IsPresent)
                         {
                             classBook.AbsentCount--;
                         }
+
+                        if(classBook != null)
+                        {
+                            if(classBook.ParticipantDetail == null)  
+                                classBook.ParticipantDetail = new List<ParticipantView>();
+
+                            classBook.ParticipantDetail.Add(participant);
+                        }
                     }
+
                 }
 
                 // var groupedUser = result
@@ -119,105 +129,40 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-
-#region Category
         [HttpGet]
+        [Authorize( Roles = "Teacher")]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
-        public async Task<IActionResult> GetCetegoryNames()
-        {
-            
-            //userManager getuserid get MelliCode field of user beacause we set in token
-            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
-
-            if(UserId != -1)
-            {
-                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
-                var groupedCategory = userCourses.GroupBy(course => course.categoryId).ToList(); //لیستی برای بدست اوردن ایدی دسته بندی ها
-
-                List<CategoryDetail> categoryDetails = new List<CategoryDetail>();
-
-                foreach(var id in groupedCategory)
-                {
-                    CategoryDetail categoryDetail = await moodleApi.getCategoryDetail(id.Key);
-                    categoryDetail.CourseCount = id.Count();
-                    
-                    categoryDetails.Add(categoryDetail);
-                }
-
-                return Ok(categoryDetails.Where(x => x.ParentCategory != 0).ToList());
-            }
-            else{
-                return BadRequest();
-            }
-        }
-
-        [HttpGet]
-        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
-        public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
-        {
-            
-            int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
-
-            if(UserId != -1)
-            {
-                List<CourseDetail> userCourses = await moodleApi.getUserCourses(UserId);
-
-                userCourses = userCourses.Where(course => course.categoryId == CategoryId).ToList(); //Categories Courses by Categoty Id
-                userCourses.ForEach(x => x.CourseUrl = AppSettings.moddleCourseUrl + x.id);
-
-                return Ok(userCourses);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-#endregion
-
-#region Grades
-        [HttpGet]
-        [ProducesResponseType(typeof(List<ScoresReport>), 200)]
-        public async Task<IActionResult> GetGradesInCourse(int CourseId) 
+        public IActionResult GetScheduleList()
         {
             try
-            {
-                List<AssignmentGrades_moodle> allGrades = await moodleApi.getAllGradesInCourse(CourseId);
-                List<ScoresReport> gradeReports = new List<ScoresReport>();
-
-                foreach(var grade in allGrades)
-                {
-                    ScoresReport gradeReport = new ScoresReport();
-
-                    List<ScoreDetails> scoreDetails = new List<ScoreDetails>();
-                    float totalGrade = 0;
-
-                    foreach(var detail in grade.gradeitems.Where(x => x.itemmodule == "quiz" || x.itemmodule == "assign"))
-                    {
-                        ScoreDetails gradeDetail = new ScoreDetails();
-                        gradeDetail.ActivityGrade = detail.graderaw;
-                        gradeDetail.ActivityName = detail.itemname;
-
-                        scoreDetails.Add(gradeDetail);
-
-                        totalGrade += detail.graderaw;
-                    }
-
-                    gradeReport.FullName = grade.userfullname;
-                    gradeReport.scoreDetails = scoreDetails;
-                    gradeReport.TotalGrade = totalGrade;
-
-                    gradeReports.Add(gradeReport);
-                }
+            {   
+                string userName = userManager.GetUserId(User);
+                int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                //We set IdNumber as userId in Token
                 
-                return Ok(gradeReports);
+                List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId).ToList();
+                var groupedSchedule = new List<ClassScheduleView>();
+
+                foreach (var schedule in classScheduleViews)
+                {
+                    int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
+
+                    if(groupedSchedule.Where(x => x.ClassId == schedule.ClassId && x.LessonId == schedule.LessonId).FirstOrDefault() == null)
+                    {
+                        groupedSchedule.Add(schedule);
+                    }
+                }
+
+                
+
+                return Ok(groupedSchedule);
             }
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-#endregion
 
     }
 }

@@ -14,14 +14,14 @@ using Newtonsoft.Json;
 public class MyUserManager {
     UserManager<UserModel> userManager;
     AppDbContext appDbContext;
-    MoodleApi moodleApi;
+    //MoodleApi moodleApi;
     LDAP_db ldap;
 
     public MyUserManager(UserManager<UserModel> _userManager , AppDbContext _appDbContext = null)
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
-        moodleApi = new MoodleApi();
+       // moodleApi = new MoodleApi();
         ldap = new LDAP_db(_appDbContext);
     }
 
@@ -59,33 +59,36 @@ public class MyUserManager {
                 if((await userManager.CreateAsync(user , (!string.IsNullOrEmpty(password) ? password : user.MelliCode))).Succeeded)
                 {
                     userData.Id = user.Id;
+                    switch(usersType)
+                    {
+                        case (int)UserType.Student :
+                            await userManager.AddToRoleAsync(user , "User");
+
+                            await SyncUserDetail(userData);
+                            break;
+
+                        case (int)UserType.Teacher :
+                            await userManager.AddToRolesAsync(user , new string[]{"User" , "Teacher"});
+                            await SyncUserDetail(userData , schoolId);
+                            break;
+
+                        case (int)UserType.Manager :
+                            await userManager.AddToRolesAsync(user , new string[]{"User" , "Manager"});
+
+                            await SyncUserDetail(userData);
+                            break;
+                    }
+                    
+                    userData.Id = user.Id;
                     bool ldapResult = (usersType == (int)UserType.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
+                    //bool ldapResult = true;
                     if(ldapResult)
                     {
-                        moodleId = await moodleApi.CreateUser(user);
+                        //moodleId = await moodleApi.CreateUser(user);
+                        moodleId = 0;
                         if(moodleId != -1)
                         {
                             user.Moodle_Id = moodleId;
-
-                            switch(usersType)
-                            {
-                                case (int)UserType.Student :
-                                    await userManager.AddToRoleAsync(user , "User");
-
-                                    await SyncUserDetail(userData);
-                                    break;
-
-                                case (int)UserType.Teacher :
-                                    await userManager.AddToRolesAsync(user , new string[]{"User" , "Teacher"});
-                                    await SyncUserDetail(userData , schoolId);
-                                    break;
-
-                                case (int)UserType.Manager :
-                                    await userManager.AddToRolesAsync(user , new string[]{"User" , "Manager"});
-
-                                    await SyncUserDetail(userData);
-                                    break;
-                            }
 
                             appDbContext.Users.Update(user);
                             result.Add(userData);
@@ -124,13 +127,12 @@ public class MyUserManager {
                 IdentityResult chngPassword = await userManager.ResetPasswordAsync(oldData , token , newPassword);
                 if(chngPassword.Succeeded)
                 {
-                    ldap.EditEntry(oldData.UserName , "userPassword" , newPassword);
+                    ldap.ChangePassword(oldData.UserName , newPassword);
                 }
             }
 
-            ldap.EditEntry(oldData.MelliCode , "cn" , user.FirstName);
-            ldap.EditEntry(oldData.MelliCode , "sn" , user.LastName);
-            ldap.EditEntry(oldData.MelliCode , "givenName" , user.FirstName);
+            ldap.EditAttribute(oldData.MelliCode , "sn" , user.LastName);
+            ldap.EditAttribute(oldData.MelliCode , "givenName" , user.FirstName);
             
             if(!assignTeacher)
             {
@@ -149,7 +151,7 @@ public class MyUserManager {
             user.userTypeId = oldData.userTypeId;
 
             if(user.LatinFirstname != null && user.LatinLastname != null)
-                ldap.EditMail(user);
+                ldap.EditMail(oldData);
 
             await SyncUserDetail(user , schoolId);
 
@@ -165,7 +167,7 @@ public class MyUserManager {
         try
         {
             if(ldap.DeleteEntry(user.MelliCode))
-                await moodleApi.DeleteUser(user.Moodle_Id);
+                //await moodleApi.DeleteUser(user.Moodle_Id);
 
             await userManager.RemoveFromRoleAsync(user , "User");
             await userManager.RemoveFromRoleAsync(user , "Teacher");
@@ -248,10 +250,12 @@ public class MyUserManager {
                     ldap.AddUserToLDAP(user , user.MelliCode);
                 }
 
-                int moodleId = await moodleApi.GetUserId(user.MelliCode);
+                //int moodleId = await moodleApi.GetUserId(user.MelliCode);
+                int moodleId = 0;
                 if(moodleId == -1)
                 {
-                    user.Moodle_Id = await moodleApi.CreateUser(user);
+                    //user.Moodle_Id = await moodleApi.CreateUser(user);
+                    user.Moodle_Id = 0;
                 }
                 else
                 {
@@ -262,6 +266,7 @@ public class MyUserManager {
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
@@ -362,6 +367,7 @@ public class MyUserManager {
         catch(Exception ex)
         {
             Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             return false;
         }
         

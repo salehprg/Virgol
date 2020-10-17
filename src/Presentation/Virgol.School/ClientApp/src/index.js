@@ -7,6 +7,7 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from "redux-persist";
 import { applyMiddleware, compose, createStore } from "redux";
 import thunk from "redux-thunk";
+import './i18n';
 import App from './components/App';
 import reducers from "./_reducers";
 import Working from "./components/Working";

@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import history from '../../../../history'
 import Add from '../../../field/Add';
 import Fieldish from '../../../field/Fieldish';
@@ -60,7 +61,7 @@ class StudentInfo extends React.Component {
             <div>
                 <Add 
                     onCancel={() => this.emptyData()}
-                    title={"اطلاعات دانش آموز"}
+                    title={this.props.t('studentInfo')}
                 >
                     <form className="w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         {/*<div className="text-white">*/}
@@ -85,14 +86,14 @@ class StudentInfo extends React.Component {
                             <Field
                                 name="firstName"
                                 type="text"
-                                placeholder="نام"
+                                placeholder={this.props.t('firstName')}
                                 component={this.renderInputs}
                                 extra={"w-1/2 ml-1 my-4"}
                             />
                             <Field
                                 name="lastName"
                                 type="text"
-                                placeholder="نام خانوادگی"
+                                placeholder={this.props.t('lastName')}
                                 component={this.renderInputs}
                                 extra={"w-1/2 mr-1 my-4"}
                             />
@@ -101,14 +102,14 @@ class StudentInfo extends React.Component {
                             <Field
                                 name="latinFirstname"
                                 type="text"
-                                placeholder="نام لاتین"
+                                placeholder={this.props.t('latinFirstname')}
                                 component={this.renderInputs}
                                 extra={"w-1/2 ml-1 my-4"}
                             />
                             <Field
                                 name="latinLastname"
                                 type="text"
-                                placeholder="نام خانوادگی لاتین"
+                                placeholder={this.props.t('latinLastname')}
                                 component={this.renderInputs}
                                 extra={"w-1/2 mr-1 my-4"}
                             />
@@ -116,14 +117,14 @@ class StudentInfo extends React.Component {
                         <Field
                             name="phoneNumber"
                             type="text"
-                            placeholder="تلفن همراه"
+                            placeholder={this.props.t('phoneNumber')}
                             component={this.renderInputs}
                             extra={"w-full my-4"}
                         />
                         <Field
                             name="melliCode"
                             type="text"
-                            placeholder="کد ملی"
+                            placeholder={this.props.t('nationCode')}
                             component={this.renderInputs}
                             extra={"w-full my-4"}
                         />
@@ -131,24 +132,24 @@ class StudentInfo extends React.Component {
                             <Field
                                 name="fatherName"
                                 type="text"
-                                placeholder="نام ولی"
+                                placeholder={this.props.t('fatherName')}
                                 component={this.renderInputs}
                                 extra={"w-1/2 ml-1 my-4"}
                             />
                             <Field
                                 name="fatherPhoneNumber"
                                 type="text"
-                                placeholder="تلفن همراه ولی"
+                                placeholder={this.props.t('fatherPhoneNumber')}
                                 component={this.renderInputs}
                                 extra={"w-1/2 mr-1 my-4"}
                             />
                         </div>
                         <div className="w-full my-4 flex justify-between items-center">
-                            <span className="text-white">جنسیت</span>
-                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>دختر</span>
-                            <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>پسر</span>
+                            <span className="text-white"> {this.props.t('gender')} </span>
+                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>{this.props.t('girl')}</span>
+        <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>{this.props.t('boy')}</span>
                         </div>
-                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
+                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
                     </form>
                 </Add>
             </div>
@@ -195,5 +196,6 @@ const formWrapped = reduxForm({
 })(StudentInfo)
 
 const authWrapped = protectedManager(formWrapped)
+const cwarpped = connect(mapStateToProps , {EditStudent , GetUserInfo , EmptyUserInfo})(authWrapped);
 
-export default connect(mapStateToProps , {EditStudent , GetUserInfo , EmptyUserInfo})(authWrapped);
+export default withTranslation()(cwarpped);

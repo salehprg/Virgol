@@ -154,7 +154,7 @@ namespace lms_with_moodle.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MeetingName = table.Column<string>(nullable: true),
-                    BBB_MeetingId = table.Column<string>(nullable: true),
+                    MeetingId = table.Column<string>(nullable: true),
                     AttendeeCount = table.Column<int>(nullable: false),
                     PresentCount = table.Column<int>(nullable: false),
                     Finished = table.Column<bool>(nullable: false),

@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Hero from "../../admin/home/Hero";
 import CounterCard from "../../admin/home/CounterCard";
 import {home, key, loading, user, users} from "../../../../assets/icons";
@@ -25,7 +26,7 @@ class Home extends React.Component {
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
                 <Feed
                     news={this.props.inNews}
-                    title="آخرین اخبار مدیر کل برای شما"
+                    title={this.props.t('managerNewsTitle')}
                     pos="sm:row-start-1 row-start-2"
                 />
                 <div className="">
@@ -34,32 +35,32 @@ class Home extends React.Component {
                             <Hero userInfo={this.props.user.userInformation}
                             
                                   managerTitle={(this.props.dashboardInfo && this.props.dashboardInfo.school && this.props.user.userDetail ? 
-                                                    ` مدیر مدرسه ${this.props.user.userDetail.schooltypeName} 
-                                                    ${this.props.dashboardInfo.school.sexuality == 0 ? "دخترانه" : "پسرانه"}  
+                                                    ` ${this.props.t('schoolManager')} ${this.props.user.userDetail.schooltypeName} 
+                                                    ${this.props.dashboardInfo.school.sexuality == 0 ? this.props.t('feminine') : this.props.t('masculine')}  
                                                     ${this.props.dashboardInfo.school.schoolName}`
                                                 : null)}
-                                  adminTitle={`نوع مدرسه : ${this.props.user.userDetail.schooltypeName} `}/>
+                                  adminTitle={`${this.props.t('type')} : ${this.props.user.userDetail.schooltypeName} `}/>
                             :
-                            <Hero userInfo="درحال بارگذاری ..."
-                                  title="درحال بارگذاری ..." />
+                            <Hero userInfo={this.props.t('loading')}
+                                  title={this.props.t('loading')} />
                     )}
                     <div className="mt-8">
                         <CounterCard
-                            title="کل کلاس ها"
+                            title={this.props.t('allClasses')}
                             icon={home}
                             number={this.props.dashboardInfo.classCount}
                             bg="bg-sky-blue"
                         />
 
                         <CounterCard
-                            title="کلاس های آنلاین"
+                            title={this.props.t('onlineClasses')}
                             icon={user}
                             number={this.props.dashboardInfo.onlineClass}
                             bg="bg-purplish"
                         />
 
                         <CounterCard
-                            title="معلمان"
+                            title={this.props.t('teachers')}
                             icon={users}
                             number={this.props.dashboardInfo.teacherCount}
                             bg="bg-redish"
@@ -67,7 +68,7 @@ class Home extends React.Component {
                         />
 
                         <CounterCard
-                            title="کل دانش آموزان"
+                            title={this.props.t('students')}
                             icon={key}
                             number={this.props.dashboardInfo.studentsCount}
                             bg="bg-greenish"

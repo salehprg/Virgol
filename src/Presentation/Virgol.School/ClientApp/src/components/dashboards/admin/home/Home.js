@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Hero from "./Hero";
 import CounterCard from "./CounterCard";
 import {home, key, loading, user, users} from "../../../../assets/icons";
@@ -31,13 +32,13 @@ class Home extends React.Component {
                 {(this.props.myNews.length === 0 ?
                         <Feed
                             news={[]}
-                            title="آخرین خبرهای منتشر شده از سمت شما"
+                            title={this.props.t('adminNewsHeader')}
                             pos="sm:row-start-1 row-start-2"
                         />
                         :
                         <Feed
                             news={this.props.myNews}
-                            title="آخرین خبرهای منتشر شده از سمت شما"
+                            title={this.props.t('adminNewsHeader')}
                             pos="sm:row-start-1 row-start-2"
                         />
                 )}
@@ -45,21 +46,22 @@ class Home extends React.Component {
                     {(this.props.user
                             ?
                             <Hero userInfo={this.props.user.userInformation}
-                                  adminTitle={`مسئول مدارس ${this.props.user.userDetail.schooltypeName} استان خراسان رضوی`} />
+                                  adminTitle={`مسئول مدارس ${this.props.user.userDetail.schooltypeName} استان خراسان رضوی`} 
+                                  />
                             :
-                            <Hero userInfo="درحال بارگذاری ..."
-                                  title="درحال بارگذاری ..." />
+                            <Hero userInfo={this.props.t('loading')}
+                                  title={this.props.t('loading')} />
                     )}
                     <div className="mt-8">
                         <CounterCard
-                            title="مدارس"
+                            title={this.props.t('schools')}
                             icon={home}
                             number={this.props.dashboardInfo.schoolCount}
                             bg="bg-sky-blue"
                         />
 
                         <CounterCard
-                            title="کلید"
+                            title={this.props.t('maxSchools')}
                             icon={key}
                             number={this.props.dashboardInfo.keyCount}
                             bg="bg-greenish"
@@ -67,14 +69,14 @@ class Home extends React.Component {
                         />
 
                         <CounterCard
-                            title="معلمان"
+                            title={this.props.t('teachers')}
                             icon={user}
                             number={this.props.dashboardInfo.teacherCount}
                             bg="bg-purplish"
                         />
 
                         <CounterCard
-                            title="دانش آموزان"
+                            title={this.props.t('students')}
                             icon={users}
                             number={this.props.dashboardInfo.studentsCount}
                             bg="bg-redish"
@@ -92,4 +94,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , dashboardInfo: state.adminData.dashboardInfo , myNews : state.newsData.myNews}
 }
 
-export default connect(mapStateToProps, { getDashboardInfo , GetMyNews })(Home);
+const cwrapped = connect(mapStateToProps, { getDashboardInfo , GetMyNews })(Home);
+
+export default withTranslation()(cwrapped);

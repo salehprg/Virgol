@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Add from "../../../field/Add";
 import { Link } from 'react-router-dom'
 import Select from 'react-select';
@@ -18,7 +19,7 @@ class NewsInfo extends React.Component {
     state = { showManagerInfo: true , tags : []}
 
     options = [
-        { value: 3, label: 'دانش آموزان' }
+        { value: 3, label: this.props.t('students') }
     ];
 
     componentDidMount = async() => {
@@ -81,13 +82,13 @@ class NewsInfo extends React.Component {
                 isNews={true}
                 newsClassName={"w-2/4"}
                 onCancel={() => history.push('/t/myNews')}
-                title="ویرایش خبر"
+                title={this.props.t('editNews')}
             >
             <form className="w-full " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
                 <Field
                     name="message"
                     type="text"
-                    placeholder="متن خبر"
+                    placeholder={this.props.t('newsText')}
                     extra={"w-full my-4 mx-2 h-40"}
                     component={this.renderTextArea}
                 />
@@ -95,7 +96,7 @@ class NewsInfo extends React.Component {
                     name="tags"
                     type="text"
                     onChange={(e) => this.setState({tags : e.target.value.split(",")})}
-                    placeholder="تگ هارا با , از هم جدا کنید"
+                    placeholder={this.props.t('tagsInfo')}
                     extra={"w-2/4 my-4 mx-2"}
                     component={this.renderInputs}
                 />
@@ -104,7 +105,7 @@ class NewsInfo extends React.Component {
                     value={this.state.Receivers}
                     onChange={this.handleChangeDay}
                     options={this.options}
-                    placeholder="گیرنده"
+                    placeholder={this.props.t('reciever')}
                 />
                 <div className="w-3/4 flex flex-wrap justify-start items-center">
                     {(this.state.tags.length > 0
@@ -123,7 +124,7 @@ class NewsInfo extends React.Component {
                     null)}
                 </div>
 
-                <button type="submit" className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت تغییرات</button>
+                <button type="submit" className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('saveChanges')}</button>
             </form> 
             </Add>
         );
@@ -159,5 +160,6 @@ const formWrapped = reduxForm({
 })(NewsInfo)
 
 const authWrapped = protectedTeacher(formWrapped)
+const cwrapped = connect(mapStateToProps,{EditNews , GetNewsDetail})(authWrapped);
 
-export default connect(mapStateToProps,{EditNews , GetNewsDetail})(authWrapped);
+export default withTranslation()(cwrapped);

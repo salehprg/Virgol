@@ -6,18 +6,18 @@ namespace lms_with_moodle.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "Private",
-                table: "Meetings",
-                nullable: false,
-                defaultValue: false);
+            // migrationBuilder.AddColumn<bool>(
+            //     name: "Private",
+            //     table: "Meetings",
+            //     nullable: false,
+            //     defaultValue: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Private",
-                table: "Meetings");
+            // migrationBuilder.DropColumn(
+            //     name: "Private",
+            //     table: "Meetings");
         }
     }
 }

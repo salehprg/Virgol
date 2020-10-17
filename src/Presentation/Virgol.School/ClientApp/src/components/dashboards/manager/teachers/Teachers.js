@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import {edit, loading, trash, check_circle, x} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
@@ -89,7 +90,7 @@ class Teachers extends React.Component {
                 <ReactTooltip />
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                    title={this.props.t('deleteConfirm')}
                     confirm={this.deleteTeacher}
                     cancel={() => this.setState({ showDeleteModal: false, teacherId: null })}
                 /> 
@@ -97,7 +98,7 @@ class Teachers extends React.Component {
                 null
                 }
                 <MonsterTable
-                    title="لیست معلمان"
+                    title={this.props.t('teachersList')}
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
@@ -110,11 +111,11 @@ class Teachers extends React.Component {
                             <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">معلم جدید</button>
                         );
                     }}
-                    sample="بارگیری نمونه اکسل معلمان"
+                    sample={this.props.t('downloadTeachersExcelSample')}
                     sampleLink="/samples/teacherSample.xls"
-                    excel="بارگذاری اکسل معلمان"
+                    excel={this.props.t('uploadTeachersExcel')}
                     handleExcel={this.submitExcel}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'تلفن تماس', 'کد پرسنلی', 'حساب تکمیل شده', '']}
+                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('personelCode'), this.props.t('completedAccount'), '']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -134,7 +135,7 @@ class Teachers extends React.Component {
                                             <td>{x.phoneNumber}</td>
                                             <td>{x.personalIdNUmber}</td>
                                             <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            <td data-tip="ویرایش" className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
+                                            <td data-tip={this.props.t('edit')} className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                 {edit('w-6 text-white')}
                                             </td>           
                                             {/*<td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}
@@ -143,7 +144,7 @@ class Teachers extends React.Component {
                                         </tr>
                                         )
                                     })
-                                    : "درحال بارگذاری ... "
+                                    : this.props.t('loading')
                                 )}
                                 
                             </React.Fragment>
@@ -154,7 +155,7 @@ class Teachers extends React.Component {
                             <React.Fragment>
                                 <div onClick={() => this.setState({ showDeleteModal: true })} className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
                                     {trash("w-6 mx-1 text-white")}
-                                    <span className="font-vb mx-1 text-white">حذف</span>
+                                    <span className="font-vb mx-1 text-white">{this.props.t('delete')}</span>
                                 </div>
                                 {/*{this.state.selected.length === 1 ?*/}
                                 {/*    <div onClick={() => history.push(`/teacher/${this.state.selectedItems[0]}`)} className="flex justify-between items-center mx-1 cursor-pointer bg-grayish rounded-full md:px-6 px-3 py-1">*/}
@@ -180,5 +181,6 @@ class Teachers extends React.Component {
 const mapStateToProps = state => {
     return {user: state.auth.userInfo , teachers: state.managerData.teachers}
 }
+const cwrapped = connect(mapStateToProps, { getAllTeachers , addBulkTeacher , deleteTeacher })(Teachers);
 
-export default connect(mapStateToProps, { getAllTeachers , addBulkTeacher , deleteTeacher })(Teachers);
+export default withTranslation()(cwrapped);

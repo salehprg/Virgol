@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import {Switch, Route, Redirect} from 'react-router-dom';
 import history from "../../../history";
 import protectedTeacher from "../../protectedRoutes/protectedTeacher";
@@ -7,9 +8,10 @@ import SidebarCard from "../sidebar/SidebarCard";
 import {layout , bell , open_book} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
-import Classes from "./classes/Classes";
+import Classes from "./classes/ClassSchedule";
 import News from "./News";
 import MyNews from "./News/News";
+import ClassList from "./classes/ClassList";
 
 class TeacherDashboard extends React.Component {
 
@@ -35,6 +37,9 @@ class TeacherDashboard extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state.active !== this.props.location.pathname.split('/')[2]) {
             this.setState({ active: this.props.location.pathname.split('/')[2] })
+            if (window.innerWidth < 1024) {
+                this.setState({ sidebar: false })
+            }
         }
     }
 
@@ -47,7 +52,7 @@ class TeacherDashboard extends React.Component {
     }
 
     render() {
-        if (this.state.loading) return "درحال بارگذاری اطلاعات"
+        if (this.state.loading) return this.props.t('loading')
         return (
             <div className="w-screen min-h-screen">
                 <Sidebar
@@ -58,14 +63,21 @@ class TeacherDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="dashboard"
-                        title="پیشخوان"
+                        title={this.props.t('dashboard')}
                         icon={layout}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
+                        code="schedule"
+                        title={this.props.t('schedule')}
+                        icon={bell}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
                         code="classes"
-                        title="برنامه درسی"
+                        title={this.props.t('classes')}
                         icon={bell}
                         changeActive={this.changeActive}
                     />
@@ -79,7 +91,7 @@ class TeacherDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="myNews"
-                        title="اخبار من"
+                        title={this.props.t('studentNews')}
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
@@ -90,7 +102,8 @@ class TeacherDashboard extends React.Component {
 
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
-                        <Route path={this.props.match.url + "/classes"} component={Classes}/>
+                        <Route path={this.props.match.url + "/schedule"} component={Classes}/>
+                        <Route path={this.props.match.url + "/classes"} component={ClassList}/>
                         {/*<Route path={this.props.match.url + "/news"} component={News}/>*/}
                         <Route path={this.props.match.url + "/myNews"} component={MyNews}/>
                         <Redirect to="/404" />
@@ -102,4 +115,4 @@ class TeacherDashboard extends React.Component {
 
 }
 
-export default protectedTeacher(TeacherDashboard)
+export default withTranslation()(protectedTeacher(TeacherDashboard))

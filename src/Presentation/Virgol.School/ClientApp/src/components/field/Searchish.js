@@ -1,7 +1,10 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import {search} from "../../assets/icons";
 
 const Searchish = ({ className, query, changeQuery }) => {
+
+    const { t } = useTranslation();
 
     return (
         <div className={`flex flex-row-reverse items-center px-2 py-1 rounded-lg border border-purplish ${className}`}>
@@ -10,7 +13,7 @@ const Searchish = ({ className, query, changeQuery }) => {
                 className="w-full h-full bg-transparent px-2 text-white placeholder-purplish focus:outline-none"
                 type="text"
                 dir="rtl"
-                placeholder="جست و جو"
+                placeholder={t('search')}
                 value={query}
                 onChange={e => changeQuery(e.target.value)}
             />

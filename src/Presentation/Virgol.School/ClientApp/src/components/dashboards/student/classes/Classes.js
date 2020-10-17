@@ -23,6 +23,22 @@ class Classes extends React.Component {
             </>
         );
         return (
+            <>
+            {/* <form ref={this.formRef} className="text-center" action="https://vs.legace.ir/login/index.php" method="POST"  >
+                <input
+                    name="username"
+                    type="text"
+                    placeholder="نام کاربری"
+                />
+                <input
+                    name="password"
+                    type="text"
+                    placeholder="رمز عبور"
+                />
+                <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
+                ورود
+                </button>
+            </form> */}
             <div ref={this.sc} className="overflow-auto">
                 <Schedule
                     isTeacher={false}
@@ -31,6 +47,7 @@ class Classes extends React.Component {
                     lessons={this.props.schedules}           
                 />
             </div>
+            </>
         );
     }
 
