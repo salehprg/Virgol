@@ -132,10 +132,6 @@ const mapStateToProps = state => {
     return {user : state.auth.userInfo}
 }
 
-<<<<<<< HEAD
-export default connect(mapStateToProps , {JoinMeeting})(TrackerLessonInfo);
-=======
 const cwarpped = connect(mapStateToProps , {JoinMeeting})(TrackerLessonInfo);
 
 export default withTranslation()(cwarpped);
->>>>>>> Beta
