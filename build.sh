@@ -13,7 +13,8 @@ IMAGE_TAG=${1:-latest}
 TAG_REVISION=0
 
 sudo git stash
-sudo git pull origin Beta
+sudo git pull origin master
+# sudo git pull origin Beta
 # sudo git branch --track Beta origin/Beta
 # sudo git checkout Beta
 
