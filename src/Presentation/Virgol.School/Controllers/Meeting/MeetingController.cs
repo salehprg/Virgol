@@ -187,10 +187,12 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
-        public async Task<IActionResult> StartMeeting(int lessonId , string serviceType) 
+        public async Task<IActionResult> StartMeeting(int lessonId) 
         {
             try
             {
+                string serviceType = ServiceType.BBB;
+
                 string userName = userManager.GetUserId(User);
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
