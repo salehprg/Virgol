@@ -18,8 +18,8 @@ sudo git pull origin master
 # sudo git branch --track Beta origin/Beta
 # sudo git checkout Beta
 
-docker login
-docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest .
-docker push $IMAGE_ACCOUNT/$IMAGE_REPO
+sudo docker login
+sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest .
+sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG 
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
