@@ -7,18 +7,13 @@ namespace lms_with_moodle.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             
-            migrationBuilder.AddColumn<string>(
-                name: "TypeName",
-                table: "AdminDetails",
-                nullable: true);
+            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             
-            migrationBuilder.DropColumn(
-                name: "TypeName",
-                table: "AdminDetails");
+           
 
 
         }

@@ -54,7 +54,7 @@ namespace Schedule
                             
                             foreach(var newMeeting in newMeetingList)
                             {
-                                MeetingView oldMeetingVW = oldMeetingList.Where(x => x.BBB_MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
+                                MeetingView oldMeetingVW = oldMeetingList.Where(x => x.MeetingId == newMeeting.meetingID && !x.Finished).FirstOrDefault();
                                 if(oldMeetingVW != null)
                                 {
                                     Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeetingVW.Id).FirstOrDefault();
@@ -97,7 +97,7 @@ namespace Schedule
                                 // {
                                 //     Meeting meeting = new Meeting();
                                 //     meeting.MeetingName = newMeeting.meetingName;
-                                //     meeting.BBB_MeetingId = newMeeting.meetingID;
+                                //     meeting.MeetingId = newMeeting.meetingID;
                                 //     meeting.StartTime = DateTime.Now;
                                 //     meeting.ModeretorId = newMeeting.attendees.attendee.Where(x => x.role == "MODERATOR").FirstOrDefault().userID;
                                 //     meeting.Finished = false;
@@ -110,12 +110,12 @@ namespace Schedule
 
                             foreach(var oldMeeting in oldMeetingList)
                             {
-                                var closedMeeting = newMeetingList.Where(x => x.meetingID == oldMeeting.BBB_MeetingId).FirstOrDefault();
+                                var closedMeeting = newMeetingList.Where(x => x.meetingID == oldMeeting.MeetingId).FirstOrDefault();
                                 if(closedMeeting == null) // it means a meeting has closed but its state in our database is Active
                                 {
                                     Meeting oldMeetingInfo = dbContext.Meetings.Where(x => x.Id == oldMeeting.Id).FirstOrDefault();
 
-                                    //oldMeetingInfo.Finished = true;
+                                    oldMeetingInfo.Finished = true;
                                     oldMeetingInfo.EndTime = MyDateTime.Now();
                                     dbContext.Meetings.Update(oldMeetingInfo);
                                     dbContext.SaveChanges();
@@ -127,11 +127,11 @@ namespace Schedule
                                 int meetingId = 0;
                                 int.TryParse(newMeeting.meetingID , out meetingId);
 
-                                var meeting = dbContext.Meetings.Where(x => (x.BBB_MeetingId == newMeeting.meetingID || x.Id == meetingId) && x.Finished).FirstOrDefault();
+                                var meeting = dbContext.Meetings.Where(x => (x.MeetingId == newMeeting.meetingID || x.Id == meetingId) && x.Finished).FirstOrDefault();
                                 if(meeting != null)
                                 {
                                     meeting.Finished = false;
-                                    meeting.BBB_MeetingId = newMeeting.meetingID;
+                                    meeting.MeetingId = newMeeting.meetingID;
                                     dbContext.Meetings.Update(meeting);
                                 }
                             }

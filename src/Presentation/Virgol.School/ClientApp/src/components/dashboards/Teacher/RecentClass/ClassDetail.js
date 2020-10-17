@@ -1,12 +1,12 @@
 import React from "react";
 import getColor from "../../../../assets/colors";
 
-const RecentClassDetail = ({ text,day, startTime , endTime , schoolName , className , onStart , onEnd , joinable }) => {
+const RecentClassDetail = ({ weekly , text,day, startTime , endTime , schoolName , className , onStart , onEnd , joinable }) => {
 
     return (
         <div className="w-full py-2 mt-6 border-b border-grayish">
             <div className="w-full flex flex-row justify-between items-center">
-                <span className="w-1/3 text-white mb-4">{day} از {startTime} تا {endTime}</span>
+                <span className="w-2/3 text-white mb-4">{weekly == 2 ? 'هفته های فرد' : weekly == 1 ? 'هفته های زوج' : 'هر هفته'} {day} از {startTime} تا {endTime}</span>
                 <span className="w-3/4 text-white mb-4">{text}</span>
             </div>
             <div className="w-full flex flex-row justify-between items-center">

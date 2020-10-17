@@ -37,6 +37,7 @@ class RecentClass extends React.Component {
                             return (
                                 (x.classId ?
                                 <RecentClassDetail
+                                    weekly={x.weekly}
                                     text={(joinList ? x.meetingName : x.orgLessonName)}
                                     schoolName={x.schoolName}
                                     className={x.className}
@@ -51,9 +52,9 @@ class RecentClass extends React.Component {
                                 :
                                 <PrivateClass
                                     text={(joinList ? x.meetingName : x.orgLessonName)}
-                                    onStart={() => this.props.onJoinPrivate(x.bbB_MeetingId)}
-                                    onEnd={() => this.props.onEnd(x.bbB_MeetingId)}
-                                    guid={x.bbB_MeetingId}
+                                    onStart={() => this.props.onJoinPrivate(x.meetingId)}
+                                    onEnd={() => this.props.onEnd(x.meetingId)}
+                                    guid={x.meetingId}
                                 />
                                 )
                             );

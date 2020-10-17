@@ -83,7 +83,7 @@ class Tracker extends React.Component {
 
     showOnGoing = (lessonDetail) => {
         if (lessonDetail) {
-            if (lessonDetail.bbB_MeetingId) return <span className="w-full relative mt-2">{onGoing('w-6 centerize')}</span>
+            if (lessonDetail.meetingId) return <span className="w-full relative mt-2">{onGoing('w-6 centerize')}</span>
         }
         return null;
     }

@@ -31,8 +31,8 @@ class TrackerLessonInfo extends React.Component {
         this.setState({times})
     }
 
-    joinMeeting = async (bbb_MeetingId) => {
-        await this.props.JoinMeeting(this.props.user.token , bbb_MeetingId)
+    joinMeeting = async (meetingId) => {
+        await this.props.JoinMeeting(this.props.user.token , meetingId)
     }
 
     options = [
@@ -108,10 +108,10 @@ class TrackerLessonInfo extends React.Component {
                         </p>
                         : null)}
 
-                        {(this.props.lessonInfo.lessonDetail.bbB_MeetingId ? 
+                        {(this.props.lessonInfo.lessonDetail.meetingId ? 
                             <>
                                 <p className="text-center text-greenish text-xl my-4 rounded-full">درحال برگزاری</p>
-                                <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.bbB_MeetingId)} >ورود به کلاس آنلاین</button>
+                                <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.meetingId)} >ورود به کلاس آنلاین</button>
                             </>
                         : 
                         null

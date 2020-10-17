@@ -177,6 +177,76 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+#region MixedSchedules
+
+        [HttpPut]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddMixedClassSchedule([FromBody]List<Class_WeeklySchedule> classSchedules , string MixedName)
+        {
+            try
+            {
+                bool mixedCreated = false;
+                MixedSchedule mixedSchedule = new MixedSchedule();
+
+                foreach (var classSchedule in classSchedules)
+                {
+                    if(classSchedule.EndHour <= classSchedule.StartHour)
+                        return BadRequest("ساعت درس به درستی انتخاب نشده است");
+                        
+                    if(classSchedule.TeacherId == 0)
+                        return BadRequest("معلمی انتخاب شده است");
+                        
+                    if(classSchedule.ClassId != 0)
+                    {
+                        //Check for interupt class Schedule
+                        object result = classScheduleService.CheckInteruptSchedule(classSchedule);
+                        bool noInterupt = false;
+
+                        try{noInterupt = (bool)result;}catch{}
+
+                        if(noInterupt)
+                        {
+                            if(!mixedCreated)
+                            {
+                                mixedSchedule.MixedName = MixedName;
+                                
+                                await appDbContext.MixedSchedules.AddAsync(mixedSchedule);
+                                await appDbContext.SaveChangesAsync();
+
+                                mixedCreated = true;
+                            }
+                            
+                            classSchedule.MixedId = mixedSchedule.Id;
+                            Class_WeeklySchedule schedule = await classScheduleService.AddClassSchedule(classSchedule);
+
+                            ClassScheduleView classScheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == schedule.Id).FirstOrDefault();
+
+                            if(classScheduleView != null)
+                            {
+                                return Ok(classScheduleView);
+                            }
+                            
+                            return BadRequest("افزودن ساعت با مشکل مواجه لطفا بعدا تلاش نمایدد");
+                        }
+                        else
+                        {
+                            return BadRequest((string)result);
+                        }
+                    }
+
+                    return BadRequest("کلاسی انتخاب شده است");
+                }
+
+                return BadRequest("خطا در افزودن کلاس");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
+#endregion
 
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]

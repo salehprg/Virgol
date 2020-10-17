@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200810122333_schemaChanged3")]
-    partial class schemaChanged3
+    [Migration("20201002101521_Documents")]
+    partial class Documents
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,13 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("SchoolsType")
                         .HasColumnType("integer");
 
+                    b.Property<string>("TypeName")
+                        .HasColumnType("text");
+
                     b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("orgMoodleId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -60,6 +66,27 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("Bases");
                 });
 
+            modelBuilder.Entity("City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("CityCode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CityName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cities");
+                });
+
             modelBuilder.Entity("ClassScheduleView", b =>
                 {
                     b.Property<int>("Id")
@@ -69,6 +96,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("ClassId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ClassName")
+                        .HasColumnType("text");
 
                     b.Property<int>("DayType")
                         .HasColumnType("integer");
@@ -85,13 +115,22 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("LessonId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("MixedId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("OrgLessonName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SchoolName")
                         .HasColumnType("text");
 
                     b.Property<float>("StartHour")
                         .HasColumnType("real");
 
                     b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("weekly")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -118,10 +157,16 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("LessonId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("MixedId")
+                        .HasColumnType("integer");
+
                     b.Property<float>("StartHour")
                         .HasColumnType("real");
 
                     b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("weekly")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -136,21 +181,39 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("CourseName")
-                        .HasColumnType("text");
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("integer");
 
-                    b.Property<DateTime>("CourseTime")
+                    b.Property<DateTime>("SentTime")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<bool>("Sent")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("StudentId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.ToTable("CourseNotifies");
+                });
+
+            modelBuilder.Entity("DocumentModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("docName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("uploadTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("GradeModel", b =>
@@ -244,18 +307,99 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("MeetingName")
                         .HasColumnType("text");
 
-                    b.Property<int>("ModeretorId")
+                    b.Property<int>("PresentCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PresentCount")
+                    b.Property<bool>("Private")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ScheduleId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Meetings");
+                });
+
+            modelBuilder.Entity("MeetingView", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AttendeeCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MeetingId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CheckCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ClassName")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("DayType")
+                        .HasColumnType("integer");
+
+                    b.Property<float?>("EndHour")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Finished")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MeetingName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OrgLessonName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PresentCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SchoolName")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("School_Id")
+                        .HasColumnType("integer");
+
+                    b.Property<float?>("StartHour")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("weekly")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MeetingViews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -387,46 +531,25 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Models.Teacher.TeacherCourseInfo", b =>
+            modelBuilder.Entity("MixedSchedule", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("id");
-
-                    b.ToTable("TeacherCourse");
-                });
-
-            modelBuilder.Entity("Models.Teacher.TeacherModel_View", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("FirstName")
+                    b.Property<string>("MixedName")
                         .HasColumnType("text");
 
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("TeacherId")
+                    b.Property<int>("ParentId")
                         .HasColumnType("integer");
 
-                    b.HasKey("id");
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("integer");
 
-                    b.ToTable("TeacherView");
+                    b.HasKey("Id");
+
+                    b.ToTable("MixedSchedules");
                 });
 
             modelBuilder.Entity("Models.User.StudentDetail", b =>
@@ -454,25 +577,14 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("FatherPhoneNumber")
                         .HasColumnType("text");
 
-                    b.Property<string>("LatinFirstname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LatinLastname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("MotherMelliCode")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MotherName")
-                        .HasColumnType("text");
-
                     b.Property<string>("ShDocument")
                         .HasColumnType("text");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("cityBirth")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -507,6 +619,12 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinFirstname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinLastname")
                         .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
@@ -544,6 +662,9 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
+                    b.Property<int>("Sexuality")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -566,6 +687,66 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Models.Users.Teacher.TeacherCourseInfo", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.ToTable("TeacherCourse");
+                });
+
+            modelBuilder.Entity("Models.Users.Teacher.TeacherViewModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinFirstname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinLastname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MelliCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SchoolsId")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Sexuality")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("personalIdNUmber")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeacherViews");
+                });
+
             modelBuilder.Entity("Models.VerificationCodeModel", b =>
                 {
                     b.Property<int>("Id")
@@ -581,6 +762,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<string>("VerificationCode")
                         .HasColumnType("text");
+
+                    b.Property<bool>("fatherCode")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -621,18 +805,84 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("MeetingId")
-                        .HasColumnType("integer");
+                    b.Property<bool>("IsPresent")
+                        .HasColumnType("boolean");
 
-                    b.Property<int>("Moodle_Id")
+                    b.Property<int>("MeetingId")
                         .HasColumnType("integer");
 
                     b.Property<int>("PresentCount")
                         .HasColumnType("integer");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("ParticipantInfos");
+                });
+
+            modelBuilder.Entity("ParticipantView", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("CheckCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsPresent")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("MeetingId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MeetingName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MelliCode")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PresentCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ParticipantViews");
+                });
+
+            modelBuilder.Entity("Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("CityCode")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CityName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Regions");
                 });
 
             modelBuilder.Entity("SchoolModel", b =>
@@ -651,6 +901,12 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
+                    b.Property<int>("RegionId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("RemindUser")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("SchoolAddress")
                         .HasColumnType("text");
 
@@ -665,6 +921,15 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<bool>("SelfSign")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("bbbSecret")
+                        .HasColumnType("text");
+
+                    b.Property<string>("bbbURL")
+                        .HasColumnType("text");
+
+                    b.Property<int>("sexuality")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -756,6 +1021,9 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("School_Id")
                         .HasColumnType("integer");
 
+                    b.Property<int>("classId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("School_Lessons");
@@ -800,6 +1068,93 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("School_StudentClasses");
                 });
 
+            modelBuilder.Entity("State", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("StateCode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("StateName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("States");
+                });
+
+            modelBuilder.Entity("StudentViewModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int?>("BaseId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Document2")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FatherMelliCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FatherName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FatherPhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinFirstname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LatinLastname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MelliCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SchoolName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SchoolType")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Sexuality")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ShDocument")
+                        .HasColumnType("text");
+
+                    b.Property<string>("cityBirth")
+                        .HasColumnType("text");
+
+                    b.Property<int>("schoolid")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StudentViews");
+                });
+
             modelBuilder.Entity("StudyFieldModel", b =>
                 {
                     b.Property<int>("Id")
@@ -819,6 +1174,33 @@ namespace lms_with_moodle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StudyFields");
+                });
+
+            modelBuilder.Entity("TeacherDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("SchoolsId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("birthDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("cityBirth")
+                        .HasColumnType("text");
+
+                    b.Property<string>("personalIdNUmber")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeacherDetails");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

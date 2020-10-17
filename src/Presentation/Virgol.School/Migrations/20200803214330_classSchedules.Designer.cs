@@ -190,7 +190,7 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("AttendeeCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("BBB_MeetingId")
+                    b.Property<string>("MeetingId")
                         .HasColumnType("text");
 
                     b.Property<int>("CheckCount")

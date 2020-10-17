@@ -193,6 +193,27 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("CourseNotifies");
                 });
 
+            modelBuilder.Entity("DocumentModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("docName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("uploadTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Documents");
+                });
+
             modelBuilder.Entity("GradeModel", b =>
                 {
                     b.Property<int>("Id")
@@ -269,9 +290,6 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("AttendeeCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("BBB_MeetingId")
-                        .HasColumnType("text");
-
                     b.Property<int>("CheckCount")
                         .HasColumnType("integer");
 
@@ -280,6 +298,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<bool>("Finished")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("MeetingId")
+                        .HasColumnType("text");
 
                     b.Property<string>("MeetingName")
                         .HasColumnType("text");
@@ -299,6 +320,9 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("TeacherId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("serviceType")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Meetings");
@@ -313,9 +337,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("AttendeeCount")
                         .HasColumnType("integer");
-
-                    b.Property<string>("BBB_MeetingId")
-                        .HasColumnType("text");
 
                     b.Property<int>("CheckCount")
                         .HasColumnType("integer");
@@ -344,6 +365,9 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("text");
 
+                    b.Property<string>("MeetingId")
+                        .HasColumnType("text");
+
                     b.Property<string>("MeetingName")
                         .HasColumnType("text");
 
@@ -369,6 +393,9 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("weekly")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -514,12 +541,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<string>("MixedName")
                         .HasColumnType("text");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

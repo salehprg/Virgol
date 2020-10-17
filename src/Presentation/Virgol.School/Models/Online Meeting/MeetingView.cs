@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class MeetingView {
     public int Id {get; set;} //Meeting Id
     public string MeetingName {get; set;} 
-    public string BBB_MeetingId {get; set;} 
+    public string MeetingId {get; set;} 
     public int AttendeeCount {get; set;}
     public int PresentCount {get; set;}
     public bool Finished {get; set;}

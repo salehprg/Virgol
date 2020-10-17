@@ -28,15 +28,15 @@ public class MyDateTime {
     }
 
     ///<summary>
-    ///1 = Fard , 0 = Zoj
+    ///2 = Fard , 1 = Zoj
     ///</summary>
-    public int OddEven_Week(DateTime time)
+    public static int OddEven_Week(DateTime time)
     {
         CultureInfo culture = new CultureInfo("fa-Ir");
         Calendar calendar = culture.Calendar;
 
         int weekCount = calendar.GetWeekOfYear(time , CalendarWeekRule.FirstDay , DayOfWeek.Saturday);
-        return weekCount % 2;
+        return (weekCount % 2 == 0 ? 1 : 2);
     }
 
     public static int convertDayOfWeek(DateTime time)
