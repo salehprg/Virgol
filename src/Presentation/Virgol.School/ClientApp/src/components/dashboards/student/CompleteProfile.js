@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker2';
 import history from '../../../history'
 import Add from '../../field/Add';
@@ -138,21 +139,21 @@ class CompleteProfile extends React.Component {
             <div>
                 <Add
                     onCancel={() => history.push('/')}
-                    title={"لطفا اطلاعات پروفایل خودرا تکمیل نمایید"}
+                    title={this.props.t('completeProfile')}
                 >
                     <form className="w-full text-right " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         <p className="text-right text-white mb-6 text-xl">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</p>
                         <Field
                             name="latinFirstname"
                             type="text"
-                            placeholder="نام لاتین"
+                            placeholder={this.props.t('latinFirstname')}
                             component={this.renderInputs}
                             extra={"w-40 my-4 mx-2"}
                         />
                         <Field
                             name="latinLastname"
                             type="text"
-                            placeholder="نام خانوادگی لاتین"
+                            placeholder={this.props.t('latinLastname')}
                             component={this.renderInputs}
                             extra={"w-40 my-4"}
                         />
@@ -163,11 +164,11 @@ class CompleteProfile extends React.Component {
                                 name="phoneNumber"
                                 type="text"
                                 onChange={(e) => this.setState({phoneNumber : e.target.value})}
-                                placeholder="شماره همراه"
+                                placeholder={this.props.t('phoneNumber')}
                                 component={this.renderInputs}
                                 extra={"w-3/4 my-4"}
                             />
-                            <button type="button" onClick={() => this.onSendPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ارسال کد</button>
+                            <button type="button" onClick={() => this.onSendPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('sendCode')}</button>
                             </>
                             :
                             <>
@@ -175,11 +176,11 @@ class CompleteProfile extends React.Component {
                                 name="verifyCodePhone"
                                 type="text"
                                 onChange={(e) => this.setState({verifyCodePhoneNumber : e.target.value})}
-                                placeholder="کد ارسال شده را وارد نمایید"
+                                placeholder={this.props.t('enterCode')}
                                 component={this.renderInputs}
                                 extra={"w-3/4 my-4"}
                                 />
-                                <button type="button" onClick={() => this.onCheckVerifyPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت</button>
+                                <button type="button" onClick={() => this.onCheckVerifyPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
                             </>
                             )
                         )}
@@ -214,7 +215,7 @@ class CompleteProfile extends React.Component {
                         <Field
                             name="cityBirth"
                             type="text"
-                            placeholder="شهر محل تولد"
+                            placeholder={this.props.t('birthPlace')}
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />
@@ -243,7 +244,7 @@ class CompleteProfile extends React.Component {
                             accept="image/*"
                         /> */}
 
-                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
+                    <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
                     </form>
 
                 </Add>
@@ -282,6 +283,7 @@ const formWrapped = reduxForm({
 })(CompleteProfile)
 
 const authWrapped = protectedStudent(formWrapped)
+const cwarpped = connect(mapStateToProps , {CompleteStudentProfile , SendVerifyPhoneNumber , 
+    CheckVerifyPhoneNumber , UploadDocuments})(authWrapped);
 
-export default connect(mapStateToProps , {CompleteStudentProfile , SendVerifyPhoneNumber , 
-                                            CheckVerifyPhoneNumber , UploadDocuments})(authWrapped);
+export default withTranslation()(cwarpped);

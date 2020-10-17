@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { withTranslation } from 'react-i18next'
 import React, { createRef } from "react";
 import { connect } from "react-redux";
 import lms from "../../apis/lms";
@@ -34,14 +35,14 @@ class LoginSSO extends React.Component {
                     hidden="true"
                     name="username"
                     type="text"
-                    placeholder="نام کاربری"
+                    placeholder={this.props.t('username')}
                     value={this.props.user.userInformation.userName}
                 />
                 <input
                     hidden="true"
                     name="password"
                     type="text"
-                    placeholder="رمز عبور"
+                    placeholder={this.props.t('password')}
                     value={localStorage.getItem('userPassword')}
                 />
             </form>
@@ -54,4 +55,6 @@ const mapStateToProps = state => {
     return {user : state.auth.userInfo}
 }
 
-export default connect(mapStateToProps)(LoginSSO);
+const cwrapped = connect(mapStateToProps)(LoginSSO);
+
+export default withTranslation()(cwrapped);

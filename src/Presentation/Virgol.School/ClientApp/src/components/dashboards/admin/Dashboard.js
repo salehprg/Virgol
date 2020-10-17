@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
@@ -54,7 +55,7 @@ class Dashboard extends React.Component {
     render() {
         if (this.state.loading) return loading('w-10 text-grayish centerize')
         return (
-            <div className="w-screen min-h-screen">
+            <div onClick={() => this.setState({ langVis: false })} className="w-screen min-h-screen">
                 <Sidebar
                     show={this.state.sidebar}
                     toggle={this.toggleSidebar}
@@ -65,35 +66,35 @@ class Dashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="dashboard"
-                        title="پیشخوان"
+                        title={this.props.t('dashboard')}
                         icon={layout}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="schools"
-                        title="مدارس"
+                        title={this.props.t('schools')}
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="teachers"
-                        title="معلم ها"
+                        title={this.props.t('teachers')}
                         icon={users}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="students"
-                        title="دانش آموزان"
+                        title={this.props.t('students')}
                         icon={users}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="news"
-                        title="اخبار"
+                        title={this.props.t('news')}
                         icon={bell}
                         changeActive={this.changeActive}
                     />
@@ -121,4 +122,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , dashboardInfo: state.adminData.dashboardInfo }
 }
 
-export default connect(mapStateToProps , {})(protectedAdmin(Dashboard))
+const cwrapped = connect(mapStateToProps , {})(protectedAdmin(Dashboard))
+
+export default withTranslation()(cwrapped);

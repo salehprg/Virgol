@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import history from '../../../../history'
 import Add from '../../../field/Add';
 import Fieldish from '../../../field/Fieldish';
@@ -47,7 +48,7 @@ class AddTeacher extends React.Component {
             <div>
                 <Add
                     onCancel={() => history.push('/m/teachers')}
-                    title={"اطلاعات معلم"}
+                    title={this.props.t('teacherInfo')}
                 >
                     <form className="w-full" onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         {/*<div className="text-white">*/}
@@ -71,21 +72,21 @@ class AddTeacher extends React.Component {
                         <Field
                             name="firstName"
                             type="text"
-                            placeholder="نام"
+                            placeholder={this.props.t('firstName')}
                             component={this.renderInputs}
                             extra={"my-4 mx-2"}
                         />
                         <Field
                             name="lastName"
                             type="text"
-                            placeholder="نام خانوادگی"
+                            placeholder={this.props.t('lastName')}
                             component={this.renderInputs}
                             extra={"my-4 mx-2"}
                         />
                         <Field
                             name="personalIdNUmber"
                             type="text"
-                            placeholder="کد پرسنلی"
+                            placeholder={this.props.t('personelCode')}
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />
@@ -99,7 +100,7 @@ class AddTeacher extends React.Component {
                         <Field
                             name="melliCode"
                             type="text"
-                            placeholder="کد ملی"
+                            placeholder={this.props.t('nationCode')}
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />
@@ -107,17 +108,17 @@ class AddTeacher extends React.Component {
                         <Field
                             name="phoneNumber"
                             type="text"
-                            placeholder="تلفن همراه"
+                            placeholder={this.props.t('phoneNumber')}
                             component={this.renderInputs}
                             extra={"w-full my-4 mx-2"}
                         />
 
                         <div className="w-full my-4 flex flex-row-reverse justify-between items-center">
-                            <span className="text-white">جنسیت</span>
-                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>زن</span>
-                            <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>مرد</span>
+                            <span className="text-white">{this.props.t('gender')}</span>
+                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>{this.props.t('female')}</span>
+                            <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>{this.props.t('male')}</span>
                         </div>
-                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
+                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
                     </form>
                 </Add>
             </div>
@@ -149,5 +150,6 @@ const formWrapped = reduxForm({
 })(AddTeacher)
 
 const authWrapped = protectedManager(formWrapped)
+const cwrapped = connect(mapStateToProps , {addNewTeacher})(authWrapped);
 
-export default connect(mapStateToProps , {addNewTeacher})(authWrapped);
+export default withTranslation()(cwrapped)

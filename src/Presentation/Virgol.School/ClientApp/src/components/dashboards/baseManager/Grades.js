@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import { connect } from "react-redux";
 import {getAllGrades} from "../../../../_actions/managerActions"
 import BaseManager from '../../baseManager/BaseManager'
@@ -76,7 +77,7 @@ class Grades extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return "لودیمگ..."
+        if(this.state.loading) return this.props.t('loading')
         return (
             <div className="mt-10 w-full overflow-auto">
                 <BaseManager
@@ -110,4 +111,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo}
 }
 
-export default connect(mapStateToProps, { getAllGrades })(Grades);
+const cwrapped = connect(mapStateToProps, { getAllGrades })(Grades);
+
+export default withTranslation()(cwrapped)

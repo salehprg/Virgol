@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import Modal from "../../modals/Modal";
 import Searchish from "../../field/Searchish";
 import {getBases } from "../../../_actions/schoolActions"
@@ -54,15 +55,15 @@ class AddCategory extends React.Component {
                                     );
                                 }
                             })
-                           : "درحال بارگذاری ..."
+                           : this.props.t('loading')
                         )}
                     </div>
                     <div className="flex mt-8 flex-row items-center">
                         <button onClick={this.addBaseToSchool} className="px-6 py-1 mx-1 border-2 border-transparent rounded-lg bg-greenish text-white">
-                            ذخیره
+                            {this.props.t('save')}
                         </button>
                         <button onClick={this.props.cancel} className="px-6 mx-1 py-1 rounded-lg border-2 border-grayish text-grayish">
-                            لغو
+                            {this.props.t('cancel')}
                         </button>
                     </div>
                 </div>
@@ -76,4 +77,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , newSchoolInfo: state.schoolData.newSchoolInfo }
 }
 
-export default connect(mapStateToProps, { getBases  })(AddCategory);
+const cwrapped = connect(mapStateToProps, { getBases  })(AddCategory);
+
+export default withTranslation()(cwrapped);

@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import BMCard from "./BMCard";
 import SelectableCard from "./SelectableCard";
 import {loading} from "../../../assets/icons";
@@ -27,7 +28,7 @@ class BaseManager extends React.Component {
     renderCats = () => {
         const { selectCat, selectedCat, categories, loadingCats } = this.props
         if (loadingCats) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (categories.length === 0) return <p className="text-grayish text-center centerize w-full">هیچ مقطعی وجود ندارد</p>
+    if (categories.length === 0) return <p className="text-grayish text-center centerize w-full">{this.props.t('noBase')}</p>
         return categories.map(cat => {
                 return (
                     <SelectableCard
@@ -43,8 +44,8 @@ class BaseManager extends React.Component {
     renderFields = () => {
         const {selectedCat , selectField, selectedField, fields, loadingFields } = this.props
         if (loadingFields) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedCat) return <p className="text-grayish text-center centerize w-full">یک مقطع انتخاب کنید</p>
-        if (fields.length === 0) return <p className="text-grayish text-center">رشته ای اضافه نشده است</p>
+        if (!selectedCat) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectBase')} </p>
+        if (fields.length === 0) return <p className="text-grayish text-center"> {this.props.t('noField')} </p>
         return fields.map(field => {
             return (
                 <SelectableCard
@@ -60,8 +61,8 @@ class BaseManager extends React.Component {
     renderGrades = () => {
         const {selectedField , selectGrade, selectedGrade, grades, loadingGrades } = this.props
         if (loadingGrades) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedField) return <p className="text-grayish text-center centerize w-full">یک رشته انتخاب کنید</p>
-        if (grades.length === 0) return <p className="text-grayish text-center">این رشته پایه ندارد</p>
+        if (!selectedField) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectField')} </p>
+        if (grades.length === 0) return <p className="text-grayish text-center"> {this.props.t('noGrade')} </p>
         return grades.map(grade => {
             return (
                 <SelectableCard
@@ -77,8 +78,8 @@ class BaseManager extends React.Component {
     renderCourses = () => {
         const {selectedGrade , selectCourse, selectedCourse, courses, loadingCourses } = this.props
         if (loadingCourses) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedGrade) return <p className="text-grayish text-center centerize w-full">یک پایه انتخاب کنید</p>
-        if (courses.length === 0) return <p className="text-grayish text-center">این پایه درس ندارد</p>
+        if (!selectedGrade) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectGrade')} </p>
+        if (courses.length === 0) return <p className="text-grayish text-center"> {this.props.t('noLesson')} </p>
         return courses.map(course => {
             return (
                 <SelectableCard
@@ -94,8 +95,8 @@ class BaseManager extends React.Component {
     renderClasses = () => {
         const {selectedGrade , selectClass, selectedClass, classes, loadingClasses } = this.props
         if (loadingClasses) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedGrade) return <p className="text-grayish text-center centerize w-full">یک پایه انتخاب کنید</p>
-        if (classes.length === 0) return <p className="text-grayish text-center">این پایه کلاس ندارد</p>
+        if (!selectedGrade) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectGrade')} </p>
+        if (classes.length === 0) return <p className="text-grayish text-center"> {this.props.t('noClass')} </p>
         return classes.map(kelas => {
             return (
                 <SelectableCard
@@ -117,7 +118,7 @@ class BaseManager extends React.Component {
                 {this.state.addStatus === 'class' ? <AddClass onAddClass={(data) => this.onAddData(data)} cancel={this.onCancel} /> : null}
                 {!classable ? 
                 <BMCard
-                    title="دروس"
+                    title={this.props.t('lessons')}
                     editable={false}
                     isSelected={selectedCourse}
                     showAdd={selectedGrade}
@@ -130,7 +131,7 @@ class BaseManager extends React.Component {
                 </BMCard>
                 : 
                 <BMCard
-                    title="کلاس ها"
+                    title={this.props.t('classes')}
                     editable={true}
                     editIcon={true}
                     onEdit={onEdit}
@@ -145,7 +146,7 @@ class BaseManager extends React.Component {
                 </BMCard>
                 }
                 <BMCard
-                    title="پایه ها"
+                    title={this.props.t('grades')}
                     editable={false}
                     isSelected={selectedGrade}
                     showAdd={selectedField}
@@ -157,7 +158,7 @@ class BaseManager extends React.Component {
                     {this.renderGrades()}
                 </BMCard>
                 <BMCard
-                    title="رشته ها"
+                    title={this.props.t('fields')}
                     editable={editable}
                     isSelected={selectedField}
                     showAdd={selectedCat}
@@ -170,7 +171,7 @@ class BaseManager extends React.Component {
                     {this.renderFields()}
                 </BMCard>
                 <BMCard
-                    title="مقاطع"
+                    title={this.props.t('bases')}
                     editable={editable}
                     isSelected={selectedCat}
                     showAdd={true}
@@ -188,4 +189,4 @@ class BaseManager extends React.Component {
 
 }
 
-export default BaseManager;
+export default withTranslation()(BaseManager);

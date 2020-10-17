@@ -1,17 +1,18 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import RecentClassDetail from "./ClassDetail";
 import { connect } from "react-redux";
 
 class RecentClass extends React.Component {
 
     options = [
-        { value: 1, label: 'شنبه' },
-        { value: 2, label: 'یکشنبه' },
-        { value: 3, label: 'دوشنبه' },
-        { value: 4, label: 'سه شنبه' },
-        { value: 5, label: 'چهار شنبه' },
-        { value: 6, label: 'پنجشنبه' },
-        { value: 7, label: 'جمعه' }
+        { value: 1, label: this.props.t('saturday') },
+        { value: 2, label: this.props.t('sunday') },
+        { value: 3, label: this.props.t('monsday') },
+        { value: 4, label: this.props.t('tuesday') },
+        { value: 5, label: this.props.t('wednesday') },
+        { value: 6, label: this.props.t('thursday') },
+        { value: 7, label: this.props.t('friday') }
     ];
 
     getDayName = (dayType) => {
@@ -28,7 +29,7 @@ class RecentClass extends React.Component {
                     (
                         classes.length === 0 
                         ? 
-                        <span className="text-2xl text-grayish block text-center">هیچ کلاسی وجود ندارد</span> 
+                    <span className="text-2xl text-grayish block text-center">{this.props.t('noClassAvailable')}</span> 
                         :
                         classes.map(x => {
                             return (
@@ -59,7 +60,7 @@ class RecentClass extends React.Component {
                         })
                     )
                     :
-                    <span className="text-2xl text-grayish block text-center">هیچ کلاسی وجود ندارد</span> 
+                    <span className="text-2xl text-grayish block text-center">{this.props.t('noClassAvailable')}</span> 
                 )
                 }
             

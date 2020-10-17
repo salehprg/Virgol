@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import PlusTable from "../../tables/PlusTable";
 import {edit, loading, trash , check_circle} from "../../../../assets/icons";
 import history from "../../../../history";
@@ -100,7 +101,7 @@ class Students extends React.Component {
             <div className="w-full mt-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                    title={this.props.t('deleteConfirm')}
                     confirm={this.deleteStudent}
                     cancel={() => this.setState({ showDeleteModal: false, teacherId: null })}
                 /> 
@@ -108,7 +109,7 @@ class Students extends React.Component {
                 null
                 }
                 <MonsterTable
-                    title="لیست دانش آموزان"
+                    title={this.props.t('studentsList')}
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
@@ -118,15 +119,16 @@ class Students extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/newStudent')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">دانش آموزان جدید</button>
+                            <button onClick={() => history.push('/newStudent')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addStudent')}</button>
                         );
                     }}
-                    sample="بارگیری نمونه اکسل دانش آموزان"
+                    sample={this.props.t('downloadStudentsExcelSample')}
                     sampleLink="/samples/StudentTemplate.xlsx"
-                    excel="بارگذاری اکسل دانش آموزان"
+                    excel={this.props.t('uploadStudentsExcel')}
                     handleExcel={this.submitExcel}
                     // headers={[ '' ,'نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده', '' ]}
                     headers={['نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی', 'تلفن ولی', 'حساب تکمیل شده', '']}
+                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('phoneNumber'), this.props.t('nationCode'), this.props.t('fatherName'), this.props.t('fatherPhoneNumber'),this.props.t('completedAccount'), '']}
                     body={() => {
 
                         return (
@@ -157,7 +159,7 @@ class Students extends React.Component {
                                         </tr>
                                         )
                                     })
-                                    : "درحال بارگذاری ..."
+                                    : this.props.t('loading')
                                 )}
                             </React.Fragment>
                         );
@@ -167,7 +169,7 @@ class Students extends React.Component {
                             <React.Fragment>
                                 <div onClick={() => this.setState({ showDeleteModal: true })} className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
                                     {trash("w-6 mx-1 text-white")}
-                                    <span className="font-vb mx-1 text-white">حذف</span>
+                                    <span className="font-vb mx-1 text-white">{this.props.t('delete')}</span>
                                 </div>
                                 {/*{this.state.selected.length === 1 ?*/}
                                 {/*    <div onClick={() => history.push(`/teacher/${this.state.selectedItems[0]}`)} className="flex justify-between items-center mx-1 cursor-pointer bg-grayish rounded-full md:px-6 px-3 py-1">*/}
@@ -194,4 +196,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , students: state.managerData.students}
 }
 
-export default connect(mapStateToProps, { getAllStudents , addBulkUser , DeleteStudents })(Students);
+const cwrapped = connect(mapStateToProps, { getAllStudents , addBulkUser , DeleteStudents })(Students);
+
+export default withTranslation()(cwrapped);

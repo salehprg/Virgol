@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import {Field, reduxForm, reset} from "redux-form";
 import {arrow_left, briefcase, loading, slash} from "../../../../assets/icons";
@@ -168,7 +169,7 @@ class SchoolInfo extends React.Component {
                 </div>
                 {this.state.showDeleteModal ?
                 <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ تمامی درس های زیرمجموعه پاک خواهند شد و این عمل قابلیت بازگشت ندارد!"
+                    title={this.props.t('deleteConfirm')}
                     confirm={this.confirmDelete}
                     cancel={() => this.setState({ showDeleteModal: false, deleteFieldId: null, deleteCatId: null })}
                 /> 
@@ -180,7 +181,7 @@ class SchoolInfo extends React.Component {
                     {/*    {slash('w-6 text-white')}*/}
                     {/*</div>*/}
                     {briefcase('w-1/5 mb-2 text-white mx-auto')}
-                    <p className="text-white">اطلاعات مدیر</p>
+                    <p className="text-white"> {this.props.t('managerInfo')} </p>
                     {this.state.loadingCats ? loading('w-10 text-grayish centerize')
                     : 
                     <form className="text-center mt-8 w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
@@ -208,7 +209,7 @@ class SchoolInfo extends React.Component {
                                 <Field
                                     name="latinFirstname"
                                     type="text"
-                                    placeholder="نام لاتین"
+                                    placeholder={this.props.t('latinFirstName')}
                                     extra={"w-1/2 mr-1 my-4"}
                                     component={this.renderInputs}
                                 />
@@ -216,7 +217,7 @@ class SchoolInfo extends React.Component {
                                     name="firstName"
                                     dir="rtl"
                                     type="text"
-                                    placeholder="نام"
+                                    placeholder={this.props.t('firstName')}
                                     extra={"w-1/2 ml-1 my-4"}
                                     component={this.renderInputs}
                                 />
@@ -226,14 +227,14 @@ class SchoolInfo extends React.Component {
                                     name="latinLastname"
                                     type="text"
                                     extra={"w-1/2 mr-1 my-4"}
-                                    placeholder="نام خانوادگی لاتین "
+                                    placeholder={this.props.t('latinLastName')}
                                     component={this.renderInputs}
                                 />
                                 <Field
                                     name="lastName"
                                     dir="rtl"
                                     type="text"
-                                    placeholder="نام خانوادگی"
+                                    placeholder={this.props.t('lastName')}
                                     extra={"w-1/2 ml-1 my-4"}
                                     component={this.renderInputs}
                                 />
@@ -243,7 +244,7 @@ class SchoolInfo extends React.Component {
                                     name="personalIdNumber"
                                     dir="ltr"
                                     type="text"
-                                    placeholder="شماره پرسنلی"
+                                    placeholder={this.props.t('personelCode')}
                                     extra={"w-1/2 mr-1 my-4"}
                                     component={this.renderInputs}
                                 />
@@ -251,7 +252,7 @@ class SchoolInfo extends React.Component {
                                     name="melliCode"
                                     type="text"
                                     dir="ltr"
-                                    placeholder="کد ملی"
+                                    placeholder={this.props.t('nationCode')}
                                     extra={"w-1/2 ml-1 my-4"}
                                     component={this.renderInputs}
                                 />
@@ -260,12 +261,12 @@ class SchoolInfo extends React.Component {
                                 name="phoneNumber"
                                 type="text"
                                 dir="ltr"
-                                placeholder="شماره همراه"
+                                placeholder={this.props.t('phoneNumber')}
                                 extra={"w-full my-4"}
                                 component={this.renderInputs}
                             />
                             <div className="w-full my-4 flex flex-row-reverse justify-between items-center">
-                                <span className="text-white">جنسیت</span>
+                                <span className="text-white"> {this.props.t('gender')} </span>
                                 <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-2/5 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>زن</span>
                                 <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-2/5 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>مرد</span>
                             </div>
@@ -273,7 +274,7 @@ class SchoolInfo extends React.Component {
                                 name="password"
                                 type="text"
                                 dir="ltr"
-                                placeholder="گذرواژه"
+                                placeholder={this.props.t('password')}
                                 extra={"w-full my-4"}
                                 component={this.renderInputs}
                             />
@@ -281,14 +282,14 @@ class SchoolInfo extends React.Component {
                                 name="passwordagain"
                                 type="text"
                                 dir="ltr"
-                                placeholder="تکرار گذرواژه"
+                                placeholder={this.props.t('confirmPassword')}
                                 extra={"w-full my-4"}
                                 component={this.renderInputs}
                             />
                         </div>
                         <div className="w-full mx-auto max-w-350 flex flex-row justify-between items-center">
                             <button type="submit" className="w-full py-1 mx-1 rounded-lg border-2 border-transparent bg-pinkish text-white">
-                                ذخیره
+                                {this.props.t('save')}
                             </button>
                             {/*<button onClick={this.props.reset} className="w-5/12 py-1 mx-1 rounded-lg border-2 border-pinkish text-pinkish">*/}
                             {/*    ریست*/}
@@ -318,7 +319,7 @@ class SchoolInfo extends React.Component {
                         </div>
                         <div>
                             {/*<Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>*/}
-                            <button onClick={this.redirect} className="px-6 py-1 lg:mx-2 mx-0 mt-4 rounded-lg border-2 border-greenish text-greenish">ورود به عنوان مدیر مدرسه</button>
+                            <button onClick={this.redirect} className="px-6 py-1 lg:mx-2 mx-0 mt-4 rounded-lg border-2 border-greenish text-greenish"> {this.props.t('enterAsManager')} </button>
                         </div>
                     </div>
                     <div className="mt-8 overflow-auto">
@@ -395,6 +396,7 @@ const formWrapped = reduxForm({
 }, mapStateToProps)(SchoolInfo)
 
 const authWrapped = protectedAdmin(formWrapped)
+const cwrapped = connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , RedirectAdmin, 
+    GetSchool_Grades , getLessons , EditManager , EditSchool , AddBaseToSchool , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool})(authWrapped);
 
-export default connect(mapStateToProps, { GetSchoolInfo , GetSchool_StudyFields , RedirectAdmin, 
-                                        GetSchool_Grades , getLessons , EditManager , EditSchool , AddBaseToSchool , RemoveBaseFromSchool , AddStudyFToSchool , RemoveStudyFFromSchool})(authWrapped);
+export default withTranslation()(cwrapped);

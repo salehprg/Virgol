@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import history from '../../../../history'
 import Add from '../../../field/Add';
 import Fieldish from '../../../field/Fieldish';
@@ -47,7 +48,7 @@ class AddStudent extends React.Component {
         return (
                 <Add
                     onCancel={() => history.push('/m/students')}
-                    title={"اطلاعات دانش آموز"}
+                    title={this.props.t('studentInfo')}
                 >
                     <form className="w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
                         {/*<div className="text-white">*/}
@@ -71,34 +72,34 @@ class AddStudent extends React.Component {
                         <Field
                             name="firstName"
                             type="text"
-                            placeholder="نام"
+                            placeholder={this.props.t('firstName')}
                             component={this.renderInputs}
                         />
                         <Field
                             name="lastName"
                             type="text"
-                            placeholder="نام خانوادگی"
+                            placeholder={this.props.t('lastName')}
                             component={this.renderInputs}
                         />
                         <Field
                             name="melliCode"
                             type="text"
-                            placeholder="کد ملی"
+                            placeholder={this.props.t('nationCode')}
                             component={this.renderInputs}
                         />
                         <Field
                             name="fatherName"
                             type="text"
-                            placeholder="نام ولی"
+                            placeholder={this.props.t('fatherName')}
                             component={this.renderInputs}
                         />
 
                         <div className="w-full my-4 flex justify-between items-center">
-                            <span className="text-white">جنسیت</span>
-                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>دختر</span>
-                            <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>پسر</span>
+                            <span className="text-white"> {this.props.t('gender')} </span>
+                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}> {this.props.t('girl')} </span>
+                            <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}> {this.props.t('boy')} </span>
                         </div>
-                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">ذخیره</button>
+                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg"> {this.props.t('save')} </button>
                     </form>
                 </Add>
         );
@@ -130,5 +131,6 @@ const formWrapped = reduxForm({
 })(AddStudent)
 
 const authWrapped = protectedManager(formWrapped)
+const cwrapped = connect(mapStateToProps , {AddNewStudent })(authWrapped);
 
-export default connect(mapStateToProps , {AddNewStudent })(authWrapped);
+export default withTranslation()(cwrapped);

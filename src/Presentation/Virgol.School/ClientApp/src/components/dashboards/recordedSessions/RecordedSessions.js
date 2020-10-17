@@ -31,39 +31,39 @@ class RecorededSession extends React.Component {
                 </div>
                 <div className="md:w-1/2 w-full h-85 overflow-auto">
                 <PlusTable
-                    title="لیست جلسات ضبط شده"
+                    title={this.props.t('recordedSessions')}
                     isLoading={false}
                     isPaginate={false}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     button={() => null}
-                    headers={['ردیف', , 'نام' , 'تاریخ', 'ساعت', '', '']}
+                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date'), this.props.t('time'), '', '']}
                     body={() => {
                         return (
 
                             (this.props.recordingsList ?
                                 (this.props.recordingsList.length === 0 ?
                                     <tr>
-                                        <td className="py-4">هیچ کلاس ضبط شده ای وجود ندارد</td>
+                                        <td className="py-4">{this.props.t('noRecordedSession')}</td>
                                     </tr>
                                 :
                                 this.props.recordingsList.map((x,index) => {
                                     return (
                                         <tr>
                                             <td className="py-4">{index + 1}</td>
-                                            <td className="py-4">{x.name} - جلسه {index + 1}</td>
+                                            <td className="py-4">{x.name} - {this.props.t('session')} {index + 1}</td>
                                             <td className="py-4">1399/5/4</td>
                                             <td className="py-4">8 تا 9</td>
                                             <td className="py-4">
-                                                <button className="px-8 py-1 m-1 rounded-lg bg-greenish">دانلود</button>
-                                                <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">مشاهده</button>
+                                    <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
+                                    <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
                                             </td>
                                         </tr>
                                     )
                                 }))
                             :
                             <tr>
-                                <td className="py-4">درحال بارگذاری ...</td>
+                                <td className="py-4">{this.props.t('loading')}</td>
                             </tr>
                             )
                         );

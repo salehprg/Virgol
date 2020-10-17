@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import PlusTable from "../../tables/PlusTable";
 import {edit, external_link, loading, trash} from "../../../../assets/icons";
 import history from "../../../../history";
@@ -38,7 +39,7 @@ class News extends React.Component {
             <div className="w-full mt-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
-                    title="آیا از عمل حذف مطمئن هستید؟ این عمل قابلیت بازگشت ندارد!"
+                    title={this.props.t('deleteConfirm')}
                     confirm={this.delteNews}
                     cancel={() => this.setState({ showDeleteModal: false, deleteFieldId: null, deleteCatId: null })}
                 /> 
@@ -46,17 +47,17 @@ class News extends React.Component {
                 null
                 }
                 <PlusTable
-                    title="لیست خبرهای منتشر شده"
+                    title={this.props.t('adminNewsList')}
                     isPaginate={false}
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/addNews')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg">خبر جدید</button>
+                            <button onClick={() => history.push('/addNews')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg"> {this.props.t('addNews')} </button>
                         );
                     }}
-                    headers={['متن خبر' , 'تگ ها' , 'تاریخ انتشار']}
+                    headers={[this.props.t('newsText'), this.props.t('tags'), this.props.t('newsDate')]}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -101,4 +102,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , myNews : state.newsData.myNews}
 }
 
-export default connect(mapStateToProps, { GetMyNews, CreateNews , EditNews , RemoveNews })(News);
+const cwrapped = connect(mapStateToProps, { GetMyNews, CreateNews , EditNews , RemoveNews })(News);
+
+export default withTranslation()(cwrapped);

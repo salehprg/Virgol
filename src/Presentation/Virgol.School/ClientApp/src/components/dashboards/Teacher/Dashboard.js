@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import {Switch, Route, Redirect} from 'react-router-dom';
 import history from "../../../history";
 import protectedTeacher from "../../protectedRoutes/protectedTeacher";
@@ -51,7 +52,7 @@ class TeacherDashboard extends React.Component {
     }
 
     render() {
-        if (this.state.loading) return "درحال بارگذاری اطلاعات"
+        if (this.state.loading) return this.props.t('loading')
         return (
             <div className="w-screen min-h-screen">
                 <Sidebar
@@ -62,21 +63,21 @@ class TeacherDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="dashboard"
-                        title="پیشخوان"
+                        title={this.props.t('dashboard')}
                         icon={layout}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="schedule"
-                        title="برنامه درسی"
+                        title={this.props.t('schedule')}
                         icon={bell}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="classes"
-                        title="کلاس ها"
+                        title={this.props.t('classes')}
                         icon={bell}
                         changeActive={this.changeActive}
                     />
@@ -90,7 +91,7 @@ class TeacherDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="myNews"
-                        title="اخبار من"
+                        title={this.props.t('studentNews')}
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
@@ -114,4 +115,4 @@ class TeacherDashboard extends React.Component {
 
 }
 
-export default protectedTeacher(TeacherDashboard)
+export default withTranslation()(protectedTeacher(TeacherDashboard))

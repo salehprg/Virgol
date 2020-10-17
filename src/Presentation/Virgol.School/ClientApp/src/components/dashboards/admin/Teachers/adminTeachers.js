@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import PlusTable from "../../tables/PlusTable";
 import {edit, loading , check_circle, trash } from "../../../../assets/icons";
 import history from "../../../../history";
@@ -43,12 +44,12 @@ class adminTeachers extends React.Component {
         return (
             <div className="w-full mt-10">
                 <PlusTable
-                    title="لیست معلمان"
+                    title={this.props.t('teachersList')}
                     isLoading={this.state.loading}
                     button={() => {}}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
-                    headers={['نام', 'نام خانوادگی', 'کد ملی', 'تلفن تماس' , 'کد پرسنلی' , 'حساب تکمیل شده']}
+                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('personelCode'), this.props.t('completedAccount')]}
                     cardsPerPage={this.state.itemsPerPage}
                     totalCards={this.state.totalCard}
                     paginate={this.paginate}
@@ -69,7 +70,7 @@ class adminTeachers extends React.Component {
                                         </tr>
                                         )
                                     })
-                                : "لودینگ")}
+                                : this.props.t('loading'))}
                             </React.Fragment>
                         );
                     }}
@@ -84,4 +85,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , allTeachers: state.adminData.allTeachers}
 }
 
-export default connect(mapStateToProps, { GetAllTeachers })(adminTeachers);
+const cwrapped = connect(mapStateToProps, { GetAllTeachers })(adminTeachers);
+
+export default withTranslation()(cwrapped);

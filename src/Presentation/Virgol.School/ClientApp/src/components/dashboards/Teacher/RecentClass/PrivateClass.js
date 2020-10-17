@@ -1,4 +1,5 @@
 import React from "react";
+import { withTranslation } from 'react-i18next';
 import getColor from "../../../../assets/colors";
 
 const PrivateClass = ({ text, onEnd , onStart }) => {
@@ -11,10 +12,10 @@ const PrivateClass = ({ text, onEnd , onStart }) => {
             <div className="w-full flex flex-row justify-between items-center">
                 <div className="flex flex-wrap flex-row-reverse justify-start items-center">
                     <button onClick={() => onStart()} className={`px-6 py-1 ml-2 mb-2 rounded-full text-white bg-${getColor(3)}`}>
-                        کپی کردن لینک اتاق
+                        {this.props.t('copyLink')}
                     </button> 
                     <button onClick={() => onEnd()} className={`px-6 py-1 ml-2 mb-2 rounded-full text-white bg-${getColor(1)}`}>
-                        بستن اتاق
+                        {this.props.t('closeLink')}
                     </button>
                 </div>
             </div>
@@ -23,4 +24,4 @@ const PrivateClass = ({ text, onEnd , onStart }) => {
 
 }
 
-export default PrivateClass;
+export default withTranslation()(PrivateClass);
