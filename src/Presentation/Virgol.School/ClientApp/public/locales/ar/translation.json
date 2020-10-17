@@ -190,5 +190,8 @@
     "endClass": "فئة النهاية",
     "copyLink": "نسخ رابط الغرفة",
     "closeLink": "إغلاق الغرفة",
-    "createPrivateClass": "إنشاء فصل دراسي خاص"
+    "createPrivateClass": "إنشاء فصل دراسي خاص",
+    "evenWeek" : "أزواج أسابيع",
+    "oddWeek" : "أسابيع فردية",
+    "everyWeek" : "كل اسبوع"
 }

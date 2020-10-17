@@ -190,5 +190,8 @@
     "endClass": "اتمام کلاس",
     "copyLink": "کپی کردن لینک اتاق",
     "closeLink": "بستن اتاق",
-    "createPrivateClass": "ایجاد کلاس خصوصی"
+    "createPrivateClass": "ایجاد کلاس خصوصی",
+    "evenWeek" : "هفته های زوج",
+    "oddWeek" : "هفته های فرد",
+    "everyWeek" : "هر هفته"
 }
