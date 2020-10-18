@@ -84,13 +84,24 @@ public class MeetingService {
         }
         else if(serviceType == ServiceType.AdobeConnect)
         {
+            AdobeApi adobeApi = new AdobeApi();
+            MeetingInfoResponse meetingInfo = adobeApi.StartMeeting(meeting.MeetingName);
 
+            if(meetingInfo.status.code == "ok")
+            {
+                response.returncode = "SUCCEED";
+                meeting.MeetingId = meetingInfo.scoInfo.scoId;
+            }
         }
 
 
         if(response.returncode != "FAILED" && !meeting.Private)
         {
-            meeting.MeetingId = meeting.Id.ToString();
+            if(serviceType == ServiceType.BBB)
+            {
+                meeting.MeetingId = meeting.Id.ToString();
+            }
+
             appDbContext.Meetings.Update(meeting);
             await appDbContext.SaveChangesAsync();
 
@@ -315,10 +326,20 @@ public class MeetingService {
         if(meeting == null)
             return null;
 
-        BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
-        string classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
+        string classUrl = "";
 
-        if(classUrl != null)
+        if(meeting.ServiceType == ServiceType.BBB)
+        {
+            BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
+            classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
+        }
+        else if(meeting.ServiceType == ServiceType.AdobeConnect)
+        {
+            AdobeApi adobeApi = new AdobeApi();
+            classUrl = adobeApi.JoinMeeting(meeting.MeetingId , user.UserName , user.MelliCode , isModerator);
+        }
+
+        if(classUrl != "")
         {
             return classUrl;
         }
