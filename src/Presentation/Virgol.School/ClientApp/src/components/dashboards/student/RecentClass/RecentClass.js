@@ -70,4 +70,4 @@ class RecentClass extends React.Component {
 
 }
 
-export default RecentClass
+export default withTranslation()(RecentClass);

@@ -368,7 +368,7 @@ namespace lms_with_moodle.Controllers
 #endregion
 
         [HttpGet]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "User,Teacher")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public IActionResult GetRecentClass() 
         {

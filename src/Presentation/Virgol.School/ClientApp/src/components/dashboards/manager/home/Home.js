@@ -86,4 +86,6 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , inNews : state.newsData.incomeNews , myNews : state.newsData.myNews , dashboardInfo : state.managerData.dashboardInfo}
 }
 
-export default connect(mapStateToProps, { GetIncommingNews , GetMyNews  , getManagerDashboardInfo})(Home);
+const cwrapped = connect(mapStateToProps, { GetIncommingNews , GetMyNews  , getManagerDashboardInfo})(Home);
+
+export default withTranslation()(cwrapped);
