@@ -20,7 +20,7 @@ spec:
     - name: ASPNETCORE_ENVIRONMENT
       value: Production
     - name: VIRGOL_SERVER_ROOT_URL
-      value: https://virgol.legace.ir
+      value: https://beta.legace.ir
       # value: https://lms.legace.ir
     - name: VIRGOL_DATABASE_TYPE
       value: postgres
@@ -67,7 +67,7 @@ spec:
     - name: VIRGOL_NTP_SERVER_URL
       value: ir.pool.ntp.org
     - name : REACT_APP_RAHE_DOOR
-      value : false
+      value : true
     - name : REACT_APP_FAVICON_NAME
       value : favicon_virgool
     - name : REACT_APP_MOODLE_URL
