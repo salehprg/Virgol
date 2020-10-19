@@ -1,3 +1,4 @@
+fandogh namespace active --name golldenstarc
 fandogh service apply \
 -f ../fandogh-manifests/service-manifest.yaml \
 -p IMAGE_URL \
