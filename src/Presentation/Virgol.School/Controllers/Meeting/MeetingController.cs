@@ -236,7 +236,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Teacher,User")]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> JoinMeeting(string meetingId) 
         {

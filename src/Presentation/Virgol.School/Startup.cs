@@ -121,16 +121,14 @@ namespace lms_with_moodle
             {
                 string text = File.ReadAllText(filename);
 
-                if(text.IndexOf("API_URL:\"https://lms.legace.ir/api/\"") != -1)
-                {
                     text = text.Replace("REACT_APP_FAVICON_NAME:\"REACT_APP_FAVICON_NAME\"", "REACT_APP_FAVICON_NAME:\""+AppSettings.REACT_APP_FAVICON_NAME+"\"");
                     text = text.Replace("REACT_APP_MOODLE_URL:\"REACT_APP_MOODLE_URL\"", "REACT_APP_MOODLE_URL:\""+AppSettings.REACT_APP_MOODLE_URL+"\"");
                     text = text.Replace("REACT_APP_RAHE_DOOR:\"REACT_APP_RAHE_DOOR\"", "REACT_APP_RAHE_DOOR:\""+AppSettings.REACT_APP_RAHE_DOOR+"\"");
                     text = text.Replace("process.env.REACT_APP_VERSION", AppSettings.REACT_APP_VERSION);
+                    text = text.Replace("REACT_APP_VERSION:\"REACT_APP_VERSION\"", "REACT_APP_VERSION:\"" +AppSettings.REACT_APP_VERSION +"\"");
                     text = text.Replace("process.env.REACT_APP_MOODLE_URL", AppSettings.REACT_APP_MOODLE_URL);
                     text = text.Replace("API_URL:\"https://lms.legace.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api\"");
                     File.WriteAllText(filename , text);
-                }
             }
             // try
             // {
