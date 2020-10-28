@@ -21,6 +21,7 @@ namespace lms_with_moodle.Helper
         
         public bool Login(string Username , string Password)
         {
+            client = new HttpClient();
             Uri uriLogin = new Uri (string.Format("https://c1.legace.ir/api/xml?action=login&login={0}&password={1}" , Username , Password));
             HttpResponseMessage response = client.GetAsync(uriLogin).Result;
             XmlSerializer serializer = new XmlSerializer(typeof(LoginModel));
@@ -66,7 +67,7 @@ namespace lms_with_moodle.Helper
 
         StatusResponse AddPrincipalToMeeting(string scoId , string hostUserId , bool IsHost)
         {
-            Uri uri = new Uri (string.Format("https://c1.legace.ir/api/xml?action=permissions-update&principal-id={0}&acl-id={1}&permission-id={2}", hostUserId , scoId , (IsHost ? "host" : "viewer")));
+            Uri uri = new Uri (string.Format("https://c1.legace.ir/api/xml?action=permissions-update&principal-id={0}&acl-id={1}&permission-id={2}", hostUserId , scoId , (IsHost ? "host" : "view")));
             HttpResponseMessage response = client.GetAsync(uri).Result;
 
             XmlSerializer serializer = new XmlSerializer(typeof(StatusResponse));
@@ -129,11 +130,11 @@ namespace lms_with_moodle.Helper
         {
             try
             {
+                Login(Username , Password);
+                CommonInfo common = GetCommonInfo();
+
                 if(Login("admin@legace.ir" , "Connectpass.24"))
                 {
-                    Login(Username , Password);
-                    CommonInfo common = GetCommonInfo();
-                    
                     if(common.status.code == "ok")
                     {
                         StatusResponse statusViewer = AddPrincipalToMeeting(RoomId , common.common.user.userId , Presenter);

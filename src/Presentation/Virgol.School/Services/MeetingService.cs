@@ -316,9 +316,16 @@ public class MeetingService {
 
         Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId).FirstOrDefault();
 
-        if(meeting != null)
+        if(meeting == null)
         {
-            meeting = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId).FirstOrDefault();
+            int meetingId = 0;
+
+            int.TryParse(bbbMeetingId , out meetingId);
+
+            if(meetingId > 0)
+            {
+                meeting = appDbContext.Meetings.Where(x => x.Id == meetingId).FirstOrDefault();
+            }
         }
 
         bool isModerator = (user.Id == meeting.TeacherId || user.userTypeId == (int)UserType.Manager);
