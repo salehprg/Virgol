@@ -902,8 +902,8 @@ namespace lms_with_moodle.Controllers
 
     public async Task<bool> SyncMoodleLDAP()
     {
-        MyUserManager myUserManager = new MyUserManager(userManager , appDbContext);
-        return await myUserManager.SyncUserData(appDbContext.Users.ToList());
+        UserService UserService = new UserService(userManager , appDbContext);
+        return await UserService.SyncUserData(appDbContext.Users.ToList());
     }
 
     public async Task<IActionResult> RecreateMoodle()
@@ -1024,7 +1024,7 @@ namespace lms_with_moodle.Controllers
 
     public async Task<bool> SyncUserDetails()
     {
-        MyUserManager myUserManager = new MyUserManager(userManager , appDbContext);
+        UserService UserService = new UserService(userManager , appDbContext);
 
         List<StudentViewModel> studentViews = appDbContext.StudentViews.Where(x => x.BirthDate == null).ToList();
 
@@ -1041,7 +1041,7 @@ namespace lms_with_moodle.Controllers
             userData.studentDetail = studentDetail;
             userData.Id = studentView.Id;
 
-            await myUserManager.SyncUserDetail(userData);
+            await UserService.SyncUserDetail(userData);
             
         }
 
@@ -1060,7 +1060,7 @@ namespace lms_with_moodle.Controllers
             userData.teacherDetail = teacherDetail;
             userData.Id = teacherView.Id;
 
-            await myUserManager.SyncUserDetail(userData);
+            await UserService.SyncUserDetail(userData);
             
         }
 

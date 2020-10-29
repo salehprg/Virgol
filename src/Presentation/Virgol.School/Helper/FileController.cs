@@ -204,6 +204,7 @@ public class FileController {
                     int lastNameId = -1;
                     int phoneNumberId = -1;
                     int fatherNameId = -1;
+                    int motherNameId = -1;
                     int melliCodeId = -1;
                     int personalIdNumber = -1;
                     int sexualityId = -1;
@@ -234,6 +235,10 @@ public class FileController {
                             {
                                 fatherNameId = i;
                             }
+                            if(((string)value).Contains("نام مادر") || ((string)value).Contains("مادر"))
+                            {
+                                motherNameId = i;
+                            }
                             if(((string)value).Contains("کد پرسنلی"))
                             {
                                 personalIdNumber = i;
@@ -260,13 +265,20 @@ public class FileController {
                             }
                             if(!reachEnd)
                             {
-                                int sexCode = 0;
+                                int sexCode = 1;
                                 if(sexualityId != -1)
                                 {
                                     if(excelData.GetValue(sexualityId) != null)
                                     {
                                         string femaleCode = "زن";
-                                        sexCode = (excelData.GetValue(sexualityId).ToString().Contains(femaleCode) ? 0 : 1);
+                                        string girlCode = "دختر";
+
+                                        string readData = excelData.GetValue(sexualityId).ToString();
+
+                                        if(readData == femaleCode || readData == girlCode)
+                                        {
+                                            sexCode = 0;
+                                        }
                                     }
                                 }
                                 UserDataModel selectedUser = new UserDataModel
@@ -285,6 +297,9 @@ public class FileController {
                                     selectedUser.studentDetail = new StudentDetail();
                                     selectedUser.studentDetail.FatherName = (fatherNameId != -1 ? 
                                                                             (excelData.GetValue(fatherNameId) != null ? excelData.GetValue(fatherNameId).ToString() : null)
+                                                                            : null);
+                                    selectedUser.studentDetail.MotherName = (motherNameId != -1 ? 
+                                                                            (excelData.GetValue(motherNameId) != null ? excelData.GetValue(motherNameId).ToString() : null)
                                                                             : null);
                                 }
                                 else
