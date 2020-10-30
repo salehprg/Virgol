@@ -40,7 +40,7 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
 
         FarazSmsApi SMSApi;
-        MyUserManager myUserManager;
+        UserService UserService;
         public AdminController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -52,7 +52,7 @@ namespace lms_with_moodle.Controllers
             appDbContext = _appdbContext;
 
             SMSApi = new FarazSmsApi();
-            myUserManager = new MyUserManager(userManager , appDbContext);
+            UserService = new UserService(userManager , appDbContext);
         }
 
         [HttpGet]
@@ -235,7 +235,7 @@ namespace lms_with_moodle.Controllers
 
                 managerData.managerDetail = managerDetail;
 
-                List<UserDataModel> managerDatas = await myUserManager.CreateUser(new List<UserDataModel>{managerData} , (int)UserType.Manager , model.SchoolId , model.password);
+                List<UserDataModel> managerDatas = await UserService.CreateUser(new List<UserDataModel>{managerData} , (int)UserType.Manager , model.SchoolId , model.password);
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
 
@@ -289,7 +289,7 @@ namespace lms_with_moodle.Controllers
 
                     if(model.PhoneNumber != null && model.PhoneNumber != currentManager.PhoneNumber)
                     {
-                        if(myUserManager.CheckPhoneInterupt(model.PhoneNumber))
+                        if(UserService.CheckPhoneInterupt(model.PhoneNumber))
                             return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
 
                         currentManager.PhoneNumber = ConvertToPersian.PersianToEnglish(model.PhoneNumber);
@@ -308,7 +308,7 @@ namespace lms_with_moodle.Controllers
                     userDataModel.managerDetail = new ManagerDetail();
                     userDataModel.managerDetail.personalIdNumber = model.personalIdNumber;
 
-                    await myUserManager.EditUsers(new List<UserDataModel>{userDataModel} , model.SchoolId , false , model.password);
+                    await UserService.EditUsers(new List<UserDataModel>{userDataModel} , model.SchoolId , false , model.password);
 
                     List<IdentityError> errors = chngPass.Errors.ToList();
                     return Ok(new{
@@ -325,12 +325,12 @@ namespace lms_with_moodle.Controllers
                     if(model.password.Length < 8)
                         return BadRequest("حداقل طول رمز عبور باید 8 رقم باشد");
 
-                    if(myUserManager.CheckPhoneInterupt(ConvertToPersian.PersianToEnglish(model.PhoneNumber)))
+                    if(UserService.CheckPhoneInterupt(ConvertToPersian.PersianToEnglish(model.PhoneNumber)))
                         return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
 
                     if(currentManager != null)
                     {
-                        await myUserManager.DeleteUser(currentManager);
+                        await UserService.DeleteUser(currentManager);
                     }
                     model.UserName = model.MelliCode;
 
@@ -342,7 +342,7 @@ namespace lms_with_moodle.Controllers
                     userDataModel.managerDetail = new ManagerDetail();
                     userDataModel.managerDetail.personalIdNumber = model.personalIdNumber;
 
-                    List<UserDataModel> datas = await myUserManager.CreateUser(new List<UserDataModel>{userDataModel} , (int)UserType.Manager , model.SchoolId , model.password );
+                    List<UserDataModel> datas = await UserService.CreateUser(new List<UserDataModel>{userDataModel} , (int)UserType.Manager , model.SchoolId , model.password );
 
                     if(datas.Count > 0)
                     {
@@ -367,7 +367,7 @@ namespace lms_with_moodle.Controllers
 
                 if(newManager != null)
                 {
-                    if(myUserManager.CheckMelliCodeInterupt(newManager.MelliCode , currentManager.Id))
+                    if(UserService.CheckMelliCodeInterupt(newManager.MelliCode , currentManager.Id))
                         return BadRequest("کد ملی وارد شده تکراریست");
                 }
                 

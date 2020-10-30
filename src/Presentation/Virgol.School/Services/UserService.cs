@@ -11,13 +11,13 @@ using Newtonsoft.Json;
 ///<summary>
 ///use this to Operate User in all Database in moodle , LDAP , SQL
 ///</summary>
-public class MyUserManager {
+public class UserService {
     UserManager<UserModel> userManager;
     AppDbContext appDbContext;
     //MoodleApi moodleApi;
     LDAP_db ldap;
 
-    public MyUserManager(UserManager<UserModel> _userManager , AppDbContext _appDbContext = null)
+    public UserService(UserManager<UserModel> _userManager , AppDbContext _appDbContext = null)
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
@@ -289,6 +289,7 @@ public class MyUserManager {
                     if(studentDetail != null)
                     {
                         studentDetail.FatherName = user.studentDetail.FatherName;
+                        studentDetail.MotherName = user.studentDetail.MotherName;
                         studentDetail.FatherMelliCode = user.studentDetail.FatherMelliCode;
                         studentDetail.FatherPhoneNumber = user.studentDetail.FatherPhoneNumber;
 

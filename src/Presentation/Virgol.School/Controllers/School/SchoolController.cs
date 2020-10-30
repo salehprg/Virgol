@@ -43,7 +43,7 @@ namespace lms_with_moodle.Controllers
         SchoolService schoolService;
         LDAP_db ldap;
         FarazSmsApi SMSApi;
-        MyUserManager myUserManager;
+        UserService UserService;
         public SchoolController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -57,7 +57,7 @@ namespace lms_with_moodle.Controllers
             //moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
             ldap = new LDAP_db(appDbContext);
-            myUserManager = new MyUserManager(userManager , appDbContext);
+            UserService = new UserService(userManager , appDbContext);
             schoolService = new SchoolService(appDbContext);
         }
 
@@ -269,8 +269,8 @@ namespace lms_with_moodle.Controllers
 
                 
 
-                bool melliCodeInterupt = myUserManager.CheckMelliCodeInterupt(inputData.MelliCode , 0);
-                bool phoneInterupt = myUserManager.CheckPhoneInterupt(inputData.managerPhoneNumber);
+                bool melliCodeInterupt = UserService.CheckMelliCodeInterupt(inputData.MelliCode , 0);
+                bool phoneInterupt = UserService.CheckPhoneInterupt(inputData.managerPhoneNumber);
 
                 if(melliCodeInterupt)
                     return BadRequest("کد ملی وارد شده تکراریست");
@@ -303,7 +303,7 @@ namespace lms_with_moodle.Controllers
                 UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
                 userData.managerDetail = managerDetail;
 
-                List<UserDataModel> managerResult = await myUserManager.CreateUser(new List<UserDataModel>{userData} , (int)UserType.Manager , schoolResult.Id , password);
+                List<UserDataModel> managerResult = await UserService.CreateUser(new List<UserDataModel>{userData} , (int)UserType.Manager , schoolResult.Id , password);
 
                 if(managerResult.Count > 0)
                 {
@@ -322,7 +322,7 @@ namespace lms_with_moodle.Controllers
                     });
                 }
 
-                await myUserManager.DeleteUser(manager);
+                await UserService.DeleteUser(manager);
                 return BadRequest("ثبت مدیر با مشکل مواجه شد");
 
             }
@@ -419,7 +419,7 @@ namespace lms_with_moodle.Controllers
                         // manager.SchoolId = -1;
                         
                         // appDbContext.Users.Update(manager);
-                        await myUserManager.DeleteUser(manager);
+                        await UserService.DeleteUser(manager);
                     }
                     
                     appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
@@ -433,7 +433,7 @@ namespace lms_with_moodle.Controllers
                     {
                         try
                         {
-                            await myUserManager.DeleteUser(student);
+                            await UserService.DeleteUser(student);
                             
                             School_studentClass stdClass = appDbContext.School_StudentClasses.Where(x => x.UserId == student.Id).FirstOrDefault();
                             StudentDetail stdDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();

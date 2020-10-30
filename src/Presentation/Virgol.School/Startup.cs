@@ -115,35 +115,28 @@ namespace lms_with_moodle
                 options.UseNpgsql(conStr);
             });
 
-            List<string> fileNames = Directory.GetFiles("./ClientApp/build" , "*.js" , SearchOption.AllDirectories).ToList();
-
-            foreach (var filename in fileNames)
+            try
             {
-                string text = File.ReadAllText(filename);
+                List<string> fileNames = Directory.GetFiles("./ClientApp/build" , "*.js" , SearchOption.AllDirectories).ToList();
 
-                    text = text.Replace("REACT_APP_FAVICON_NAME:\"REACT_APP_FAVICON_NAME\"", "REACT_APP_FAVICON_NAME:\""+AppSettings.REACT_APP_FAVICON_NAME+"\"");
-                    text = text.Replace("REACT_APP_MOODLE_URL:\"REACT_APP_MOODLE_URL\"", "REACT_APP_MOODLE_URL:\""+AppSettings.REACT_APP_MOODLE_URL+"\"");
-                    text = text.Replace("REACT_APP_RAHE_DOOR:\"REACT_APP_RAHE_DOOR\"", "REACT_APP_RAHE_DOOR:\""+AppSettings.REACT_APP_RAHE_DOOR+"\"");
-                    text = text.Replace("process.env.REACT_APP_VERSION", AppSettings.REACT_APP_VERSION);
-                    text = text.Replace("REACT_APP_VERSION:\"REACT_APP_VERSION\"", "REACT_APP_VERSION:\"" +AppSettings.REACT_APP_VERSION +"\"");
-                    text = text.Replace("process.env.REACT_APP_MOODLE_URL", AppSettings.REACT_APP_MOODLE_URL);
-                    text = text.Replace("API_URL:\"https://lms.legace.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api\"");
-                    File.WriteAllText(filename , text);
+                foreach (var filename in fileNames)
+                {
+                    string text = File.ReadAllText(filename);
+
+                        text = text.Replace("REACT_APP_FAVICON_NAME:\"REACT_APP_FAVICON_NAME\"", "REACT_APP_FAVICON_NAME:\""+AppSettings.REACT_APP_FAVICON_NAME+"\"");
+                        text = text.Replace("REACT_APP_MOODLE_URL:\"REACT_APP_MOODLE_URL\"", "REACT_APP_MOODLE_URL:\""+AppSettings.REACT_APP_MOODLE_URL+"\"");
+                        text = text.Replace("REACT_APP_RAHE_DOOR:\"REACT_APP_RAHE_DOOR\"", "REACT_APP_RAHE_DOOR:\""+AppSettings.REACT_APP_RAHE_DOOR+"\"");
+                        text = text.Replace("process.env.REACT_APP_VERSION", AppSettings.REACT_APP_VERSION);
+                        text = text.Replace("REACT_APP_VERSION:\"REACT_APP_VERSION\"", "REACT_APP_VERSION:\"" +AppSettings.REACT_APP_VERSION +"\"");
+                        text = text.Replace("process.env.REACT_APP_MOODLE_URL", AppSettings.REACT_APP_MOODLE_URL);
+                        text = text.Replace("API_URL:\"https://lms.legace.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api\"");
+                        File.WriteAllText(filename , text);
+                }
             }
-            // try
-            // {
-            //     Console.WriteLine("Make sure that Environment Variable are ok ? (y/n)");
-            //     string status = Console.ReadLine();
-            //     if(status.ToLower() == "n")
-            //     {
-            //         Console.WriteLine("Please set Environment Variable");
-            //         throw new Exception("Build was canceled by user");
-            //     }
-            // }
-            // catch(Exception ex)
-            // {
-            //     throw ;
-            // }
+            catch (System.Exception)
+            {
+
+            }
             
             string backupStr = Configuration.GetConnectionString("BackupConnection");
 

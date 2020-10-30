@@ -12,6 +12,7 @@ namespace Models.User
         public string ShDocument {get; set;}
         public string Document2 {get; set;}
         public string FatherName {get; set;}
+        public string MotherName {get; set;}
         public string FatherPhoneNumber {get; set;}
         public string FatherMelliCode {get; set;}
         public string cityBirth {get; set;}

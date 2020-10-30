@@ -33,7 +33,7 @@ namespace lms_with_moodle.Controllers
         private readonly RoleManager<IdentityRole<int>> roleManager;
 
         //MoodleApi moodleApi;
-        MyUserManager myUserManager;
+        UserService UserService;
         MeetingService meetingService;
         ManagerService managerService;
         LDAP_db ldap;
@@ -53,7 +53,7 @@ namespace lms_with_moodle.Controllers
             //moodleApi = new MoodleApi();
             ldap = new LDAP_db(appDbContext);
 
-            myUserManager = new MyUserManager(userManager , appDbContext);
+            UserService = new UserService(userManager , appDbContext);
             managerService = new ManagerService(appDbContext);
             meetingService = new MeetingService(appDbContext); 
         }
@@ -183,10 +183,10 @@ namespace lms_with_moodle.Controllers
                 student.UserName = student.MelliCode;
                 student.ConfirmedAcc = true;
                 
-                if(myUserManager.CheckMelliCodeInterupt(student.MelliCode , 0))
+                if(UserService.CheckMelliCodeInterupt(student.MelliCode , 0))
                     return BadRequest("کد ملی وارد شده تکراریست");
 
-                List<UserDataModel> result = await myUserManager.CreateUser(new List<UserDataModel>{student} , (int)UserType.Student , schoolId );
+                List<UserDataModel> result = await UserService.CreateUser(new List<UserDataModel>{student} , (int)UserType.Student , schoolId );
 
                 if(result.Count > 0)
                 {
@@ -255,14 +255,14 @@ namespace lms_with_moodle.Controllers
     
                 if(student.MelliCode != userModel.MelliCode)
                 {
-                    if(myUserManager.CheckMelliCodeInterupt(student.MelliCode , userModel.Id))
+                    if(UserService.CheckMelliCodeInterupt(student.MelliCode , userModel.Id))
                         return BadRequest("کد ملی وارد شده تکراریست");
 
                 }
 
                 if(student.PhoneNumber != userModel.PhoneNumber)
                 {
-                    if(myUserManager.CheckPhoneInterupt(student.PhoneNumber))
+                    if(UserService.CheckPhoneInterupt(student.PhoneNumber))
                         return BadRequest("شماره همراه دانش آموز قبلا در سیستم ثبت شده است");
                 }
                  
@@ -271,13 +271,13 @@ namespace lms_with_moodle.Controllers
 
                 if(student.studentDetail.FatherPhoneNumber != studentDetail.FatherPhoneNumber)
                 {
-                    if(myUserManager.CheckPhoneInterupt(student.studentDetail.FatherPhoneNumber))
+                    if(UserService.CheckPhoneInterupt(student.studentDetail.FatherPhoneNumber))
                         return BadRequest("شماره همراه ولی قبلا در سیستم ثبت شده است");
                 }
                 
                 studentDetail.FatherPhoneNumber = student.studentDetail.FatherPhoneNumber;
 
-                List<UserDataModel> result = await myUserManager.EditUsers(new List<UserDataModel>{student});
+                List<UserDataModel> result = await UserService.EditUsers(new List<UserDataModel>{student});
 
                 if(result.Count > 0)
                 {
@@ -300,13 +300,13 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                MyUserManager myUserManager = new MyUserManager(userManager);
+                UserService UserService = new UserService(userManager);
 
                 foreach (int studentId in studentIds)
                 {
                     UserModel student = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
 
-                    await myUserManager.DeleteUser(student);
+                    await UserService.DeleteUser(student);
                     
                 }
 
@@ -708,7 +708,7 @@ namespace lms_with_moodle.Controllers
                 teacher.userTypeId = (int)UserType.Teacher;
                 teacher.ConfirmedAcc = true;
                 
-                if(myUserManager.CheckPhoneInterupt(teacher.PhoneNumber))
+                if(UserService.CheckPhoneInterupt(teacher.PhoneNumber))
                     return BadRequest("شماره همراه معلم قبلا در سیستم ثبت شده است");
 
                 UserModel newTeacher = userManager.FindByNameAsync(teacher.MelliCode).Result;
@@ -725,11 +725,11 @@ namespace lms_with_moodle.Controllers
                     teacher.Id = newTeacher.Id;
                     
                     teacher.teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
-                    result = await myUserManager.EditUsers(new List<UserDataModel>{teacher} , schoolId , true);
+                    result = await UserService.EditUsers(new List<UserDataModel>{teacher} , schoolId , true);
                 }
                 else
                 {
-                    result = await myUserManager.CreateUser(new List<UserDataModel>{teacher} , (int)UserType.Teacher , schoolId);
+                    result = await UserService.CreateUser(new List<UserDataModel>{teacher} , (int)UserType.Teacher , schoolId);
                 }
 
                 if(result.Count > 0)
@@ -756,17 +756,17 @@ namespace lms_with_moodle.Controllers
 
                 if(userModel.MelliCode != inputModel.MelliCode)
                 {
-                    if(myUserManager.CheckMelliCodeInterupt(inputModel.MelliCode , inputModel.Id))
+                    if(UserService.CheckMelliCodeInterupt(inputModel.MelliCode , inputModel.Id))
                         return BadRequest(" کد ملی وارد شده وجود دارد");
                 }
 
                 if(inputModel.PhoneNumber != userModel.PhoneNumber)
                 {
-                    if(myUserManager.CheckPhoneInterupt(inputModel.PhoneNumber))
+                    if(UserService.CheckPhoneInterupt(inputModel.PhoneNumber))
                         return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
                 }
 
-                List<UserDataModel> result = await myUserManager.EditUsers(new List<UserDataModel>{inputModel});
+                List<UserDataModel> result = await UserService.EditUsers(new List<UserDataModel>{inputModel});
 
                 if(result.Count > 0)
                 {
@@ -791,7 +791,7 @@ namespace lms_with_moodle.Controllers
                 string userNameManager = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
 
-                MyUserManager myUserManager = new MyUserManager(userManager);
+                UserService UserService = new UserService(userManager);
 
                 foreach (int teacherId in teacherIds)
                 {
@@ -818,7 +818,7 @@ namespace lms_with_moodle.Controllers
                     }
 
                     //await moodleApi.UnAssignUsersFromCourse(unEnrolData);
-                    // await myUserManager.DeleteUser(teacher);
+                    // await UserService.DeleteUser(teacher);
 
                     // appDbContext.TeacherCourse.RemoveRange(appDbContext.TeacherCourse.Where(x => x.TeacherId == teacher.Id));
 
@@ -1129,13 +1129,13 @@ namespace lms_with_moodle.Controllers
 
                         if(userModel == null)//Check for duplicate Username
                         {                        
-                            if(!myUserManager.CheckMelliCodeInterupt(selectedUser.MelliCode , 0))
+                            if(!UserService.CheckMelliCodeInterupt(selectedUser.MelliCode , 0))
                             {
                                 if(selectedUser.PhoneNumber == null)
                                 {
                                     newUsers.Add(selectedUser);
                                 }
-                                if(selectedUser.PhoneNumber != null && !myUserManager.CheckPhoneInterupt(selectedUser.PhoneNumber))
+                                if(selectedUser.PhoneNumber != null && !UserService.CheckPhoneInterupt(selectedUser.PhoneNumber))
                                 {
                                     newUsers.Add(selectedUser);
                                 }
@@ -1151,8 +1151,8 @@ namespace lms_with_moodle.Controllers
 
                 }
                 
-                correctUser = await myUserManager.CreateUser(newUsers , userTypeId , schoolId);
-                await myUserManager.EditUsers(duplicateUser , schoolId , userTypeId == (int)UserType.Teacher);
+                correctUser = await UserService.CreateUser(newUsers , userTypeId , schoolId);
+                await UserService.EditUsers(duplicateUser , schoolId , userTypeId == (int)UserType.Teacher);
 
                 BulkData bulkData = new BulkData();
                 bulkData.allCount = excelUsers.Count;

@@ -39,7 +39,7 @@ namespace lms_with_moodle.Controllers
         private readonly LDAP_db ldap;
 
         //MoodleApi moodleApi;
-        MyUserManager myUserManager;
+        UserService UserService;
         FarazSmsApi SMSApi;
         public UsersController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -55,7 +55,7 @@ namespace lms_with_moodle.Controllers
             ldap = new LDAP_db(appDbContext);
             //moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
-            myUserManager = new MyUserManager(userManager , appDbContext);
+            UserService = new UserService(userManager , appDbContext);
         }
         
 
@@ -139,7 +139,7 @@ namespace lms_with_moodle.Controllers
                 //Type  0 => send verificationCode => data = phonenumber
                 //Type  1 => check verificationCode => data = verificationCode
 
-                if(myUserManager.CheckPhoneInterupt(phoneNumber))
+                if(UserService.CheckPhoneInterupt(phoneNumber))
                     return BadRequest("شماره همراه وارد شده قبلا در سیستم ثبت شده است");
 
                 string idNumber = userManager.GetUserId(User);
@@ -302,7 +302,7 @@ namespace lms_with_moodle.Controllers
 
                     userData.studentDetail = studentDetail;
 
-                    await myUserManager.SyncUserDetail(userData);
+                    await UserService.SyncUserDetail(userData);
                 }
                 studentDetail.BirthDate = userDataModel.studentDetail.BirthDate;
                 studentDetail.cityBirth = userDataModel.studentDetail.cityBirth;
@@ -356,7 +356,7 @@ namespace lms_with_moodle.Controllers
 
                     userData.teacherDetail = teacherDetail;
 
-                    await myUserManager.SyncUserDetail(userData);
+                    await UserService.SyncUserDetail(userData);
                 }
 
                 teacherDetail.birthDate = userDataModel.teacherDetail.birthDate;
