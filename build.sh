@@ -12,11 +12,14 @@ IMAGE_REPO=${3:-virgol}
 IMAGE_TAG=${1:-latest}
 TAG_REVISION=0
 
-sudo git stash
-sudo git pull origin master
-# sudo git pull origin Beta
+# For first time
 # sudo git branch --track Beta origin/Beta
 # sudo git checkout Beta
+
+sudo git stash
+sudo git pull origin Beta
+# sudo git pull origin master
+
 
 sudo docker login
 sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest .
