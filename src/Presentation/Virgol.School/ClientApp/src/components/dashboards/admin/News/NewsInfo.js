@@ -32,7 +32,6 @@ class NewsInfo extends React.Component {
         let accesRole = parseInt(newsDetail.accessRoleId.split(",")[0])
 
         const Receivers = this.options.find(x => x.value == accesRole);
-        console.log(newsDetail)
         this.setState({ Receivers , tags : newsDetail.tagsStr});
     }
 

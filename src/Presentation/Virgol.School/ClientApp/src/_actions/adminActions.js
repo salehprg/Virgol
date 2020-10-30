@@ -166,8 +166,6 @@ export const GetAllTeachers = token => async dispatch => {
         return true
 
     } catch (e) {
-        console.log(e)
-
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         return false
 
@@ -221,16 +219,12 @@ export const getDashboardInfo = token => async dispatch => {
 
 export const RedirectAdmin = (token , schoolId) => async dispatch => {
 
-    try {
-        console.log("send")
-        
+    try {        
         const response = await lms.get(`/Admin/RedirectAdmin?schoolId=${schoolId}` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
-
-        console.log(response)
 
         switch (response.data.userType) {
             case 1: {
@@ -259,7 +253,6 @@ export const RedirectAdmin = (token , schoolId) => async dispatch => {
         return true
 
     } catch (e) {
-        console.log(e.response)
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         return false
 

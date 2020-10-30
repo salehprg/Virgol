@@ -73,11 +73,9 @@ export const getAllStudents = (token,isForAssign = 'false') => async dispatch =>
                 authorization: `Bearer ${token}`
             }
         });
-        console.log(response)
 
         dispatch({ type: Type.GET_ALL_STUDENTS, payload: response.data });
     } catch (e) {
-        console.log(e)
         dispatch(alert.error("خطا"))
     }
 
@@ -145,7 +143,6 @@ export const DeleteStudents = (token, ids) => async dispatch => {
         dispatch(alert.success("دانش آموز حذف شد"))
 
     } catch (e) {
-        console.log(e.response)
         dispatch({ type: STOP })
         dispatch(alert.error("خطا در حذف معلم"))
     }
@@ -190,7 +187,6 @@ export const AssignUserListToClass = (token , formValue , classId ) => async dis
         dispatch(alert.success(`لیست دانش آموزان به کلاس اضافه شد `))
         dispatch({ type: Type.AssignUserListToClass, payload: response.data });
     } catch (e) {
-        console.log(e.response)
         dispatch({ type: STOP })
         dispatch(alert.error("خطا"))
     }
@@ -213,7 +209,6 @@ export const AssignUserToClass = (token , classId , excelData) => async dispatch
         });
 
         dispatch({ type: STOP })
-        console.log(response.data)
 
         dispatch(alert.success(`لیست دانش آموزان به کلاس اضافه شد \n : تعداد کل ${response.data.allCount} \n جدید : ${response.data.newCount} \n تکراری : ${response.data.duplicateCount}`
         ))
@@ -318,7 +313,6 @@ export const CheckNewTeacher = (token, MelliCode) => async dispatch => {
 
     } catch (e) {
         dispatch({type : STOP})
-        console.log(e.response)
         dispatch(alert.error(e.response.data))
 
         return false
@@ -346,7 +340,6 @@ export const addNewTeacher = (token, formValues) => async dispatch => {
 
     } catch (e) {
         dispatch({type : STOP})
-        console.log(e.response)
         dispatch(alert.error(e.response.data))
     }
 
@@ -380,7 +373,6 @@ export const addBulkTeacher = (token, excel) => async dispatch => {
 export const deleteTeacher = (token, ids) => async dispatch => {
 
     try {
-        console.log(token)
         dispatch({ type: START })
         const response = await lms.post(`/Manager/DeleteTeacher`, ids ,{
             headers: {
@@ -393,7 +385,6 @@ export const deleteTeacher = (token, ids) => async dispatch => {
         dispatch(alert.success("معلم حذف شد"))
 
     } catch (e) {
-        console.log(e.response)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
     }

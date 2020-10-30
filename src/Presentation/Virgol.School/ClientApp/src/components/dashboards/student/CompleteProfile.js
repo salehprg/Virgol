@@ -129,7 +129,6 @@ class CompleteProfile extends React.Component {
             cityBirth: formValues.cityBirth
         }
 
-        console.log(data)
         
         await this.props.CompleteStudentProfile(this.props.user.token , data)
     }

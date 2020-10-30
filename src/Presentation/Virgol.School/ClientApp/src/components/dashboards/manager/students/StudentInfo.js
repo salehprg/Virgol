@@ -159,7 +159,6 @@ class StudentInfo extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         user: state.auth.userInfo , 
         userInfo : state.managerData.userInfo,

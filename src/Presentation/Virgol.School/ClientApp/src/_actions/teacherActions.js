@@ -26,7 +26,6 @@ export const GetClassBook = (token , lessonId) => async dispatch => {
     } catch (e) 
     {
 
-        console.log(e.response)
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         return false
     }
@@ -52,7 +51,6 @@ export const GetScheduleList = (token ) => async dispatch => {
     } catch (e) 
     {
 
-        console.log(e.response)
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         return false
     }

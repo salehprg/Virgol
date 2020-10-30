@@ -18,8 +18,6 @@ export const GetNewsDetail = (newsDetail) => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
-
         return false
 
     }
@@ -142,7 +140,6 @@ export const ShowError = (message) => async dispatch => {
         return true
 
     } catch (e) {
-        console.log(e.response)
 
         switch (e.response.status) {
             case 401:
@@ -179,7 +176,6 @@ export const CreateNews = (token ,formvalue ,returnUrl) => async dispatch => {
         return true
 
     } catch (e) {
-        console.log(e.response)
 
         switch (e.response.status) {
             case 401:

@@ -37,7 +37,6 @@ class CompleteProfile extends React.Component {
             cityBirth: formValues.cityBirth
         }
 
-        console.log(data)
         
         await this.props.CompleteTeacherProfile(this.props.user.token , data)
     }
@@ -109,7 +108,6 @@ const validate = formValues => {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         user: state.auth.userInfo ,
         initialValues: {

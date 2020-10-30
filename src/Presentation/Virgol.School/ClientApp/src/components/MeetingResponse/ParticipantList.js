@@ -43,7 +43,6 @@ class ParticipantList extends React.Component {
             )
 
         }))
-        console.log(id + " : " + status)
     }
 
     handleSubmit = async () => {

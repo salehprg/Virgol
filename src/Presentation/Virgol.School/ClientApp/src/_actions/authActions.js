@@ -8,7 +8,6 @@ import { START , STOP } from "./workerTypes";
 export const login = (formValues , autoRedirect = true) => async dispatch => {
 
     try {
-        console.log(process.env);
 
         const response = await lms.post('/Users/LoginUser', formValues)
 
@@ -163,7 +162,6 @@ export const forgotPassword = (melliCode, verificationCode) => async dispatch =>
         }
 
     } catch (e) {
-        console.log(e.response)
         dispatch(alert.error("خطایی در برقراری ارتباط رخ داد"));
         return false
     }
@@ -184,7 +182,6 @@ export const ChangePassword = (melliCode, verificationCode , newPassword) => asy
         }
 
     } catch (e) {
-        console.log(e.response)
         dispatch(alert.error("خطایی در برقراری ارتباط رخ داد"));
         return false
     }
@@ -194,7 +191,6 @@ export const ChangePassword = (melliCode, verificationCode , newPassword) => asy
 export const SendVerifyPhoneNumber = (phoneNumber,token,IsFatherCode) => async dispatch => {
 
     try {
-        console.log(token)
         dispatch({ type: START })
         const response = await lms.post(`/Users/VerifyPhoneNumber?phoneNumber=${phoneNumber}&type=0&fatherCode=${IsFatherCode}` , null , {
             headers: {
@@ -206,7 +202,6 @@ export const SendVerifyPhoneNumber = (phoneNumber,token,IsFatherCode) => async d
         return true
 
     } catch (e) {
-        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
         return false
@@ -235,7 +230,6 @@ export const CheckVerifyPhoneNumber = (phoneNumber, verificationCode , token , I
 
     } catch (e) {
         dispatch({ type: STOP })
-        console.log(e.response)
         dispatch(alert.error(e.response.data));
         return false
     }

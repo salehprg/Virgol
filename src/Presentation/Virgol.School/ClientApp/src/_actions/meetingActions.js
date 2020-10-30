@@ -146,7 +146,6 @@ export const GetRecentClass = token => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
 
         return false
@@ -171,7 +170,6 @@ export const GetRecordList = (scheduleId) => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
 
         return false
@@ -184,7 +182,6 @@ export const CreatePrivateRoom = (roomName) => async dispatch => {
 
     try {
         
-        console.log(userToken);
 
         dispatch({ type: START })
         const response = await lms.put(`/Meeting/CreatePrivateRoom?roomName=${roomName}` , null , {
@@ -201,7 +198,6 @@ export const CreatePrivateRoom = (roomName) => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
 
@@ -230,7 +226,6 @@ export const StartMeeting = (token,lessonId) => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
 
@@ -259,7 +254,6 @@ export const EndMeeting = (token,bbbMeetingId) => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
 
@@ -290,7 +284,6 @@ export const JoinPrivateRoom = (token,roomGUID) => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
 
@@ -321,7 +314,6 @@ export const JoinMeeting = (token,meetingId) => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
 
