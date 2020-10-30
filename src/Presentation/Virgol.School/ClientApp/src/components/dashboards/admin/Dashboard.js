@@ -16,7 +16,7 @@ import { connect } from "react-redux";
 
 class Dashboard extends React.Component {
 
-    state = {loading : false, sidebar: true, active: 'dashboard' }
+    state = {loading : false, sidebar: true, active: 'dashboard', showLang: false }
 
     componentDidMount = async () => {
         this.setState({ active: this.props.location.pathname.split('/')[2] })
@@ -52,10 +52,14 @@ class Dashboard extends React.Component {
         history.push(this.props.match.url + '/' + panel)
     }
 
+    setShowLang = show => {
+        this.setState({ showLang: show })
+    }
+
     render() {
         if (this.state.loading) return loading('w-10 text-grayish centerize')
         return (
-            <div onClick={() => this.setState({ langVis: false })} className="w-screen min-h-screen">
+            <div onClick={() => this.setState({ showLang: false })} className="w-screen min-h-screen">
                 <Sidebar
                     show={this.state.sidebar}
                     toggle={this.toggleSidebar}
@@ -101,7 +105,7 @@ class Dashboard extends React.Component {
                 </Sidebar>
 
                 <div className="lg:w-5/6 px-6 w-full min-h-screen bg-bold-blue">
-                    <Header />
+                    <Header showLang={this.state.showLang} setShowLang={this.setShowLang} />
 
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>

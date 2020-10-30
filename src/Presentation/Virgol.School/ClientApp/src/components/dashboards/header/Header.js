@@ -1,11 +1,12 @@
 import React from "react";
 import { withTranslation } from 'react-i18next';
-import ReactToolTip from 'react-tooltip'
+import { usePopper } from 'react-popper';
+import ReactToolTip from 'react-tooltip';
 import { connect } from 'react-redux';
 import { logout } from "../../../_actions/authActions";
 import Notification from "./Notification";
-import {briefcase, globe, headphones, log_out, mail, message, video} from "../../../assets/icons";
-import moment from 'moment'
+import { globe, headphones, log_out, mail } from "../../../assets/icons";
+import ChangeLang from "./ChangeLang";
 
 class Header extends React.Component {
 
@@ -55,9 +56,7 @@ class Header extends React.Component {
                             {/*    </a>*/}
                             {/*    {video("w-6 text-white cursor-pointer")}*/}
                             {/*</div>*/}
-                            {/* <div className="relative mx-1">
-                                {globe("w-6 text-white cursor-pointer")}
-                            </div> */}
+                            <ChangeLang showLang={this.props.showLang} setShowLang={this.props.setShowLang} />
                             {/* <span className={`mx-2 cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge != 'ar' ? 'text-greenish' : 'text-white'}`}>فارسی</span>
                             <span onClick={() => this.props.i18n.changeLanguage('ar')} className={`mx-2 cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge == 'ar' ? 'text-greenish' : 'text-white'}`}>العربیه</span> */}
                             <div data-tip={this.props.t('support')} className="relative mx-1">
