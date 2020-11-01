@@ -1,35 +1,12 @@
-import React from "react";
-import Particles from "react-particles-js";
-
-const particles = {
-    particles: {
-        "number": {
-            "value": 300,
-            "density": {
-                "enable": false
-            }
-        },
-        "size": {
-            "value": 5,
-            "random": true,
-            "anim": {
-                "speed": 4,
-                "size_min": 0.3
-            }
-        },
-        "line_linked": {
-            "enable": false
-        },
-        "move": {
-            "random": true,
-            "speed": 1,
-            "direction": "top",
-            "out_mode": "out"
-        }
-    },
-}
+import React, { useState } from "react";
 
 const Hero = (props) => {
+
+    const [service, setService] = useState("connect")
+
+    const changeService = (service) => {
+        setService(service);
+    }
 
     return (
         <div className="relative w-full text-center rounded-xl py-4 px-6">
@@ -50,7 +27,10 @@ const Hero = (props) => {
                 </>
                 : "")}
                 
-            
+            <div className="flex flex-row items-center my-2 w-full justify-center">
+                <span onClick={() => changeService('bbb')} className={`mx-2 cursor-pointer px-3 py-1 border-2 rounded-md ${service === 'bbb' ? 'border-blue-500 text-blue-500' : 'border-grayish text-grayish'}`}>BigBlueButton</span>
+                <span onClick={() => changeService('connect')} className={`mx-2 cursor-pointer px-3 py-1 border-2 rounded-md ${service === 'connect' ? 'border-greenish text-greenish' : 'border-grayish text-grayish'}`}>Adobe Connect</span>
+            </div>
         </div>
     );
 

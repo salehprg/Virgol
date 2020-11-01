@@ -111,10 +111,10 @@ const validate = formValues => {
     const errors = {}
     const { firstName, lastName, melliCode, fatherName } = formValues
 
-    if (!firstName || !validator.checkPersian(firstName)) errors.firstName = true
-    if (!lastName || !validator.checkPersian(lastName)) errors.lastName = true
+    if (!firstName) errors.firstName = true
+    if (!lastName) errors.lastName = true
     if (!validator.checkMelliCode(melliCode)) errors.melliCode = true
-    if (!fatherName || !validator.checkPersian(fatherName)) errors.fatherName = true
+    if (!fatherName) errors.fatherName = true
     
     return errors
 }
