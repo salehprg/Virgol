@@ -51,7 +51,7 @@ spec:
     - name: VIRGOL_BBB_LOAD_BALANCER_MODE
       value: separate
     - name: VIRGOL_SCALELITE_BASE_URL
-      value: https://b1.legace.ir/bigbluebutton/api/
+      value: https://fb1.legace.ir/bigbluebutton/api/
     - name: VIRGOL_SCALELITE_SECRET
       value: 1b6s1esKbXNM82ussxx8OHJTenNvfkBu59tkHHADvqk
     - name: VIRGOL_JWT_SECRET
