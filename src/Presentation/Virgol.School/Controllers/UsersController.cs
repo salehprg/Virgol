@@ -419,36 +419,34 @@ namespace lms_with_moodle.Controllers
 
                     object userDetail = null;
 
-                    switch(userInformation.userTypeId)
+                    if(UserService.HasRole(userInformation , Roles.Student))
                     {
-                        case (int)UserType.Student:
-                            SchoolModel school = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
-                            School_studentClass classs = appDbContext.School_StudentClasses.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                            School_Class classDetail = new School_Class();
-                            classDetail = (classs != null ? appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault() : classDetail);
+                        SchoolModel school = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
+                        School_studentClass classs = appDbContext.School_StudentClasses.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                        School_Class classDetail = new School_Class();
+                        classDetail = (classs != null ? appDbContext.School_Classes.Where(x => x.Id == classs.ClassId).FirstOrDefault() : classDetail);
 
-                            GradeModel grade = (classDetail.Grade_Id != 0 ? appDbContext.Grades.Where(x => x.Id == classDetail.Grade_Id).FirstOrDefault() : new GradeModel());
+                        GradeModel grade = (classDetail.Grade_Id != 0 ? appDbContext.Grades.Where(x => x.Id == classDetail.Grade_Id).FirstOrDefault() : new GradeModel());
 
-                            userDetail = new {
-                                school,
-                                classDetail.ClassName,
-                                grade.GradeName
-                            };
-                            
-                            break;
+                        userDetail = new {
+                            school,
+                            classDetail.ClassName,
+                            grade.GradeName
+                        };  
+                    }
+                    if(UserService.HasRole(userInformation , Roles.Teacher))
+                    {
+                        userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
+                    }
 
-                        case (int)UserType.Teacher:
-                            userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
-                            break;
+                    if(UserService.HasRole(userInformation , Roles.Admin))
+                    {
+                        userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
+                    }
 
-                        case (int)UserType.Admin:
-                            userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                            break;
-
-                        case (int)UserType.Manager:
-                            userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                            break;
-                        
+                    if(UserService.HasRole(userInformation , Roles.Manager))
+                    {
+                        userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
                     }
 
                     SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
@@ -520,12 +518,12 @@ namespace lms_with_moodle.Controllers
 
                     bool completedProfile = userInformation.LatinFirstname != null && userInformation.LatinFirstname != null;
                     
-                    
+                    string UserType = (userRoleNames.Count > 1 ? userRoleNames.Where(x => x != Roles.User).FirstOrDefault() : userRoleNames.FirstOrDefault());
 
-                    //Get userTypeId information from UserType Class
+                    //Get UserType information from UserType Class
                     return Ok(new
                     {
-                        UserType = userInformation.userTypeId,
+                        UserType = UserType,
                         category,
                         completedProfile,
                         BaseId = baseId,
@@ -589,7 +587,7 @@ namespace lms_with_moodle.Controllers
                 
                 newUser.ConfirmedAcc = false;
                 newUser.UserName = _model.MelliCode;
-                newUser.userTypeId = (int)UserType.Student;
+                newUser.UserType = Roles.Student;
                 
                 IdentityResult result = userManager.CreateAsync(newUser , newUser.MelliCode).Result;
                 

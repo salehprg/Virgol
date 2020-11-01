@@ -14,13 +14,16 @@ namespace Models.User
         public int SchoolId {get; set;}
         public string MelliCode {get; set;}    
         public bool ConfirmedAcc {get; set;}
-        public int userTypeId {get; set;}
+        
         public int Moodle_Id {get; set;}
         //0 = Girl , 1 = Boy
         public int Sexuality {get; set;}
 
         [NotMapped]
         public bool completed {get;set;}
+
+        [NotMapped]
+        public string UserType {get; set;}
     }
 
 }

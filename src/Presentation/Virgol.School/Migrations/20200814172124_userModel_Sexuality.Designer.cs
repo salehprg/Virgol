@@ -516,7 +516,7 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
 
-                    b.Property<int>("userTypeId")
+                    b.Property<int>("UserType")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

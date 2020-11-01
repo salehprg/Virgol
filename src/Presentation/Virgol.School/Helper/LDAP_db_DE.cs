@@ -99,17 +99,17 @@ namespace lms_with_moodle.Helper
                 string mailAddress = uniqueMailId + "@legace.ir";
 
                 string title = null;
-                switch(user.userTypeId)
+                switch(user.UserType)
                 {
-                    case (int)UserType.Student :
+                    case Roles.Student :
                         title = "Student";
                         break;
 
-                    case (int)UserType.Teacher:
+                    case Roles.Teacher:
                         title = "Teacher";
                         break;
 
-                     case (int)UserType.Manager:
+                     case Roles.Manager:
                         title = "Teacher";
                         break;
                 }

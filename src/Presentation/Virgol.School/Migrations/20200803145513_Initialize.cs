@@ -63,7 +63,7 @@ namespace lms_with_moodle.Migrations
                     SchoolId = table.Column<int>(nullable: false),
                     MelliCode = table.Column<string>(nullable: true),
                     ConfirmedAcc = table.Column<bool>(nullable: false),
-                    userTypeId = table.Column<int>(nullable: false),
+                    UserType = table.Column<int>(nullable: false),
                     Moodle_Id = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

@@ -115,10 +115,12 @@ public class MeetingService {
 
         return false;
     }
-    private async Task<Meeting> StartMeeting(ClassScheduleView classSchedule , int teacherId , string serviceType  , string meetingName = "")
+    private async Task<Meeting> StartMeeting(ClassScheduleView classSchedule , int teacherId , string meetingName = "")
     {
-        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType);
+        TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
+        string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
 
+        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType);
 
         DateTime timeNow = MyDateTime.Now();
         float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
@@ -156,7 +158,7 @@ public class MeetingService {
 
         int userId = user.Id;
 
-        bool isTeacher = user.userTypeId == (int)UserType.Teacher;
+        bool isTeacher = user.UserType == Roles.Teacher;
 
         float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
         int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
@@ -218,7 +220,7 @@ public class MeetingService {
     private List<Meeting> getActiveMeeting(UserModel user)
     {
         List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => !x.Finished).ToList();
-        bool isTeacher = user.userTypeId == (int)UserType.Teacher;
+        bool isTeacher = user.UserType == Roles.Teacher;
 
         if(isTeacher)
         {
@@ -264,9 +266,12 @@ public class MeetingService {
     public async Task<Meeting> StartPrivateMeeting(string meetingName , int userId)
     {   
         DateTime timeNow = MyDateTime.Now();
+        TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userId).FirstOrDefault();
+        string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
 
         Meeting meeting = new Meeting();
         meeting.MeetingName = meetingName;
+        meeting.ServiceType = serviceType;
         meeting.StartTime = timeNow;
         meeting.ScheduleId = 0;
         meeting.TeacherId = userId;
@@ -276,7 +281,7 @@ public class MeetingService {
         appDbContext.Meetings.Add(meeting);
         appDbContext.SaveChanges();
 
-        await CreateRoom(meeting , 0 , meeting.MeetingId);
+        await CreateRoom(meeting , 0 , serviceType , meeting.MeetingId);
 
         if(meeting != null)
         {
@@ -286,9 +291,9 @@ public class MeetingService {
         return null;
     }
 
-    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId , string serviceType)
+    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId)
     {   
-        Meeting meeting = await StartMeeting(classSchedule , teacherId , serviceType);
+        Meeting meeting = await StartMeeting(classSchedule , teacherId);
 
         if(meeting != null)
         {
@@ -310,17 +315,17 @@ public class MeetingService {
 
         return (meeting != null ? meeting.Id : -1);
     }
-    public async Task<string> JoinMeeting(UserModel user , string bbbMeetingId , bool privatee = false)
+    public async Task<string> JoinMeeting(UserModel user , string MeetingId , bool privatee = false)
     {
         int userId = user.Id;
 
-        Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId).FirstOrDefault();
+        Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == MeetingId).FirstOrDefault();
 
         if(meeting == null)
         {
             int meetingId = 0;
 
-            int.TryParse(bbbMeetingId , out meetingId);
+            int.TryParse(MeetingId , out meetingId);
 
             if(meetingId > 0)
             {
@@ -328,22 +333,22 @@ public class MeetingService {
             }
         }
 
-        bool isModerator = (user.Id == meeting.TeacherId || user.userTypeId == (int)UserType.Manager);
+        bool isModerator = (user.Id == meeting.TeacherId || user.UserType == Roles.Manager);
 
         if(meeting == null)
             return null;
 
         string classUrl = "";
 
-        if(meeting.ServiceType == ServiceType.BBB)
-        {
-            BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
-            classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
-        }
-        else if(meeting.ServiceType == ServiceType.AdobeConnect)
+        if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
             AdobeApi adobeApi = new AdobeApi();
             classUrl = adobeApi.JoinMeeting(meeting.MeetingId , user.UserName , user.MelliCode , isModerator);
+        }
+        else
+        {
+            BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
+            classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
         }
 
         if(classUrl != "")
@@ -415,7 +420,7 @@ public class MeetingService {
         List<ClassScheduleView> schedules = getSchedules(user);
         List<Meeting> activeMeetings = getActiveMeeting(user);
 
-        bool isTeacher = (user.userTypeId == (int)UserType.Teacher ? true : false);
+        bool isTeacher = (user.UserType == Roles.Teacher ? true : false);
 
         foreach (var schedule in schedules)
         {

@@ -186,7 +186,7 @@ namespace lms_with_moodle.Controllers
                 if(UserService.CheckMelliCodeInterupt(student.MelliCode , 0))
                     return BadRequest("کد ملی وارد شده تکراریست");
 
-                List<UserDataModel> result = await UserService.CreateUser(new List<UserDataModel>{student} , (int)UserType.Student , schoolId );
+                List<UserDataModel> result = await UserService.CreateUser(new List<UserDataModel>{student} , Roles.Student , schoolId );
 
                 if(result.Count > 0)
                 {
@@ -222,7 +222,7 @@ namespace lms_with_moodle.Controllers
                     string userName = userManager.GetUserId(User);
                     int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
-                    var errors = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
+                    var errors = await CreateBulkUser(Roles.Student , Files.Files[0].FileName , schoolId);
                     if(errors != null)
                     {
                         return Ok(errors);
@@ -619,7 +619,7 @@ namespace lms_with_moodle.Controllers
                     string userName = userManager.GetUserId(User);
                     int schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
-                    var users = await CreateBulkUser((int)UserType.Teacher , Files.Files[0].FileName , schoolId);
+                    var users = await CreateBulkUser(Roles.Teacher , Files.Files[0].FileName , schoolId);
 
                     if(users != null)
                     {
@@ -682,7 +682,7 @@ namespace lms_with_moodle.Controllers
 
                 UserModel newTeacher = appDbContext.Users.Where(x => x.MelliCode == MelliCode).FirstOrDefault();
 
-                if(newTeacher != null && newTeacher.userTypeId != (int)UserType.Teacher)
+                if(newTeacher != null && newTeacher.UserType != Roles.Teacher)
                     return BadRequest("کد ملی وارد شده مربوط به شخص دیگری است"); 
 
                 return Ok(newTeacher);
@@ -705,7 +705,7 @@ namespace lms_with_moodle.Controllers
                 int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
 
                 teacher.UserName = teacher.MelliCode;
-                teacher.userTypeId = (int)UserType.Teacher;
+                teacher.UserType = Roles.Teacher;
                 teacher.ConfirmedAcc = true;
                 
                 if(UserService.CheckPhoneInterupt(teacher.PhoneNumber))
@@ -713,7 +713,7 @@ namespace lms_with_moodle.Controllers
 
                 UserModel newTeacher = userManager.FindByNameAsync(teacher.MelliCode).Result;
 
-                if(newTeacher != null && newTeacher.userTypeId != (int)UserType.Teacher)
+                if(newTeacher != null && newTeacher.UserType == Roles.Teacher)
                     return BadRequest("کد ملی وارد شده مربوط به شخص دیگری است"); 
 
                 List<UserDataModel> result = new List<UserDataModel>();
@@ -729,7 +729,7 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    result = await UserService.CreateUser(new List<UserDataModel>{teacher} , (int)UserType.Teacher , schoolId);
+                    result = await UserService.CreateUser(new List<UserDataModel>{teacher} , Roles.Teacher , schoolId);
                 }
 
                 if(result.Count > 0)
@@ -909,7 +909,7 @@ namespace lms_with_moodle.Controllers
                     string userName = userManager.GetUserId(User);
                     schoolId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().SchoolId;
 
-                    data = await CreateBulkUser((int)UserType.Student , Files.Files[0].FileName , schoolId);
+                    data = await CreateBulkUser(Roles.Student , Files.Files[0].FileName , schoolId);
                     userDataModels = data.usersData;
                 }
 
@@ -1092,11 +1092,11 @@ namespace lms_with_moodle.Controllers
         ///<param name="CategoryId">
         ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
         ///</param>
-        ///<param name="userTypeId">
-        ///Set userTypeId from UserType class Teacher,Student,...
+        ///<param name="UserType">
+        ///Set UserType from UserType class Teacher,Student,...
         ///</param>
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<BulkData> CreateBulkUser(int userTypeId , string fileName , int schoolId)
+        public async Task<BulkData> CreateBulkUser(string userType , string fileName , int schoolId)
         {
             try
             {
@@ -1108,7 +1108,7 @@ namespace lms_with_moodle.Controllers
                 //3.1 - don't add duplicate username 
                 int sexuality = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().sexuality;
 
-                List<UserDataModel> excelUsers = FileController.excelReader_Users(fileName , (userTypeId == (int)UserType.Teacher)).usersData;
+                List<UserDataModel> excelUsers = FileController.excelReader_Users(fileName , (userType == Roles.Teacher)).usersData;
                 List<UserDataModel> newUsers = new List<UserDataModel>();
                 List<UserDataModel> correctUser = new List<UserDataModel>();
                 List<UserDataModel> duplicateUser = new List<UserDataModel>();
@@ -1122,7 +1122,7 @@ namespace lms_with_moodle.Controllers
                     {
                         selectedUser.ConfirmedAcc = true;
                         selectedUser.UserName = selectedUser.MelliCode;
-                        selectedUser.userTypeId = userTypeId;
+                        selectedUser.UserType = userType;
                         selectedUser.SchoolId = schoolId;
 
                         UserModel userModel = await userManager.FindByNameAsync(selectedUser.UserName);
@@ -1151,8 +1151,8 @@ namespace lms_with_moodle.Controllers
 
                 }
                 
-                correctUser = await UserService.CreateUser(newUsers , userTypeId , schoolId);
-                await UserService.EditUsers(duplicateUser , schoolId , userTypeId == (int)UserType.Teacher);
+                correctUser = await UserService.CreateUser(newUsers , userType , schoolId);
+                await UserService.EditUsers(duplicateUser , schoolId , userType == Roles.Teacher);
 
                 BulkData bulkData = new BulkData();
                 bulkData.allCount = excelUsers.Count;

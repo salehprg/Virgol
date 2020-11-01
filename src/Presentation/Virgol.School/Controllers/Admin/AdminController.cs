@@ -147,7 +147,7 @@ namespace lms_with_moodle.Controllers
 
                 UserModel userInformation  = appDbContext.Users.Where(x => x.Id == managerId).FirstOrDefault();
 
-                userRoleNames = userManager.GetRolesAsync(userInformation).Result.ToList();
+                userRoleNames = UserService.GetUserRoles(userInformation).Result.ToList();
 
                 List<Claim> authClaims = new List<Claim>()
                 {
@@ -195,10 +195,10 @@ namespace lms_with_moodle.Controllers
 
                 userDetail = new {userDetail , schooltypeName };
 
-                //Get userTypeId information from UserType Class
+                //Get UserType information from UserType Class
                 return Ok(new
                 {
-                    UserType = userInformation.userTypeId,
+                    UserType = Roles.Manager,
                     userInformation,
                     userDetail,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -222,7 +222,7 @@ namespace lms_with_moodle.Controllers
                 UserModel manager = model;
                 manager.UserName = model.MelliCode;
                 manager.ConfirmedAcc = true;
-                manager.userTypeId = (int)UserType.Manager;
+                //manager.UserType = Roles.Manager;
                 manager.Moodle_Id = 0;
                 manager.MelliCode = ConvertToPersian.PersianToEnglish(manager.MelliCode);
 
@@ -235,7 +235,7 @@ namespace lms_with_moodle.Controllers
 
                 managerData.managerDetail = managerDetail;
 
-                List<UserDataModel> managerDatas = await UserService.CreateUser(new List<UserDataModel>{managerData} , (int)UserType.Manager , model.SchoolId , model.password);
+                List<UserDataModel> managerDatas = await UserService.CreateUser(new List<UserDataModel>{managerData} , Roles.Manager , model.SchoolId , model.password);
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
 
@@ -342,7 +342,7 @@ namespace lms_with_moodle.Controllers
                     userDataModel.managerDetail = new ManagerDetail();
                     userDataModel.managerDetail.personalIdNumber = model.personalIdNumber;
 
-                    List<UserDataModel> datas = await UserService.CreateUser(new List<UserDataModel>{userDataModel} , (int)UserType.Manager , model.SchoolId , model.password );
+                    List<UserDataModel> datas = await UserService.CreateUser(new List<UserDataModel>{userDataModel} , Roles.Manager , model.SchoolId , model.password );
 
                     if(datas.Count > 0)
                     {

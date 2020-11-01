@@ -209,7 +209,7 @@ namespace lms_with_moodle.Controllers
                     {
                         classSchedule.OrgLessonName = mixedSchedule.MixedName;
 
-                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
+                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId);
                         //Get all schedules have same MixedId according to Selected Schedule
                         List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
 
@@ -222,7 +222,7 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
+                    int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId);
                 }
 
                 return Ok(true);
@@ -270,7 +270,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
 
-                bool isTeacher = user.userTypeId == (int)UserType.Teacher;
+                bool isTeacher = user.UserType == Roles.Teacher;
 
                 bool result = await meetingService.EndMeeting(bbbMeetingId , user.Id);
 
@@ -377,7 +377,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 int userId = user.Id;
-                bool isTeacher = user.userTypeId == (int)UserType.Teacher;
+                bool isTeacher = user.UserType == Roles.Teacher;
 
                 DateTime currentDateTime = MyDateTime.Now();
                 float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);

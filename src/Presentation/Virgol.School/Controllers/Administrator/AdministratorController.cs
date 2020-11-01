@@ -47,6 +47,7 @@ namespace lms_with_moodle.Controllers
         ClassScheduleService scheduleService;
         ManagerService managerService;
         FarazSmsApi SMSApi;
+        UserService UserService;
         public AdministratorController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -64,17 +65,19 @@ namespace lms_with_moodle.Controllers
             //scheduleService = new ClassScheduleService(appDbContext , moodleApi);
             scheduleService = new ClassScheduleService(appDbContext);
             managerService = new ManagerService(appDbContext);
+            UserService = new UserService(userManager , appDbContext);
         }
 
 #region Admin
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult GetAdmins()
+        public async Task<IActionResult> GetAdmins()
         {
             try
             {
-                return Ok(appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Admin).ToList());
+                List<UserModel> admins = await UserService.GetUsersHasRole(Roles.Admin);
+                return Ok(admins);
             }
             catch(Exception ex)
             {
@@ -106,7 +109,7 @@ namespace lms_with_moodle.Controllers
                     password = model.MelliCode;
                 }
 
-                newAdmin.userTypeId = (int)UserType.Admin;
+                newAdmin.UserType = Roles.Admin;
                 newAdmin.ConfirmedAcc = true;
                 IdentityResult result = await userManager.CreateAsync(newAdmin , password);
 
@@ -208,8 +211,8 @@ namespace lms_with_moodle.Controllers
         ///<param name="CategoryId">
         ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
         ///</param>
-        ///<param name="userTypeId">
-        ///Set userTypeId from UserType class Teacher,Student,...
+        ///<param name="UserType">
+        ///Set UserType from UserType class Teacher,Student,...
         ///</param>
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> CreateBulkBase(string fileName)

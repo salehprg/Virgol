@@ -61,14 +61,9 @@ namespace lms_with_moodle.Controllers
                 UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 
                 string roleName ="";
-                if(userModel.userTypeId != (int)UserType.Student)
-                {
-                    roleName = userManager.GetRolesAsync(userModel).Result.Where(x => x != "User").FirstOrDefault();
-                }
-                else
-                {
-                    roleName = "User";
-                }
+                roleName = userManager.GetRolesAsync(userModel).Result.Where(x => x != "User").FirstOrDefault();
+
+                roleName = (string.IsNullOrEmpty(roleName) ? "User" : roleName);
 
                 int userRoleId = roleManager.FindByNameAsync(roleName).Result.Id;
 
@@ -91,17 +86,17 @@ namespace lms_with_moodle.Controllers
 
                         news.tagsStr = tags;
                         
-                        if(auther.userTypeId == (int)UserType.Manager)
+                        if(auther.UserType == Roles.Manager)
                         {
                             int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
-                            if(userModel.userTypeId == (int)UserType.Student)
+                            if(userModel.UserType == Roles.Student)
                             {
                                 if(userModel.SchoolId == schoolId)
                                 {
                                     result.Add(news);
                                 }
                             }
-                            else if(userModel.userTypeId == (int)UserType.Teacher)
+                            else if(userModel.UserType == Roles.Teacher)
                             {
                                 string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
                                 if(schoolIds.Contains(schoolId + ","))
@@ -110,13 +105,13 @@ namespace lms_with_moodle.Controllers
                                 }
                             }
                         }
-                        else if(auther.userTypeId == (int)UserType.Admin)
+                        else if(auther.UserType == Roles.Admin)
                         {
                             int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == auther.Id).FirstOrDefault().SchoolsType;
                             List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
                             foreach (var school in schools)
                             {
-                                if(userModel.userTypeId == (int)UserType.Teacher)
+                                if(userModel.UserType == Roles.Teacher)
                                 {
                                     string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
                                     if(schoolIds.Contains(school.Id + ","))
@@ -134,7 +129,7 @@ namespace lms_with_moodle.Controllers
                             }
                             
                         }
-                        else if(auther.userTypeId == (int)UserType.Teacher)
+                        else if(auther.UserType == Roles.Teacher)
                         {
                             //Because only students can see Teachers News we Should only check SchoolId
                             string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == auther.Id).FirstOrDefault().SchoolsId;

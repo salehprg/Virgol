@@ -11,6 +11,7 @@ public class TeacherDetail {
     public string personalIdNUmber {get;set;}
     public DateTime birthDate {get;set;}
     public string cityBirth {get;set;}
+    public string MeetingService {get;set;}
 
 
 }

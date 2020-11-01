@@ -22,7 +22,7 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
         localStorage.setItem('userType', response.data.userType)      
         
         switch (response.data.userType) {
-            case 1: {
+            case "User": {
                 if(!response.data.completedProfile)
                 {
                     history.push('/studentCompleteProfile');
@@ -31,7 +31,7 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
                 } 
                 break;
             }
-            case 3: {
+            case "Teacher": {
                 if(!response.data.completedProfile)
                 {
                     history.push('/teacherCompleteProfile');
@@ -40,11 +40,11 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
                 } 
                 break;
             }
-            case 2: {
+            case "Manager": {
                 history.push('/m/dashboard');
                 break;
             }
-            case 4: {
+            case "Admin": {
                 history.push('/a/dashboard');
                 break;
             }

@@ -113,7 +113,7 @@ namespace lms_with_moodle.Controllers
 
                 SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
 
-                UserModel managerInfo = appDbContext.Users.Where(x => x.SchoolId == schoolModel.Id && x.userTypeId == (int)UserType.Manager).FirstOrDefault();
+                UserModel managerInfo = appDbContext.Users.Where(x => x.SchoolId == schoolModel.Id && x.UserType == Roles.Manager).FirstOrDefault();
                 ManagerDetail managerDetail = new ManagerDetail();
                 if(managerInfo != null)
                 {
@@ -294,7 +294,7 @@ namespace lms_with_moodle.Controllers
                 manager.UserName = inputData.MelliCode;
                 manager.PhoneNumber = inputData.managerPhoneNumber;
                 manager.SchoolId = schoolResult.Id;
-                manager.userTypeId = (int)UserType.Manager;
+                manager.UserType = Roles.Manager;
                 manager.ConfirmedAcc = true;
 
                 string password = RandomPassword.GeneratePassword(true , true , true , 8);
@@ -303,7 +303,7 @@ namespace lms_with_moodle.Controllers
                 UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
                 userData.managerDetail = managerDetail;
 
-                List<UserDataModel> managerResult = await UserService.CreateUser(new List<UserDataModel>{userData} , (int)UserType.Manager , schoolResult.Id , password);
+                List<UserDataModel> managerResult = await UserService.CreateUser(new List<UserDataModel>{userData} , Roles.Manager , schoolResult.Id , password);
 
                 if(managerResult.Count > 0)
                 {
@@ -413,7 +413,7 @@ namespace lms_with_moodle.Controllers
 
                 if(removeCat)
                 {
-                    UserModel manager = appDbContext.Users.Where(x => x.SchoolId == schoolId && x.userTypeId == (int)UserType.Manager).FirstOrDefault();
+                    UserModel manager = appDbContext.Users.Where(x => x.SchoolId == schoolId && x.UserType == Roles.Manager).FirstOrDefault();
                     if(manager != null)
                     {
                         // manager.SchoolId = -1;
@@ -427,7 +427,7 @@ namespace lms_with_moodle.Controllers
                     appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_Classes.RemoveRange(appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList());
 
-                    List<UserModel> students = appDbContext.Users.Where(x => x.userTypeId == (int)UserType.Student && x.SchoolId == school.Id).ToList();
+                    List<UserModel> students = appDbContext.Users.Where(x => x.UserType == Roles.Student && x.SchoolId == school.Id).ToList();
 
                     foreach (var student in students)
                     {
@@ -986,8 +986,8 @@ namespace lms_with_moodle.Controllers
         ///<param name="CategoryId">
         ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
         ///</param>
-        ///<param name="userTypeId">
-        ///Set userTypeId from UserType class Teacher,Student,...
+        ///<param name="UserType">
+        ///Set UserType from UserType class Teacher,Student,...
         ///</param>
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<bool> CreateBulkSchool(string fileName , int schoolType)
@@ -1024,7 +1024,7 @@ namespace lms_with_moodle.Controllers
                             manager.MelliCode = schoolData.MelliCode;
                             manager.UserName = schoolData.MelliCode;
                             manager.SchoolId = schoolResult.Id;
-                            manager.userTypeId = (int)UserType.Manager;
+                            manager.UserType = Roles.Manager;
                             manager.ConfirmedAcc = true;
 
                             //string password = RandomPassword.GeneratePassword(true , true , true , 10);

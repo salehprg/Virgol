@@ -28,7 +28,7 @@ public class UserService {
     ///<summary>
     ///Every user should have MelliCode property 
     ///</summary>
-    public async Task<List<UserDataModel>> CreateUser(List<UserDataModel> users , int usersType , int schoolId , string password = null)
+    public async Task<List<UserDataModel>> CreateUser(List<UserDataModel> users , string usersType , int schoolId , string password = null)
     {
         users = users.Where(x => x.MelliCode != null).ToList();
 
@@ -47,10 +47,10 @@ public class UserService {
             {
                 int moodleId = 0;
 
-                user.userTypeId = usersType;
-                userData.userTypeId = usersType;
+                //user.UserType = usersType;
+                userData.UserType = usersType;
 
-                if(usersType != (int)UserType.Teacher)
+                if(usersType != Roles.Teacher)
                 {
                     user.SchoolId = schoolId;
                     userData.SchoolId = schoolId;
@@ -61,26 +61,26 @@ public class UserService {
                     userData.Id = user.Id;
                     switch(usersType)
                     {
-                        case (int)UserType.Student :
-                            await userManager.AddToRoleAsync(user , "User");
+                        case Roles.User :
+                            await userManager.AddToRoleAsync(user , Roles.User);
 
                             await SyncUserDetail(userData);
                             break;
 
-                        case (int)UserType.Teacher :
-                            await userManager.AddToRolesAsync(user , new string[]{"User" , "Teacher"});
+                        case Roles.Teacher :
+                            await userManager.AddToRolesAsync(user , new string[]{Roles.User , Roles.Teacher});
                             await SyncUserDetail(userData , schoolId);
                             break;
 
-                        case (int)UserType.Manager :
-                            await userManager.AddToRolesAsync(user , new string[]{"User" , "Manager"});
+                        case Roles.Manager :
+                            await userManager.AddToRolesAsync(user , new string[]{Roles.User , Roles.Manager});
 
                             await SyncUserDetail(userData);
                             break;
                     }
                     
                     userData.Id = user.Id;
-                    bool ldapResult = (usersType == (int)UserType.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
+                    bool ldapResult = (usersType == Roles.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
                     //bool ldapResult = true;
                     if(ldapResult)
                     {
@@ -148,7 +148,7 @@ public class UserService {
             appDbContext.Users.Update(oldData);
             await appDbContext.SaveChangesAsync();
 
-            user.userTypeId = oldData.userTypeId;
+            user.UserType = oldData.UserType;
 
             if(user.LatinFirstname != null && user.LatinLastname != null)
                 ldap.EditMail(oldData);
@@ -175,24 +175,25 @@ public class UserService {
             await userManager.RemoveFromRoleAsync(user , "Manager");
             await userManager.DeleteAsync(user);
             
-            if(user.userTypeId == (int)UserType.Student)
+            switch(user.UserType)
             {
-                appDbContext.StudentDetails.Remove(appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault());
-                appDbContext.School_StudentClasses.RemoveRange(appDbContext.School_StudentClasses.Where(x => x.UserId == user.Id).ToList());
+                case Roles.Student :
+                    appDbContext.StudentDetails.Remove(appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault());
+                    appDbContext.School_StudentClasses.RemoveRange(appDbContext.School_StudentClasses.Where(x => x.UserId == user.Id).ToList());
 
-            }
-            if(user.userTypeId == (int)UserType.Teacher)
-            {
-                appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == user.Id).ToList());
-                appDbContext.TeacherDetails.Remove(appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault());
-                appDbContext.Meetings.Remove(appDbContext.Meetings.Where(x => x.TeacherId == user.Id).FirstOrDefault());
-                appDbContext.News.Remove(appDbContext.News.Where(x => x.AutherId == user.Id).FirstOrDefault());
+                    break;
 
-            }
-            if(user.userTypeId == (int)UserType.Manager)
-            {
-                appDbContext.News.RemoveRange(appDbContext.News.Where(x => x.AutherId == user.Id).ToList());
-                appDbContext.ManagerDetails.Remove(appDbContext.ManagerDetails.Where(x => x.UserId == user.Id).FirstOrDefault());
+                case Roles.Teacher :
+                    appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == user.Id).ToList());
+                    appDbContext.TeacherDetails.Remove(appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault());
+                    appDbContext.Meetings.Remove(appDbContext.Meetings.Where(x => x.TeacherId == user.Id).FirstOrDefault());
+                    appDbContext.News.Remove(appDbContext.News.Where(x => x.AutherId == user.Id).FirstOrDefault());
+                    break;
+
+                case Roles.Manager :
+                    appDbContext.News.RemoveRange(appDbContext.News.Where(x => x.AutherId == user.Id).ToList());
+                    appDbContext.ManagerDetails.Remove(appDbContext.ManagerDetails.Where(x => x.UserId == user.Id).FirstOrDefault());
+                    break;
             }
 
             await appDbContext.SaveChangesAsync();
@@ -204,6 +205,7 @@ public class UserService {
         }
     }
 
+#region Interupt
     public bool CheckPhoneInterupt(string phoneNumber)
     {
         // if(!string.IsNullOrEmpty(phoneNumber))
@@ -238,7 +240,9 @@ public class UserService {
 
     }
 
+#endregion
 
+#region SyncData
     public async Task<bool> SyncUserData(List<UserModel> users)
     {
         foreach (var user in users)
@@ -282,9 +286,9 @@ public class UserService {
     {
         try
         {
-            switch(user.userTypeId)
+            switch(user.UserType)
             {
-                case (int)UserType.Student:
+                case Roles.Student:
                     StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
                     if(studentDetail != null)
                     {
@@ -306,7 +310,7 @@ public class UserService {
                     user.studentDetail = studentDetail;
                     break;
 
-                case (int)UserType.Teacher:
+                case Roles.Teacher:
                     TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault();
                     if(teacherDetail != null)
                     {
@@ -337,7 +341,7 @@ public class UserService {
                     user.teacherDetail = teacherDetail;
                     break;
 
-                case (int)UserType.Manager:
+                case Roles.Manager:
                     ManagerDetail managerDetail = appDbContext.ManagerDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
                     if(managerDetail != null)
                     {
@@ -378,4 +382,67 @@ public class UserService {
         
     }
 
+#endregion
+
+#region Roles
+    public bool HasRole(UserModel userModel , string RoleName)
+    {
+        try
+        {
+            List<string> roles = GetUserRoles(userModel).Result;
+            
+            if(roles != null)
+            {
+                if(!string.IsNullOrEmpty(roles.Where(x => x == RoleName).FirstOrDefault()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            return false;
+        }
+    }
+
+    public async Task<List<string>> GetUserRoles(UserModel userModel)
+    {
+        try
+        {
+            userModel = appDbContext.Users.Where(x => x.Id == userModel.Id).FirstOrDefault();
+            List<string> roles = (await userManager.GetRolesAsync(userModel)).ToList();
+            
+            return roles;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            return null;
+        }
+    }
+
+    public async Task<List<UserModel>> GetUsersHasRole(string RoleName)
+    {
+        try
+        {
+            List<UserModel> users = (await userManager.GetUsersInRoleAsync(RoleName)).ToList();
+            return users;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            throw;         
+        }
+        
+    }
+#endregion
 }

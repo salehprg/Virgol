@@ -20,7 +20,7 @@ export default ChildComponent => {
 
             const { type } = this.props
             if (type) {
-                if (type === 2) {
+                if (type === "Manager") {
                     if (!this.state.condition) this.setState({ condition: true })
                     return;
                 }
