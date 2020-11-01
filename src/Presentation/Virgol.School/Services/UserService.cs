@@ -47,9 +47,6 @@ public class UserService {
             {
                 int moodleId = 0;
 
-                //user.UserType = usersType;
-                userData.UserType = usersType;
-
                 if(usersType != Roles.Teacher)
                 {
                     user.SchoolId = schoolId;
@@ -61,8 +58,8 @@ public class UserService {
                     userData.Id = user.Id;
                     switch(usersType)
                     {
-                        case Roles.User :
-                            await userManager.AddToRoleAsync(user , Roles.User);
+                        case Roles.Student :
+                            await userManager.AddToRoleAsync(user , Roles.Student);
 
                             await SyncUserDetail(userData);
                             break;
@@ -80,7 +77,7 @@ public class UserService {
                     }
                     
                     userData.Id = user.Id;
-                    bool ldapResult = (usersType == Roles.Manager ? ldap.AddUserToLDAP(user , password) : ldap.AddUserToLDAP(user , user.MelliCode));
+                    bool ldapResult = (usersType == Roles.Manager ? ldap.AddUserToLDAP(user , usersType , password) : ldap.AddUserToLDAP(user , usersType , user.MelliCode));
                     //bool ldapResult = true;
                     if(ldapResult)
                     {
@@ -148,7 +145,7 @@ public class UserService {
             appDbContext.Users.Update(oldData);
             await appDbContext.SaveChangesAsync();
 
-            user.UserType = oldData.UserType;
+            //user.UserType = oldData.UserType;
 
             if(user.LatinFirstname != null && user.LatinLastname != null)
                 ldap.EditMail(oldData);
@@ -169,13 +166,17 @@ public class UserService {
             if(ldap.DeleteEntry(user.MelliCode))
                 //await moodleApi.DeleteUser(user.Moodle_Id);
 
-            await userManager.RemoveFromRoleAsync(user , "User");
-            await userManager.RemoveFromRoleAsync(user , "Teacher");
-            await userManager.RemoveFromRoleAsync(user , "Admin");
-            await userManager.RemoveFromRoleAsync(user , "Manager");
+            await userManager.RemoveFromRoleAsync(user , Roles.User);
+            await userManager.RemoveFromRoleAsync(user , Roles.Teacher);
+            await userManager.RemoveFromRoleAsync(user , Roles.Admin);
+            await userManager.RemoveFromRoleAsync(user , Roles.Manager);
+            await userManager.RemoveFromRoleAsync(user , Roles.CoManager);
+            await userManager.RemoveFromRoleAsync(user , Roles.Student);
             await userManager.DeleteAsync(user);
             
-            switch(user.UserType)
+            string userType = GetUserRoles(user).Result.Where(x => x != Roles.User).FirstOrDefault();
+
+            switch(userType)
             {
                 case Roles.Student :
                     appDbContext.StudentDetails.Remove(appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault());
@@ -251,7 +252,7 @@ public class UserService {
             {
                 if(!ldap.CheckUserData(user.UserName))
                 {
-                    ldap.AddUserToLDAP(user , user.MelliCode);
+                    ldap.AddUserToLDAP(user , Roles.Student , user.MelliCode);
                 }
 
                 //int moodleId = await moodleApi.GetUserId(user.MelliCode);
@@ -286,7 +287,10 @@ public class UserService {
     {
         try
         {
-            switch(user.UserType)
+            UserModel userModel = appDbContext.Users.Where(x => x.Id == user.Id).FirstOrDefault();
+            string UserType = GetUserRoles(userModel).Result.Where(x => x != Roles.User).FirstOrDefault();
+
+            switch(UserType)
             {
                 case Roles.Student:
                     StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
@@ -385,7 +389,7 @@ public class UserService {
 #endregion
 
 #region Roles
-    public bool HasRole(UserModel userModel , string RoleName)
+    public bool HasRole(UserModel userModel , string RoleName , bool OnlyThisRole = false)
     {
         try
         {
@@ -393,7 +397,59 @@ public class UserService {
             
             if(roles != null)
             {
-                if(!string.IsNullOrEmpty(roles.Where(x => x == RoleName).FirstOrDefault()))
+                if(OnlyThisRole && roles.Count == 1)
+                {
+                    if(roles.FirstOrDefault() == RoleName)
+                    {
+                        return true;
+                    }
+                }
+                else if(OnlyThisRole)
+                {
+                    return false;
+                }
+
+                if(!OnlyThisRole && !string.IsNullOrEmpty(roles.Where(x => x == RoleName).FirstOrDefault()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            return false;
+        }
+    }
+
+    ///<summary>
+    ///Use this function if you have User Roles List to Improve performance
+    ///</summary>
+    public bool HasRole(UserModel userModel , string RoleName , List<string> Roles , bool OnlyThisRole = false)
+    {
+        try
+        {
+            List<string> roles = Roles;
+            
+            if(roles != null)
+            {
+                if(OnlyThisRole && roles.Count == 1)
+                {
+                    if(roles.FirstOrDefault() == RoleName)
+                    {
+                        return true;
+                    }
+                }
+                else if(OnlyThisRole)
+                {
+                    return false;
+                }
+
+                if(!OnlyThisRole && !string.IsNullOrEmpty(roles.Where(x => x == RoleName).FirstOrDefault()))
                 {
                     return true;
                 }
@@ -428,7 +484,7 @@ public class UserService {
         }
     }
 
-    public async Task<List<UserModel>> GetUsersHasRole(string RoleName)
+    public async Task<List<UserModel>> GetUsersInRole(string RoleName)
     {
         try
         {

@@ -76,7 +76,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                List<UserModel> admins = await UserService.GetUsersHasRole(Roles.Admin);
+                List<UserModel> admins = await UserService.GetUsersInRole(Roles.Admin);
                 return Ok(admins);
             }
             catch(Exception ex)
@@ -109,7 +109,7 @@ namespace lms_with_moodle.Controllers
                     password = model.MelliCode;
                 }
 
-                newAdmin.UserType = Roles.Admin;
+                //newAdmin.UserType = Roles.Admin;
                 newAdmin.ConfirmedAcc = true;
                 IdentityResult result = await userManager.CreateAsync(newAdmin , password);
 

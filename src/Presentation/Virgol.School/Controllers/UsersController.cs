@@ -417,6 +417,11 @@ namespace lms_with_moodle.Controllers
                         return StatusCode(423 , "حساب کاربری شما تایید نشده است");
                     }
 
+                    if(UserService.HasRole(userInformation , Roles.User , true))
+                    {
+                        await userManager.AddToRoleAsync(userInformation , Roles.Student);
+                    }
+
                     object userDetail = null;
 
                     if(UserService.HasRole(userInformation , Roles.Student))
@@ -434,6 +439,7 @@ namespace lms_with_moodle.Controllers
                             grade.GradeName
                         };  
                     }
+
                     if(UserService.HasRole(userInformation , Roles.Teacher))
                     {
                         userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
@@ -561,17 +567,12 @@ namespace lms_with_moodle.Controllers
                     adminUser = new UserModel{ConfirmedAcc = true , Email = "Admin@info.com" , FirstName = "Admin" , LastName = "Admin" , UserName = "Admin"};
                     await userManager.CreateAsync(adminUser , "Admin-1379");
                     
-                    IdentityRole<int> adminRole = new IdentityRole<int>{Name = "Admin"};
-                    await roleManager.CreateAsync(adminRole);
-                    
-                    IdentityRole<int> teacherRole = new IdentityRole<int>{Name = "Teacher"};
-                    await roleManager.CreateAsync(teacherRole);
-
-                    IdentityRole<int> userRole = new IdentityRole<int>{Name = "User"};
-                    await roleManager.CreateAsync(userRole);
-
-                    IdentityRole<int> managerRole = new IdentityRole<int>{Name = "Manager"};
-                    await roleManager.CreateAsync(managerRole);
+                    await roleManager.CreateAsync(new IdentityRole<int>(Roles.Admin));
+                    await roleManager.CreateAsync(new IdentityRole<int>(Roles.Teacher));
+                    await roleManager.CreateAsync(new IdentityRole<int>(Roles.User));
+                    await roleManager.CreateAsync(new IdentityRole<int>(Roles.Manager));
+                    await roleManager.CreateAsync(new IdentityRole<int>(Roles.CoManager));
+                    await roleManager.CreateAsync(new IdentityRole<int>(Roles.Student));
 
                     await userManager.AddToRoleAsync(adminUser , "Admin");
                 }
@@ -587,13 +588,13 @@ namespace lms_with_moodle.Controllers
                 
                 newUser.ConfirmedAcc = false;
                 newUser.UserName = _model.MelliCode;
-                newUser.UserType = Roles.Student;
+                //newUser.UserType = Roles.Student;
                 
                 IdentityResult result = userManager.CreateAsync(newUser , newUser.MelliCode).Result;
                 
                 if(result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(newUser , "User");
+                    await userManager.AddToRoleAsync(newUser , Roles.User);
 
                     int userId = userManager.FindByNameAsync(newUser.MelliCode).Result.Id;
 

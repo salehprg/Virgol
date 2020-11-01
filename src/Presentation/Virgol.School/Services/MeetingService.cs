@@ -4,15 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using lms_with_moodle.Helper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.User;
 using Newtonsoft.Json;
 
 public class MeetingService {
     AppDbContext appDbContext;
-    public MeetingService(AppDbContext _appDbContext)
+    UserService UserService;
+    public MeetingService(AppDbContext _appDbContext , UserService _userService)
     {
         appDbContext = _appDbContext;
+        UserService = _userService;
 
     }
 
@@ -158,7 +161,7 @@ public class MeetingService {
 
         int userId = user.Id;
 
-        bool isTeacher = user.UserType == Roles.Teacher;
+        bool isTeacher = UserService.HasRole(user , Roles.Teacher);
 
         float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
         int dayOfWeek = MyDateTime.convertDayOfWeek(currentDateTime);
@@ -220,7 +223,7 @@ public class MeetingService {
     private List<Meeting> getActiveMeeting(UserModel user)
     {
         List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => !x.Finished).ToList();
-        bool isTeacher = user.UserType == Roles.Teacher;
+        bool isTeacher = UserService.HasRole(user , Roles.Teacher);
 
         if(isTeacher)
         {
@@ -333,7 +336,7 @@ public class MeetingService {
             }
         }
 
-        bool isModerator = (user.Id == meeting.TeacherId || user.UserType == Roles.Manager);
+        bool isModerator = (user.Id == meeting.TeacherId || UserService.HasRole(user , Roles.Manager));
 
         if(meeting == null)
             return null;
@@ -345,7 +348,7 @@ public class MeetingService {
             AdobeApi adobeApi = new AdobeApi();
             classUrl = adobeApi.JoinMeeting(meeting.MeetingId , user.UserName , user.MelliCode , isModerator);
         }
-        else
+        else if(meeting.ServiceType == ServiceType.BBB)
         {
             BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
             classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
@@ -364,10 +367,14 @@ public class MeetingService {
         meeting = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId && x.TeacherId == teacherId).FirstOrDefault();
 
         if(meeting == null)
+        {
             meeting = appDbContext.Meetings.Where(x => x.Id == int.Parse(bbbMeetingId) && x.TeacherId == teacherId).FirstOrDefault();
+        }
 
         if(meeting == null || meeting.Id == 0)
+        {
             return false;
+        }
 
         BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
         bool resultEnd = await bbbApi.EndRoom(bbbMeetingId);
@@ -376,7 +383,9 @@ public class MeetingService {
         List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
 
         if(meetingsResponse.meetings != null)
+        {
             newMeetingList = meetingsResponse.meetings.meeting; 
+        }
 
         if(!resultEnd && newMeetingList.Where(x => x.meetingID == bbbMeetingId).FirstOrDefault() == null)// it means this class Closed by Moderator and Currently Open in Our Db
         {
@@ -420,7 +429,7 @@ public class MeetingService {
         List<ClassScheduleView> schedules = getSchedules(user);
         List<Meeting> activeMeetings = getActiveMeeting(user);
 
-        bool isTeacher = (user.UserType == Roles.Teacher ? true : false);
+        bool isTeacher = UserService.HasRole(user , Roles.Teacher);
 
         foreach (var schedule in schedules)
         {

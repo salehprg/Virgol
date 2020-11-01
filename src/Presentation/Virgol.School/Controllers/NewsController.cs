@@ -36,6 +36,7 @@ namespace lms_with_moodle.Controllers
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
+        UserService UserService;
 
         FarazSmsApi SMSApi;
         public NewsController(UserManager<UserModel> _userManager 
@@ -49,6 +50,7 @@ namespace lms_with_moodle.Controllers
             appDbContext = _appdbContext;
 
             SMSApi = new FarazSmsApi();
+            UserService = new UserService(userManager , appDbContext);
         }
         
         [HttpGet]
@@ -60,9 +62,10 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 
-                string roleName ="";
-                roleName = userManager.GetRolesAsync(userModel).Result.Where(x => x != "User").FirstOrDefault();
+                List<string> userRoles = UserService.GetUserRoles(userModel).Result;
 
+                string roleName ="";
+                roleName = userRoles.Where(x => x != "User").FirstOrDefault(); // result such as : Teacher , Admin , ...
                 roleName = (string.IsNullOrEmpty(roleName) ? "User" : roleName);
 
                 int userRoleId = roleManager.FindByNameAsync(roleName).Result.Id;
@@ -74,6 +77,7 @@ namespace lms_with_moodle.Controllers
                 {
                     int autherId = news.AutherId;
                     UserModel auther = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault();
+                    List<string> autherRoles = UserService.GetUserRoles(auther).Result;
 
                     if(auther != null)
                     {
@@ -86,17 +90,18 @@ namespace lms_with_moodle.Controllers
 
                         news.tagsStr = tags;
                         
-                        if(auther.UserType == Roles.Manager)
+                        //Get news according to School if authur is Manager
+                        if(UserService.HasRole(auther , Roles.Manager , autherRoles))
                         {
                             int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
-                            if(userModel.UserType == Roles.Student)
+                            if(UserService.HasRole(userModel , Roles.Student , userRoles))
                             {
                                 if(userModel.SchoolId == schoolId)
                                 {
                                     result.Add(news);
                                 }
                             }
-                            else if(userModel.UserType == Roles.Teacher)
+                            else if(UserService.HasRole(userModel , Roles.Teacher , userRoles))
                             {
                                 string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
                                 if(schoolIds.Contains(schoolId + ","))
@@ -105,13 +110,13 @@ namespace lms_with_moodle.Controllers
                                 }
                             }
                         }
-                        else if(auther.UserType == Roles.Admin)
+                        else if(UserService.HasRole(auther , Roles.Admin , autherRoles))
                         {
                             int schoolType = appDbContext.AdminDetails.Where(x => x.UserId == auther.Id).FirstOrDefault().SchoolsType;
                             List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
                             foreach (var school in schools)
                             {
-                                if(userModel.UserType == Roles.Teacher)
+                                if(UserService.HasRole(userModel , Roles.Teacher , userRoles))
                                 {
                                     string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault().SchoolsId;
                                     if(schoolIds.Contains(school.Id + ","))
@@ -129,7 +134,7 @@ namespace lms_with_moodle.Controllers
                             }
                             
                         }
-                        else if(auther.UserType == Roles.Teacher)
+                        else if(UserService.HasRole(auther , Roles.Teacher , autherRoles))
                         {
                             //Because only students can see Teachers News we Should only check SchoolId
                             string schoolIds = appDbContext.TeacherDetails.Where(x => x.TeacherId == auther.Id).FirstOrDefault().SchoolsId;

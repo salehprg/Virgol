@@ -25,7 +25,7 @@ namespace lms_with_moodle.Helper
             
         }
 
-        public bool AddUserToLDAP(UserModel user , string password = "")
+        public bool AddUserToLDAP(UserModel user , string UserType   , string password = "")
         {
             try
             {
@@ -51,7 +51,7 @@ namespace lms_with_moodle.Helper
                 string mailAddress = uniqueMailId + "@legace.ir";
 
                 string title = null;
-                switch(user.UserType)
+                switch(UserType)
                 {
                     case Roles.Student :
                         title = "Student";

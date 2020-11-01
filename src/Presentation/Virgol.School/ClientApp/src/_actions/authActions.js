@@ -21,7 +21,7 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
         localStorage.setItem('userType', response.data.userType)      
         
         switch (response.data.userType) {
-            case "User": {
+            case "Student": {
                 if(!response.data.completedProfile)
                 {
                     history.push('/studentCompleteProfile');

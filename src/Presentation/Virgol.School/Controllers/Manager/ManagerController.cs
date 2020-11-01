@@ -55,7 +55,7 @@ namespace lms_with_moodle.Controllers
 
             UserService = new UserService(userManager , appDbContext);
             managerService = new ManagerService(appDbContext);
-            meetingService = new MeetingService(appDbContext); 
+            meetingService = new MeetingService(appDbContext , UserService); 
         }
 
 
@@ -426,7 +426,8 @@ namespace lms_with_moodle.Controllers
                     var serialized = JsonConvert.SerializeObject(user);
                     UserModel userModel = JsonConvert.DeserializeObject<UserModel>(serialized);
 
-                    bool ldapUser = ldap.AddUserToLDAP(userModel);
+
+                    bool ldapUser = ldap.AddUserToLDAP(userModel , Roles.Student);
                     
                     bool createUser = false;
                     if(ldapUser)
@@ -677,13 +678,12 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                string userNameManager = userManager.GetUserId(User);
-                int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
-
                 UserModel newTeacher = appDbContext.Users.Where(x => x.MelliCode == MelliCode).FirstOrDefault();
 
-                if(newTeacher != null && newTeacher.UserType != Roles.Teacher)
+                if(newTeacher != null && !UserService.HasRole(newTeacher , Roles.Teacher))
+                {
                     return BadRequest("کد ملی وارد شده مربوط به شخص دیگری است"); 
+                }
 
                 return Ok(newTeacher);
 
@@ -705,16 +705,20 @@ namespace lms_with_moodle.Controllers
                 int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
 
                 teacher.UserName = teacher.MelliCode;
-                teacher.UserType = Roles.Teacher;
+                //teacher.UserType = Roles.Teacher;
                 teacher.ConfirmedAcc = true;
                 
                 if(UserService.CheckPhoneInterupt(teacher.PhoneNumber))
+                {
                     return BadRequest("شماره همراه معلم قبلا در سیستم ثبت شده است");
+                }
 
                 UserModel newTeacher = userManager.FindByNameAsync(teacher.MelliCode).Result;
 
-                if(newTeacher != null && newTeacher.UserType == Roles.Teacher)
+                if(newTeacher != null && !UserService.HasRole(newTeacher , Roles.Teacher))
+                {
                     return BadRequest("کد ملی وارد شده مربوط به شخص دیگری است"); 
+                }
 
                 List<UserDataModel> result = new List<UserDataModel>();
 
@@ -1122,7 +1126,7 @@ namespace lms_with_moodle.Controllers
                     {
                         selectedUser.ConfirmedAcc = true;
                         selectedUser.UserName = selectedUser.MelliCode;
-                        selectedUser.UserType = userType;
+                        //selectedUser.UserType = userType;
                         selectedUser.SchoolId = schoolId;
 
                         UserModel userModel = await userManager.FindByNameAsync(selectedUser.UserName);

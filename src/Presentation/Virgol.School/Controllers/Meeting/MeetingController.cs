@@ -38,6 +38,7 @@ namespace lms_with_moodle.Controllers
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
         private readonly MeetingService meetingService;
+        UserService UserService;
 
         
         public MeetingController(AppDbContext dbContext
@@ -47,7 +48,8 @@ namespace lms_with_moodle.Controllers
             appDbContext = dbContext;
             userManager = _userManager;
 
-            meetingService = new MeetingService(appDbContext);
+            UserService = new UserService(userManager , appDbContext);
+            meetingService = new MeetingService(appDbContext , UserService);
 
         }
 
@@ -270,14 +272,19 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
 
-                bool isTeacher = user.UserType == Roles.Teacher;
+                bool isTeacher = UserService.HasRole(user , Roles.Teacher);
 
-                bool result = await meetingService.EndMeeting(bbbMeetingId , user.Id);
+                if(isTeacher)
+                {
+                    bool result = await meetingService.EndMeeting(bbbMeetingId , user.Id);
 
-                if(result)
-                    return Ok("کلاس با موفقیت پایان یافت لطفا چند لحظه صبر نمایید");
-                
-                return BadRequest("در اتمام کلاس مشکلی پیش آمد");
+                    if(result)
+                        return Ok("کلاس با موفقیت پایان یافت لطفا چند لحظه صبر نمایید");
+                    
+                    return BadRequest("در اتمام کلاس مشکلی پیش آمد");
+                }
+
+                return Unauthorized("شما دسترسی این کار را ندارید");
             }
             catch(Exception ex)
             {
@@ -377,7 +384,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 int userId = user.Id;
-                bool isTeacher = user.UserType == Roles.Teacher;
+                bool isTeacher = UserService.HasRole(user , Roles.Teacher);
 
                 DateTime currentDateTime = MyDateTime.Now();
                 float currentTime = currentDateTime.Hour + ((float)currentDateTime.Minute / 60);
