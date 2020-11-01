@@ -13,7 +13,6 @@ class adminStudents extends React.Component {
     state = { loading: false, query: '' , showDeleteModal : false, itemsPerPage: 40, currentPage: 1 , totalCard : 0}
 
     componentDidMount = async () => {
-        console.log("start")
         this.setState({ loading: true })
         await this.props.GetAllStudents(this.props.user.token);
         this.setState({ loading: false })

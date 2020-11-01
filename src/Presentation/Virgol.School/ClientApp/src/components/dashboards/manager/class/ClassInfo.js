@@ -75,7 +75,6 @@ class ClassInfo extends React.Component {
     }
 
     onAddStudent = async(userIds) =>{
-        console.log(userIds)
         await this.props.AssignUserListToClass(this.props.user.token , userIds , parseInt(this.props.match.params.id));
         this.setState({addStudent : false})
         this.componentDidMount()

@@ -111,7 +111,6 @@ export const DeleteClassSchedule = (token, scheduleId) => async dispatch => {
         dispatch(alert.success("ساعت درسی حذف شد"))
 
     } catch (e) {
-        console.log(e.response)
         dispatch({ type: STOP })
         dispatch(alert.error("خطا در حذف ساعت درسی"))
     }

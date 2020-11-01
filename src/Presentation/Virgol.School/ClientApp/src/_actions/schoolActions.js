@@ -169,11 +169,6 @@ export const RemoveSchool = (token ,formvalue) => async dispatch => {
                     dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
             }
         }
-        else
-        {
-            console.log(e)
-        }
-
         return false
 
     }
@@ -253,7 +248,6 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
             }
         });
 
-        console.log(response)
         dispatch({ type: STOP })
         dispatch(alert.success(" مقطع تحصیلی با موفقیت حذف شد"))
         dispatch({ type: Type.RemoveBaseFromSchool, payload: response.data })
@@ -262,7 +256,6 @@ export const RemoveBaseFromSchool = (token ,formvalue) => async dispatch => {
 
     } catch (e) {
 
-        console.log(e)
         if(e.response)
         {
         switch (e.response.status) {
@@ -396,7 +389,6 @@ export const RemoveStudyFFromSchool = (token ,formvalue) => async dispatch => {
 export const getAllGrades = token => async dispatch => {
 
     try {
-        console.log("grades");
         const response = await lms.get("/School/GradesList", {
             headers: {
                 authorization: `Bearer ${token}`
@@ -477,7 +469,6 @@ export const editClass = (token, classId , className) => async dispatch => {
         dispatch(alert.success("کلاس با موفقیت ویرایش گردید"))
 
     } catch (e) {
-        console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error("خطا در ویرایش مقطع"))
     }

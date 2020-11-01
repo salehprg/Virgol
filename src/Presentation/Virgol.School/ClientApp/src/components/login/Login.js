@@ -3,10 +3,11 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import { login, logout, sendVerificationCode, forgotPassword  , ChangePassword} from "../../_actions/authActions";
-import {loading, logo} from "../../assets/icons";
+import {globe, loading, logo, chevron, translate} from "../../assets/icons";
 import {Field, reduxForm} from "redux-form";
 import Fieldish from "../field/Fieldish";
 import Passish from "../field/Passish";
+import SelectLang from "./SelectLang";
 
 class Login extends React.Component {
 
@@ -16,11 +17,11 @@ class Login extends React.Component {
         panel: 'login',
         sendingCode: false,
         reseting: false,
-        IdNumer: null
+        IdNumer: null,
+        showLang: false
     }
 
     componentDidMount() {
-        console.log(process.env)
         this.props.logout()
     }
 
@@ -166,10 +167,14 @@ class Login extends React.Component {
         }
     }
 
+    setShowLang = showLang => {
+        this.setState({ showLang })
+    }
+
     render() {
         return (
             <>
-                <div className="w-screen min-h-screen bg-black-blue py-16">
+                <div onClick={() => this.setShowLang(false)} className="w-screen min-h-screen bg-black-blue pt-16">
                     <div className="w-full max-w-350 mx-auto">
                         <div className="text-center mb-8">
                             {/*{logo('w-16 mb-3 text-purplish mx-auto')}*/}
@@ -185,9 +190,10 @@ class Login extends React.Component {
                         <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
                             {this.renderPanel()}
                         </div>
+                        <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} />
                     </div>
                 </div>
-                <span style={{position : "fixed" , bottom : 0 }} class="w-screen bg-black-blue text-white mb-2 ml-3">process.env.REACT_APP_VERSION</span>
+                <span style={{position : "fixed" , bottom : 0 }} class="text-white mb-2 ml-3">process.env.REACT_APP_VERSION</span>
             </>
         );
     }

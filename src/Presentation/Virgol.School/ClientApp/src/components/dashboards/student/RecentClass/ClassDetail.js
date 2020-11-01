@@ -9,7 +9,6 @@ class RecentClassDetail extends React.Component {
 
         return (
             <div className="w-full py-2 mt-6 border-b border-grayish">
-                {console.log("Props : " + this.props)}
                 <div className="w-full flex flex-row justify-between items-center">
                     <span className="w-1/4 text-white mb-4">{day} {this.props.t('from')} {startTime} {this.props.t('till')} {endTime}</span>
                     <span className="w-3/4 text-white mb-4">{text}</span>
