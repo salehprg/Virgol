@@ -31,7 +31,7 @@ namespace lms_with_moodle.Controllers
 {
     
     [ApiController]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = Roles.User)]
     [Route("api/[controller]/[action]")]
     public class MeetingController : ControllerBase
     {
@@ -55,7 +55,7 @@ namespace lms_with_moodle.Controllers
 
 #region AfterMeeting
         [HttpGet]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = Roles.Teacher)]
         [ProducesResponseType(typeof(List<ParticipantView>), 200)]
         public async Task<IActionResult> GetParticipantList(int meetingId) 
         {
@@ -67,8 +67,11 @@ namespace lms_with_moodle.Controllers
             if(meeting != null)
             {
                 string bbbId = meeting.MeetingId;
-
-                await meetingService.EndMeeting(bbbId , userId);
+                
+                try
+                {
+                    await meetingService.EndMeeting(bbbId , userId);
+                }catch{}
             }
 
             List<ParticipantView> participantViews = appDbContext.ParticipantViews.Where(x => x.MeetingId == meetingId && x.UserId != userId).ToList();
@@ -96,7 +99,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = Roles.Teacher)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> SetPresentStatus(List<ParticipantView> students) 
         {
@@ -127,7 +130,7 @@ namespace lms_with_moodle.Controllers
     #region Private
 
         [HttpPut]
-        [Authorize(Roles = "Teacher,Manager,Admin")]
+        [Authorize(Roles = Roles.Teacher + "," + Roles.Manager + "," + Roles.Admin)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> CreatePrivateRoom(string roomName) 
         {
@@ -187,7 +190,7 @@ namespace lms_with_moodle.Controllers
     #region Meeting Action
 
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = Roles.Teacher)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> StartMeeting(int lessonId) 
         {
@@ -238,7 +241,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher,User")]
+        [Authorize(Roles = Roles.Teacher + "," + Roles.User)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> JoinMeeting(string meetingId) 
         {
@@ -263,7 +266,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = Roles.Teacher)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> EndMeeting(string bbbMeetingId) 
         {
@@ -293,7 +296,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         [ProducesResponseType(typeof(List<ParticipantView>), 200)]
         public IActionResult GetAllActiveMeeting() 
         {
@@ -313,7 +316,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = Roles.Teacher)]
         [ProducesResponseType(typeof(List<Meeting>), 200)]
         public IActionResult GetMeetingList() 
         {
@@ -375,7 +378,7 @@ namespace lms_with_moodle.Controllers
 #endregion
 
         [HttpGet]
-        [Authorize(Roles = "User,Teacher")]
+        [Authorize(Roles = Roles.User + "," + Roles.Teacher)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public IActionResult GetRecentClass() 
         {

@@ -1,5 +1,5 @@
 
-namespace Models.MoodleApiResponse
+namespace Models.Users
 {
     public class UserGrades
     {

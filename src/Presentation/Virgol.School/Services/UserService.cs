@@ -28,7 +28,7 @@ public class UserService {
     ///<summary>
     ///Every user should have MelliCode property 
     ///</summary>
-    public async Task<List<UserDataModel>> CreateUser(List<UserDataModel> users , string usersType , int schoolId , string password = null)
+    public async Task<List<UserDataModel>> CreateUser(List<UserDataModel> users , List<string> userRoles , int schoolId , string password = null)
     {
         users = users.Where(x => x.MelliCode != null).ToList();
 
@@ -47,7 +47,7 @@ public class UserService {
             {
                 int moodleId = 0;
 
-                if(usersType != Roles.Teacher)
+                if(!userRoles.Contains(Roles.Teacher))
                 {
                     user.SchoolId = schoolId;
                     userData.SchoolId = schoolId;
@@ -56,28 +56,22 @@ public class UserService {
                 if((await userManager.CreateAsync(user , (!string.IsNullOrEmpty(password) ? password : user.MelliCode))).Succeeded)
                 {
                     userData.Id = user.Id;
-                    switch(usersType)
+                    await userManager.AddToRolesAsync(user , userRoles);
+
+                    bool hasTeacherRole = false;
+
+                    if(userRoles.Contains(Roles.Teacher))
                     {
-                        case Roles.Student :
-                            await userManager.AddToRoleAsync(user , Roles.Student);
-
-                            await SyncUserDetail(userData);
-                            break;
-
-                        case Roles.Teacher :
-                            await userManager.AddToRolesAsync(user , new string[]{Roles.User , Roles.Teacher});
-                            await SyncUserDetail(userData , schoolId);
-                            break;
-
-                        case Roles.Manager :
-                            await userManager.AddToRolesAsync(user , new string[]{Roles.User , Roles.Manager});
-
-                            await SyncUserDetail(userData);
-                            break;
+                        hasTeacherRole = true;
+                        await SyncUserDetail(userData , schoolId);
+                    }
+                    else
+                    {
+                        await SyncUserDetail(userData);
                     }
                     
                     userData.Id = user.Id;
-                    bool ldapResult = (usersType == Roles.Manager ? ldap.AddUserToLDAP(user , usersType , password) : ldap.AddUserToLDAP(user , usersType , user.MelliCode));
+                    bool ldapResult = (userRoles.Contains(Roles.Manager) ? ldap.AddUserToLDAP(user , hasTeacherRole , password) : ldap.AddUserToLDAP(user , hasTeacherRole , user.MelliCode));
                     //bool ldapResult = true;
                     if(ldapResult)
                     {
@@ -252,7 +246,7 @@ public class UserService {
             {
                 if(!ldap.CheckUserData(user.UserName))
                 {
-                    ldap.AddUserToLDAP(user , Roles.Student , user.MelliCode);
+                    ldap.AddUserToLDAP(user , false , user.MelliCode);
                 }
 
                 //int moodleId = await moodleApi.GetUserId(user.MelliCode);

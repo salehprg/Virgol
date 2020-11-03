@@ -114,7 +114,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                int roleId = roleManager.GetRoleIdAsync(new IdentityRole<int>{Name = "Teacher"}).Result.FirstOrDefault();
+                int roleId = roleManager.GetRoleIdAsync(new IdentityRole<int>{Name = Roles.Manager}).Result.FirstOrDefault();
 
                 var userInRole = appDbContext.UserRoles.Where(x => x.RoleId == roleId);
 
@@ -235,7 +235,9 @@ namespace lms_with_moodle.Controllers
 
                 managerData.managerDetail = managerDetail;
 
-                List<UserDataModel> managerDatas = await UserService.CreateUser(new List<UserDataModel>{managerData} , Roles.Manager , model.SchoolId , model.password);
+                List<string> userRoles = new List<string>{Roles.Manager};
+
+                List<UserDataModel> managerDatas = await UserService.CreateUser(new List<UserDataModel>{managerData} , userRoles , model.SchoolId , model.password);
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
 
@@ -342,7 +344,8 @@ namespace lms_with_moodle.Controllers
                     userDataModel.managerDetail = new ManagerDetail();
                     userDataModel.managerDetail.personalIdNumber = model.personalIdNumber;
 
-                    List<UserDataModel> datas = await UserService.CreateUser(new List<UserDataModel>{userDataModel} , Roles.Manager , model.SchoolId , model.password );
+                    List<string> userRoles = new List<string>{Roles.Manager};
+                    List<UserDataModel> datas = await UserService.CreateUser(new List<UserDataModel>{userDataModel} , userRoles , model.SchoolId , model.password );
 
                     if(datas.Count > 0)
                     {
@@ -416,6 +419,7 @@ namespace lms_with_moodle.Controllers
         }
 
 #endregion
+
 
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]

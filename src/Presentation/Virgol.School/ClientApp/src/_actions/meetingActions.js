@@ -184,6 +184,7 @@ export const CreatePrivateRoom = (roomName) => async dispatch => {
         
 
         dispatch({ type: START })
+        console.log(userToken)
         const response = await lms.put(`/Meeting/CreatePrivateRoom?roomName=${roomName}` , null , {
             headers: {
                 authorization: `Bearer ${userToken}`
@@ -198,6 +199,7 @@ export const CreatePrivateRoom = (roomName) => async dispatch => {
 
     } catch (e) {
 
+        console.log(e.response)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
 

@@ -25,7 +25,7 @@ namespace lms_with_moodle.Helper
             
         }
 
-        public bool AddUserToLDAP(UserModel user , string UserType   , string password = "")
+        public bool AddUserToLDAP(UserModel user , bool IsTeacher   , string password = "")
         {
             try
             {
@@ -51,20 +51,15 @@ namespace lms_with_moodle.Helper
                 string mailAddress = uniqueMailId + "@legace.ir";
 
                 string title = null;
-                switch(UserType)
+                if(IsTeacher)
                 {
-                    case Roles.Student :
-                        title = "Student";
-                        break;
-
-                    case Roles.Teacher:
-                        title = "Teacher";
-                        break;
-
-                     case Roles.Manager:
-                        title = "Teacher";
-                        break;
+                    title = Roles.Teacher;
                 }
+                else
+                {
+                    title = Roles.Student;
+                }
+
                 //Creates the List attributes of the entry and add them to attribute set 
                 LdapAttributeSet attributeSet = new LdapAttributeSet();
                 attributeSet.Add( new LdapAttribute("objectclass", new string[] {"organizationalPerson" ,

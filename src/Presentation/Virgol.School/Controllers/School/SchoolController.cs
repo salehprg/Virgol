@@ -31,7 +31,7 @@ namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = Roles.Admin + "," + Roles.Manager + "," + Roles.CoManager)]
     public class SchoolController : ControllerBase
     {
         private readonly UserManager<UserModel> userManager;
@@ -60,6 +60,9 @@ namespace lms_with_moodle.Controllers
             UserService = new UserService(userManager , appDbContext);
             schoolService = new SchoolService(appDbContext);
         }
+
+
+#region School Info
 
         [HttpGet]
         [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
@@ -140,10 +143,11 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpGet]
         [ProducesResponseType(typeof(List<SchoolModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetSchools()
         {
             try
@@ -200,9 +204,10 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        
         [ProducesResponseType(typeof(List<string>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> AddBulkSchool([FromForm]IFormCollection Files )
         {
             try
@@ -239,10 +244,11 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPut]
         [ProducesResponseType(typeof(SchoolModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateSchool([FromBody]CreateSchoolData inputData)
         {
             try
@@ -303,7 +309,7 @@ namespace lms_with_moodle.Controllers
                 UserDataModel userData = JsonConvert.DeserializeObject<UserDataModel>(serializedParent);
                 userData.managerDetail = managerDetail;
 
-                List<UserDataModel> managerResult = await UserService.CreateUser(new List<UserDataModel>{userData} , Roles.Manager , schoolResult.Id , password);
+                List<UserDataModel> managerResult = await UserService.CreateUser(new List<UserDataModel>{userData} , new List<string>{Roles.Manager} , schoolResult.Id , password);
 
                 if(managerResult.Count > 0)
                 {
@@ -333,10 +339,11 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         //if want use commented Part change inputData ObjectType to SchoolData
         public IActionResult EditSchool([FromBody]SchoolModel inputData)
         {
@@ -363,10 +370,11 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-        [Authorize(Roles = "Manager")]
+        
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         //if want use commented Part change inputData ObjectType to SchoolData
         public IActionResult ToggleReminder(bool status)
         {
@@ -395,10 +403,11 @@ namespace lms_with_moodle.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> RemoveSchool(int schoolId)
         {
             try
@@ -466,12 +475,15 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+#endregion
+
 #region Base
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpGet]
         [ProducesResponseType(typeof(List<BaseModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetBases()
         {
             try
@@ -485,10 +497,11 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPut]
         [ProducesResponseType(typeof(List<School_BasesVW>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> AddBaseToSchool([FromBody]SchoolData inputData)
         {
             try
@@ -542,6 +555,7 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(School_Bases), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> RemoveBaseFromSchool(int baseId)
         {
             try
@@ -566,9 +580,9 @@ namespace lms_with_moodle.Controllers
 
         
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetStudyFields(int BaseId)
         {
             try
@@ -643,7 +657,7 @@ namespace lms_with_moodle.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         [HttpPut]
         [ProducesResponseType(typeof(List<School_StudyFieldsVW>), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -702,7 +716,7 @@ namespace lms_with_moodle.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         [HttpDelete]
         [ProducesResponseType(typeof(School_StudyFields), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -729,9 +743,9 @@ namespace lms_with_moodle.Controllers
 #region Grades
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<StudyFieldModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetGrade(int StudyFieldId)
         {
             try
@@ -885,6 +899,7 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin + "," + Roles.Manager)]
         public async Task<IActionResult> AddNewClass([FromBody]ClassData classModel , int schoolId)
         {
             try
@@ -923,6 +938,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(School_Class), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin + "," + Roles.Manager)]
         public async Task<IActionResult> EditClass(int classId , string className)
         {
             try
@@ -961,6 +977,7 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Admin + "," + Roles.Manager)]
         public async Task<IActionResult> DeleteClass(int classId)
         {
             try
@@ -1044,7 +1061,7 @@ namespace lms_with_moodle.Controllers
                                 int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
                                 manager.Id = userId;
 
-                                bool ldapUser = ldap.AddUserToLDAP(manager , Roles.Manager , password);
+                                bool ldapUser = ldap.AddUserToLDAP(manager , true , password);
 
                                 bool userToMoodle = false;
                                 if(ldapUser)

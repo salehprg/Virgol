@@ -29,7 +29,7 @@ namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Teacher,Manager")]
+    [Authorize( Roles = Roles.Teacher + "," + Roles.Manager + "," + Roles.CoManager)]
     public class TeacherController : ControllerBase
     {
         private readonly AppSettings appSettings;
@@ -52,7 +52,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize( Roles = "Teacher,Manager")]
+        [Authorize( Roles = Roles.Teacher + "," + Roles.Manager + "," + Roles.CoManager)]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public IActionResult GetClassBook(int lessonId)
         {
@@ -130,7 +130,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize( Roles = "Teacher")]
+        [Authorize( Roles = Roles.Teacher)]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public IActionResult GetScheduleList()
         {

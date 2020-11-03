@@ -22,7 +22,7 @@ namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
     public class ManagerController : ControllerBase
     {
         
@@ -60,6 +60,7 @@ namespace lms_with_moodle.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult getManagerDashboardInfo()
         {
@@ -67,7 +68,6 @@ namespace lms_with_moodle.Controllers
             {
                 string userName = userManager.GetUserId(User);
                 UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
-                ManagerDetail managerDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userModel.Id).FirstOrDefault();
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == userModel.SchoolId).FirstOrDefault();
 
@@ -114,6 +114,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public IActionResult CompleteInfo([FromBody]UserModel managerInfo)
         {
             try
@@ -138,9 +139,12 @@ namespace lms_with_moodle.Controllers
 #endregion
 
 #region Students
+
+
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult GetAllStudent(bool IsForAssign) 
         {
             try
@@ -172,6 +176,7 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> AddNewStudent([FromBody]UserDataModel student)
         {
             try
@@ -186,7 +191,7 @@ namespace lms_with_moodle.Controllers
                 if(UserService.CheckMelliCodeInterupt(student.MelliCode , 0))
                     return BadRequest("کد ملی وارد شده تکراریست");
 
-                List<UserDataModel> result = await UserService.CreateUser(new List<UserDataModel>{student} , Roles.Student , schoolId );
+                List<UserDataModel> result = await UserService.CreateUser(new List<UserDataModel>{student} , new List<string>{Roles.Student} , schoolId );
 
                 if(result.Count > 0)
                 {
@@ -204,6 +209,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(List<string>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> AddBulkUser([FromForm]IFormCollection Files , int CategoryId = -1)
         {
             try
@@ -245,6 +251,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> EditStudent([FromBody]UserDataModel student)
         {
             try
@@ -296,6 +303,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> DeleteStudents([FromBody]int[] studentIds)
         {
             try
@@ -326,6 +334,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult GetUserInfo(int userId)
         {
             try
@@ -363,6 +372,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserDataModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult GetNewUsers()
         {
             try
@@ -404,6 +414,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> ConfirmUsers([FromBody]List<int> usersId)
         {
             try
@@ -427,7 +438,7 @@ namespace lms_with_moodle.Controllers
                     UserModel userModel = JsonConvert.DeserializeObject<UserModel>(serialized);
 
 
-                    bool ldapUser = ldap.AddUserToLDAP(userModel , Roles.Student);
+                    bool ldapUser = ldap.AddUserToLDAP(userModel , false);
                     
                     bool createUser = false;
                     if(ldapUser)
@@ -480,6 +491,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> AssignUsersToCategory([FromBody]EnrolUser[] users)
         {
             try
@@ -513,6 +525,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> UnAssignUsersFromCategory([FromBody]EnrolUser[] users)
         {
             try
@@ -547,6 +560,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(bool), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> AssignUsersToCourse([FromBody]EnrolUser[] users)
         {
             // bool result = await moodleApi.AssignUsersToCourse(users.ToList());
@@ -579,6 +593,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> UnAssignFromCourse([FromBody]EnrolUser user)
         {
             try
@@ -609,6 +624,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(List<string>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> AddBulkTeacher([FromForm]IFormCollection Files)
         {
             try
@@ -644,6 +660,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult TeacherList()
         {
             try
@@ -674,6 +691,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public IActionResult CheckNewTeacher(string MelliCode)
         {
             try
@@ -697,6 +715,7 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(IEnumerable<IdentityError>), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> AddNewTeacher([FromBody]UserDataModel teacher)
         {
             try
@@ -733,7 +752,7 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    result = await UserService.CreateUser(new List<UserDataModel>{teacher} , Roles.Teacher , schoolId);
+                    result = await UserService.CreateUser(new List<UserDataModel>{teacher} , new List<string>{Roles.Teacher} , schoolId);
                 }
 
                 if(result.Count > 0)
@@ -752,6 +771,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> EditTeacher([FromBody]UserDataModel inputModel)
         {
             try
@@ -788,6 +808,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> DeleteTeacher([FromBody]List<int> teacherIds)
         {
             try
@@ -846,6 +867,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult getStudentsClass(int classId)
         {
             try
@@ -868,6 +890,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> AssignUserListToClass([FromBody]List<int> studentIds , int classId)
         {
             try
@@ -897,6 +920,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> AssignUserToClass([FromForm]IFormCollection Files , int classId)
         {
             try
@@ -937,6 +961,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> UnAssignUserFromClass([FromBody]List<int> userIds , int classId)
         {
             try
@@ -1155,7 +1180,7 @@ namespace lms_with_moodle.Controllers
 
                 }
                 
-                correctUser = await UserService.CreateUser(newUsers , userType , schoolId);
+                correctUser = await UserService.CreateUser(newUsers , new List<string>{userType} , schoolId);
                 await UserService.EditUsers(duplicateUser , schoolId , userType == Roles.Teacher);
 
                 BulkData bulkData = new BulkData();
