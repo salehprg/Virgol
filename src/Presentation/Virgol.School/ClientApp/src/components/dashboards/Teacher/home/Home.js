@@ -99,7 +99,9 @@ class Home extends React.Component {
                     null}
                 <div className="col-span-1 flex flex-col items-center justify-between">
                     <Hero userInfo={this.props.user.userInformation}
-                          userDetail={this.props.user.userDetail}/>
+                          userDetail={this.props.user.userDetail}
+                        isTeacher={true}
+                          />
 
                     <RecentClass
                         onStart={(id) => this.StatrMeeting(id)}
