@@ -49,9 +49,19 @@ class Home extends React.Component {
     copyPrivateUrl = (bbbId) => {
         var rootURL = window.location.origin.toString()
 
-        navigator.clipboard.writeText(`${rootURL}/PrivateClass/${bbbId}`)
+        // navigator.clipboard.writeText(`${rootURL}/PrivateClass/${bbbId}`)
+        this.copyToClipboard(`${rootURL}/PrivateClass/${bbbId}`);
         this.props.ShowSuccess(this.props.t('copied'))
     }
+
+    copyToClipboard = (text) => {
+        const elem = document.createElement('textarea');
+        elem.value = text;
+        document.body.appendChild(elem);
+        elem.select();
+        document.execCommand('copy');
+        document.body.removeChild(elem);
+     }
 
     showPrivateModal = () => {
         this.setState({ newPrivateModal: true })
