@@ -27,11 +27,11 @@ const Hero = (props) => {
                 </>
                 : "")}
                 
-            { props.isTeacher && 
+            {/* { false && 
             <div className="flex flex-row items-center my-2 w-full justify-center">
             <span onClick={() => changeService('bbb')} className={`mx-2 cursor-pointer px-3 py-1 border-2 rounded-md ${service === 'bbb' ? 'border-blue-500 text-blue-500' : 'border-grayish text-grayish'}`}>BigBlueButton</span>
             <span onClick={() => changeService('connect')} className={`mx-2 cursor-pointer px-3 py-1 border-2 rounded-md ${service === 'connect' ? 'border-greenish text-greenish' : 'border-grayish text-grayish'}`}>Adobe Connect</span>
-        </div>}
+        </div>} */}
         </div>
     );
 
