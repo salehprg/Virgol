@@ -424,7 +424,9 @@ namespace lms_with_moodle.Controllers
 
                     object userDetail = null;
 
-                    if(UserService.HasRole(userInformation , Roles.Student))
+                    List<string> userRoleNames = userManager.GetRolesAsync(userInformation).Result.ToList();
+
+                    if(UserService.HasRole(userInformation , Roles.Student , userRoleNames))
                     {
                         SchoolModel school = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
                         School_studentClass classs = appDbContext.School_StudentClasses.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
@@ -440,17 +442,17 @@ namespace lms_with_moodle.Controllers
                         };  
                     }
 
-                    if(UserService.HasRole(userInformation , Roles.Teacher))
+                    if(UserService.HasRole(userInformation , Roles.Teacher , userRoleNames))
                     {
                         userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
                     }
 
-                    if(UserService.HasRole(userInformation , Roles.Admin))
+                    if(UserService.HasRole(userInformation , Roles.Admin , userRoleNames))
                     {
                         userDetail = appDbContext.AdminDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
                     }
 
-                    if(UserService.HasRole(userInformation , Roles.Manager))
+                    if(UserService.HasRole(userInformation , Roles.Manager , userRoleNames))
                     {
                         userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
                     }
@@ -485,11 +487,7 @@ namespace lms_with_moodle.Controllers
                         schooltypeName = "دولتی";
                     }
 
-                    userDetail = new {userDetail , schooltypeName };
-
-                    var userRoleNames = new List<string>();
-
-                    userRoleNames = userManager.GetRolesAsync(userInformation).Result.ToList();
+                    userDetail = new {userDetail , schooltypeName }; 
 
                     List<Claim> authClaims = new List<Claim>()
                     {

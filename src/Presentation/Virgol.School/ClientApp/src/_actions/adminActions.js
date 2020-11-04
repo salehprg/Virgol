@@ -227,23 +227,23 @@ export const RedirectAdmin = (token , schoolId) => async dispatch => {
         });
 
         switch (response.data.userType) {
-            case 1: {
+            case "Student": {
                 history.push('/s/dashboard');
                 break;
             }
-            case 3: {
+            case "Teacher": {
                 history.push('/t/dashboard');
                 break;
             }
-            case 2: {
+            case "Manager": {
                 history.push('/m/dashboard');
                 break;
             }
-            case 4: {
+            case "Admin": {
                 history.push('/a/dashboard');
                 break;
             }
-            case 5: {
+            case "Administrator": {
                 history.push('/sa/dashboard');
             }
         }

@@ -60,7 +60,6 @@ namespace lms_with_moodle.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult getManagerDashboardInfo()
         {
@@ -144,7 +143,6 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult GetAllStudent(bool IsForAssign) 
         {
             try
@@ -334,7 +332,6 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult GetUserInfo(int userId)
         {
             try
@@ -372,7 +369,6 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserDataModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult GetNewUsers()
         {
             try
@@ -660,7 +656,6 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult TeacherList()
         {
             try
@@ -867,7 +862,6 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
         public IActionResult getStudentsClass(int classId)
         {
             try

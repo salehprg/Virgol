@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace lms_with_moodle
 {
@@ -218,6 +219,11 @@ namespace lms_with_moodle
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            //services.AddAuthorization();
+
+            //services.AddScoped<IAuthorizationHandler, AuthHandler>();
+            //services.AddSingleton<IAuthorizationPolicyProvider, AuthPolicyHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
