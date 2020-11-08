@@ -27,7 +27,7 @@ spec:
     - name: VIRGOL_DATABASE_HOST
       value: db.legace.ir
     - name: VIRGOL_DATABASE_NAME
-      value: LMS_Beta
+      value: LMS
     - name: VIRGOL_DATABASE_USER
       value: postgres
     - name: VIRGOL_DATABASE_PASSWORD
@@ -73,4 +73,4 @@ spec:
     - name : REACT_APP_MOODLE_URL
       value : https://moodle.legace.ir/login/index.php
     - name : REACT_APP_VERSION
-      value : 1.5.7
+      value : 1.5.8
