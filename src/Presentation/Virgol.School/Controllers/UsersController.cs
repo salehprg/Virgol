@@ -396,6 +396,9 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                // await roleManager.CreateAsync(new IdentityRole<int>(Roles.CoManager));
+                // await roleManager.CreateAsync(new IdentityRole<int>(Roles.Student));
+
                 bool authResult = false;
 
                 var Result = signInManager.PasswordSignInAsync(inpuLogin.Username , inpuLogin.Password , false , false).Result;

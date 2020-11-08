@@ -7,6 +7,31 @@ import {START, STOP} from "./workerTypes";
 
 //#region News
 
+export const SetMeetingService = (token , serviceName) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        
+        const response = await lms.post(`/Teacher/SetMeetingService?serviceName=${serviceName}` , null , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success(response.data))
+
+        return true
+
+    } catch (e) 
+    {
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        return false
+    }
+
+}
+
 export const GetClassBook = (token , lessonId) => async dispatch => {
 
     try {

@@ -54,7 +54,7 @@ namespace lms_with_moodle.Helper
 
         StatusResponse UpdatePermission(string scoId , bool isPrivate)
         {
-            string permission = (isPrivate ? "removed" : "view-hidden");
+            string permission = (isPrivate ? "remove" : "view-hidden");
 
             Uri uri = new Uri (string.Format("https://c1.legace.ir/api/xml?action=permissions-update&principal-id=public-access&permission-id={0}&acl-id={1}", permission , scoId));
             HttpResponseMessage response = client.GetAsync(uri).Result;
@@ -126,7 +126,7 @@ namespace lms_with_moodle.Helper
             }
         }
 
-        public string JoinMeeting(string RoomId , string Username , string Password , bool Presenter)
+        public string JoinMeeting(string SCOId , string Username , string Password , bool Presenter)
         {
             try
             {
@@ -137,8 +137,8 @@ namespace lms_with_moodle.Helper
                 {
                     if(common.status.code == "ok")
                     {
-                        StatusResponse statusViewer = AddPrincipalToMeeting(RoomId , common.common.user.userId , Presenter);
-                        MeetingInfoResponse roomInfo = FindScoInfo(RoomId);
+                        StatusResponse statusViewer = AddPrincipalToMeeting(SCOId , common.common.user.userId , Presenter);
+                        MeetingInfoResponse roomInfo = FindScoInfo(SCOId);
 
                         if(statusViewer.status.code == "ok")
                         {

@@ -34,7 +34,8 @@ class Home extends React.Component {
                 <div className="col-span-1 flex flex-col justify-between">
                     <Hero userInfo={this.props.user.userInformation}
                           userDetail={this.props.user.userDetail}
-                          userTitle={this.props.user.userDetail.schooltypeName}/>
+                          userTitle={this.props.user.userDetail.schooltypeName}
+                          ShowServiceType = {false}/>
                     <RecentClass
                         onStart={(id) => this.JoinMeeting(id)}
                         joinList={true}

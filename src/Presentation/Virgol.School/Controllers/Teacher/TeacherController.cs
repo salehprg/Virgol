@@ -51,8 +51,41 @@ namespace lms_with_moodle.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SetMeetingService(string serviceName)
+        {
+            try
+            {
+                string UserName = userManager.GetUserId(User);
+                UserModel userModel = appDbContext.Users.Where(x => x.UserName == UserName).FirstOrDefault();
+
+                TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault();
+
+                if(serviceName == ServiceType.BBB || serviceName == ServiceType.AdobeConnect)
+                {
+                    teacherDetail.MeetingService = serviceName;
+                    appDbContext.Update(teacherDetail);
+
+                    await appDbContext.SaveChangesAsync();
+
+                    return Ok("سرویس با موفقیت تغییر یافت");
+                }
+                else 
+                {
+                    return BadRequest("نام سرویس دهنده به درستی وارد نشده است");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return BadRequest("تغییر سرویس با مشکل مواجه شد");
+            }
+        }
+
         [HttpGet]
-        [Authorize( Roles = Roles.Teacher + "," + Roles.Manager + "," + Roles.CoManager)]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public IActionResult GetClassBook(int lessonId)
         {

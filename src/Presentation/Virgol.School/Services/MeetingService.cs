@@ -68,7 +68,7 @@ public class MeetingService {
             return null;
         }
     }
-    private async Task<bool> CreateRoom(Meeting meeting , float duration , string serviceType , string bbbMeetingId = "")
+    private async Task<bool> CreateRoom(Meeting meeting , float duration , string serviceType , string customMeetingId = "")
     {
         string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
 
@@ -78,27 +78,33 @@ public class MeetingService {
         duration += (duration != 0 ? 5 : 0); // add 5 minutes Additional to the end of class
         //duration = 0; // add 5 minutes Additional to the end of class
 
-        MeetingsResponse response = new MeetingsResponse();
+        MeetingsResponse bbb_response = new MeetingsResponse();
+        MeetingInfoResponse adobe_MeetingInfo = new MeetingInfoResponse();
 
         if(serviceType == ServiceType.BBB)
         {
             BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
-            response = await bbbApi.CreateRoom(meeting.MeetingName , (bbbMeetingId == "" ? meeting.Id.ToString() : bbbMeetingId) , callBackUrl , (int)duration);
+            bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
         }
         else if(serviceType == ServiceType.AdobeConnect)
         {
             AdobeApi adobeApi = new AdobeApi();
-            MeetingInfoResponse meetingInfo = adobeApi.StartMeeting(meeting.MeetingName);
-
-            if(meetingInfo.status.code == "ok")
+            adobe_MeetingInfo = adobeApi.StartMeeting(meeting.MeetingName);
+            
+            if(adobe_MeetingInfo == null)
             {
-                response.returncode = "SUCCEED";
-                meeting.MeetingId = meetingInfo.scoInfo.scoId;
+                return false;
+            }
+
+            if(adobe_MeetingInfo.status.code == "ok")
+            {
+                bbb_response.returncode = "SUCCEED";
+                meeting.MeetingId = adobe_MeetingInfo.scoInfo.scoId + "|" + ServiceType.AdobeConnect;
             }
         }
 
 
-        if(response.returncode != "FAILED" && !meeting.Private)
+        if(bbb_response.returncode != "FAILED" && !meeting.Private)
         {
             if(serviceType == ServiceType.BBB)
             {
@@ -111,8 +117,16 @@ public class MeetingService {
 
             return true;
         }
-        else if(response.returncode != "FAILED" && meeting.Private)
+        else if(bbb_response.returncode != "FAILED" && meeting.Private)
         {
+            if(serviceType == ServiceType.AdobeConnect)
+            {
+                meeting.MeetingId = customMeetingId + "|" + adobe_MeetingInfo.scoInfo.scoId + "|" + ServiceType.AdobeConnect;
+            }
+
+            appDbContext.Meetings.Update(meeting);
+            await appDbContext.SaveChangesAsync();
+            
             return true;
         }
 
@@ -284,9 +298,9 @@ public class MeetingService {
         appDbContext.Meetings.Add(meeting);
         appDbContext.SaveChanges();
 
-        await CreateRoom(meeting , 0 , serviceType , meeting.MeetingId);
+        bool result = await CreateRoom(meeting , 0 , serviceType , meeting.MeetingId);
 
-        if(meeting != null)
+        if(meeting != null && result)
         {
             return meeting;
         }
@@ -322,19 +336,19 @@ public class MeetingService {
     {
         int userId = user.Id;
 
-        Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == MeetingId).FirstOrDefault();
+        int meetingId = -1;
+        int.TryParse(MeetingId , out meetingId);
+        Meeting meeting = new Meeting();
 
-        if(meeting == null)
+        if(meetingId == -1)
         {
-            int meetingId = 0;
-
-            int.TryParse(MeetingId , out meetingId);
-
-            if(meetingId > 0)
-            {
-                meeting = appDbContext.Meetings.Where(x => x.Id == meetingId).FirstOrDefault();
-            }
+            meeting = appDbContext.Meetings.Where(x => x.MeetingId == MeetingId).FirstOrDefault();
         }
+        else
+        {
+            meeting = appDbContext.Meetings.Where(x => x.Id == meetingId).FirstOrDefault();
+        }
+        
 
         bool isModerator = (user.Id == meeting.TeacherId || UserService.HasRole(user , Roles.Manager));
 
@@ -346,7 +360,9 @@ public class MeetingService {
         if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
             AdobeApi adobeApi = new AdobeApi();
-            classUrl = adobeApi.JoinMeeting(meeting.MeetingId , user.UserName , user.MelliCode , isModerator);
+            string scoId = meeting.MeetingId.Split("|")[1];
+
+            classUrl = adobeApi.JoinMeeting(scoId , user.UserName , user.MelliCode , isModerator);
         }
         else if(meeting.ServiceType == ServiceType.BBB)
         {

@@ -50,9 +50,7 @@ class PrivateLogin extends React.Component {
             
             var token = await this.props.login(formValues , false)
             await this.props.JoinPrivateRoom(token , this.props.match.params.id)
-            // const success = await this.props.login(formValues)
-
-            // if (!success) this.setState({ logingin: false })
+            this.setState({logingin: false})
         }
     }
 

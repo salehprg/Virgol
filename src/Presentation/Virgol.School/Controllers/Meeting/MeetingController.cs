@@ -137,7 +137,22 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string userName = userManager.GetUserId(User);
-                int userId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+                int userId = userModel.Id;
+
+                TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userId).FirstOrDefault();
+                List<int> schoolIds = teacherDetail.getTeacherSchoolIds();
+                int schoolId = schoolIds.FirstOrDefault();
+                
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                roomName = roomName + " - " + school.SchoolName + " - " + userModel.LastName;
+
+                List<Meeting> checkDuplicates = appDbContext.Meetings.Where(x => x.MeetingName.Contains(roomName)).ToList();
+
+                if(checkDuplicates.Count >= 1)
+                {
+                    roomName += string.Format(" ({0})" , checkDuplicates.Count + 1);
+                }
 
                 Meeting meeting = await meetingService.StartPrivateMeeting(roomName , userId);
 
@@ -169,15 +184,19 @@ namespace lms_with_moodle.Controllers
 
                 if(meeting != null)
                 {
-                    string url = await meetingService.JoinMeeting(user , meeting.MeetingId , true);
+                    string url = await meetingService.JoinMeeting(user , meeting.Id.ToString() , true);
 
                     if(url != null)
                     {
                         return Ok(url);
                     }
                 }
+                else
+                {
+                    return BadRequest("کلاس مورد نظر وجود ندارد");
+                }
 
-                return BadRequest("کلاس مورد نظر وجود ندارد");
+                return BadRequest("مشکلی در ورود به جلسه رخ داد");
             }
             catch(Exception ex)
             {

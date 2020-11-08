@@ -42,7 +42,8 @@ class Home extends React.Component {
                                   adminTitle={`${this.props.t('type')} : ${this.props.user.userDetail.schooltypeName} `}/>
                             :
                             <Hero userInfo={this.props.t('loading')}
-                                  title={this.props.t('loading')} />
+                                  title={this.props.t('loading')}
+                                  ShowServiceType = {false} />
                     )}
                     <div className="mt-8">
                         <CounterCard

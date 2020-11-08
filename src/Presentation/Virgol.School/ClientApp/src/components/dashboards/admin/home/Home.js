@@ -47,7 +47,7 @@ class Home extends React.Component {
                             ?
                             <Hero userInfo={this.props.user.userInformation}
                                   adminTitle={`مسئول مدارس ${this.props.user.userDetail.schooltypeName} استان خراسان رضوی`} 
-                                  />
+                                  ShowServiceType = {false}/>
                             :
                             <Hero userInfo={this.props.t('loading')}
                                   title={this.props.t('loading')} />

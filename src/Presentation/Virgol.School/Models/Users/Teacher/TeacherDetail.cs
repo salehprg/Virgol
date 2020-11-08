@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 public class TeacherDetail {
@@ -13,5 +14,23 @@ public class TeacherDetail {
     public string cityBirth {get;set;}
     public string MeetingService {get;set;}
 
+
+    public List<int> getTeacherSchoolIds()
+    {
+        List<int> schoolsId = new List<int>();
+        
+        string[] schoolsIdStr = SchoolsId.Split(",");
+        foreach (var schoolId in schoolsIdStr)
+        {
+            int Id = -1;
+            int.TryParse(schoolId , out Id);
+
+            if(Id != -1)
+            {
+                schoolsId.Add(Id);
+            }
+        }
+        return schoolsId;
+    }
 
 }
