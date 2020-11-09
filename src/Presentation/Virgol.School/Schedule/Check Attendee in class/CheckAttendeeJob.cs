@@ -140,15 +140,14 @@ namespace Schedule
                         catch (Exception ex)
                         {
                             Console.WriteLine("Error on : SchoolId = " + errorSchool.Id);
-                            Console.WriteLine(ex.Message);
-                            Console.WriteLine(ex.StackTrace);
+                            //Console.WriteLine(ex.Message);
+                            //Console.WriteLine(ex.StackTrace);
                         }
                     }
                 }
             }
             catch(Exception ex)
             {
-                
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }

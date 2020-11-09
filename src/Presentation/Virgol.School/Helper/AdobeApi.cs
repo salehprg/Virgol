@@ -112,7 +112,10 @@ namespace lms_with_moodle.Helper
                         {
                             return meetingResponse;
                         }
+                        Console.WriteLine(status.status.invalid);
+
                     }
+                    Console.WriteLine(meetingResponse.status.invalid);
                 }
 
                 return null;
