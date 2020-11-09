@@ -903,10 +903,44 @@ namespace lms_with_moodle.Controllers
         }
     }
 
-    public async Task<bool> SyncMoodleLDAP()
+    public async Task<IActionResult> FixStudentsRole()
+    {
+        try
+        {
+            UserService UserService = new UserService(userManager , appDbContext);
+            List<UserModel> users = appDbContext.Users.ToList();
+
+            DateTime before = DateTime.Now;
+
+            foreach (var user in users)
+            {
+                if(UserService.HasRole(user , Roles.User , true))
+                {
+                    await userManager.AddToRoleAsync(user , Roles.Student);
+                }
+            }
+            
+            DateTime after = DateTime.Now;
+
+            TimeSpan elapsed = (after - before);
+
+            return Ok("Done ! \n Elapsed Time :" + elapsed);
+                        
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.StackTrace);
+            throw;
+        }
+
+    }
+
+    public async Task<IActionResult> SyncMoodleLDAP()
     {
         UserService UserService = new UserService(userManager , appDbContext);
-        return await UserService.SyncUserData(appDbContext.Users.ToList());
+        List<UserModel> users = appDbContext.Users.Where(x => x.UserName != "Admin").ToList();
+
+        return Ok(await UserService.SyncUserData(users));
     }
 
     public async Task<IActionResult> RecreateMoodle()

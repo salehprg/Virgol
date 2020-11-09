@@ -362,6 +362,8 @@ public class MeetingService {
             AdobeApi adobeApi = new AdobeApi();
             string scoId = meeting.MeetingId.Split("|")[1];
 
+            await UserService.SyncUserData(new List<UserModel> {user});
+
             classUrl = adobeApi.JoinMeeting(scoId , user.UserName , user.MelliCode , isModerator);
         }
         else if(meeting.ServiceType == ServiceType.BBB)

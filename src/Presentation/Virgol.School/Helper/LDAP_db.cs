@@ -7,6 +7,7 @@ using Novell.Directory.Ldap;
 using System.Collections.Generic;
 using Models;
 using Newtonsoft.Json;
+using System.Collections;
 
 namespace lms_with_moodle.Helper
 {
@@ -341,7 +342,7 @@ namespace lms_with_moodle.Helper
 
                 LdapAttributeSet attributeSet = nextEntry.GetAttributeSet();
 
-                System.Collections.IEnumerator ienum = attributeSet.GetEnumerator();
+                IEnumerator ienum = attributeSet.GetEnumerator();
 
                 string idNumber = "";
                 while(ienum.MoveNext())

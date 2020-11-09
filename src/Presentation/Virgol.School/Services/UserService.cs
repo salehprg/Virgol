@@ -238,8 +238,10 @@ public class UserService {
 #endregion
 
 #region SyncData
-    public async Task<bool> SyncUserData(List<UserModel> users)
+    public async Task<List<UserModel>> SyncUserData(List<UserModel> users)
     {
+        List<UserModel> updatedUser = new List<UserModel>();
+
         foreach (var user in users)
         {
             try
@@ -247,18 +249,7 @@ public class UserService {
                 if(!ldap.CheckUserData(user.UserName))
                 {
                     ldap.AddUserToLDAP(user , false , user.MelliCode);
-                }
-
-                //int moodleId = await moodleApi.GetUserId(user.MelliCode);
-                int moodleId = 0;
-                if(moodleId == -1)
-                {
-                    //user.Moodle_Id = await moodleApi.CreateUser(user);
-                    user.Moodle_Id = 0;
-                }
-                else
-                {
-                    user.Moodle_Id = moodleId;
+                    updatedUser.Add(user);
                 }
             
             }
@@ -266,14 +257,14 @@ public class UserService {
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                return false;
+                return null;
             }
         }
 
-        appDbContext.Users.UpdateRange(users);
-        await appDbContext.SaveChangesAsync();
+       // appDbContext.Users.UpdateRange(users);
+        //await appDbContext.SaveChangesAsync();
 
-        return true;
+        return updatedUser;
         
     }
 
@@ -423,11 +414,11 @@ public class UserService {
     ///<summary>
     ///Use this function if you have User Roles List to Improve performance
     ///</summary>
-    public bool HasRole(UserModel userModel , string RoleName , List<string> Roles , bool OnlyThisRole = false)
+    public bool HasRole(UserModel userModel , string RoleName , List<string> UserRoles , bool OnlyThisRole = false)
     {
         try
         {
-            List<string> roles = Roles;
+            List<string> roles = UserRoles;
             
             if(roles != null)
             {
