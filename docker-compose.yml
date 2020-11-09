@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   virgol:
-    image: goldenstarc/virgol:1.5.8
+    image: goldenstarc/virgol:1.6.9
     restart: always
     container_name: virgol_main
     volumes:
@@ -27,7 +27,7 @@ services:
       - VIRGOL_FARAZAPI_PASSWORD=hektug-fakbAm-0vypje
       - VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=
       - VIRGOL_BBB_LOAD_BALANCER_MODE=separate
-      - VIRGOL_SCALELITE_BASE_URL=https://b1.legace.ir/bigbluebutton/api/
+      - VIRGOL_SCALELITE_BASE_URL=https://fb1.legace.ir/bigbluebutton/api/
       - VIRGOL_SCALELITE_SECRET=1b6s1esKbXNM82ussxx8OHJTenNvfkBu59tkHHADvqk
       - VIRGOL_JWT_SECRET=Saleh Secret Key
       - VIRGOL_LDAP_SERVER=openldap
@@ -37,7 +37,7 @@ services:
       - REACT_APP_RAHE_DOOR=false
       - REACT_APP_FAVICON_NAME=favicon_virgool
       - REACT_APP_MOODLE_URL=moodle/login/index.php
-      - REACT_APP_VERSION=1.5.8
+      - REACT_APP_VERSION=1.6.9
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`lms.legace.ir`)"
