@@ -63,7 +63,7 @@ namespace lms_with_moodle.Controllers
 #region UserActions
         
         [HttpGet]
-        [Authorize(Roles = "User")]
+        [Authorize]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public async Task<IActionResult> GetCetegoryNames()
         {
@@ -106,7 +106,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User")]
+        [Authorize]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
         public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
         {
@@ -131,7 +131,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles="User")]
+        [Authorize]
         public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber , int type , string verificationCode , int fatherCode)
         {
             try
@@ -279,7 +279,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles="User")]
+        [Authorize]
         public async Task<IActionResult> CompleteStudentProfile([FromBody]UserDataModel userDataModel)
         {
             try
@@ -317,6 +317,10 @@ namespace lms_with_moodle.Controllers
                 appDbContext.Users.Update(user);
                 appDbContext.SaveChanges();
 
+                if(!ldap.CheckUserData(user.UserName))
+                {
+                    ldap.AddUserToLDAP(user , false);
+                }
                 ldap.AddMail(user);
 
                 return Ok(true);
@@ -629,7 +633,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User")]
+        [Authorize]
         [ProducesResponseType(typeof(bool), 200)]
         public async Task<IActionResult> UploadDocuments([FromForm]IFormCollection Files , int docType)
         {

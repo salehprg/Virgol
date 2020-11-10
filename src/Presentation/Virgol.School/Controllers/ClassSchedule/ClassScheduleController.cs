@@ -21,7 +21,7 @@ namespace lms_with_moodle.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "User")]
+    [Authorize]
     public class ClassScheduleController : ControllerBase
     {
         

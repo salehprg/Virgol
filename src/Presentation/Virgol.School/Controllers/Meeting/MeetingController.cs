@@ -31,7 +31,7 @@ namespace lms_with_moodle.Controllers
 {
     
     [ApiController]
-    [Authorize(Roles = Roles.User)]
+    [Authorize]
     [Route("api/[controller]/[action]")]
     public class MeetingController : ControllerBase
     {
@@ -397,7 +397,7 @@ namespace lms_with_moodle.Controllers
 #endregion
 
         [HttpGet]
-        [Authorize(Roles = Roles.User + "," + Roles.Teacher)]
+        [Authorize(Roles = Roles.Student + "," + Roles.Teacher)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public IActionResult GetRecentClass() 
         {
