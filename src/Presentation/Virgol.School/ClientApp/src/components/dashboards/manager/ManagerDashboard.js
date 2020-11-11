@@ -14,6 +14,7 @@ import Grades from "./grades/Grades";
 import News from "./News/News";
 import { connect } from "react-redux";
 import Tracker from "./tracker/Tracker";
+import Groups from "./groups/Groups";
 
 class ManagerDashboard extends React.Component {
 
@@ -88,6 +89,13 @@ class ManagerDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
+                        code="groups"
+                        title={this.props.t('manageGroups')}
+                        icon={bell}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
                         code="tracker"
                         title={this.props.t('virtualClasses')}
                         icon={open_book}
@@ -123,6 +131,7 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/teachers"} component={Teachers}/>
                         <Route path={this.props.match.url + "/bases"} component={Grades}/>
+                        <Route path={this.props.match.url + "/groups"} component={Groups}/>
                         <Route path={this.props.match.url + "/students"} component={Students}/>
                         <Route path={this.props.match.url + "/news"} component={News}/>
                         <Route path={this.props.match.url + "/tracker"} component={Tracker}/>

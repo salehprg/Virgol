@@ -171,7 +171,7 @@
     "sendCode": "ارسال کد",
     "birthPlace": "شهر محل تولد",
     "activeClasses": "کلاس های فعال",
-    "studentsNews": "آخرین اخبار",
+    "studentNews": "آخرین اخبار",
     "from": "از",
     "till": "تا",
     "enterClass": "ورود به کلاس",
@@ -194,5 +194,9 @@
     "evenWeek" : "هفته های زوج",
     "oddWeek" : "هفته های فرد",
     "everyWeek" : "هر هفته",
-    "newTeacher": "معلم جدید"
+    "newTeacher": "معلم جدید",
+    "activities": "فعالیت ها",
+    "manageGroups": "کلاس های تجمیعی",
+    "groupsList": "لیست کلاس های تجمیعی",
+    "newGroup": "ایجاد کلاس تجمیعی"
 }

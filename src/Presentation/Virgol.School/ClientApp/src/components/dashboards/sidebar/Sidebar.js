@@ -60,7 +60,7 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
 
 
 
-            <div className="w-full mt-10">
+            <div className="w-full mt-10 max-h-75 overflow-y-auto">
                 {children}
             </div>
         </motion.div>

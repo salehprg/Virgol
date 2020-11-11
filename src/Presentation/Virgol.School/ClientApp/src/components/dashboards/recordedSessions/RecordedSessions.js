@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import PlusTable from '../tables/PlusTable';
 import { arrow_left } from '../../../assets/icons';
 import { connect } from 'react-redux';
@@ -26,9 +27,9 @@ class RecorededSession extends React.Component {
                     {arrow_left('w-6 centerize text-purplish')}
                 </div>
                 <div className="w-full min-h-85 flex md:flex-row flex-col items-center">
-                <div className="md:w-1/2 w-full md:mb-0 mb-8">
+                {/* <div className="md:w-1/2 w-full md:mb-0 mb-8">
                     <img className="md:w-5/6 w-full" src="/recorded.svg" alt="recorded svg" />
-                </div>
+                </div> */}
                 <div className="md:w-1/2 w-full h-85 overflow-auto">
                 <PlusTable
                     title={this.props.t('recordedSessions')}
@@ -84,4 +85,6 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps , {GetRecordList})(RecorededSession);
+const cwrapped = connect(mapStateToProps , {GetRecordList})(RecorededSession)
+
+export default withTranslation()(cwrapped);

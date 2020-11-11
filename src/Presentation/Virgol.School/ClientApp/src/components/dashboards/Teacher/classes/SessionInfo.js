@@ -30,7 +30,7 @@ class SessionInfo extends React.Component {
         return (
             <div className="w-screen min-h-screen py-4 bg-black-blue">
                 <div className="lg:w-11/12 w-full lg:px-8 px-4 py-16 relative min-h-90 mx-auto lg:border-2 border-0 rounded-lg border-dark-blue">
-                    <div onClick={() => history.push(this.redirectUrl())} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-8 rounded-lg border-2 border-purplish">
+                    <div onClick={() => this.props.history.goBack()} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-8 rounded-lg border-2 border-purplish">
                         {arrow_left('w-6 centerize text-purplish')}
                     </div>
                     <p className="text-right text-xl text-white">{this.props.lessonDetail ? `${this.props.lessonDetail.orgLessonName} - ${this.props.t('school')} ${this.props.lessonDetail.schoolName} - ${this.props.t('class')} ${this.props.lessonDetail.className}` : null}</p>

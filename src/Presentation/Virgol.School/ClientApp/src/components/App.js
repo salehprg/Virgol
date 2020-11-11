@@ -38,6 +38,7 @@ import SessionInfo from "./dashboards/Teacher/classes/SessionInfo";
 import RecorededSession from './dashboards/recordedSessions/RecordedSessions';
 import Copyright from "./Copyright";
 import PrivateLogin from './login/PrivateLogin';
+import AddGroup from './dashboards/manager/groups/AddGroup';
 
 class App extends React.Component {
 
@@ -84,6 +85,7 @@ class App extends React.Component {
                         <Route path="/newTeacher" component={AddTeacher} />
                         <Route path="/student/:id" component={StudentInfo} />
                         <Route path="/newStudent" component={AddStudent} />
+                        <Route path="/newGroup" component={AddGroup} />
                         
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
