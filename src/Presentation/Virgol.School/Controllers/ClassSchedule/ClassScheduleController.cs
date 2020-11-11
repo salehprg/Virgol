@@ -182,63 +182,58 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddMixedClassSchedule([FromBody]List<Class_WeeklySchedule> classSchedules , string MixedName)
+        public async Task<IActionResult> AddMixedClassSchedule([FromBody]MixedScheduleData mixedScheduleData)
         {
             try
             {
                 bool mixedCreated = false;
-                MixedSchedule mixedSchedule = new MixedSchedule();
+                List<Class_WeeklySchedule> classSchedules = new List<Class_WeeklySchedule>();
+                Class_WeeklySchedule tempSchedule = mixedScheduleData.schedle;
+                
+                bool hasInterupt = false;
+                string mixedName = "";
 
-                foreach (var classSchedule in classSchedules)
+                foreach (var classId in mixedScheduleData.classIds)
                 {
-                    if(classSchedule.EndHour <= classSchedule.StartHour)
+                    tempSchedule.ClassId = classId;
+                    classSchedules.Add(tempSchedule);
+
+                    School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
+                    mixedName += schoolClass.ClassName + "-";
+
+                    if(tempSchedule.EndHour <= tempSchedule.StartHour)
                         return BadRequest("ساعت درس به درستی انتخاب نشده است");
                         
-                    if(classSchedule.TeacherId == 0)
+                    if(tempSchedule.TeacherId == 0)
                         return BadRequest("معلمی انتخاب شده است");
                         
-                    if(classSchedule.ClassId != 0)
+                    if(tempSchedule.ClassId != 0)
                     {
                         //Check for interupt class Schedule
-                        object result = classScheduleService.CheckInteruptSchedule(classSchedule);
-                        bool noInterupt = false;
+                        object result = classScheduleService.CheckInteruptSchedule(tempSchedule);
 
-                        try{noInterupt = (bool)result;}catch{}
+                        try{hasInterupt = (bool)result;}catch{}
 
-                        if(noInterupt)
-                        {
-                            if(!mixedCreated)
-                            {
-                                mixedSchedule.MixedName = MixedName;
-                                
-                                await appDbContext.MixedSchedules.AddAsync(mixedSchedule);
-                                await appDbContext.SaveChangesAsync();
-
-                                mixedCreated = true;
-                            }
-                            
-                            classSchedule.MixedId = mixedSchedule.Id;
-                            Class_WeeklySchedule schedule = await classScheduleService.AddClassSchedule(classSchedule);
-
-                            ClassScheduleView classScheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == schedule.Id).FirstOrDefault();
-
-                            if(classScheduleView != null)
-                            {
-                                return Ok(classScheduleView);
-                            }
-                            
-                            return BadRequest("افزودن ساعت با مشکل مواجه لطفا بعدا تلاش نمایدد");
-                        }
-                        else
+                        if(!hasInterupt)
                         {
                             return BadRequest((string)result);
                         }
                     }
-
-                    return BadRequest("کلاسی انتخاب شده است");
                 }
 
-                return BadRequest("خطا در افزودن کلاس");
+                MixedSchedule mixedSchedule = new MixedSchedule();
+                mixedSchedule.MixedName = mixedName.Remove(mixedName.Length - 1 , 1);
+
+                await appDbContext.MixedSchedules.AddAsync(mixedSchedule);
+                await appDbContext.SaveChangesAsync();
+
+                foreach (var classSchedule in classSchedules)
+                {                
+                    classSchedule.MixedId = mixedSchedule.Id;
+                    Class_WeeklySchedule schedule = await classScheduleService.AddClassSchedule(classSchedule);
+                }
+
+                return Ok("کلاس تجمیعی با موفقیت ایجاد شد");
             }
             catch(Exception ex)
             {
