@@ -87,13 +87,13 @@ class ManagerDashboard extends React.Component {
                         icon={bell}
                         changeActive={this.changeActive}
                     />
-                    <SidebarCard
+                    {/* <SidebarCard
                         active={this.state.active}
                         code="groups"
                         title={this.props.t('manageGroups')}
                         icon={bell}
                         changeActive={this.changeActive}
-                    />
+                    /> */}
                     <SidebarCard
                         active={this.state.active}
                         code="tracker"
@@ -131,7 +131,7 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/teachers"} component={Teachers}/>
                         <Route path={this.props.match.url + "/bases"} component={Grades}/>
-                        <Route path={this.props.match.url + "/groups"} component={Groups}/>
+                        {/* <Route path={this.props.match.url + "/groups"} component={Groups}/> */}
                         <Route path={this.props.match.url + "/students"} component={Students}/>
                         <Route path={this.props.match.url + "/news"} component={News}/>
                         <Route path={this.props.match.url + "/tracker"} component={Tracker}/>
