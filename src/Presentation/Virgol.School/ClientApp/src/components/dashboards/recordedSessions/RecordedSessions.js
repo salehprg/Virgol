@@ -1,7 +1,7 @@
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 import PlusTable from '../tables/PlusTable';
-import { arrow_left } from '../../../assets/icons';
+import { arrow_left, users } from '../../../assets/icons';
 import { connect } from 'react-redux';
 import {GetRecordList} from '../../../_actions/meetingActions'
 import history from "../../../history";
@@ -30,7 +30,7 @@ class RecorededSession extends React.Component {
                 {/* <div className="md:w-1/2 w-full md:mb-0 mb-8">
                     <img className="md:w-5/6 w-full" src="/recorded.svg" alt="recorded svg" />
                 </div> */}
-                <div className="md:w-1/2 w-full h-85 overflow-auto">
+                <div className="w-full h-85 overflow-auto">
                 <PlusTable
                     title={this.props.t('recordedSessions')}
                     isLoading={false}
@@ -38,7 +38,7 @@ class RecorededSession extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     button={() => null}
-                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date'), this.props.t('time'), '', '']}
+                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date'), this.props.t('time'), '', '', this.props.t('ParticipantionStatus')]}
                     body={() => {
                         return (
 
@@ -56,8 +56,11 @@ class RecorededSession extends React.Component {
                                             <td className="py-4">1399/5/4</td>
                                             <td className="py-4">8 تا 9</td>
                                             <td className="py-4">
-                                    <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
-                                    <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
+                                            <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
+                                            <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
+                                            </td>
+                                            <td>
+                                                {users('w-8 text-white')}
                                             </td>
                                         </tr>
                                     )

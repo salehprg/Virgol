@@ -169,7 +169,7 @@ export const GetRecordList = (scheduleId) => async dispatch => {
         return true
 
     } catch (e) {
-
+        console.log(e.response)
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
 
         return false
