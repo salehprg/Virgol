@@ -132,10 +132,8 @@ public class MeetingService {
 
         return false;
     }
-    private async Task<Meeting> StartMeeting(ClassScheduleView classSchedule , int teacherId , string meetingName = "")
+    private async Task<Meeting> StartMeeting(ClassScheduleView classSchedule , int teacherId , string serviceType, string meetingName = "" )
     {
-        TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
-        string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
 
         Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType);
 
@@ -280,11 +278,9 @@ public class MeetingService {
 
 #endregion
 
-    public async Task<Meeting> StartPrivateMeeting(string meetingName , int userId)
+    public async Task<Meeting> StartPrivateMeeting(string meetingName , int userId , string serviceType)
     {   
         DateTime timeNow = MyDateTime.Now();
-        TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userId).FirstOrDefault();
-        string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
 
         Meeting meeting = new Meeting();
         meeting.MeetingName = meetingName;
@@ -308,9 +304,9 @@ public class MeetingService {
         return null;
     }
 
-    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId)
+    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId , string ServiceType)
     {   
-        Meeting meeting = await StartMeeting(classSchedule , teacherId);
+        Meeting meeting = await StartMeeting(classSchedule , teacherId , ServiceType);
 
         if(meeting != null)
         {
@@ -360,7 +356,7 @@ public class MeetingService {
         if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
             AdobeApi adobeApi = new AdobeApi();
-            string scoId = meeting.MeetingId.Split("|")[1];
+            string scoId = (meeting.Private ? meeting.MeetingId.Split("|")[1] : meeting.MeetingId.Split("|")[0]);
 
             await UserService.SyncUserData(new List<UserModel> {user});
 

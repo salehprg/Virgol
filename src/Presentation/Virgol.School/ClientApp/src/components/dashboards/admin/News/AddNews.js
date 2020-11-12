@@ -21,7 +21,7 @@ class AddNews extends React.Component {
 
     options = [
         { value: 4, label: this.props.t('schoolManagers') },
-        { value: 3, label: this.props.t('students') },
+        { value: 6, label: this.props.t('students') },
         { value: 2, label: this.props.t('teachers') }
     ];
 

@@ -207,15 +207,15 @@ namespace lms_with_moodle.Controllers
 
                     switch(role.Name)
                     {
-                        case "Manager":
+                        case Roles.Manager:
                             editRole.Name = "مدیر";
                             break;
 
-                        case "Teacher":
+                        case Roles.Teacher:
                             editRole.Name = "معلم";
                             break;
                         
-                        case "User":
+                        case Roles.Student:
                             editRole.Name = "دانش آموز";
                             break;
                         

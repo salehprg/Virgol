@@ -154,7 +154,9 @@ namespace lms_with_moodle.Controllers
                     roomName += string.Format(" ({0})" , checkDuplicates.Count + 1);
                 }
 
-                Meeting meeting = await meetingService.StartPrivateMeeting(roomName , userId);
+                string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
+
+                Meeting meeting = await meetingService.StartPrivateMeeting(roomName , userId , serviceType);
 
                 if(meeting != null)
                 {
@@ -215,10 +217,11 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                string serviceType = ServiceType.BBB;
-
                 string userName = userManager.GetUserId(User);
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+
+                TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
+                string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
 
 
                 ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
@@ -233,7 +236,7 @@ namespace lms_with_moodle.Controllers
                     {
                         classSchedule.OrgLessonName = mixedSchedule.MixedName;
 
-                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId);
+                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
                         //Get all schedules have same MixedId according to Selected Schedule
                         List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
 
@@ -246,7 +249,7 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
-                    int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId);
+                    int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
                 }
 
                 return Ok(true);
@@ -260,7 +263,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Roles.Teacher + "," + Roles.User)]
+        [Authorize(Roles = Roles.Teacher + "," + Roles.Student)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> JoinMeeting(string meetingId) 
         {
@@ -499,7 +502,7 @@ namespace lms_with_moodle.Controllers
                 meetings = meetings.OrderBy(x => x.Id).ToList();
                 foreach (var meeting in meetings)
                 {
-                    if(meeting.MeetingId != null)
+                    if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.BBB)
                     {
                         Recordings recordings = (await bBApi.GetMeetingRecords(meeting.MeetingId.ToString())).recordings;
 

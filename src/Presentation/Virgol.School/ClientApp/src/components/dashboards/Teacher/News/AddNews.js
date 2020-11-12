@@ -20,7 +20,7 @@ class AddNews extends React.Component {
     state = { showManagerInfo: true , tags : []}
 
     options = [
-        { value: 3, label: this.props.t('students') }
+        { value: 6, label: this.props.t('students') }
     ];
 
     renderInputs = ({ input, meta, type, placeholder , extra }) => {
