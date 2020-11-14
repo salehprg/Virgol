@@ -25,6 +25,7 @@ public class ClassScheduleView {
     public string ClassName {get;set;}
     public string SchoolName {get;set;}
     public int MixedId {get;set;}
+    public int School_Id {get;set;}
 
     [NotMapped]
     public string moodleUrl {get;set;}

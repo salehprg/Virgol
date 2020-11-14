@@ -41,6 +41,7 @@ namespace Models
         public DbSet<City> Cities {get; set;}
         public DbSet<Region> Regions {get; set;}
         public DbSet<DocumentModel> Documents {get; set;}
+        public DbSet<Stream> Streams {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}

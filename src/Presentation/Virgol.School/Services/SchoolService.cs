@@ -35,8 +35,8 @@ public class SchoolService {
                 {
                     schoolModel.Moodle_Id = SchoolMoodleId;
                     
-                    appDbContext.Schools.Add(schoolModel);
-                    appDbContext.SaveChanges();
+                    await appDbContext.Schools.AddAsync(schoolModel);
+                    await appDbContext.SaveChangesAsync();
 
                     schoolModel.Id = appDbContext.Schools.OrderByDescending(x => x.Id).FirstOrDefault().Id;
 
@@ -73,8 +73,8 @@ public class SchoolService {
                     school_Bases.Add(school_Base);
                 }
 
-                appDbContext.School_Bases.AddRange(school_Bases);
-                appDbContext.SaveChanges();
+                await appDbContext.School_Bases.AddRangeAsync(school_Bases);
+                await appDbContext.SaveChangesAsync();
 
                 return school_Bases;
             }
@@ -118,7 +118,7 @@ public class SchoolService {
 
                     appDbContext.School_Bases.Remove(schoolBase);
 
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     return schoolBase;
                 }
@@ -178,7 +178,7 @@ public class SchoolService {
                 appDbContext.School_StudyFields.AddRange(school_StudyFields);
                 appDbContext.School_Grades.AddRange(school_Grades);
 
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return school_StudyFields;
             }
@@ -212,7 +212,7 @@ public class SchoolService {
 
                     appDbContext.School_StudyFields.Remove(schoolStudyField);
 
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     return schoolStudyField;
                 }
@@ -246,8 +246,8 @@ public class SchoolService {
                 schoolClass.Moodle_Id = classMoodleId;
                 schoolClass.School_Id = school.Id;
 
-                appDbContext.School_Classes.Add(schoolClass);
-                appDbContext.SaveChanges();
+                await appDbContext.School_Classes.AddAsync(schoolClass);
+                await appDbContext.SaveChangesAsync();
 
                 foreach (var lesson in lessons)
                 {
@@ -264,7 +264,7 @@ public class SchoolService {
                 }
                 
                 appDbContext.School_Lessons.AddRange(schoolLessons);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 int managerMoodleId = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault().Moodle_Id;
                 

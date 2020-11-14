@@ -316,7 +316,7 @@ namespace lms_with_moodle.Controllers
                     schoolResult.ManagerId = managerResult[0].Id;
 
                     appDbContext.Schools.Update(schoolResult);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                     
                     SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                     //SMSApi.SendSchoolData(manager.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
@@ -345,7 +345,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [Authorize(Roles = Roles.Admin)]
         //if want use commented Part change inputData ObjectType to SchoolData
-        public IActionResult EditSchool([FromBody]SchoolModel inputData)
+        public async Task<IActionResult> EditSchool([FromBody]SchoolModel inputData)
         {
             try
             {
@@ -358,7 +358,7 @@ namespace lms_with_moodle.Controllers
 
                 appDbContext.Schools.Update(schoolInfo);
 
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
                 
 
                 return Ok("مدرسه با موفقیت ویرایش شد");
@@ -376,7 +376,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [Authorize(Roles = Roles.Manager)]
         //if want use commented Part change inputData ObjectType to SchoolData
-        public IActionResult ToggleReminder(bool status)
+        public async Task<IActionResult> ToggleReminder(bool status)
         {
             try
             {
@@ -390,7 +390,7 @@ namespace lms_with_moodle.Controllers
 
                 appDbContext.Schools.Update(schoolInfo);
 
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
                 
 
                 return Ok("اطلاع رسانی با موفقیت ویرایش شد");
@@ -461,7 +461,7 @@ namespace lms_with_moodle.Controllers
                     //appDbContext.Users.RemoveRange(appDbContext.Users.Where(x => x.SchoolId == school.Id));
                     appDbContext.Schools.Remove(school);
 
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     return Ok(schoolId);
                 }
@@ -827,6 +827,46 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(List<LessonModel>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult GetClassesCommonLessons([FromBody]List<int> classIds)
+        {
+            try
+            {
+                List<LessonModel> lessons = new List<LessonModel>();
+
+                if(classIds.Count > 0)
+                {
+                    School_Class classs = appDbContext.School_Classes.Where(x => x.Id == classIds[0]).FirstOrDefault();
+                    if(classs != null)
+                    {
+                        lessons.AddRange(appDbContext.Lessons.Where(x => x.Grade_Id == classs.Grade_Id).ToList());
+                    }
+
+                    for (int i = 1; i < classIds.Count ; i++)
+                    {
+                        classs = appDbContext.School_Classes.Where(x => x.Id == classIds[i]).FirstOrDefault();
+                        if(classs != null)
+                        {
+                            var result = lessons.Intersect(appDbContext.Lessons.Where(x => x.Grade_Id == classs.Grade_Id).ToList());
+                            lessons = result.ToList();
+                        }
+                    }
+                }
+
+                return Ok(lessons);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        
     
  #endregion
 
@@ -962,7 +1002,7 @@ namespace lms_with_moodle.Controllers
                     //await moodleApi.EditCategory(oldClass);
 
                     appDbContext.School_Classes.Update(schoolClass);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                 }
 
 
@@ -989,7 +1029,7 @@ namespace lms_with_moodle.Controllers
                 appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList());
                 appDbContext.School_Lessons.RemoveRange(appDbContext.School_Lessons.Where(x => x.classId == classId).ToList());
                 appDbContext.School_StudentClasses.RemoveRange(appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList());
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return Ok(classId);
             }
@@ -1061,7 +1101,7 @@ namespace lms_with_moodle.Controllers
                                 int userId = userManager.FindByNameAsync(manager.UserName).Result.Id;
                                 manager.Id = userId;
 
-                                bool ldapUser = ldap.AddUserToLDAP(manager , true , password);
+                                bool ldapUser = await ldap.AddUserToLDAP(manager , true , password);
 
                                 bool userToMoodle = false;
                                 if(ldapUser)
@@ -1084,12 +1124,12 @@ namespace lms_with_moodle.Controllers
                                     managerDetail.UserId = manager.Id;
 
                                     appDbContext.ManagerDetails.Add(managerDetail);
-                                    appDbContext.SaveChanges();
+                                    await appDbContext.SaveChangesAsync();
 
                                     schoolResult.ManagerId = manager.Id;
 
                                     appDbContext.Schools.Update(schoolResult);
-                                    appDbContext.SaveChanges();
+                                    await appDbContext.SaveChangesAsync();
 
                                     //SMSApi.SendSchoolData(manager.PhoneNumber , schoolData.SchoolName , manager.UserName , password);
                                     

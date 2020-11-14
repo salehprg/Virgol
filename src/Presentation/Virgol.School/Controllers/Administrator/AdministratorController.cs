@@ -123,8 +123,8 @@ namespace lms_with_moodle.Controllers
                     adminDetail.SchoolsType = model.schoolType;
                     adminDetail.SchoolLimit = model.schoolLimit;
 
-                    appDbContext.AdminDetails.Add(adminDetail);
-                    appDbContext.SaveChanges();
+                    await appDbContext.AdminDetails.AddAsync(adminDetail);
+                    await appDbContext.SaveChangesAsync();
                 }
                 else
                 {
@@ -144,7 +144,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditAdmin([FromBody]Admin_InputData model)
+        public async Task<IActionResult> EditAdmin([FromBody]Admin_InputData model)
         {
             try
             {
@@ -166,7 +166,7 @@ namespace lms_with_moodle.Controllers
 
                     appDbContext.Users.Update(admin);
                     appDbContext.AdminDetails.Update(adminDetail);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                 }
                 else
                 {
@@ -194,7 +194,7 @@ namespace lms_with_moodle.Controllers
                 AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault();
 
                 appDbContext.AdminDetails.Remove(adminDetail);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return Ok(true);
             }
@@ -587,7 +587,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditStudyFields([FromBody]StudyFieldModel model)
+        public async Task<IActionResult> EditStudyFields([FromBody]StudyFieldModel model)
         {
             try
             {
@@ -599,7 +599,7 @@ namespace lms_with_moodle.Controllers
                     study.StudyFieldName = (model.StudyFieldName != "" ? model.StudyFieldName : study.StudyFieldName);
 
                     appDbContext.StudyFields.Update(model);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     return Ok(true);
                 }
@@ -683,7 +683,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditGrades([FromBody]GradeModel model)
+        public async Task<IActionResult> EditGrades([FromBody]GradeModel model)
         {
             try
             {
@@ -695,7 +695,7 @@ namespace lms_with_moodle.Controllers
                     grade.StudyField_Id = (model.StudyField_Id != 0 ? model.StudyField_Id : grade.StudyField_Id);
 
                     appDbContext.Grades.Update(grade);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     return Ok(true);
                 }
@@ -775,7 +775,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditLessons([FromBody]LessonModel model)
+        public async Task<IActionResult> EditLessons([FromBody]LessonModel model)
         {
             try
             {
@@ -789,7 +789,7 @@ namespace lms_with_moodle.Controllers
                     lesson.Vahed = (model.Vahed != 0 ? model.Vahed : lesson.Vahed);
 
                     appDbContext.Lessons.Update(lesson);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     return Ok(true);
                 }

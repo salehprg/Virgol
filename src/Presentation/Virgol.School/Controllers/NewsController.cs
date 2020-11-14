@@ -272,7 +272,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditNews([FromBody]NewsModel model)
+        public async Task<IActionResult> EditNews([FromBody]NewsModel model)
         {
             try
             {
@@ -290,7 +290,7 @@ namespace lms_with_moodle.Controllers
                 newsModel.Tags = model.Tags;
 
                 appDbContext.News.Update(newsModel);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return Ok("خبر با موفقیت ویرایش شد");
             }

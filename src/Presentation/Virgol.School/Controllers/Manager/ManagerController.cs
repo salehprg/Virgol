@@ -114,7 +114,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [Authorize(Roles = Roles.Manager)]
-        public IActionResult CompleteInfo([FromBody]UserModel managerInfo)
+        public async Task<IActionResult> CompleteInfo([FromBody]UserModel managerInfo)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace lms_with_moodle.Controllers
                 originalMInfo.LastName = (managerInfo.LastName != null ? managerInfo.LastName : originalMInfo.LastName);
 
                 appDbContext.Users.Update(originalMInfo);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return Ok(originalMInfo);
             }
@@ -434,7 +434,7 @@ namespace lms_with_moodle.Controllers
                     UserModel userModel = JsonConvert.DeserializeObject<UserModel>(serialized);
 
 
-                    bool ldapUser = ldap.AddUserToLDAP(userModel , false);
+                    bool ldapUser = await ldap.AddUserToLDAP(userModel , false);
                     
                     bool createUser = false;
                     if(ldapUser)
@@ -471,7 +471,7 @@ namespace lms_with_moodle.Controllers
                 }
 
                 //await AssignUsersToCategory(enrolUsers.ToArray());
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return Ok(true);
             }
@@ -488,7 +488,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [Authorize(Roles = Roles.Manager)]
-        public async Task<IActionResult> AssignUsersToCategory([FromBody]EnrolUser[] users)
+        public IActionResult AssignUsersToCategory([FromBody]EnrolUser[] users)
         {
             try
             {
@@ -522,7 +522,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [Authorize(Roles = Roles.Manager)]
-        public async Task<IActionResult> UnAssignUsersFromCategory([FromBody]EnrolUser[] users)
+        public IActionResult UnAssignUsersFromCategory([FromBody]EnrolUser[] users)
         {
             try
             {
@@ -557,7 +557,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(bool), 400)]
         [Authorize(Roles = Roles.Manager)]
-        public async Task<IActionResult> AssignUsersToCourse([FromBody]EnrolUser[] users)
+        public IActionResult AssignUsersToCourse([FromBody]EnrolUser[] users)
         {
             // bool result = await moodleApi.AssignUsersToCourse(users.ToList());
             bool result = true;
@@ -572,7 +572,7 @@ namespace lms_with_moodle.Controllers
             //         teacherCourseInfo.TeacherId = enrolUser.UserId;//if we set teacher UserId came from our database
 
             //         appDbContext.TeacherCourse.Add(teacherCourseInfo);
-            //         appDbContext.SaveChanges();
+            //         await appDbContext.SaveChangesAsync();
             //     }
             // }
 
@@ -590,7 +590,7 @@ namespace lms_with_moodle.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [Authorize(Roles = Roles.Manager)]
-        public async Task<IActionResult> UnAssignFromCourse([FromBody]EnrolUser user)
+        public IActionResult UnAssignFromCourse([FromBody]EnrolUser user)
         {
             try
             {
@@ -603,10 +603,10 @@ namespace lms_with_moodle.Controllers
                 //     TeacherCourseInfo teacherCourse = appDbContext.TeacherCourse.Where(x => x.CourseId == user.lessonId).FirstOrDefault(); //Because every course should have one teacher
 
                 //     appDbContext.TeacherCourse.Remove(teacherCourse);
-                //     appDbContext.SaveChanges();
+                //     await appDbContext.SaveChangesAsync();
                 // }
 
-                return Ok(true);
+                return Ok(resultUnAssign);
             }
             catch(Exception ex)
             {
@@ -843,7 +843,7 @@ namespace lms_with_moodle.Controllers
                     // appDbContext.TeacherCourse.RemoveRange(appDbContext.TeacherCourse.Where(x => x.TeacherId == teacher.Id));
 
                     appDbContext.TeacherDetails.Update(teacherDetail);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                     
                 }
 
@@ -986,7 +986,7 @@ namespace lms_with_moodle.Controllers
                 //await moodleApi.UnAssignUsersFromCourse(enrolsData);
 
                 appDbContext.School_StudentClasses.RemoveRange(studentClasses);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return Ok(true);
             }

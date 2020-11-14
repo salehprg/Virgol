@@ -115,7 +115,7 @@ namespace lms_with_moodle.Helper
                         Console.WriteLine(status.status.invalid);
 
                     }
-                    Console.WriteLine(meetingResponse.status.invalid);
+                    Console.WriteLine(meetingResponse.status.invalid.subcode);
                 }
 
                 return null;

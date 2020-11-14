@@ -3,13 +3,17 @@ import { withTranslation } from 'react-i18next';
 import Select from 'react-select';
 import history from '../../../../history'
 import Add from '../../../field/Add';
+import { connect } from "react-redux";
+import {getAllClass , GetClassesCommonLessons} from "../../../../_actions/schoolActions"
+import {getAllTeachers} from "../../../../_actions/managerActions"
+import {AddMixedClassSchedule} from "../../../../_actions/classScheduleActions"
 import Fieldish from '../../../field/Fieldish';
 
 class AddGroup extends React.Component {
 
     state = { 
-        classes: [{ value: 1, label: 'الف' }, { value: 2, label: 'ب' }, { value: 3, label: 'جیم' }],
-        lessons: [{ value: 1, label: 'ریاضی' }, { value: 2, label: 'فیزیک' }, { value: 3, label: 'شیمی' }],
+        classes: [],
+        lessons: [],
         teachers: [{ value: 1, label: 'مقدم' }, { value: 2, label: 'ابراهیمیان' }],
         days: [
             { value: 1, label: this.props.t('saturday') },
@@ -29,7 +33,7 @@ class AddGroup extends React.Component {
         selectedStartEnd: null
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
         const times = [];
         var startTime = 7.0;
         var endTime = 23.0;
@@ -43,36 +47,82 @@ class AddGroup extends React.Component {
                  value: i , label: labelHour + ':' + labelMin 
             })
         }
-
         this.setState({times})
+
+        var teachers = [];
+        await this.props.getAllTeachers(this.props.user.token);
+        this.props.teachers.map(x => teachers.push({value : x.id , label : x.firstName + " " + x.lastName}));
+        this.setState({teachers : teachers});
+
+
+        var classes = [];
+        await this.props.getAllClass(this.props.user.token);
+        this.props.allClass.map(x => classes.push({value : x.id , label : x.className}));
+        this.setState({classes : classes});
+
     }
 
-    handleChangeClass = selectedClasses => {
+    handleChangeClass = async (selectedClasses) => {
+        //console.log("change class")
+
+
+        var classIds = []
+        selectedClasses.map(x => classIds.push(x.value));
+
+        await this.props.GetClassesCommonLessons(this.props.user.token , classIds);
         this.setState({ selectedClasses });
+
+        var commLessons = [];
+        this.props.commonLessons.map(x => commLessons.push({value : x.id , label : x.lessonName}));
+
+        this.setState({lessons : commLessons});
     };
 
     handleChangeLesson = selectedLesson => {
+        //console.log("change lesson")
         this.setState({ selectedLesson });
     };
 
     handleChangeTeacher = selectedTeacher => {
+        //console.log("change teacher")
         this.setState({ selectedTeacher });
     };
 
     handleChangeDay = selectedDay => {
+        //console.log("change day")
+
         this.setState({ selectedDay });
     };
 
     handleChangeStart = selectedStartTime => {
+        //console.log("change start")
         this.setState({ selectedStartTime });
     };
 
     handleChangeEnd = selectedEndTime => {
+        //console.log("change end")
         this.setState({ selectedEndTime });
     };
 
-    submit = () => {
+    onSubmit = async (formValues) => {
+        //console.log("Submit")
+        if (this.state.selectedDay && this.state.selectedLesson && this.state.selectedTeacher && this.state.selectedStartTime && this.state.selectedEndTime) 
+        {
+            var classIds = []
+            this.state.selectedClasses.map(x => classIds.push(x.value));
+            const data = {
+                    schedule : {
+                        dayType : this.state.selectedDay.value,
+                        lessonId : this.state.selectedLesson.value,
+                        teacherId : this.state.selectedTeacher.value,
+                        startHour : this.state.selectedStartTime.value,
+                        endHour : this.state.selectedEndTime.value
+                    },
+                    classIds : classIds
+            }
 
+            await this.props.AddMixedClassSchedule(this.props.user.token , data);
+        }
     }
 
     render() {
@@ -81,60 +131,70 @@ class AddGroup extends React.Component {
                 onCancel={() => history.push('/m/groups')}
                 title={this.props.t('newGroup')}
             >
-                <form className="w-full" style={{direction : "rtl"}} onSubmit={this.submit}>
-                <Select
-                    isMulti={true}
-                    className="w-full mx-auto my-4"
-                    value={this.state.selectedClasses}
-                    onChange={this.handleChangeClass}
-                    options={this.state.classes}
-                    placeholder={this.props.t('classes')}
-                />
-                <Select
-                    className="w-full mx-auto my-4"
-                    value={this.state.selectedLesson}
-                    onChange={this.handleChangeLesson}
-                    options={this.state.lessons}
-                    placeholder={this.props.t('lesson')}
-                />
-                <Select
-                    className="w-full mx-auto my-4"
-                    value={this.state.selectedTeacher}
-                    onChange={this.handleChangeTeacher}
-                    options={this.state.teachers}
-                    placeholder={this.props.t('teacher')}
-                />
-                <Select
-                    className="w-full mx-auto my-4"
-                    value={this.state.selectedDay}
-                    onChange={this.handleChangeDay}
-                    options={this.state.days}
-                    placeholder={this.props.t('day')}
-                />
-                <Select
-                    className="w-full mx-auto my-4"
-                    value={this.state.selectedStartTime}
-                    onChange={this.handleChangeStart}
-                    options={this.state.times}
-                    placeholder={this.props.t('startTime')}
-                />
-                {this.state.selectedStartTime ?
+                <div className="w-full" style={{direction : "rtl"}} >
+                    <Select
+                        isMulti={true}
+                        className="w-full mx-auto my-4"
+                        value={this.state.selectedClasses}
+                        onChange={this.handleChangeClass}
+                        options={this.state.classes}
+                        placeholder={this.props.t('classes')}
+                    />
                     <Select
                         className="w-full mx-auto my-4"
-                        value={this.state.selectedEndTime}
-                        onChange={this.handleChangeEnd}
-                        options={this.state.times.filter(el => el.value > this.state.selectedStartTime.value)}
-                        placeholder={this.props.t('endTime')}
+                        value={this.state.selectedLesson}
+                        onChange={this.handleChangeLesson}
+                        options={this.state.lessons}
+                        placeholder={this.props.t('lesson')}
                     />
-                    :
-                    null
-                }
-                <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg"> {this.props.t('save')} </button>
-                </form>
+                    <Select
+                        className="w-full mx-auto my-4"
+                        value={this.state.selectedTeacher}
+                        onChange={this.handleChangeTeacher}
+                        options={this.state.teachers}
+                        placeholder={this.props.t('teacher')}
+                    />
+                    <Select
+                        className="w-full mx-auto my-4"
+                        value={this.state.selectedDay}
+                        onChange={this.handleChangeDay}
+                        options={this.state.days}
+                        placeholder={this.props.t('day')}
+                    />
+                    <Select
+                        className="w-full mx-auto my-4"
+                        value={this.state.selectedStartTime}
+                        onChange={this.handleChangeStart}
+                        options={this.state.times}
+                        placeholder={this.props.t('startTime')}
+                    />
+                    {this.state.selectedStartTime ?
+                        <Select
+                            className="w-full mx-auto my-4"
+                            value={this.state.selectedEndTime}
+                            onChange={this.handleChangeEnd}
+                            options={this.state.times.filter(el => el.value > this.state.selectedStartTime.value)}
+                            placeholder={this.props.t('endTime')}
+                        />
+                        :
+                        null
+                    }
+                    <button onClick={() => this.onSubmit()} className="w-full py-2 mt-4 text-white bg-purplish rounded-lg"> {this.props.t('save')} </button>
+                </div>
             </Add>
         );
     }
 
 }
 
-export default withTranslation()(AddGroup);
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , 
+            mixedSchedules : state.schedules.mixedClassSchedules,
+            allClass : state.schoolData.allClass,
+            commonLessons : state.schoolData.commonLessons,
+            teachers : state.managerData.teachers}
+}
+
+const cwrapped = connect (mapStateToProps, { getAllClass , GetClassesCommonLessons , getAllTeachers , AddMixedClassSchedule})(AddGroup);
+
+export default withTranslation()(cwrapped);

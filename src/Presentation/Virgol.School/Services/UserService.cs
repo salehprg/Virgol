@@ -71,7 +71,7 @@ public class UserService {
                     }
                     
                     userData.Id = user.Id;
-                    bool ldapResult = (userRoles.Contains(Roles.Manager) ? ldap.AddUserToLDAP(user , hasTeacherRole , password) : ldap.AddUserToLDAP(user , hasTeacherRole , user.MelliCode));
+                    bool ldapResult = (userRoles.Contains(Roles.Manager) ? await ldap.AddUserToLDAP(user , hasTeacherRole , password) : await ldap.AddUserToLDAP(user , hasTeacherRole , user.MelliCode));
                     //bool ldapResult = true;
                     if(ldapResult)
                     {
@@ -142,7 +142,7 @@ public class UserService {
             //user.UserType = oldData.UserType;
 
             if(user.LatinFirstname != null && user.LatinLastname != null)
-                ldap.EditMail(oldData);
+                await ldap.EditMail(oldData);
 
             await SyncUserDetail(user , schoolId);
 
@@ -248,7 +248,7 @@ public class UserService {
             {
                 if(!ldap.CheckUserData(user.UserName))
                 {
-                    ldap.AddUserToLDAP(user , false , user.MelliCode);
+                    await ldap.AddUserToLDAP(user , false , user.MelliCode);
                     updatedUser.Add(user);
                 }
             

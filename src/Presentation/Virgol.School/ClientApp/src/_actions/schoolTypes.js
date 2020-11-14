@@ -19,6 +19,7 @@ export const GetSchool_Grades = 'GetSchool_Grades';
 export const GetGrade = 'GetGrade';
 
 export const GetLessons = 'GetLessons';
+export const GetClassesCommonLessons = 'GetClassesCommonLessons';
 
 export const getGrades = 'getGrades';
 

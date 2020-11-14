@@ -245,7 +245,7 @@ namespace lms_with_moodle.Controllers
                 {
                     school.ManagerId = managerDatas[0].Id;
                     appDbContext.Schools.Update(school);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                 }           
 
                 return Ok(model);
@@ -387,7 +387,7 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult RemoveManager(int managerId)
+        public async Task<IActionResult> RemoveManager(int managerId)
         {
             try
             {
@@ -406,7 +406,7 @@ namespace lms_with_moodle.Controllers
 
                 if(removeManager)
                 {
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                 }
                 
                 return Ok(managerId);
@@ -474,7 +474,7 @@ namespace lms_with_moodle.Controllers
                 {
                     school.ManagerId = managerDatas[0].Id;
                     appDbContext.Schools.Update(school);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                 }           
 
                 return Ok(model);
@@ -581,7 +581,7 @@ namespace lms_with_moodle.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult RemoveCoManager(int coManagerId)
+        public async Task<IActionResult> RemoveCoManager(int coManagerId)
         {
             try
             {
@@ -590,7 +590,7 @@ namespace lms_with_moodle.Controllers
 
                 if(removedCoManager)
                 {
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                 }
                 
                 return Ok(coManagerId);

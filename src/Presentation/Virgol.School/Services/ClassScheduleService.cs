@@ -68,8 +68,8 @@ public class ClassScheduleService {
 
             if(enrolment)
             {
-                appDbContext.ClassWeeklySchedules.Add(classSchedule);
-                appDbContext.SaveChanges();
+                await appDbContext.ClassWeeklySchedules.AddAsync(classSchedule);
+                await appDbContext.SaveChangesAsync();
 
                // await moodleApi.setCourseVisible(lessonMoodle_Id , true);
 

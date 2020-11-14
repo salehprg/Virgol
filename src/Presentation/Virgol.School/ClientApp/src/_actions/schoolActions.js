@@ -497,6 +497,24 @@ export const deleteClass = (token, classId) => async dispatch => {
 
 }
 
+export const GetClassesCommonLessons = (token,classIds) => async dispatch => {
+
+    try {
+        const response = await lms.post(`/School/GetClassesCommonLessons` , classIds , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.GetClassesCommonLessons, payload: response.data })
+
+        return true
+
+    } catch (e) {
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+    }
+}
 
 export const getLessons = (token,gradeId) => async dispatch => {
 

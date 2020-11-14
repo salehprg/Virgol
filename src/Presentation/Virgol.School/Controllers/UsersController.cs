@@ -65,7 +65,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [Authorize]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
-        public async Task<IActionResult> GetCetegoryNames()
+        public IActionResult GetCetegoryNames()
         {
             
             //userManager getuserid get MelliCode field of user beacause we set in token
@@ -108,7 +108,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [Authorize]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
-        public async Task<IActionResult> GetCoursesInCategory(int CategoryId)
+        public IActionResult GetCoursesInCategory(int CategoryId)
         {
             
             // int UserId = await moodleApi.GetUserId(userManager.GetUserId(User));
@@ -175,7 +175,7 @@ namespace lms_with_moodle.Controllers
                         user.PhoneNumber = phoneNumber;
                         user.PhoneNumberConfirmed = true;
                         appDbContext.Users.Update(user);
-                        appDbContext.SaveChanges();
+                        await appDbContext.SaveChangesAsync();
                         return Ok(true);
                     }
                     return Ok(false);
@@ -315,13 +315,13 @@ namespace lms_with_moodle.Controllers
                 user.PhoneNumber = userDataModel.PhoneNumber;
 
                 appDbContext.Users.Update(user);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 if(!ldap.CheckUserData(user.UserName))
                 {
-                    ldap.AddUserToLDAP(user , false);
+                    await ldap.AddUserToLDAP(user , false);
                 }
-                ldap.AddMail(user);
+                await ldap.AddMail(user);
 
                 return Ok(true);
             }
@@ -373,9 +373,9 @@ namespace lms_with_moodle.Controllers
                 user.LatinLastname = userDataModel.LatinLastname.Trim();
 
                 appDbContext.Users.Update(user);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
-                ldap.AddMail(user);
+                await ldap.AddMail(user);
 
                 return Ok(true);
 
@@ -615,8 +615,8 @@ namespace lms_with_moodle.Controllers
                         UserId = userId
                     };
 
-                    appDbContext.StudentDetails.Add(userDetail);
-                    appDbContext.SaveChanges();
+                    await appDbContext.StudentDetails.AddAsync(userDetail);
+                    await appDbContext.SaveChangesAsync();
                     
                     return Ok(newUser);
                 }
@@ -716,7 +716,7 @@ namespace lms_with_moodle.Controllers
         //For security Reason We Use this methode here
         [HttpGet]
         [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
-        public async Task<IActionResult> GetAllCategory()
+        public IActionResult GetAllCategory()
         {
             // try
             // {
@@ -817,8 +817,8 @@ namespace lms_with_moodle.Controllers
                     verification.UserId = user.Id;
                     verification.VerificationCode = Code;
 
-                    appDbContext.VerificationCodes.Add(verification);
-                    appDbContext.SaveChanges();
+                    await appDbContext.VerificationCodes.AddAsync(verification);
+                    await appDbContext.SaveChangesAsync();
 
                     return true;
                 }

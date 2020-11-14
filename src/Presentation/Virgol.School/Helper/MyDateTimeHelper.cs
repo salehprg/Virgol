@@ -61,7 +61,7 @@ public class MyDateTime {
             using (var ntp = new NtpClient(Dns.GetHostAddresses("ir.pool.ntp.org")[0]))
                 offset = ntp.GetCorrectionOffset();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // timeout or bad SNTP reply
             offset = TimeSpan.Zero;

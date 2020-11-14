@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Models;
 using Newtonsoft.Json;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace lms_with_moodle.Helper
 {
@@ -26,7 +27,7 @@ namespace lms_with_moodle.Helper
             
         }
 
-        public bool AddUserToLDAP(UserModel user , bool IsTeacher   , string password = "")
+        public async Task<bool> AddUserToLDAP(UserModel user , bool IsTeacher   , string password = "")
         {
             try
             {
@@ -99,7 +100,7 @@ namespace lms_with_moodle.Helper
                 {
                     user.Email = mailAddress;
                     appDbContext.Users.Update(user);
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                 }
 
                 return true;
@@ -359,7 +360,7 @@ namespace lms_with_moodle.Helper
 
             return false;
         }
-        public bool AddMail(UserModel user)
+        public async Task<bool> AddMail(UserModel user)
         {
             try
             {
@@ -397,7 +398,7 @@ namespace lms_with_moodle.Helper
 
                 user.Email = mailAddress;
                 appDbContext.Users.Update(user);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return true;
             }
@@ -458,17 +459,17 @@ namespace lms_with_moodle.Helper
         ///<summary>
         ///don't change email in Database before call this methode by yourSelf
         ///</summary>
-        public bool EditMail(UserModel user)
+        public async Task<bool> EditMail(UserModel user)
         {
-            return DoEditMail(user , null);
+            return await DoEditMail(user , null);
         }
         
-        public bool EditMail(UserDataModel user)
+        public async Task<bool> EditMail(UserDataModel user)
         {
-            return DoEditMail(null , user);
+            return await DoEditMail(null , user);
         }
 
-        private bool DoEditMail(UserModel userModel = null , UserDataModel userDataModel = null)
+        private async Task<bool> DoEditMail(UserModel userModel = null , UserDataModel userDataModel = null)
         {
             string mailAddress = "";
             UserModel user = new UserModel();
@@ -527,7 +528,7 @@ namespace lms_with_moodle.Helper
 
                 user.Email = mailAddress;
                 appDbContext.Users.Update(user);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 return true;
             }

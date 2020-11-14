@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
 public class MixedScheduleData {
-    public Class_WeeklySchedule schedle {get; set;}
+    public Class_WeeklySchedule schedule {get; set;}
     public List<int> classIds {get; set;}
 }

@@ -179,6 +179,35 @@ namespace lms_with_moodle.Controllers
 
 #region MixedSchedules
 
+        [Authorize(Roles = Roles.Manager + "," + Roles.CoManager)]
+        public IActionResult GetMixedSchedules()
+        {
+            try
+            {
+                string username = userManager.GetUserId(User);
+                UserModel manager = appDbContext.Users.Where(x => x.UserName == username).FirstOrDefault();
+                int schoolId = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault().Id;
+
+                List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.MixedId != 0 && x.School_Id == schoolId).ToList();
+
+                var result = classScheduleViews
+                            .GroupBy(x => x.MixedId)
+                            .Select(grp => grp.ToList())
+                            .ToList();
+
+                return Ok(result);
+                                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -186,16 +215,25 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                bool mixedCreated = false;
+                //bool mixedCreated = false;
                 List<Class_WeeklySchedule> classSchedules = new List<Class_WeeklySchedule>();
-                Class_WeeklySchedule tempSchedule = mixedScheduleData.schedle;
+
+                
                 
                 bool hasInterupt = false;
                 string mixedName = "";
 
                 foreach (var classId in mixedScheduleData.classIds)
                 {
+                    Class_WeeklySchedule tempSchedule = new Class_WeeklySchedule();
+                    tempSchedule.DayType = mixedScheduleData.schedule.DayType;
+                    tempSchedule.TeacherId = mixedScheduleData.schedule.TeacherId;
+                    tempSchedule.StartHour = mixedScheduleData.schedule.StartHour;
+                    tempSchedule.EndHour = mixedScheduleData.schedule.EndHour;
+                    tempSchedule.LessonId = mixedScheduleData.schedule.LessonId;
+                    tempSchedule.weekly = mixedScheduleData.schedule.weekly;
                     tempSchedule.ClassId = classId;
+
                     classSchedules.Add(tempSchedule);
 
                     School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
@@ -219,6 +257,7 @@ namespace lms_with_moodle.Controllers
                             return BadRequest((string)result);
                         }
                     }
+                    
                 }
 
                 MixedSchedule mixedSchedule = new MixedSchedule();
@@ -293,7 +332,7 @@ namespace lms_with_moodle.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(School_Class), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult EditClassSchedule([FromBody]Class_WeeklySchedule classSchedule)
+        public async Task<IActionResult> EditClassSchedule([FromBody]Class_WeeklySchedule classSchedule)
         {
             try
             {
@@ -304,7 +343,7 @@ namespace lms_with_moodle.Controllers
                     if((bool)result)
                     {
                         appDbContext.ClassWeeklySchedules.Update(classSchedule);
-                        appDbContext.SaveChanges();
+                        await appDbContext.SaveChangesAsync();
 
                         return Ok("ساعت مورد نظر با موفقیت ویرایش شد");
                     }
@@ -344,20 +383,34 @@ namespace lms_with_moodle.Controllers
 
                     if(unassignTeacher)
                     {
-                        appDbContext.ClassWeeklySchedules.Remove(classSchedule);
-                        appDbContext.SaveChanges();
-
-                        if(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId && x.LessonId == classSchedule.LessonId).FirstOrDefault() == null)
+                        if(classSchedule.MixedId != 0)
                         {
-                            //await moodleApi.setCourseVisible(lessonMoodleId , false);
+                            List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.MixedId == classSchedule.MixedId).ToList();
+                            appDbContext.ClassWeeklySchedules.RemoveRange(schedules);
+                            appDbContext.MixedSchedules.Remove(appDbContext.MixedSchedules.Where(x => x.Id == classSchedule.MixedId).FirstOrDefault());
+                        }
+                        else
+                        {
+                            appDbContext.ClassWeeklySchedules.Remove(classSchedule);
                         }
 
-                        Meeting meeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).FirstOrDefault();
-                        if(meeting != null)
+                        await appDbContext.SaveChangesAsync();
+
+                        // if(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId && x.LessonId == classSchedule.LessonId).FirstOrDefault() == null)
+                        // {
+                        //     //await moodleApi.setCourseVisible(lessonMoodleId , false);
+                        // }
+
+                        List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).ToList();
+                        foreach (var meeting in meetings)
                         {
-                            appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
-                            appDbContext.Meetings.Remove(meeting);
+                            if(meeting != null)
+                            {
+                                appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
+                            }
                         }
+
+                        appDbContext.Meetings.RemoveRange(meetings);
 
                         await appDbContext.SaveChangesAsync();
 

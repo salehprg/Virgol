@@ -3,6 +3,7 @@ import {LOGOUT} from "../_actions/authTypes";
 
 const INITIAL_STATE = {
     classSchedules : [],
+    mixedClassSchedules : [],
     classLessons : []
 }
 
@@ -27,6 +28,9 @@ export default ( state = INITIAL_STATE, action ) => {
         case Type.DeleteClassSchedule:
             return { ...state, classSchedules: state.classSchedules.filter(element => element.id != action.payload) }
             
+        case Type.GetMixedSchedules:
+            return { ...state, mixedClassSchedules: action.payload };
+    
         default: return state
 
     }

@@ -117,6 +117,50 @@ export const DeleteClassSchedule = (token, scheduleId) => async dispatch => {
 
 }
 
+//#region Mixed Schedules
+
+export const GetMixedSchedules = (token) => async dispatch => {
+
+    try {
+
+        const response = await lms.get("/ClassSchedule/GetMixedSchedules",{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
+
+
+        dispatch({ type: Type.GetMixedSchedules, payload: response.data });
+
+    } catch (e) {
+
+        dispatch(alert.error("خطا در اتصال"))
+    }
+}
+
+export const AddMixedClassSchedule = (token, formValues) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        const response = await lms.put("/ClassSchedule/AddMixedClassSchedule", formValues ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success("ساعت درسی با موفقیت اضافه شد. لطفا رفرش کنید"))
+
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+    }
+
+}
+
+
+//#endregion
+
 // export const wipeCatInfo = () => {
 //     return { type: Type.WIPE_CAT_INFO }
 // }

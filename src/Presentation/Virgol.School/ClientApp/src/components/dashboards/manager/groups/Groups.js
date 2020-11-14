@@ -1,7 +1,9 @@
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 import PlusTable from "../../tables/PlusTable";
+import { connect } from "react-redux";
 import {edit, external_link, loading, trash} from "../../../../assets/icons";
+import {GetMixedSchedules} from "../../../../_actions/classScheduleActions";
 import history from "../../../../history";
 
 class Groups extends React.Component {
@@ -10,6 +12,10 @@ class Groups extends React.Component {
         loading: false, 
         query: '', 
         groups: [{ id: 1, classes: ['الف', 'ب', 'جیم'], lesson: 'حسابان 2', teacher: 'مصطفی', time: 'سه شنبه 8 - 10' }]
+    }
+
+    componentDidMount = async () => {
+        await this.props.GetMixedSchedules(this.props.user.token);
     }
 
     changeQuery = query => {
@@ -72,4 +78,11 @@ class Groups extends React.Component {
 
 }
 
-export default withTranslation()(Groups);
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , 
+            mixedSchedules : state.schedules.mixedClassSchedules}
+}
+
+const cwrapped = connect (mapStateToProps, { GetMixedSchedules})(Groups);
+
+export default withTranslation()(cwrapped);

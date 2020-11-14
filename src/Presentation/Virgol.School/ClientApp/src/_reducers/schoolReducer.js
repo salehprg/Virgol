@@ -4,6 +4,7 @@ import {LOGOUT} from "../_actions/authTypes";
 const INITIAL_STATE = {
     news : [],
     dashboardInfo : [],
+    commonLessons : [],
     schools: [],
     classes : [],
     createSchoolData : {},
@@ -88,6 +89,10 @@ export default ( state = INITIAL_STATE, action ) => {
         
         case Type.GetLessons: 
             return { ...state, newSchoolInfo : {...state.newSchoolInfo , lessons : action.payload}}
+
+        case Type.GetClassesCommonLessons: 
+            return { ...state, commonLessons :  action.payload}
+
 
         case LOGOUT: 
             return INITIAL_STATE

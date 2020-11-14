@@ -46,7 +46,9 @@ public class MeetingService {
             int newMeetingNo = result.Count + 1;
 
             if(meetingName == "")
-                meetingName = displayName + " جلسه " + newMeetingNo;
+                meetingName = displayName ;
+
+            meetingName += " جلسه " + newMeetingNo;
 
             Meeting meeting = new Meeting();
             meeting.MeetingName = meetingName;
@@ -56,7 +58,7 @@ public class MeetingService {
             meeting.ServiceType = serviceType;
             meeting.Finished = false;
 
-            appDbContext.Meetings.Add(meeting);
+            await appDbContext.Meetings.AddAsync(meeting);
             appDbContext.SaveChanges();
 
             return meeting;
@@ -85,6 +87,11 @@ public class MeetingService {
         {
             BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
             bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
+
+            if(bbb_response == null)
+            {
+                return false;
+            }
         }
         else if(serviceType == ServiceType.AdobeConnect)
         {
@@ -135,7 +142,7 @@ public class MeetingService {
     private async Task<Meeting> StartMeeting(ClassScheduleView classSchedule , int teacherId , string serviceType, string meetingName = "" )
     {
 
-        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType);
+        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
 
         DateTime timeNow = MyDateTime.Now();
         float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
@@ -204,7 +211,7 @@ public class MeetingService {
 
                 if(schedule.MixedId != 0)
                 {
-                    schedule.OrgLessonName = appDbContext.MixedSchedules.Where(x => x.Id == schedule.Id).FirstOrDefault().MixedName;
+                    schedule.OrgLessonName = appDbContext.MixedSchedules.Where(x => x.Id == schedule.MixedId).FirstOrDefault().MixedName;
                 }
 
                 if(truncate == null)
@@ -216,6 +223,8 @@ public class MeetingService {
                     truncated.Add(schedule);
                 }
             }
+
+            schedules = truncated;
         }
         else
         {
@@ -292,7 +301,7 @@ public class MeetingService {
         meeting.MeetingId = RandomPassword.GenerateGUID(true , true , true);
 
         appDbContext.Meetings.Add(meeting);
-        appDbContext.SaveChanges();
+        await appDbContext.SaveChangesAsync();
 
         bool result = await CreateRoom(meeting , 0 , serviceType , meeting.MeetingId);
 
@@ -304,9 +313,9 @@ public class MeetingService {
         return null;
     }
 
-    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId , string ServiceType)
+    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId , string ServiceType , string meetingName = "")
     {   
-        Meeting meeting = await StartMeeting(classSchedule , teacherId , ServiceType);
+        Meeting meeting = await StartMeeting(classSchedule , teacherId , ServiceType , meetingName);
 
         if(meeting != null)
         {
@@ -315,9 +324,9 @@ public class MeetingService {
 
         return -1;
     }
-    public async Task<int> StartMixedMeeting(ClassScheduleView classSchedule , int teacherId , int parentMeetingId , string serviceType)
+    public async Task<int> StartMixedMeeting(ClassScheduleView classSchedule , int teacherId , int parentMeetingId , string serviceType , string meetingName)
     {
-        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType);
+        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
         Meeting parentMeeting = appDbContext.Meetings.Where(x => x.Id == parentMeetingId).FirstOrDefault();
 
         meeting.StartTime = parentMeeting.StartTime;
@@ -332,11 +341,11 @@ public class MeetingService {
     {
         int userId = user.Id;
 
-        int meetingId = -1;
+        int meetingId = 0;
         int.TryParse(MeetingId , out meetingId);
         Meeting meeting = new Meeting();
 
-        if(meetingId == -1)
+        if(meetingId == 0)
         {
             meeting = appDbContext.Meetings.Where(x => x.MeetingId == MeetingId).FirstOrDefault();
         }
@@ -391,36 +400,39 @@ public class MeetingService {
         }
 
         BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
-        bool resultEnd = await bbbApi.EndRoom(bbbMeetingId);
+        bool resultEnd = false;
 
-        MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
-        List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
-
-        if(meetingsResponse.meetings != null)
+        if(meeting.ServiceType == ServiceType.BBB)
         {
-            newMeetingList = meetingsResponse.meetings.meeting; 
+            resultEnd = await bbbApi.EndRoom(bbbMeetingId);
+
+            MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
+            List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
+
+            if(meetingsResponse.meetings != null)
+            {
+                newMeetingList = meetingsResponse.meetings.meeting; 
+            }
+
+            if(!resultEnd && newMeetingList.Where(x => x.meetingID == bbbMeetingId).FirstOrDefault() == null)// it means this class Closed by Moderator and Currently Open in Our Db
+            {
+                resultEnd = true;
+            }
         }
 
-        if(!resultEnd && newMeetingList.Where(x => x.meetingID == bbbMeetingId).FirstOrDefault() == null)// it means this class Closed by Moderator and Currently Open in Our Db
+        if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
             resultEnd = true;
         }
+        
 
         if(resultEnd)
         {
-            int parsedId = 0;
-            int.TryParse(bbbMeetingId , out parsedId);
-
-            List<Meeting> oldMeetings = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId || x.Id == parsedId).ToList();// Use for mixed meeting Id
-
-            foreach (var oldMeeting in oldMeetings)
-            {
-                oldMeeting.Finished = true;
-                oldMeeting.EndTime = MyDateTime.Now();
-            }
+            meeting.Finished = true;
+            meeting.EndTime = MyDateTime.Now();
             
-            appDbContext.Meetings.UpdateRange(oldMeetings);
-            appDbContext.SaveChanges();
+            appDbContext.Meetings.UpdateRange(meeting);
+            await appDbContext.SaveChangesAsync();
 
             return true;
         }
@@ -448,6 +460,12 @@ public class MeetingService {
         foreach (var schedule in schedules)
         {
             Meeting meeting = activeMeetings.Where(x => x.ScheduleId == schedule.Id).FirstOrDefault();
+
+            if(schedule.MixedId != 0)
+            {  
+                int meetingId = appDbContext.MixedSchedules.Where(x => x.Id == schedule.MixedId).FirstOrDefault().MeetingId;
+                meeting = activeMeetings.Where(x => x.Id == meetingId).FirstOrDefault();
+            }
 
             var serialized = JsonConvert.SerializeObject(schedule);
             MeetingView meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);

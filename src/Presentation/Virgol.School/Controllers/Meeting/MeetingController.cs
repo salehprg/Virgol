@@ -234,16 +234,24 @@ namespace lms_with_moodle.Controllers
 
                     if(mixedSchedule != null)
                     {
-                        classSchedule.OrgLessonName = mixedSchedule.MixedName;
-
-                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
+                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType , mixedSchedule.MixedName);
                         //Get all schedules have same MixedId according to Selected Schedule
                         List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
 
-                        foreach (var schedule in mixedSchedules)
+                        if(parentId != -1)
                         {
-                            schedule.OrgLessonName = mixedSchedule.MixedName;
-                            await meetingService.StartMixedMeeting(schedule , teacherId , parentId , serviceType);
+                            mixedSchedule.MeetingId = parentId;
+                            
+                            appDbContext.MixedSchedules.Update(mixedSchedule);
+                            await appDbContext.SaveChangesAsync();
+                            // foreach (var schedule in mixedSchedules)
+                            // {
+                            //     await meetingService.StartMixedMeeting(schedule , teacherId , parentId , serviceType , mixedSchedule.MixedName);
+                            // }
+                        }
+                        else
+                        {
+                            return BadRequest(false);
                         }
                     }
                 }
@@ -355,7 +363,9 @@ namespace lms_with_moodle.Controllers
 
                 meetingViews = meetingViews.OrderBy(x => x.StartHour).ToList();
 
-                return Ok(meetingViews);
+                List<MeetingView> result = meetingViews.GroupBy(x => x.MeetingId).Select(y => y.First()).ToList();
+
+                return Ok(result);
             }
             catch(Exception ex)
             {
@@ -532,7 +542,7 @@ namespace lms_with_moodle.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditRecording(int recordId)
+        public IActionResult EditRecording(int recordId)
         {
             try
             {
