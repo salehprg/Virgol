@@ -30,9 +30,10 @@ variables:
 #
 # In this example there are only two stages.
 # Initially, the project will be built and then tested.
-stages:
-  - push
-  - deploy
+# UNCOMMENT THESE AFTER ADDING RUNNERS
+# stages:
+#   - push
+#   - deploy
 
 # stages:
 #   - build
