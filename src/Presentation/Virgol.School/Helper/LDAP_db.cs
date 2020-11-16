@@ -26,6 +26,23 @@ namespace lms_with_moodle.Helper
 
             
         }
+        public bool CheckStatus()
+        {
+            try
+            {
+                if(!ldapConn.Connected)
+                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
 
         public async Task<bool> AddUserToLDAP(UserModel user , bool IsTeacher   , string password = "")
         {

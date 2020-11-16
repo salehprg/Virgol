@@ -463,7 +463,7 @@ namespace lms_with_moodle.Controllers
                             String welcomeMessage = string.Format("{0} {1} عزیز ثبت نام شما با موفقیت انجام شد \n" +
                                                                     "نام کاربری و رمز عبور شما کدملی شما میباشد" , SelectedUser.FirstName , SelectedUser.LastName);
 
-                            smsApi.SendSms(new string[] {SelectedUser.PhoneNumber} , welcomeMessage);
+                            //smsApi.SendSms(new string[] {SelectedUser.PhoneNumber} , welcomeMessage);
 
 
                         }

@@ -193,19 +193,30 @@ namespace lms_with_moodle
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
-            // Add Send Sms Notify job
-            services.AddSingleton<SendNotifyJob>();
-            services.AddSingleton(new JobSchedule(
-                jobType: typeof(SendNotifyJob),
-                cronExpression: "0 */5 * ? * * *"));
+            // // Add Send Sms Notify job
+            // services.AddSingleton<SendNotifyJob>();
+            // services.AddSingleton(new JobSchedule(
+            //     jobType: typeof(SendNotifyJob),
+            //     cronExpression: "0 */5 * ? * * *"));
 
 
-            // Add Send Sms Notify job
+            // Add Check Attendee job
             services.AddSingleton<CheckAttendeeJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(CheckAttendeeJob),
                 cronExpression: "0 */5 * ? * * *"));
 
+            // Add Check Attendee job
+            services.AddSingleton<AutoClose>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(AutoClose),
+                cronExpression: "0 * 0/1 ? * * *"));
+
+            // Add Error Collector job
+            services.AddSingleton<ServiceErrorCollector>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(ServiceErrorCollector),
+                cronExpression: "0 * 0/2 ? * * *"));
 
             services.AddHostedService<QuartzHostedService>();
 

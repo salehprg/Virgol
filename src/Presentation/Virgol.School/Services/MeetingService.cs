@@ -70,7 +70,7 @@ public class MeetingService {
             return null;
         }
     }
-    private async Task<bool> CreateRoom(Meeting meeting , float duration , string serviceType , string customMeetingId = "")
+    private async Task<bool> CreateRoom(Meeting meeting , float duration , string serviceType , SchoolModel school,  string customMeetingId = "")
     {
         string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
 
@@ -86,6 +86,12 @@ public class MeetingService {
         if(serviceType == ServiceType.BBB)
         {
             BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
+            if(string.IsNullOrEmpty(school.bbbURL) || string.IsNullOrEmpty(school.bbbSecret))
+            {
+                return false;
+            }
+
+            bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
             bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
 
             if(bbb_response == null)
@@ -95,7 +101,12 @@ public class MeetingService {
         }
         else if(serviceType == ServiceType.AdobeConnect)
         {
-            AdobeApi adobeApi = new AdobeApi();
+            if(string.IsNullOrEmpty(school.AdobeUrl))
+            {
+                return false;
+            }
+
+            AdobeApi adobeApi = new AdobeApi(school.AdobeUrl);
             adobe_MeetingInfo = adobeApi.StartMeeting(meeting.MeetingName);
             
             if(adobe_MeetingInfo == null)
@@ -141,34 +152,51 @@ public class MeetingService {
     }
     private async Task<Meeting> StartMeeting(ClassScheduleView classSchedule , int teacherId , string serviceType, string meetingName = "" )
     {
-
-        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
-
-        DateTime timeNow = MyDateTime.Now();
-        float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
-
-        float duration = Math.Abs((classSchedule.EndHour - currentTime)) * 60;
-        int dayofWeek = MyDateTime.convertDayOfWeek(timeNow);
-
-        if(classSchedule.DayType > dayofWeek)//Start meeting for tommorow
+        try
         {
-            duration = 0.0f;
-            duration += (24 - currentTime) * 60;
-            duration += classSchedule.EndHour * 60;
+            Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
+
+            if(meeting == null)
+            {
+                return null;
+            }
+
+            DateTime timeNow = MyDateTime.Now();
+            float currentTime = timeNow.Hour + ((float)timeNow.Minute / 60);
+
+            float duration = Math.Abs((classSchedule.EndHour - currentTime)) * 60;
+            int dayofWeek = MyDateTime.convertDayOfWeek(timeNow);
+
+            if(classSchedule.DayType > dayofWeek)//Start meeting for tommorow
+            {
+                duration = 0.0f;
+                duration += (24 - currentTime) * 60;
+                duration += classSchedule.EndHour * 60;
+            }
+
+            MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
+            SchoolModel school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
+
+            bool result = await CreateRoom(meeting , duration , serviceType , school);
+
+
+            if(result)
+            {
+                return meeting;
+            }
+            
+            appDbContext.Remove(meeting);
+            await appDbContext.SaveChangesAsync();
+
+            return null;
         }
-
-        bool result = await CreateRoom(meeting , duration , serviceType);
-
-
-        if(result)
+        catch (Exception ex)
         {
-            return meeting;
-        }
-        
-        appDbContext.Remove(meeting);
-        await appDbContext.SaveChangesAsync();
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
 
-        return null;
+            return null;
+        }
     }
     
     #endregion
@@ -287,7 +315,7 @@ public class MeetingService {
 
 #endregion
 
-    public async Task<Meeting> StartPrivateMeeting(string meetingName , int userId , string serviceType)
+    public async Task<Meeting> StartPrivateMeeting(SchoolModel school , string meetingName , int userId , string serviceType)
     {   
         DateTime timeNow = MyDateTime.Now();
 
@@ -303,7 +331,7 @@ public class MeetingService {
         appDbContext.Meetings.Add(meeting);
         await appDbContext.SaveChangesAsync();
 
-        bool result = await CreateRoom(meeting , 0 , serviceType , meeting.MeetingId);
+        bool result = await CreateRoom(meeting , 0 , serviceType , school , meeting.MeetingId);
 
         if(meeting != null && result)
         {
@@ -361,19 +389,32 @@ public class MeetingService {
             return null;
 
         string classUrl = "";
+        MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
+        SchoolModel school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
 
         if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
-            AdobeApi adobeApi = new AdobeApi();
+            if(string.IsNullOrEmpty(school.AdobeUrl))
+            {
+                return null;
+            }
+
+            AdobeApi adobeApi = new AdobeApi(school.AdobeUrl);
             string scoId = (meeting.Private ? meeting.MeetingId.Split("|")[1] : meeting.MeetingId.Split("|")[0]);
 
-            await UserService.SyncUserData(new List<UserModel> {user});
+            //await UserService.SyncUserData(new List<UserModel> {user});
 
             classUrl = adobeApi.JoinMeeting(scoId , user.UserName , user.MelliCode , isModerator);
         }
         else if(meeting.ServiceType == ServiceType.BBB)
         {
+            if(string.IsNullOrEmpty(school.bbbURL) || string.IsNullOrEmpty(school.bbbSecret))
+            {
+                return null;
+            }
+
             BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
+            
             classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
         }
 

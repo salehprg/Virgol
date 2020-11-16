@@ -156,7 +156,16 @@ namespace lms_with_moodle.Controllers
 
                 string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
 
-                Meeting meeting = await meetingService.StartPrivateMeeting(roomName , userId , serviceType);
+                if(serviceType == ServiceType.AdobeConnect && string.IsNullOrEmpty(school.AdobeUrl))
+                {
+                    return BadRequest("مدرسه از سرویس دهنده ادوب کانکت پشتیبانی نمیکند");
+                }
+                if(serviceType == ServiceType.BBB && (string.IsNullOrEmpty(school.bbbSecret) || string.IsNullOrEmpty(school.bbbURL)))
+                {
+                    return BadRequest("مدرسه از سرویس دهنده بیگ بلو باتن پشتیبانی نمیکند");
+                }
+
+                Meeting meeting = await meetingService.StartPrivateMeeting(school , roomName , userId , serviceType);
 
                 if(meeting != null)
                 {
@@ -225,8 +234,18 @@ namespace lms_with_moodle.Controllers
 
 
                 ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
-                
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == classSchedule.School_Id).FirstOrDefault();
+
                 bool mixed = (classSchedule.MixedId != 0 ? true : false); // if Teacher start mixed class
+
+                if(serviceType == ServiceType.AdobeConnect && string.IsNullOrEmpty(school.AdobeUrl))
+                {
+                    return BadRequest("مدرسه از سرویس دهنده ادوب کانکت پشتیبانی نمیکند");
+                }
+                if(serviceType == ServiceType.BBB && (string.IsNullOrEmpty(school.bbbSecret) || string.IsNullOrEmpty(school.bbbURL)))
+                {
+                    return BadRequest("مدرسه از سرویس دهنده بیگ بلو باتن پشتیبانی نمیکند");
+                }
 
                 if(mixed)//if Teacher start Mixed Meeting
                 {
@@ -234,6 +253,7 @@ namespace lms_with_moodle.Controllers
 
                     if(mixedSchedule != null)
                     {
+
                         int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType , mixedSchedule.MixedName);
                         //Get all schedules have same MixedId according to Selected Schedule
                         List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();

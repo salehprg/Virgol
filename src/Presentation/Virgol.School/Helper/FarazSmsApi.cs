@@ -134,7 +134,7 @@ namespace lms_with_moodle.Helper
 
             // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
 
-            //return SendData(json , "/v1/messages");
+            return SendData(json , "/v1/messages");
             return true;
         }
 

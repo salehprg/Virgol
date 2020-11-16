@@ -41,6 +41,7 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
         private readonly AppDbContextBackup appDbContextBackup;
+        private readonly LDAP_db ldap;
         
 
         SchoolService schoolService;
@@ -66,7 +67,43 @@ namespace lms_with_moodle.Controllers
             scheduleService = new ClassScheduleService(appDbContext);
             managerService = new ManagerService(appDbContext);
             UserService = new UserService(userManager , appDbContext);
+            ldap = new LDAP_db(appDbContext);
         }
+#region Users
+    public async Task<IActionResult> ChangePassword(string IdNumber , string newPassword)
+    {
+        try
+        {
+            if(newPassword.Length < 8)
+                return BadRequest("ظول پسورد باید حداقل 8 عدد باشد");
+
+            UserModel user = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault();
+
+            if(user != null)
+            {
+                string token = await userManager.GeneratePasswordResetTokenAsync(user);
+                IdentityResult chngPassword = await userManager.ResetPasswordAsync(user , token , newPassword);
+                if(chngPassword.Succeeded)
+                {
+                    ldap.ChangePassword(user.UserName , newPassword);
+
+                    return Ok(true);
+                }
+                else
+                {
+                    return BadRequest(chngPassword.Errors);
+                }
+            }
+
+            return Ok(false);
+        }
+        catch (System.Exception ex)
+        {
+            return BadRequest(ex.Message);
+            throw;
+        }
+    }
+#endregion
 
 #region Admin
         [HttpGet]
@@ -203,218 +240,6 @@ namespace lms_with_moodle.Controllers
                 //await userManager.DeleteAsync(newSchool);
                 return BadRequest(ex.Message);
             }
-        }
-
-#endregion
-
-#region Functions
-        ///<param name="CategoryId">
-        ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
-        ///</param>
-        ///<param name="UserType">
-        ///Set UserType from UserType class Teacher,Student,...
-        ///</param>
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<IActionResult> CreateBulkBase(string fileName)
-        {
-            //Username and password Default is MelliCode
-
-            //1 - Read data from excel
-            //2 - Check valid data
-            //3 - Add Base to Database
-
-            List<string> errors = new List<string>();
-
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
-            using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
-            {
-                using (var excelData = ExcelReaderFactory.CreateReader(stream))
-                {
-                    excelData.Read(); //Ignore column header name
-
-                    List<BaseModel> excelBases = new List<BaseModel>();
-                    List<StudyFieldModel> excelStudies = new List<StudyFieldModel>();
-                    List<GradeModel> excelGrades = new List<GradeModel>();
-                    List<LessonModel> excelLessons = new List<LessonModel>();
-
-
-                    while (excelData.Read()) //Each row of the file
-                    {
-                        
-                        try
-                        {
-                            BaseModel currentBase = new BaseModel
-                            {
-                                CodeBase = excelData.GetValue(0).ToString(),
-                                BaseName = excelData.GetValue(1).ToString()
-                            };
-
-                            //check if Duplicate ignore it otherwise , add it to List
-                            if(excelBases.Where(x => x.CodeBase == currentBase.CodeBase).FirstOrDefault() == null)
-                            {
-                                excelBases.Add(currentBase);
-                            }
-
-                            StudyFieldModel currentStudyF = new StudyFieldModel
-                            {
-                                NM_CodeBase = currentBase.CodeBase,
-                                CodeStudyField = int.Parse(excelData.GetValue(2).ToString()),
-                                StudyFieldName = excelData.GetValue(3).ToString()
-                            };
-
-                            if(excelStudies.Where(x => x.CodeStudyField == currentStudyF.CodeStudyField).FirstOrDefault() == null)
-                            {
-                                excelStudies.Add(currentStudyF);
-                            }
-
-                            GradeModel currentgrade = new GradeModel
-                            {
-                                NM_CodeStudyField = currentStudyF.CodeStudyField,
-                                CodeGrade = int.Parse(excelData.GetValue(4).ToString()),
-                                GradeName ="پایه " + excelData.GetValue(4).ToString()
-                            };
-
-                            if(excelGrades.Where(x => x.CodeGrade == currentgrade.CodeGrade && x.NM_CodeStudyField == currentgrade.NM_CodeStudyField).FirstOrDefault() == null)
-                            {
-                                excelGrades.Add(currentgrade);
-                            }
-
-                            LessonModel currentLesson = new LessonModel
-                            {
-                                LessonCode = excelData.GetValue(7).ToString(),
-                                OrgLessonName = excelData.GetValue(8).ToString(),
-                                LessonName = excelData.GetValue(9).ToString(),
-                                NM_CodeGrade = currentgrade.CodeGrade,
-                                NM_CodeStudyField = currentStudyF.CodeStudyField,
-                                Vahed = int.Parse(excelData.GetValue(10).ToString())
-                            };
-
-
-                            //Check for duplicate
-                            if(excelLessons.Where(x => x.NM_CodeGrade == currentLesson.NM_CodeGrade && x.NM_CodeStudyField == currentLesson.NM_CodeStudyField && x.LessonCode == currentLesson.LessonCode).FirstOrDefault() == null)
-                            {
-                                excelLessons.Add(currentLesson);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            errors.Add(ex.Message);
-                        }
-                    }
-                    
-                    List<BaseModel> dbBases = appDbContext.Bases.ToList();
-                    List<BaseModel> newBases = new List<BaseModel>();
-
-                    foreach (var basee in excelBases)
-                    {
-                        //Remove duplicate data in first list from second List
-                        if(dbBases.Where(x => x.CodeBase == basee.CodeBase).FirstOrDefault() == null)
-                        {
-                            newBases.Add(basee);
-                        }
-                    }
-
-                    await appDbContext.Bases.AddRangeAsync(newBases);
-                    await appDbContext.SaveChangesAsync();
-
-                    dbBases = appDbContext.Bases.ToList();
-                    foreach (var basee in dbBases)
-                    {
-
-                        List<StudyFieldModel> editedStudyF = excelStudies.Where(x => x.NM_CodeBase == basee.CodeBase).ToList();
-                        editedStudyF.ForEach(x => x.Base_Id = basee.Id);
-
-                        List<StudyFieldModel> dbStudies = appDbContext.StudyFields.ToList();
-                        List<StudyFieldModel> newStudies = new List<StudyFieldModel>();
-
-                        foreach (var study in editedStudyF)
-                        {
-                            //Remove duplicate data in first list from second List
-                            if(dbStudies.Where(x => x.CodeStudyField == study.CodeStudyField).FirstOrDefault() == null)
-                            {
-                                newStudies.Add(study);
-                            }
-                        }
-
-                        await appDbContext.StudyFields.AddRangeAsync(newStudies);
-                        await appDbContext.SaveChangesAsync();
-
-                        dbStudies = appDbContext.StudyFields.Where(x => x.Base_Id == basee.Id).ToList();
-                        foreach (var studyF in dbStudies)
-                        {
-                            int studyFId = studyF.Id;
-
-                            List<GradeModel> editedGrades = excelGrades.Where(x => x.NM_CodeStudyField == studyF.CodeStudyField).ToList();
-                            editedGrades.ForEach(x => x.StudyField_Id = studyFId);
-
-                            List<GradeModel> dbGrades = appDbContext.Grades.ToList();
-                            List<GradeModel> newGrades = new List<GradeModel>();
-
-                            foreach (var grade in editedGrades)
-                            {
-                                //Remove duplicate data in first list from second List
-                                if(dbGrades.Where(x => x.CodeGrade == grade.CodeGrade && x.StudyField_Id == studyFId).FirstOrDefault() == null)
-                                {
-                                    newGrades.Add(grade);
-                                }
-                            }
-
-                            await appDbContext.Grades.AddRangeAsync(newGrades);
-                            await appDbContext.SaveChangesAsync();
-
-                            dbGrades = appDbContext.Grades.Where(x => x.StudyField_Id == studyFId).ToList();
-                            foreach (var grade in dbGrades)
-                            {
-                                int gradeId = grade.Id;
-
-                                List<LessonModel> editedLessons = excelLessons.Where(x => x.NM_CodeGrade == grade.CodeGrade && x.NM_CodeStudyField == studyF.CodeStudyField).ToList();
-                                editedLessons.ForEach(x => x.Grade_Id = gradeId);
-
-                                List<LessonModel> dbLessons = appDbContext.Lessons.ToList();
-                                List<LessonModel> newLessons = new List<LessonModel>();
-
-                                foreach (var lesson in editedLessons)
-                                {
-                                    //Remove duplicate data in first list from second List
-                                    if(dbLessons.Where(x => x.Grade_Id == grade.Id).FirstOrDefault() == null)
-                                    {
-                                        newLessons.Add(lesson);
-                                    }
-                                }
-
-                                await appDbContext.Lessons.AddRangeAsync(newLessons);
-                                await appDbContext.SaveChangesAsync();
-                            }
-                        }
-                    }
-                }
-            }
-            
-
-            return Ok(true);
-        }
-
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<bool> UploadFile(IFormFile file , string FileName)
-        {
-            bool result = false;
-
-            if (file != null)
-            {
-                if (file.Length > 0)
-                {
-                    string path = Path.Combine(Request.Host.Value, FileName);
-
-                    var fs = new FileStream(Path.Combine("BulkData", FileName), FileMode.Create);
-                    await file.CopyToAsync(fs);
-                    fs.Close();
-                    result = true;
-                }
-            }
-
-            return result;
         }
 
 #endregion
@@ -1104,6 +929,219 @@ namespace lms_with_moodle.Controllers
         return true;
     }
 #endregion
+    
+#region Functions
+    ///<param name="CategoryId">
+    ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
+    ///</param>
+    ///<param name="UserType">
+    ///Set UserType from UserType class Teacher,Student,...
+    ///</param>
+    [ApiExplorerSettings(IgnoreApi = true)]
+    public async Task<IActionResult> CreateBulkBase(string fileName)
+    {
+        //Username and password Default is MelliCode
+
+        //1 - Read data from excel
+        //2 - Check valid data
+        //3 - Add Base to Database
+
+        List<string> errors = new List<string>();
+
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+        using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
+        {
+            using (var excelData = ExcelReaderFactory.CreateReader(stream))
+            {
+                excelData.Read(); //Ignore column header name
+
+                List<BaseModel> excelBases = new List<BaseModel>();
+                List<StudyFieldModel> excelStudies = new List<StudyFieldModel>();
+                List<GradeModel> excelGrades = new List<GradeModel>();
+                List<LessonModel> excelLessons = new List<LessonModel>();
+
+
+                while (excelData.Read()) //Each row of the file
+                {
+                    
+                    try
+                    {
+                        BaseModel currentBase = new BaseModel
+                        {
+                            CodeBase = excelData.GetValue(0).ToString(),
+                            BaseName = excelData.GetValue(1).ToString()
+                        };
+
+                        //check if Duplicate ignore it otherwise , add it to List
+                        if(excelBases.Where(x => x.CodeBase == currentBase.CodeBase).FirstOrDefault() == null)
+                        {
+                            excelBases.Add(currentBase);
+                        }
+
+                        StudyFieldModel currentStudyF = new StudyFieldModel
+                        {
+                            NM_CodeBase = currentBase.CodeBase,
+                            CodeStudyField = int.Parse(excelData.GetValue(2).ToString()),
+                            StudyFieldName = excelData.GetValue(3).ToString()
+                        };
+
+                        if(excelStudies.Where(x => x.CodeStudyField == currentStudyF.CodeStudyField).FirstOrDefault() == null)
+                        {
+                            excelStudies.Add(currentStudyF);
+                        }
+
+                        GradeModel currentgrade = new GradeModel
+                        {
+                            NM_CodeStudyField = currentStudyF.CodeStudyField,
+                            CodeGrade = int.Parse(excelData.GetValue(4).ToString()),
+                            GradeName ="پایه " + excelData.GetValue(4).ToString()
+                        };
+
+                        if(excelGrades.Where(x => x.CodeGrade == currentgrade.CodeGrade && x.NM_CodeStudyField == currentgrade.NM_CodeStudyField).FirstOrDefault() == null)
+                        {
+                            excelGrades.Add(currentgrade);
+                        }
+
+                        LessonModel currentLesson = new LessonModel
+                        {
+                            LessonCode = excelData.GetValue(7).ToString(),
+                            OrgLessonName = excelData.GetValue(8).ToString(),
+                            LessonName = excelData.GetValue(9).ToString(),
+                            NM_CodeGrade = currentgrade.CodeGrade,
+                            NM_CodeStudyField = currentStudyF.CodeStudyField,
+                            Vahed = int.Parse(excelData.GetValue(10).ToString())
+                        };
+
+
+                        //Check for duplicate
+                        if(excelLessons.Where(x => x.NM_CodeGrade == currentLesson.NM_CodeGrade && x.NM_CodeStudyField == currentLesson.NM_CodeStudyField && x.LessonCode == currentLesson.LessonCode).FirstOrDefault() == null)
+                        {
+                            excelLessons.Add(currentLesson);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errors.Add(ex.Message);
+                    }
+                }
+                
+                List<BaseModel> dbBases = appDbContext.Bases.ToList();
+                List<BaseModel> newBases = new List<BaseModel>();
+
+                foreach (var basee in excelBases)
+                {
+                    //Remove duplicate data in first list from second List
+                    if(dbBases.Where(x => x.CodeBase == basee.CodeBase).FirstOrDefault() == null)
+                    {
+                        newBases.Add(basee);
+                    }
+                }
+
+                await appDbContext.Bases.AddRangeAsync(newBases);
+                await appDbContext.SaveChangesAsync();
+
+                dbBases = appDbContext.Bases.ToList();
+                foreach (var basee in dbBases)
+                {
+
+                    List<StudyFieldModel> editedStudyF = excelStudies.Where(x => x.NM_CodeBase == basee.CodeBase).ToList();
+                    editedStudyF.ForEach(x => x.Base_Id = basee.Id);
+
+                    List<StudyFieldModel> dbStudies = appDbContext.StudyFields.ToList();
+                    List<StudyFieldModel> newStudies = new List<StudyFieldModel>();
+
+                    foreach (var study in editedStudyF)
+                    {
+                        //Remove duplicate data in first list from second List
+                        if(dbStudies.Where(x => x.CodeStudyField == study.CodeStudyField).FirstOrDefault() == null)
+                        {
+                            newStudies.Add(study);
+                        }
+                    }
+
+                    await appDbContext.StudyFields.AddRangeAsync(newStudies);
+                    await appDbContext.SaveChangesAsync();
+
+                    dbStudies = appDbContext.StudyFields.Where(x => x.Base_Id == basee.Id).ToList();
+                    foreach (var studyF in dbStudies)
+                    {
+                        int studyFId = studyF.Id;
+
+                        List<GradeModel> editedGrades = excelGrades.Where(x => x.NM_CodeStudyField == studyF.CodeStudyField).ToList();
+                        editedGrades.ForEach(x => x.StudyField_Id = studyFId);
+
+                        List<GradeModel> dbGrades = appDbContext.Grades.ToList();
+                        List<GradeModel> newGrades = new List<GradeModel>();
+
+                        foreach (var grade in editedGrades)
+                        {
+                            //Remove duplicate data in first list from second List
+                            if(dbGrades.Where(x => x.CodeGrade == grade.CodeGrade && x.StudyField_Id == studyFId).FirstOrDefault() == null)
+                            {
+                                newGrades.Add(grade);
+                            }
+                        }
+
+                        await appDbContext.Grades.AddRangeAsync(newGrades);
+                        await appDbContext.SaveChangesAsync();
+
+                        dbGrades = appDbContext.Grades.Where(x => x.StudyField_Id == studyFId).ToList();
+                        foreach (var grade in dbGrades)
+                        {
+                            int gradeId = grade.Id;
+
+                            List<LessonModel> editedLessons = excelLessons.Where(x => x.NM_CodeGrade == grade.CodeGrade && x.NM_CodeStudyField == studyF.CodeStudyField).ToList();
+                            editedLessons.ForEach(x => x.Grade_Id = gradeId);
+
+                            List<LessonModel> dbLessons = appDbContext.Lessons.ToList();
+                            List<LessonModel> newLessons = new List<LessonModel>();
+
+                            foreach (var lesson in editedLessons)
+                            {
+                                //Remove duplicate data in first list from second List
+                                if(dbLessons.Where(x => x.Grade_Id == grade.Id).FirstOrDefault() == null)
+                                {
+                                    newLessons.Add(lesson);
+                                }
+                            }
+
+                            await appDbContext.Lessons.AddRangeAsync(newLessons);
+                            await appDbContext.SaveChangesAsync();
+                        }
+                    }
+                }
+            }
+        }
+        
+
+        return Ok(true);
+    }
+
+
+    [ApiExplorerSettings(IgnoreApi = true)]
+    public async Task<bool> UploadFile(IFormFile file , string FileName)
+    {
+        bool result = false;
+
+        if (file != null)
+        {
+            if (file.Length > 0)
+            {
+                string path = Path.Combine(Request.Host.Value, FileName);
+
+                var fs = new FileStream(Path.Combine("BulkData", FileName), FileMode.Create);
+                await file.CopyToAsync(fs);
+                fs.Close();
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+#endregion
+
     }
 }
         

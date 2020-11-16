@@ -39,59 +39,66 @@ namespace lms_with_moodle.Helper
 
         async Task<string> sendData (string data , bool joinRoom = false)
         {
-            //data should like this
-            //getMeetings
-            //Or
-            //getMeetingInfo?meetingID=123
-            //then add checksum=???? to the end
-            string modifiedData = "";
-            if(data.IndexOf("?") != -1) // if has any query in data
-            {
-                modifiedData = data + "&";
-            }
-            else
-            {
-                modifiedData = data + "?";
-            }
-
-            string checkSum = "";
-            data = data.Replace("?" , "");
-            
-            checkSum = SHA1Creator.sha1Creator(data + bbbSecret);
-
-            Uri uri = new Uri (bbbUrl + modifiedData + "checksum=" + checkSum.ToLower() );
-            if(joinRoom)
-                return uri.AbsoluteUri;
-
-            HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
-            
-
             try
             {
-                if (response.IsSuccessStatusCode)  
-                {  
-                    XmlDocument xmlResponse = new XmlDocument();
-                    xmlResponse.Load(await response.Content.ReadAsStreamAsync());
-                    string jsonObj = JsonConvert.SerializeXmlNode(xmlResponse , Newtonsoft.Json.Formatting.None , true);
+                //data should like this
+                //getMeetings
+                //Or
+                //getMeetingInfo?meetingID=123
+                //then add checksum=???? to the end
+                string modifiedData = "";
+                if(data.IndexOf("?") != -1) // if has any query in data
+                {
+                    modifiedData = data + "&";
+                }
+                else
+                {
+                    modifiedData = data + "?";
+                }
 
-                    if(jsonObj.Contains("?xml"))
-                    {
-                        string[] results = jsonObj.Split("}{");
+                string checkSum = "";
+                data = data.Replace("?" , "");
+                
+                checkSum = SHA1Creator.sha1Creator(data + bbbSecret);
 
-                        return "{" + results[1];
-                    }
-                    return jsonObj;
-                }  
-                else  
-                {  
-                    Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);  
-                    return "";
-                } 
+                Uri uri = new Uri (bbbUrl + modifiedData + "checksum=" + checkSum.ToLower() );
+                if(joinRoom)
+                    return uri.AbsoluteUri;
+
+                HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
+                
+
+                try
+                {
+                    if (response.IsSuccessStatusCode)  
+                    {  
+                        XmlDocument xmlResponse = new XmlDocument();
+                        xmlResponse.Load(await response.Content.ReadAsStreamAsync());
+                        string jsonObj = JsonConvert.SerializeXmlNode(xmlResponse , Newtonsoft.Json.Formatting.None , true);
+
+                        if(jsonObj.Contains("?xml"))
+                        {
+                            string[] results = jsonObj.Split("}{");
+
+                            return "{" + results[1];
+                        }
+                        return jsonObj;
+                    }  
+                    else  
+                    {  
+                        Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);  
+                        return "";
+                    } 
+                }
+                catch (System.Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    return null;
+                }
             }
-            catch (System.Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
                 return null;
             }
             
@@ -99,6 +106,40 @@ namespace lms_with_moodle.Helper
 
 #region ApiFunctions
 
+        public async Task<bool> CheckStatus()
+        {
+            try
+            {
+                Uri uri = new Uri (bbbUrl);
+                HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
+
+                XmlDocument xmlResponse = new XmlDocument();
+                xmlResponse.Load(await response.Content.ReadAsStreamAsync());
+                string jsonObj = JsonConvert.SerializeXmlNode(xmlResponse , Newtonsoft.Json.Formatting.None , true);
+
+                string responseStr = "";
+
+                if(jsonObj.Contains("?xml"))
+                {
+                    string[] results = jsonObj.Split("}{");
+
+                    responseStr = "{" + results[1];
+                }
+                responseStr = jsonObj;
+
+                var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(responseStr);
+
+                return meetingsInfo.returncode == "SUCCESS";
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return false;
+            }
+        }
         public async Task<MeetingsResponse> GetMeetings()
         {
             try

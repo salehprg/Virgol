@@ -14,25 +14,46 @@ namespace lms_with_moodle.Helper
 {
     public class AdobeApi {
         HttpClient client;
-        public AdobeApi(){
-            client = new HttpClient();
-        }   
 
+        string URL = "";
+        public AdobeApi(string _url)
+        {
+            client = new HttpClient();
+            URL = _url;
+        }
+
+
+        public bool CheckStatus()
+        {
+            if(Login("admin@legace.ir" , "Connectpass.24"))
+            {
+                return true;
+            }
+
+            return false;
+        }
         
         public bool Login(string Username , string Password)
         {
-            client = new HttpClient();
-            Uri uriLogin = new Uri (string.Format("https://c1.legace.ir/api/xml?action=login&login={0}&password={1}" , Username , Password));
-            HttpResponseMessage response = client.GetAsync(uriLogin).Result;
-            XmlSerializer serializer = new XmlSerializer(typeof(LoginModel));
-            LoginModel model = (LoginModel)serializer.Deserialize(response.Content.ReadAsStreamAsync().Result);
+            try
+            {
+                client = new HttpClient();
+                Uri uriLogin = new Uri (string.Format(URL + "/api/xml?action=login&login={0}&password={1}" , Username , Password));
+                HttpResponseMessage response = client.GetAsync(uriLogin).Result;
+                XmlSerializer serializer = new XmlSerializer(typeof(LoginModel));
+                LoginModel model = (LoginModel)serializer.Deserialize(response.Content.ReadAsStreamAsync().Result);
 
-            return model.status.code == "ok";
+                return model.status.code == "ok";
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         PrincipalList GetPrincipalList(string LoginFilter)
         {
-            Uri uri = new Uri ("https://c1.legace.ir/api/xml?action=principal-list&filter-Login=" + LoginFilter);
+            Uri uri = new Uri (URL + "/api/xml?action=principal-list&filter-Login=" + LoginFilter);
             HttpResponseMessage response = client.GetAsync(uri).Result;
 
             XmlSerializer serializer = new XmlSerializer(typeof(PrincipalList));
@@ -43,7 +64,7 @@ namespace lms_with_moodle.Helper
 
         MeetingInfoResponse CreateRoom(string roomName)
         {
-            Uri uri = new Uri (string.Format("https://c1.legace.ir/api/xml?action=sco-update&type=meeting&name={0}&folder-id=11003", roomName));
+            Uri uri = new Uri (string.Format(URL + "/api/xml?action=sco-update&type=meeting&name={0}&folder-id=11003", roomName));
             HttpResponseMessage response = client.GetAsync(uri).Result;
 
             XmlSerializer serializer = new XmlSerializer(typeof(MeetingInfoResponse));
@@ -56,7 +77,7 @@ namespace lms_with_moodle.Helper
         {
             string permission = (isPrivate ? "remove" : "view-hidden");
 
-            Uri uri = new Uri (string.Format("https://c1.legace.ir/api/xml?action=permissions-update&principal-id=public-access&permission-id={0}&acl-id={1}", permission , scoId));
+            Uri uri = new Uri (string.Format(URL + "/api/xml?action=permissions-update&principal-id=public-access&permission-id={0}&acl-id={1}", permission , scoId));
             HttpResponseMessage response = client.GetAsync(uri).Result;
 
             XmlSerializer serializer = new XmlSerializer(typeof(StatusResponse));
@@ -67,7 +88,7 @@ namespace lms_with_moodle.Helper
 
         StatusResponse AddPrincipalToMeeting(string scoId , string hostUserId , bool IsHost)
         {
-            Uri uri = new Uri (string.Format("https://c1.legace.ir/api/xml?action=permissions-update&principal-id={0}&acl-id={1}&permission-id={2}", hostUserId , scoId , (IsHost ? "host" : "view")));
+            Uri uri = new Uri (string.Format(URL + "/api/xml?action=permissions-update&principal-id={0}&acl-id={1}&permission-id={2}", hostUserId , scoId , (IsHost ? "host" : "view")));
             HttpResponseMessage response = client.GetAsync(uri).Result;
 
             XmlSerializer serializer = new XmlSerializer(typeof(StatusResponse));
@@ -78,7 +99,7 @@ namespace lms_with_moodle.Helper
 
         CommonInfo GetCommonInfo()
         {
-            Uri uri = new Uri ("https://c1.legace.ir/api/xml?action=common-info");
+            Uri uri = new Uri (URL + "/api/xml?action=common-info");
             HttpResponseMessage response = client.GetAsync(uri).Result;
 
             XmlSerializer serializer = new XmlSerializer(typeof(CommonInfo));
@@ -89,7 +110,7 @@ namespace lms_with_moodle.Helper
 
         MeetingInfoResponse FindScoInfo(string scoId)
         {
-            Uri uri = new Uri ("https://c1.legace.ir/api/xml?action=sco-info&sco-id=" + scoId);
+            Uri uri = new Uri (URL + "/api/xml?action=sco-info&sco-id=" + scoId);
             HttpResponseMessage response = client.GetAsync(uri).Result;
 
             XmlSerializer serializer = new XmlSerializer(typeof(MeetingInfoResponse));
@@ -146,7 +167,7 @@ namespace lms_with_moodle.Helper
 
                         if(statusViewer.status.code == "ok")
                         {
-                            return "https://c1.legace.ir" + roomInfo.scoInfo.urlPath + "?session=" + common.common.cookie;
+                            return URL + roomInfo.scoInfo.urlPath + "?session=" + common.common.cookie;
                         }
                     }
                 }
