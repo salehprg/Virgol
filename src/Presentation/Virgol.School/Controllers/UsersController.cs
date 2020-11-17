@@ -419,6 +419,18 @@ namespace lms_with_moodle.Controllers
                 {
                     UserModel userInformation  = await userManager.FindByNameAsync(inpuLogin.Username);
 
+                    bool userInLdap = false;
+
+                    if(ldap.CheckStatus())
+                    {
+                        ldap.CheckUserData(userInformation.MelliCode);
+                    }
+                    else
+                    {
+                        userInLdap = true;
+                    }
+
+
                     if(!userInformation.ConfirmedAcc)
                     {
                         return StatusCode(423 , "حساب کاربری شما تایید نشده است");
@@ -452,6 +464,17 @@ namespace lms_with_moodle.Controllers
                     if(UserService.HasRole(userInformation , Roles.Teacher , userRoleNames))
                     {
                         userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
+                        if(!userInLdap)
+                        {
+                            await ldap.AddUserToLDAP(userInformation , true);
+                        }
+                    }
+                    else
+                    {
+                        if(!userInLdap)
+                        {
+                            await ldap.AddUserToLDAP(userInformation , false);
+                        }
                     }
 
                     if(UserService.HasRole(userInformation , Roles.Admin , userRoleNames))
@@ -464,6 +487,7 @@ namespace lms_with_moodle.Controllers
                         userDetail = appDbContext.ManagerDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
                     }
 
+                    
                     SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == userInformation.SchoolId).FirstOrDefault();
 
                     int schoolType = (schoolModel != null ? schoolModel.SchoolType : 0);
