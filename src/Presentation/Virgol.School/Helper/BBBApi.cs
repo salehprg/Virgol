@@ -283,7 +283,7 @@ namespace lms_with_moodle.Helper
         }
     
 
-        private void SetConnectionInfo(int ScheduleId)
+        public void SetConnectionInfo(int ScheduleId)
         {
             if(ScheduleId != 0 && AppSettings.VIRGOL_BBB_LOAD_BALANCER_MODE == "separate")//Schedule id of PrivateMeeting is 0
             {
