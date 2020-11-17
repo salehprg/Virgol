@@ -84,6 +84,39 @@ namespace lms_with_moodle.Controllers
                 return BadRequest("تغییر سرویس با مشکل مواجه شد");
             }
         }
+        
+        [HttpGet]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        public IActionResult GetSchoolList()
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
+
+                List<int> schoolIds = teacherDetail.getTeacherSchoolIds();
+                List<SchoolModel> schools = new List<SchoolModel>();
+
+                foreach (var schoolId in schoolIds)
+                {
+                    SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                    if(school != null)
+                    {
+                        schools.Add(school);
+                    }
+                }
+
+                return Ok(schools);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]

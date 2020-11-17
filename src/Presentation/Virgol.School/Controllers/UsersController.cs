@@ -423,7 +423,7 @@ namespace lms_with_moodle.Controllers
 
                     if(ldap.CheckStatus())
                     {
-                        ldap.CheckUserData(userInformation.MelliCode);
+                        userInLdap = ldap.CheckUserData(userInformation.MelliCode);
                     }
                     else
                     {

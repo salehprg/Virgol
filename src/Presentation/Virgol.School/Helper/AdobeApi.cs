@@ -108,7 +108,7 @@ namespace lms_with_moodle.Helper
             return result;
         }
 
-        MeetingInfoResponse FindScoInfo(string scoId)
+        public MeetingInfoResponse FindScoInfo(string scoId)
         {
             Uri uri = new Uri (URL + "/api/xml?action=sco-info&sco-id=" + scoId);
             HttpResponseMessage response = client.GetAsync(uri).Result;

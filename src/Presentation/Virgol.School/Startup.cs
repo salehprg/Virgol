@@ -222,6 +222,7 @@ namespace lms_with_moodle
 
                 services.AddHostedService<QuartzHostedService>();
             }
+            
 
             // services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
             // services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();

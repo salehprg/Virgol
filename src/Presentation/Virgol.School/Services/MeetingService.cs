@@ -48,7 +48,16 @@ public class MeetingService {
             if(meetingName == "")
                 meetingName = displayName ;
 
-            meetingName += " جلسه " + newMeetingNo;
+            //Display meeting name Without number Just for main adobe meeting
+            if(serviceType == ServiceType.AdobeConnect && newMeetingNo != 1)
+            {
+                meetingName += " جلسه " + newMeetingNo;
+            }
+            else if(serviceType == ServiceType.BBB)
+            {
+                meetingName += " جلسه " + newMeetingNo;
+            }
+                
 
             Meeting meeting = new Meeting();
             meeting.MeetingName = meetingName;
@@ -154,6 +163,7 @@ public class MeetingService {
     {
         try
         {
+            Meeting mainAdobeMeeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id && x.TeacherId == teacherId).FirstOrDefault();
             Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
 
             if(meeting == null)
@@ -177,8 +187,41 @@ public class MeetingService {
             MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
             SchoolModel school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
 
-            bool result = await CreateRoom(meeting , duration , serviceType , school);
+            bool result = false , createRoom = true;
 
+            //Just for Optimizing Meeting
+            if(mainAdobeMeeting != null && serviceType == ServiceType.AdobeConnect)
+            {
+                AdobeApi adobeApi = new AdobeApi(school.AdobeUrl);
+
+                string scoId = "";
+                try{scoId =  mainAdobeMeeting.MeetingId.Split("|")[0];}catch{}
+
+                if(adobeApi.Login("admin@legace.ir" , "Connectpass.24"))
+                {
+                    MeetingInfoResponse response = adobeApi.FindScoInfo(scoId);
+
+                    if(response.scoInfo != null)
+                    {
+                        meeting.MeetingId = mainAdobeMeeting.MeetingId;
+
+                        appDbContext.Meetings.Update(meeting);
+                        await appDbContext.SaveChangesAsync();
+
+                        result = true;
+                        createRoom = false;
+                    }
+                    else
+                    {
+                        createRoom = true;
+                    }
+                }
+            }
+
+            if(createRoom)
+            {
+                result = await CreateRoom(meeting , duration , serviceType , school);
+            }
 
             if(result)
             {
