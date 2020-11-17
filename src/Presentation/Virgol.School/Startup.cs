@@ -204,21 +204,24 @@ namespace lms_with_moodle
             services.AddSingleton<CheckAttendeeJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(CheckAttendeeJob),
-                cronExpression: "0 */5 * ? * * *"));
+                cronExpression: "0 0/5 * ? * * *"));
 
             // Add Check Attendee job
             services.AddSingleton<AutoClose>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(AutoClose),
-                cronExpression: "0 * 0/1 ? * * *"));
+                cronExpression: "0 0 0/1 ? * * *"));
 
-            // Add Error Collector job
-            services.AddSingleton<ServiceErrorCollector>();
-            services.AddSingleton(new JobSchedule(
-                jobType: typeof(ServiceErrorCollector),
-                cronExpression: "0 * 0/2 ? * * *"));
+            if(!environment.IsDevelopment())
+            {
+                // Add Error Collector job
+                services.AddSingleton<ServiceErrorCollector>();
+                services.AddSingleton(new JobSchedule(
+                    jobType: typeof(ServiceErrorCollector),
+                    cronExpression: "0 0 0/2 ? * * *"));
 
-            services.AddHostedService<QuartzHostedService>();
+                services.AddHostedService<QuartzHostedService>();
+            }
 
             // services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
             // services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
