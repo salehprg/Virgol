@@ -13,7 +13,7 @@ public class Meeting {
     public DateTime EndTime {get; set;}
     public int TeacherId {get; set;}
     ///<summary>
-    ///school Lesson Id
+    ///school Lesson Id or If Our meeting private schedule Id is school Id
     ///</summary>
     public int ScheduleId {get; set;}
     public bool Private {get; set;}

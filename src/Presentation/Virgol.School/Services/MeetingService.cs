@@ -85,12 +85,12 @@ public class MeetingService {
 
         if(serviceType == ServiceType.BBB)
         {
-            BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
             if(string.IsNullOrEmpty(school.bbbURL) || string.IsNullOrEmpty(school.bbbSecret))
             {
                 return false;
             }
 
+            BBBApi bbbApi = new BBBApi(appDbContext);
             bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
             bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
 
@@ -323,7 +323,8 @@ public class MeetingService {
         meeting.MeetingName = meetingName;
         meeting.ServiceType = serviceType;
         meeting.StartTime = timeNow;
-        meeting.ScheduleId = 0;
+        //We set ScheduleId as School Id for future use
+        meeting.ScheduleId = school.Id;
         meeting.TeacherId = userId;
         meeting.Private = true;
         meeting.MeetingId = RandomPassword.GenerateGUID(true , true , true);
@@ -390,15 +391,23 @@ public class MeetingService {
 
         string classUrl = "";
         MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
-        SchoolModel school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
+        SchoolModel school = new SchoolModel();
+
+        if(!meeting.Private)
+        {
+            school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
+        }
+        else
+        {
+            //We set School id as Schedule Id in CreatePrivateRoom
+            school = appDbContext.Schools.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
+        }
+
+        if(school == null)
+            return null;
 
         if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
-            if(string.IsNullOrEmpty(school.AdobeUrl))
-            {
-                return null;
-            }
-
             AdobeApi adobeApi = new AdobeApi(school.AdobeUrl);
             string scoId = (meeting.Private ? meeting.MeetingId.Split("|")[1] : meeting.MeetingId.Split("|")[0]);
 
@@ -408,12 +417,15 @@ public class MeetingService {
         }
         else if(meeting.ServiceType == ServiceType.BBB)
         {
-            if(string.IsNullOrEmpty(school.bbbURL) || string.IsNullOrEmpty(school.bbbSecret))
+            BBBApi bbbApi = new BBBApi(appDbContext);
+            if(meeting.Private)
             {
-                return null;
+                bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
             }
-
-            BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
+            else
+            {
+                bbbApi.SetConnectionInfo(meeting.ScheduleId);
+            }
             
             classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
         }
@@ -439,12 +451,28 @@ public class MeetingService {
         {
             return false;
         }
-
-        BBBApi bbbApi = new BBBApi(appDbContext , meeting.ScheduleId);
+        
+        SchoolModel school = new SchoolModel();
+        if(meeting.Private)
+        {
+            //We set School id as Schedule Id in CreatePrivateRoom
+            school = appDbContext.Schools.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
+        }
+        
         bool resultEnd = false;
 
         if(meeting.ServiceType == ServiceType.BBB)
         {
+            BBBApi bbbApi = new BBBApi(appDbContext);
+            if(meeting.Private)
+            {
+                bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
+            }
+            else
+            {
+                bbbApi.SetConnectionInfo(meeting.ScheduleId);
+            }
+
             resultEnd = await bbbApi.EndRoom(bbbMeetingId);
 
             MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
