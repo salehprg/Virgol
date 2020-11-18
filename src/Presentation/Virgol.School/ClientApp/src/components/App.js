@@ -39,6 +39,8 @@ import RecorededSession from './dashboards/recordedSessions/RecordedSessions';
 import Copyright from "./Copyright";
 import PrivateLogin from './login/PrivateLogin';
 import AddGroup from './dashboards/manager/groups/AddGroup';
+import Streamer from './dashboards/stream/Streamer';
+import EditGroup from './dashboards/manager/groups/EditGroup';
 
 class App extends React.Component {
 
@@ -86,6 +88,7 @@ class App extends React.Component {
                         <Route path="/student/:id" component={StudentInfo} />
                         <Route path="/newStudent" component={AddStudent} />
                         <Route path="/newGroup" component={AddGroup} />
+                        <Route path="/editGroup/:id" component={EditGroup} />
                         
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
@@ -101,6 +104,7 @@ class App extends React.Component {
                         <Route path="/meetingResponse/:id" component={MeetingResponse} />
                         <Route path="/ParticipantInfo/:id" component={ParticipantList} />
 
+                        <Route path="/stream/:id" component={Streamer} />
                         <Route path="" component={NoFound} />
                     </Switch>
                 </Router>

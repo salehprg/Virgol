@@ -102,7 +102,7 @@ class Groups extends React.Component {
                                                     <td>{x.orgLessonName}</td>
                                                     <td>{`${x.firstName} ${x.lastName}`}</td>
                                                     <td>{`${x.weekly == 2 ? this.props.t('oddWeeks') : x.weekly == 1 ? this.props.t('evenWeeks') : this.props.t('weekly')} ${this.getDayName(x.dayType)} از ${this.state.times.find(y => y.value == x.startHour).label} تا ${this.state.times.find(time => time.value == x.endHour).label}` }</td>
-                                                    <td className="cursor-pointer" onClick={() => history.push(`/managerNews/${x.id}`)}>
+                                                    <td className="cursor-pointer" onClick={() => history.push(`/editGroup/${x.id}`)}>
                                                         {edit('w-6 text-white')}
                                                     </td>
                                                     <td onClick={() => this.showDelete(x.mixedId)} className="cursor-pointer">
