@@ -158,6 +158,27 @@ export const AddMixedClassSchedule = (token, formValues) => async dispatch => {
 
 }
 
+export const DeleteMixedClassSchedule = (token, mixedId) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        const response = await lms.delete("/ClassSchedule/DeleteMixedClassSchedule?mixedId=" + mixedId ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success("کلاس تجمیعی با موفقیت حذف شد"))
+
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+    }
+
+}
+
+
 
 //#endregion
 

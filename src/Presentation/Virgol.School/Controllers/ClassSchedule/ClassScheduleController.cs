@@ -190,10 +190,20 @@ namespace lms_with_moodle.Controllers
 
                 List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.MixedId != 0 && x.School_Id == schoolId).ToList();
 
-                var result = classScheduleViews
-                            .GroupBy(x => x.MixedId)
-                            .Select(grp => grp.ToList())
-                            .ToList();
+                var groupedMixed = classScheduleViews
+                            .GroupBy(x => x.MixedId);
+
+                var result = classScheduleViews = new List<ClassScheduleView>();
+
+                foreach (var mixedSchedule in groupedMixed)
+                {
+                    ClassScheduleView classSchedule = mixedSchedule.ToList()[0];
+                    MixedSchedule mixedData = appDbContext.MixedSchedules.Where(x => x.Id == mixedSchedule.Key).FirstOrDefault();
+
+                    classSchedule.ClassName = mixedData.MixedName;
+
+                    result.Add(classSchedule);
+                }
 
                 return Ok(result);
                                 
@@ -273,6 +283,47 @@ namespace lms_with_moodle.Controllers
                 }
 
                 return Ok("کلاس تجمیعی با موفقیت ایجاد شد");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteMixedClassSchedule(int mixedId)
+        {
+            try
+            {
+                if(mixedId != 0)
+                {
+                    MixedSchedule mixed = appDbContext.MixedSchedules.Where(x => x.Id == mixedId).FirstOrDefault();
+                    if(mixed != null)
+                    {
+                        List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.MixedId == mixedId).ToList();
+                        appDbContext.ClassWeeklySchedules.RemoveRange(schedules);
+                        appDbContext.MixedSchedules.Remove(mixed);
+
+                        foreach (var schedule in schedules)
+                        {
+                            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList();
+                            foreach (var meeting in meetings)
+                            {
+                                if(meeting != null)
+                                {
+                                    List<ParticipantInfo> participants = appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList();
+                                    appDbContext.ParticipantInfos.RemoveRange(participants);
+                                }
+                            }
+                            appDbContext.Meetings.RemoveRange(meetings);
+                        }
+                        await appDbContext.SaveChangesAsync();
+                        
+                        return Ok("کلاس تجمیعی با موفقیت ایجاد شد");
+                    }
+                }
+
+                return BadRequest("خطا در دریافت اطلاعات");
             }
             catch(Exception ex)
             {
