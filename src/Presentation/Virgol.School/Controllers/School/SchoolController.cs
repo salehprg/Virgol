@@ -850,8 +850,12 @@ namespace lms_with_moodle.Controllers
                         classs = appDbContext.School_Classes.Where(x => x.Id == classIds[i]).FirstOrDefault();
                         if(classs != null)
                         {
-                            var result = lessons.Intersect(appDbContext.Lessons.Where(x => x.Grade_Id == classs.Grade_Id).ToList());
-                            lessons = result.ToList();
+                            List<LessonModel> newLessons = appDbContext.Lessons.Where(x => x.Grade_Id == classs.Grade_Id).ToList();
+
+                            var result = lessons.Where(x => newLessons.Any(y => y.LessonCode == x.LessonCode)).ToList();
+
+                           //var result = lessons.Intersect(newLessons , new LessonsComperator());
+                            lessons = result;
                         }
                     }
                 }
