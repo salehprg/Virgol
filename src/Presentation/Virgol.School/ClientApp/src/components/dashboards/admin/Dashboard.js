@@ -4,7 +4,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, loading, open_book , users , bell} from "../../../assets/icons";
+import {layout, loading, open_book , users , bell, video} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from "./home/Home";
 import Schools from "./schools/Schools";
@@ -13,6 +13,7 @@ import adminTeachers from "./Teachers/adminTeachers";
 import adminStudents from "./Students/adminStudents";
 import protectedAdmin from "../../protectedRoutes/protectedAdmin";
 import { connect } from "react-redux";
+import StreamInfo from "../stream/StreamInfo";
 
 class Dashboard extends React.Component {
 
@@ -97,6 +98,13 @@ class Dashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
+                        code="conference"
+                        title={this.props.t('conference')}
+                        icon={video}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
                         code="news"
                         title={this.props.t('news')}
                         icon={bell}
@@ -112,6 +120,7 @@ class Dashboard extends React.Component {
                         <Route path={this.props.match.url + "/teachers"} component={adminTeachers}/>
                         <Route path={this.props.match.url + "/students"} component={adminStudents}/>
                         <Route path={this.props.match.url + "/schools"} component={Schools} />
+                        <Route path={this.props.match.url + "/conference"} component={StreamInfo} />
                         <Route path={this.props.match.url + "/news"} component={News} />
                         <Redirect to="/404" />
                     </Switch>

@@ -5,7 +5,7 @@ import history from "../../../history";
 import protectedManager from "../../protectedRoutes/protectedManager";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, loading, open_book , users , bell} from "../../../assets/icons";
+import {layout, loading, open_book , users , bell, video} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Teachers from "./teachers/Teachers";
@@ -15,6 +15,7 @@ import News from "./News/News";
 import { connect } from "react-redux";
 import Tracker from "./tracker/Tracker";
 import Groups from "./groups/Groups";
+import StreamInfo from "../stream/StreamInfo";
 
 class ManagerDashboard extends React.Component {
 
@@ -110,6 +111,13 @@ class ManagerDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
+                        code="conference"
+                        title={this.props.t('conference')}
+                        icon={video}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
                         code="students"
                         title={this.props.t('students')}
                         icon={users}
@@ -133,6 +141,7 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/bases"} component={Grades}/>
                         <Route path={this.props.match.url + "/groups"} component={Groups}/>
                         <Route path={this.props.match.url + "/students"} component={Students}/>
+                        <Route path={this.props.match.url + "/conference"} component={StreamInfo}/>
                         <Route path={this.props.match.url + "/news"} component={News}/>
                         <Route path={this.props.match.url + "/tracker"} component={Tracker}/>
                         <Redirect to="/404" />

@@ -404,3 +404,4 @@ export const onGoing = (styles) => {
         </svg>
     );
 }
+

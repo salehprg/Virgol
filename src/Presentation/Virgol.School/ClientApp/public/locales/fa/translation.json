@@ -116,8 +116,8 @@
     "friday": "جمعه",
     "addLessonToSchedule": "قرار دادن درس در برنامه کلاسی",
     "day": "روز",
-    "startTime": "ساعت شروع",
-    "endTime": "ساعت پایان",
+    "startTime": "زمان شروع",
+    "endTime": "زمان پایان",
     "everyOtherWeek": "هفته در میان",
     "week": "هفته",
     "even": "زوج",
@@ -199,5 +199,15 @@
     "manageGroups": "کلاس های تجمیعی",
     "groupsList": "لیست کلاس های تجمیعی",
     "newGroup": "ایجاد کلاس تجمیعی",
-    "ParticipantionStatus": "حضور غیاب"
+    "ParticipantionStatus": "حضور غیاب",
+    "conference": "همایش",
+    "finishedConferences": "همایش های برگزار شده",
+    "futureConferences": "همایش های پیش رو",
+    "reserveConference": "رزرو همایش",
+    "streamName": "نام همایش",
+    "streamGuests": "مهمانان همایش",
+    "duration": "مدت زمان",
+    "activeStream": "همایش فعال",
+    "streamUrl": "لینک همایش",
+    "streamKey": "کلید همایش"
 }
