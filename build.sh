@@ -17,8 +17,8 @@ TAG_REVISION=0
 # sudo git checkout Beta
 
 sudo git stash
-# sudo git pull origin Beta
-sudo git pull origin master
+sudo git pull origin Beta
+# sudo git pull origin master
 
 
 sudo docker login
