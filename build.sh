@@ -17,8 +17,8 @@ TAG_REVISION=0
 # sudo git checkout Beta
 
 sudo git stash
-# sudo git pull origin Beta
-sudo git pull origin master
+sudo git pull origin Beta
+# sudo git pull origin master
 
 
 sudo docker login
@@ -26,3 +26,4 @@ sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IM
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG 
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
+docker-compose up -d
