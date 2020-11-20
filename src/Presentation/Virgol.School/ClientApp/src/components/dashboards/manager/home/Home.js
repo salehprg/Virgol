@@ -29,7 +29,11 @@ class Home extends React.Component {
                     {this.state.activeStream ? 
                     <div className="mb-4 flex flex-row-reverse items-center justify-evenly">
                         <p className="text-white">همایش در حال برگزاری</p>
-                        <Link className="py-2 px-6 rounded-lg bg-greenish text-white" to={`/stream/${this.state.activeStream.url}`}>پیوستن به همایش</Link>
+                        <Link 
+                            className="py-2 px-6 rounded-lg bg-greenish text-white" 
+                            to={`/stream/${this.state.activeStream.id}`}>
+                            پیوستن به همایش
+                        </Link>
                     </div> 
                     : 
                     null
