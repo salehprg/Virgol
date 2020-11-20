@@ -3,6 +3,7 @@ import {LOGOUT} from "../_actions/authTypes";
 
 const INITIAL_STATE = {
     currentStream : {},
+    activeStream : {},
     endedStream : [],
     futureStream : [],
     roles : []
@@ -22,6 +23,9 @@ export default ( state = INITIAL_STATE, action ) => {
 
         case Type.GetCurrentStream:
             return { ...state, currentStream: action.payload };
+
+        case Type.GetActiveStream:
+            return { ...state, activeStream: action.payload };
 
         default: return state
 

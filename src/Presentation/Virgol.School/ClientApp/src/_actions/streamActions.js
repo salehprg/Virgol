@@ -26,6 +26,24 @@ export const GetRoles = (token) => async dispatch => {
 
 }
 
+export const GetActiveStream = (token) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        const response = await lms.get(`/Stream/GetActiveStream` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        dispatch({ type: STOP })
+        dispatch({ type: Type.GetActiveStream, payload: response.data })
+
+    } catch (e) {
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+    }
+
+}
+
 export const GetCurrentStream = (token) => async dispatch => {
 
     try {

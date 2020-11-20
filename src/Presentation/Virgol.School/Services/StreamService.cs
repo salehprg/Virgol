@@ -29,6 +29,33 @@ public class StreamService {
         return true;
     }
 
+    public StreamModel GetActiveStream(UserModel user)
+    {
+        try
+        {
+            UserService userService = new UserService(userManager , appDbContext);
+
+            List<StreamModel> streams = appDbContext.Streams.Where(x => x.StartTime <= MyDateTime.Now() && x.EndTime > MyDateTime.Now() && x.started && x.isActive).ToList();
+            foreach (var stream in streams)
+            {
+                List<int> allowedRoles = stream.getAllowedRolesList();
+                foreach (var allowedRole in allowedRoles)
+                {
+                    string roleName = appDbContext.Roles.Where(x => x.Id == allowedRole).FirstOrDefault().Name;
+                    if(userService.HasRole(user , roleName))        
+                    {
+                        return stream;
+                    }
+                }
+            }
+
+            return null;
+        }
+        catch (System.Exception)
+        {
+            return null;
+        }
+    }
     public StreamModel GetCurrentStream(int userId)
     {
         StreamModel streamModel = appDbContext.Streams.Where(x => x.StreamerId == userId && 
@@ -134,17 +161,27 @@ public class StreamService {
         }
     }
 
-    public string JoinStream(int streamId)
+    public string JoinStream(int streamId , UserModel user)
     {
         try
         {
-            StreamModel stream = appDbContext.Streams.Where(x => x.Id == streamId && x.isActive == true && 
+            UserService userService = new UserService(userManager , appDbContext);
+
+            StreamModel stream = appDbContext.Streams.Where(x => x.Id == streamId && x.isActive == true && x.started == true &&
                                                             x.StartTime <= MyDateTime.Now() &&
                                                             x.EndTime > MyDateTime.Now()).FirstOrDefault();
 
             if(stream != null)
             {
-                return stream.JoinLink;
+                List<int> allowedRoles = stream.getAllowedRolesList();
+                foreach (var allowedRole in allowedRoles)
+                {
+                    string roleName = appDbContext.Roles.Where(x => x.Id == allowedRole).FirstOrDefault().Name;
+                    if(userService.HasRole(user , roleName))        
+                    {
+                        return stream.JoinLink;
+                    }
+                }
             }
 
             return null;

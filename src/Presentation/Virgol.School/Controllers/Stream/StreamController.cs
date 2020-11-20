@@ -67,6 +67,26 @@ namespace lms_with_moodle.Controllers.Stream
             }
         }
 
+        public IActionResult GetActiveStream()
+        {
+            try
+            {
+                string userName = userManager.GetUserId(User);
+                UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+
+                StreamModel stream = streamService.GetActiveStream(userModel);
+
+                return Ok(stream);             
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
+                return BadRequest(ex.Message);
+            }
+        }
+
         public async Task<IActionResult> GetCurrentStream()
         {
             try
@@ -219,7 +239,7 @@ namespace lms_with_moodle.Controllers.Stream
 
                     if(allowStream)
                     {
-                        string streamLink = streamService.JoinStream(streamId);
+                        string streamLink = streamService.JoinStream(streamId , userModel);
 
                         return Ok(streamLink);
                     }
