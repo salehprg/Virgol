@@ -4,9 +4,8 @@ using System.Net;
 using GuerrillaNtp;
 
 public class MyDateTime {
-
-    static int Hour = 3;
-    static int Minute = 30;
+    static int OffsetHour = 3;
+    static int OfssetMinute = 30;
 
     //For local test
     //static int Hour = 0;
@@ -14,8 +13,8 @@ public class MyDateTime {
     public static DateTime Now(){
         DateTime result = DateTime.UtcNow;
 
-        result = result.AddHours(Hour);
-        result = result.AddMinutes(Minute);
+        result = result.AddHours(OffsetHour);
+        result = result.AddMinutes(OfssetMinute);
 
         string devStatus = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -23,6 +22,15 @@ public class MyDateTime {
         {
             result = DateTime.Now;
         }
+        
+        return result;
+    }
+
+    public static DateTime ConvertToServerTime(DateTime dateTime){
+        DateTime result = dateTime;
+
+        result = result.AddHours(OffsetHour);
+        result = result.AddMinutes(OfssetMinute);
         
         return result;
     }

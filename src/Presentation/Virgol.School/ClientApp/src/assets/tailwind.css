@@ -69,4 +69,12 @@
     opacity: 1;
 }
 
+.meteor-bg {
+    background-image: url('/Meteor.svg');
+}
+
+.Polygon-bg {
+    background-image: url('/Polygon.svg');
+}
+
 @tailwind utilities;

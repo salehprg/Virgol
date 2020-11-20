@@ -719,6 +719,14 @@ video {
   opacity: 1;
 }
 
+.meteor-bg {
+  background-image: url('/Meteor.svg');
+}
+
+.Polygon-bg {
+  background-image: url('/Polygon.svg');
+}
+
 .space-y-0 > :not(template) ~ :not(template) {
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));
@@ -8131,6 +8139,10 @@ video {
 
 .max-w-800 {
   max-width: 800px;
+}
+
+.max-w-1000 {
+  max-width: 1000px;
 }
 
 .max-w-none {
@@ -22797,6 +22809,10 @@ video {
 
   .sm\:max-w-800 {
     max-width: 800px;
+  }
+
+  .sm\:max-w-1000 {
+    max-width: 1000px;
   }
 
   .sm\:max-w-none {
@@ -37466,6 +37482,10 @@ video {
     max-width: 800px;
   }
 
+  .md\:max-w-1000 {
+    max-width: 1000px;
+  }
+
   .md\:max-w-none {
     max-width: none;
   }
@@ -52133,6 +52153,10 @@ video {
     max-width: 800px;
   }
 
+  .lg\:max-w-1000 {
+    max-width: 1000px;
+  }
+
   .lg\:max-w-none {
     max-width: none;
   }
@@ -66798,6 +66822,10 @@ video {
 
   .xl\:max-w-800 {
     max-width: 800px;
+  }
+
+  .xl\:max-w-1000 {
+    max-width: 1000px;
   }
 
   .xl\:max-w-none {

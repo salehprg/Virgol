@@ -1,19 +1,22 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import Hero from "../../admin/home/Hero";
 import CounterCard from "../../admin/home/CounterCard";
 import {home, key, loading, user, users} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import { connect } from "react-redux";
+import {GetActiveStream} from "../../../../_actions/streamActions"
 import {getManagerDashboardInfo} from "../../../../_actions/managerActions"
 import {GetIncommingNews , GetMyNews} from "../../../../_actions/newsActions"
 
 class Home extends React.Component {
 
-    state = {loading : false}
+    state = {loading : false, activeStream: { url: 'ewfewf' }}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
+            await this.props.GetActiveStream(this.props.user.token);
             await this.props.getManagerDashboardInfo(this.props.user.token);
             await this.props.GetIncommingNews(this.props.user.token);
             await this.props.GetMyNews(this.props.user.token);
@@ -24,11 +27,25 @@ class Home extends React.Component {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
-                <Feed
-                    news={this.props.inNews}
-                    title={this.props.t('managerNewsTitle')}
-                    pos="sm:row-start-1 row-start-2"
-                />
+                <div>
+                    {this.props.activeStream ? 
+                    <div className="mb-4 flex flex-row-reverse items-center justify-evenly">
+                        <p className="text-white">{this.props.activeStream.streamName}</p>
+                        <Link 
+                            className="py-2 px-6 rounded-lg bg-greenish text-white" 
+                            to={`/stream/${this.props.activeStream.joinLink}`}>
+                            پیوستن به همایش
+                        </Link>
+                    </div> 
+                    : 
+                    null
+                    }
+                    <Feed
+                        news={this.props.inNews}
+                        title={this.props.t('managerNewsTitle')}
+                        pos="sm:row-start-1 row-start-2"
+                    />
+                </div>
                 <div className="">
                     {(this.props.dashboardInfo.school
                             ?
@@ -84,9 +101,13 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , inNews : state.newsData.incomeNews , myNews : state.newsData.myNews , dashboardInfo : state.managerData.dashboardInfo}
+    return {user: state.auth.userInfo , 
+            inNews : state.newsData.incomeNews , 
+            myNews : state.newsData.myNews , 
+            dashboardInfo : state.managerData.dashboardInfo,
+            activeStream : state.streamData.activeStream}
 }
 
-const cwrapped = connect(mapStateToProps, { GetIncommingNews , GetMyNews  , getManagerDashboardInfo})(Home);
+const cwrapped = connect(mapStateToProps, { GetIncommingNews , GetMyNews  , getManagerDashboardInfo , GetActiveStream})(Home);
 
 export default withTranslation()(cwrapped);

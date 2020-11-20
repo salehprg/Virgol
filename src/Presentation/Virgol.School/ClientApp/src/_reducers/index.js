@@ -10,9 +10,11 @@ import newsReducer from "./newsReducer";
 import classScheduleReducer from "./classScheduleReducer";
 import meetingReducer from "./meetingReducer";
 import teachersReducer from "./teachersReducer";
+import streamReducer from "./streamReducer";
 
 export default combineReducers({
     teacherData: teachersReducer,
+    streamData: streamReducer,
     meetingData: meetingReducer,
     schedules: classScheduleReducer,
     newsData: newsReducer,

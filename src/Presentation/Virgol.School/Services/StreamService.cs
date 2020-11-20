@@ -18,7 +18,7 @@ public class StreamService {
 
     public bool CheckInterupt(DateTime startTime , DateTime endTime) 
     {
-        List<Stream> streamInterupts = appDbContext.Streams.Where(x => (x.StartTime >= startTime && x.StartTime < endTime) || // Check oldClass Start time between new class Time
+        List<StreamModel> streamInterupts = appDbContext.Streams.Where(x => (x.StartTime >= startTime && x.StartTime < endTime) || // Check oldClass Start time between new class Time
                                                                         (x.StartTime <= startTime && x.EndTime > endTime)).ToList(); // Check newClass Start Time between oldClass Time
 
         if(streamInterupts.Count > 0)
@@ -28,18 +28,77 @@ public class StreamService {
 
         return true;
     }
-    public async Task<bool> ReserveStream(DateTime startTime , DateTime endTime , string streamName , UserModel streamerUser)
+
+    public StreamModel GetActiveStream(UserModel user)
     {
         try
         {
-            Stream stream = new Stream();
-            stream.StartTime = startTime;
-            stream.EndTime = endTime;
-            stream.StreamName = streamName;
+            UserService userService = new UserService(userManager , appDbContext);
+
+            List<StreamModel> streams = appDbContext.Streams.Where(x => x.StartTime <= MyDateTime.Now() && x.EndTime > MyDateTime.Now() && x.started && x.isActive).ToList();
+            foreach (var stream in streams)
+            {
+                List<int> allowedRoles = stream.getAllowedRolesList();
+                foreach (var allowedRole in allowedRoles)
+                {
+                    string roleName = appDbContext.Roles.Where(x => x.Id == allowedRole).FirstOrDefault().Name;
+                    if(userService.HasRole(user , roleName))        
+                    {
+                        return stream;
+                    }
+                }
+            }
+
+            return null;
+        }
+        catch (System.Exception)
+        {
+            return null;
+        }
+    }
+    public StreamModel GetCurrentStream(int userId)
+    {
+        StreamModel streamModel = appDbContext.Streams.Where(x => x.StreamerId == userId && 
+                                                            (x.StartTime <= MyDateTime.Now().AddMinutes(15) && x.EndTime >= MyDateTime.Now())).FirstOrDefault();
+        return streamModel;
+    }
+
+    public List<StreamModel> GetFutureStreams(int userId)
+    {
+        List<StreamModel> streamModels = appDbContext.Streams.Where(x => x.StreamerId == userId && x.StartTime >= MyDateTime.Now() && !x.started).ToList();
+        return streamModels;
+    }
+    public async Task<List<StreamModel>> GetEndedStreams(int userId)
+    {
+        List<StreamModel> streamModels = appDbContext.Streams.Where(x => x.StreamerId == userId && x.EndTime <= MyDateTime.Now()).ToList();
+
+        List<StreamModel> changedStatus = new List<StreamModel>();
+
+        foreach (var stream in streamModels)
+        {
+            if(stream.isActive)
+            {
+                stream.started = true;
+                stream.isActive = false;
+
+                changedStatus.Add(stream);
+            }
+        }
+
+        appDbContext.Streams.UpdateRange(changedStatus);
+        await appDbContext.SaveChangesAsync();
+
+        return streamModels;
+    }
+    public async Task<bool> ReserveStream(StreamModel stream , UserModel streamerUser)
+    {
+        try
+        {
             stream.OBS_Link = "rtmp://conf.legace.ir/stream";
             stream.OBS_Key = "livestream";
             stream.StreamerId = streamerUser.Id;
             stream.isActive = false;
+            stream.setAllowedRolesList();
             
             await appDbContext.Streams.AddAsync(stream);
             await appDbContext.SaveChangesAsync();
@@ -59,12 +118,14 @@ public class StreamService {
     {
         try
         {
-            List<Stream> activeStreams = appDbContext.Streams.Where(x => x.isActive == true).ToList();
+            //Just for close Active stream
+            List<StreamModel> activeStreams = appDbContext.Streams.Where(x => x.isActive == true).ToList();
             foreach (var activeStream in activeStreams)
             {
                 if(activeStream.EndTime <= MyDateTime.Now())
                 {
                     activeStream.isActive = false;
+                    activeStream.started = true;
                     appDbContext.Streams.Update(activeStream);
                     await appDbContext.SaveChangesAsync();
                 }
@@ -76,12 +137,13 @@ public class StreamService {
                 return false;
             }
 
-            Stream stream = appDbContext.Streams.Where(x => x.Id == streamId && x.isActive == false && 
+            StreamModel stream = appDbContext.Streams.Where(x => x.Id == streamId && x.isActive == true && 
                                                             x.StartTime <= MyDateTime.Now() &&
                                                             x.EndTime > MyDateTime.Now()).FirstOrDefault();
             if(stream != null)
             {
                 stream.isActive = true;
+                stream.started = true;
                 appDbContext.Streams.Update(stream);
                 await appDbContext.SaveChangesAsync();
 
@@ -99,17 +161,27 @@ public class StreamService {
         }
     }
 
-    public string JoinStream(int streamId)
+    public string JoinStream(int streamId , UserModel user)
     {
         try
         {
-            Stream stream = appDbContext.Streams.Where(x => x.Id == streamId && x.isActive == true && 
+            UserService userService = new UserService(userManager , appDbContext);
+
+            StreamModel stream = appDbContext.Streams.Where(x => x.Id == streamId && x.isActive == true && x.started == true &&
                                                             x.StartTime <= MyDateTime.Now() &&
                                                             x.EndTime > MyDateTime.Now()).FirstOrDefault();
 
             if(stream != null)
             {
-                return stream.JoinLink;
+                List<int> allowedRoles = stream.getAllowedRolesList();
+                foreach (var allowedRole in allowedRoles)
+                {
+                    string roleName = appDbContext.Roles.Where(x => x.Id == allowedRole).FirstOrDefault().Name;
+                    if(userService.HasRole(user , roleName))        
+                    {
+                        return stream.JoinLink;
+                    }
+                }
             }
 
             return null;
