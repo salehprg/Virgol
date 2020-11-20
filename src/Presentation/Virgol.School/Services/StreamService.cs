@@ -96,6 +96,7 @@ public class StreamService {
         {
             stream.OBS_Link = "rtmp://conf.legace.ir/stream";
             stream.OBS_Key = "livestream";
+            stream.JoinLink = "hls";
             stream.StreamerId = streamerUser.Id;
             stream.isActive = false;
             stream.setAllowedRolesList();

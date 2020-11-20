@@ -9,7 +9,7 @@ class Streamer extends React.Component {
             <ReactPlayer
               width="100%"
               height="100%"
-              url={this.props.match.params.id}
+              url={(this.props.match.params.id == 'hls' ? "https://conf.legace.ir/hls/livestream.m3u8" : "https://conf.legace.ir/dash/livestream.m3u8")}
               playing
               controls
             />

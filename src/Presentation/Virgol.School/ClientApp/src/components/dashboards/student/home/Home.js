@@ -6,6 +6,7 @@ import CounterCard from "../../admin/home/CounterCard";
 import {home, key, user, users} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import { connect } from "react-redux";
+import {GetActiveStream} from "../../../../_actions/streamActions"
 import {GetIncommingNews } from "../../../../_actions/newsActions"
 import {GetRecentClass , JoinMeeting } from "../../../../_actions/meetingActions"
 import RecentClass from "../RecentClass/RecentClass"
@@ -16,6 +17,7 @@ class Home extends React.Component {
 
     componentDidMount = async () =>{
         this.setState({loading: true})
+        await this.props.GetActiveStream(this.props.user.token);
         await this.props.GetIncommingNews(this.props.user.token);
         await this.props.GetRecentClass(this.props.user.token);
         this.setState({loading: false})
@@ -46,10 +48,14 @@ class Home extends React.Component {
                     />
                 </div>
                 <div>
-                    {this.state.activeStream ? 
+                    {this.props.activeStream ? 
                     <div className="mb-4 flex flex-row-reverse items-center justify-evenly">
-                        <p className="text-white">همایش در حال برگزاری</p>
-                        <Link className="py-2 px-6 rounded-lg bg-greenish text-white" to={`/stream/${this.state.activeStream.url}`}>پیوستن به همایش</Link>
+                        <p className="text-white">{this.props.activeStream.streamName}</p>
+                        <Link 
+                            className="py-2 px-6 rounded-lg bg-greenish text-white" 
+                            to={`/stream/${this.props.activeStream.joinLink}`}>
+                            پیوستن به همایش
+                        </Link>
                     </div> 
                     : 
                     null
@@ -67,9 +73,12 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , inNews : state.newsData.incomeNews, recentClass : state.meetingData.recentClass }
+    return {user: state.auth.userInfo , 
+            inNews : state.newsData.incomeNews, 
+            recentClass : state.meetingData.recentClass,
+            activeStream : state.streamData.activeStream }
 }
 
-const cwrapped = connect(mapStateToProps, {GetIncommingNews , GetRecentClass , JoinMeeting  })(Home);
+const cwrapped = connect(mapStateToProps, {GetIncommingNews , GetRecentClass , JoinMeeting , GetActiveStream })(Home);
 
 export default withTranslation()(cwrapped);
