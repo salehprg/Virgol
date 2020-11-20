@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import Hero from "../../admin/home/Hero";
 import CounterCard from "../../admin/home/CounterCard";
@@ -14,7 +15,7 @@ import Fieldish from "../../../field/Fieldish";
 
 class Home extends React.Component {
 
-    state = {loading : false, newPrivateModal: false}
+    state = {loading : false, newPrivateModal: false, activeStream: { url: 'ewfewf' }}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
@@ -124,11 +125,23 @@ class Home extends React.Component {
                         pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
                     />
                 </div>
-                <Feed
+                <div>
+                <div>
+                    {this.state.activeStream ? 
+                    <div className="mb-4 flex flex-row-reverse items-center justify-evenly">
+                        <p className="text-white">همایش در حال برگزاری</p>
+                        <Link className="py-2 px-6 rounded-lg bg-greenish text-white" to={`/stream/${this.state.activeStream.url}`}>پیوستن به همایش</Link>
+                    </div> 
+                    : 
+                    null
+                    }
+                    <Feed
                     news={this.props.inNews}
                     title={this.props.t('studentNews')}
                     pos="col-span-1"
                 />
+                </div> 
+                </div>
             </div>
         );
     }

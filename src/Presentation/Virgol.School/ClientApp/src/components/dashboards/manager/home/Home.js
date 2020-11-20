@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import Hero from "../../admin/home/Hero";
 import CounterCard from "../../admin/home/CounterCard";
@@ -10,7 +11,7 @@ import {GetIncommingNews , GetMyNews} from "../../../../_actions/newsActions"
 
 class Home extends React.Component {
 
-    state = {loading : false}
+    state = {loading : false, activeStream: { url: 'ewfewf' }}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
@@ -24,11 +25,21 @@ class Home extends React.Component {
         if(this.state.loading) loading('w-10 text-grayish centerize')
         return (
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
-                <Feed
-                    news={this.props.inNews}
-                    title={this.props.t('managerNewsTitle')}
-                    pos="sm:row-start-1 row-start-2"
-                />
+                <div>
+                    {this.state.activeStream ? 
+                    <div className="mb-4 flex flex-row-reverse items-center justify-evenly">
+                        <p className="text-white">همایش در حال برگزاری</p>
+                        <Link className="py-2 px-6 rounded-lg bg-greenish text-white" to={`/stream/${this.state.activeStream.url}`}>پیوستن به همایش</Link>
+                    </div> 
+                    : 
+                    null
+                    }
+                    <Feed
+                        news={this.props.inNews}
+                        title={this.props.t('managerNewsTitle')}
+                        pos="sm:row-start-1 row-start-2"
+                    />
+                </div>
                 <div className="">
                     {(this.props.dashboardInfo.school
                             ?
