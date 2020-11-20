@@ -2,8 +2,10 @@ import React from 'react';
 import { DatePicker } from "jalali-react-datepicker";
 import Select from 'react-select';
 import { withTranslation } from 'react-i18next';
+import { connect } from "react-redux";
 import Fieldish from '../../field/Fieldish';
 import Tablish from '../tables/Tablish';
+import {GetEndedStreams , GetFutureStreams , GetCurrentStream , GetRoles , ReserveStream} from '../../../_actions/streamActions';
 
 class StreamInfo extends React.Component {
 
@@ -12,13 +14,35 @@ class StreamInfo extends React.Component {
         currentStream: null,
         streamName: '',
         startTime: new Date(),
+        startTime: new Date(),
         selectedGuests: [],
         duration: 90,
         guests: [{ value: 'students', label: 'دانش آموزان' }, { value: 'teachers', label: 'معلمان' }]
     }
 
+    componentDidMount = async () => {
+        
+        await this.props.GetCurrentStream(this.props.user.token);
+        await this.props.GetEndedStreams(this.props.user.token);
+        await this.props.GetFutureStreams(this.props.user.token);
+        await this.props.GetRoles(this.props.user.token);
+
+        this.initializeRoles()
+    }
+
+    initializeRoles = () =>{
+        var guestRoles = [];
+        this.props.guestRoles.map(x => guestRoles.push({value : x.id , label : this.props.t(x.name)}));
+
+        this.setState({guests : guestRoles});
+    }
+
     setStartTime = ({ value }) => {
-        console.log(value);
+        console.log(value._d);
+        console.log(value._d.toJSON());
+        console.log(value._d.toString());
+
+        this.setState({startTime : value._d.toJSON() })
     }
 
     handleChangeGuests = (selectedGuests) => {
@@ -26,7 +50,23 @@ class StreamInfo extends React.Component {
     }
 
     setDuration = (e) => {
-        this.setState({ duration: e.target.value })
+        this.setState({ duration: parseFloat(e.target.value) })
+    }
+
+    reserveStream = async () => {
+        var allowedRoles = []
+        this.state.selectedGuests.map(x => allowedRoles.push(x.value))
+
+        var data = {
+            StreamName : this.state.streamName ,
+            StartTime : this.state.startTime,
+            duration : this.state.duration,
+            allowedUsers : allowedRoles
+
+        }
+        await this.props.ReserveStream(this.props.user.token , data)
+
+        this.componentDidMount()
     }
 
     render() {
@@ -37,11 +77,11 @@ class StreamInfo extends React.Component {
                     <Tablish 
                         headers={[this.props.t('name'), this.props.t('date')]}
                         body={() => {
-                            return this.state.done.map(x => {
+                            return this.props.endedStream.map(x => {
                                 return (
                                     <tr key={x.id}>
-                                        <td className="py-4"> {x.name} </td>
-                                        <td> {x.date} </td>
+                                        <td className="py-4"> {x.streamName} </td>
+                                        <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
                                     </tr>
                                 );
                             })
@@ -53,11 +93,11 @@ class StreamInfo extends React.Component {
                     <Tablish 
                         headers={[this.props.t('name'), this.props.t('date')]}
                         body={() => {
-                            return this.state.done.map(x => {
+                            return this.props.futureStream.map(x => {
                                 return (
                                     <tr key={x.id}>
-                                        <td className="py-4"> {x.name} </td>
-                                        <td> {x.date} </td>
+                                        <td className="py-4"> {x.streamName} </td>
+                                        <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
                                     </tr>
                                 );
                             })
@@ -65,22 +105,22 @@ class StreamInfo extends React.Component {
                     />
                 </div>
                 <div className="rounded-lg flex flex-col items-center justify-center w-full max-w-350 h-80 mx-2 my-4 px-3 py-2">
-                    {this.state.currentStream ? 
+                    {this.props.currentStream ? 
                     <>
                         <div className="w-full text-right py-4 px-4 text-white border-2 border-greenish rounded-lg">
                             <p className="text-xl mb-4 text-center"> {this.props.t('activeStream')} </p>
-                            <p> همایش سه </p>
+                            <p> {this.props.currentStream.streamName} </p>
                             <div className="flex my-2 flex-row-reverse justify-between">
-                                <p>1399/10/4 - 10:00</p>
-                                <p>90'</p>
+                                <p>{new Date(this.props.currentStream.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</p>
+                                <p>{this.props.currentStream.duration}'</p>
                             </div>
                             <div>
                                 <p className="mb-2"> {this.props.t('streamUrl')} </p>
-                                <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-sky-blue">https://conf.legace.ir/dash/livestream.mpd</p>
+                                <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-sky-blue">{this.props.currentStream.obS_Link}</p>
                             </div>
                             <div className="mt-2">
                                 <p className="mb-2"> {this.props.t('streamKey')} </p>
-                                <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-purplish">646764535454</p>
+                                <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-purplish">{this.props.currentStream.obS_Key}</p>
                             </div>
                         </div>
                     </>
@@ -94,7 +134,7 @@ class StreamInfo extends React.Component {
                         />
                         <div className="w-5/6 my-8 flex flex-row-reverse items-center justify-around">
                             <span className="text-white"> {this.props.t('startTime')} </span>
-                            <DatePicker value={this.state.startTime} onClickSubmitButton={this.setStartTime} />
+                            <DatePicker value={this.state.startTime} timePicker={true} onClickSubmitButton={this.setStartTime} />
                         </div>
                         <div className="flex flex-row-reverse items-center justify-start w-5/6">
                             <span className="text-white"> {this.props.t('duration')} </span>
@@ -110,7 +150,7 @@ class StreamInfo extends React.Component {
                                 isMulti
                                 isSearchable
                         />
-                        <button className="bg-greenish rounded-lg text-white w-5/6 py-2"> {this.props.t('reserveConference')} </button>
+                        <button className="bg-greenish rounded-lg text-white w-5/6 py-2" onClick={() => this.reserveStream()}> {this.props.t('reserveConference')} </button>
                     </> 
                     }
                 </div>
@@ -120,4 +160,13 @@ class StreamInfo extends React.Component {
 
 }
 
-export default withTranslation()(StreamInfo);
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , endedStream: state.streamData.endedStream
+                                        , futureStream: state.streamData.futureStream
+                                        , guestRoles: state.streamData.roles
+                                        , currentStream: state.streamData.currentStream}
+}
+
+const cwrapped = connect(mapStateToProps, { GetEndedStreams , GetFutureStreams , ReserveStream , GetRoles , GetCurrentStream })(StreamInfo);
+
+export default withTranslation()(cwrapped);
