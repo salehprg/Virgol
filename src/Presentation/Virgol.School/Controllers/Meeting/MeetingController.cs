@@ -132,17 +132,22 @@ namespace lms_with_moodle.Controllers
         [HttpPut]
         [Authorize(Roles = Roles.Teacher + "," + Roles.Manager + "," + Roles.Admin)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
-        public async Task<IActionResult> CreatePrivateRoom(string roomName) 
+        public async Task<IActionResult> CreatePrivateRoom(string roomName , int schoolId) 
         {
             try
             {
+                if(schoolId == 0)
+                    return BadRequest("یک مدرسه را برای سرور کلاس انتخاب کنید");
+
                 string userName = userManager.GetUserId(User);
                 UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 int userId = userModel.Id;
 
                 TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userId).FirstOrDefault();
                 List<int> schoolIds = teacherDetail.getTeacherSchoolIds();
-                int schoolId = schoolIds.FirstOrDefault();
+
+                if(!schoolIds.Any(x => x == schoolId))
+                    return BadRequest("اجازه ساخت کلاس با سرور مدرسه مورد نظر را ندارید");
                 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
                 roomName = roomName + " - " + school.SchoolName + " - " + userModel.LastName;
@@ -178,7 +183,7 @@ namespace lms_with_moodle.Controllers
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                return BadRequest(ex.Message);
+                return BadRequest("مشکلی در ساخت کلاس خصوصی بوجود آمد");
             }
         }
 

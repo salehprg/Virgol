@@ -32,6 +32,31 @@ export const SetMeetingService = (token , serviceName) => async dispatch => {
 
 }
 
+export const GetSchoolList = (token) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        
+        const response = await lms.get(`/Teacher/GetSchoolList` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.GetSchoolList, payload: response.data })
+
+        return true
+
+    } catch (e) 
+    {
+
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        return false
+    }
+
+}
+
 export const GetClassBook = (token , lessonId) => async dispatch => {
 
     try {

@@ -9,14 +9,17 @@ import RecentClass from "../RecentClass/RecentClass";
 import { connect } from "react-redux";
 import {GetActiveStream} from "../../../../_actions/streamActions"
 import {GetIncommingNews} from "../../../../_actions/newsActions"
+import {GetSchoolList} from "../../../../_actions/teacherActions"
 import {GetMeetingList , GetRecentClass , CreatePrivateRoom , StartMeeting , EndMeeting , JoinMeeting , JoinPrivateRoom} from "../../../../_actions/meetingActions"
 import {ShowSuccess} from '../../../../_actions/alertActions'
 import Modal from "../../../modals/Modal";
 import Fieldish from "../../../field/Fieldish";
+import Select from "react-select";
 
 class Home extends React.Component {
 
-    state = {loading : false, newPrivateModal: false, activeStream: { url: 'ewfewf' }}
+    state = {loading : false, newPrivateModal: false, 
+            activeStream: { url: 'ewfewf' } , schoolOptions : [] , selectedSchool : {}}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
@@ -66,8 +69,13 @@ class Home extends React.Component {
         document.body.removeChild(elem);
      }
 
-    showPrivateModal = () => {
-        this.setState({ newPrivateModal: true })
+    showPrivateModal = async () => {
+        await this.props.GetSchoolList(this.props.user.token)
+
+        var schools = [];
+        this.props.schoolList.map(x => schools.push({value : x.id , label : x.schoolName}));
+
+        this.setState({schoolOptions : schools ,  newPrivateModal: true});
     }
 
     hidePrivateModal = () => {
@@ -75,11 +83,15 @@ class Home extends React.Component {
     }
     
     createPrivateRoom = async () => {
-        await this.props.CreatePrivateRoom(this.state.privateName)
+        await this.props.CreatePrivateRoom(this.state.privateName , this.state.selectedSchool.value)
         this.hidePrivateModal()
         this.setState({privateName : ""})
         this.componentDidMount()
         this.render()
+    }
+
+    handleSchoolSelect = (selectedSchool) => {
+        this.setState({selectedSchool : selectedSchool})
     }
 
     render() {
@@ -88,7 +100,17 @@ class Home extends React.Component {
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
                 {this.state.newPrivateModal ?
                     <Modal cancel={this.hidePrivateModal}>
-                        <div onClick={(e) => e.stopPropagation()} className="w-11/12 rounded-lg bg-bold-blue text-center max-w-500 p-8">
+                        <div onClick={(e) => e.stopPropagation()} className="w-11/12 rounded-lg bg-bold-blue text-center max-w-500 p-8" style={{direction : "rtl"}}>
+                            <div className="w-full" style={{direction : "rtl"}} >
+                                <Select
+                                    isMulti={false}
+                                    className="w-5/6 px-4 py-2 my-4"
+                                    value={this.state.selectedSchool}
+                                    onChange={this.handleSchoolSelect}
+                                    options={this.state.schoolOptions}
+                                    placeholder={this.props.t('schoolServer')}
+                                />
+                            </div>
                             <input
                                 value={this.state.privateName}
                                 onChange={(e) => this.setState({privateName : e.target.value})}
@@ -158,10 +180,11 @@ const mapStateToProps = state => {
     return {user: state.auth.userInfo , meetingList : state.meetingData.meetingList , 
                                         recentClass : state.meetingData.recentClass ,
                                         inNews : state.newsData.incomeNews ,
-                                        activeStream : state.streamData.activeStream}
+                                        activeStream : state.streamData.activeStream,
+                                        schoolList : state.teacherData.schoolList}
 }
 const cwrapped = connect(mapStateToProps, { GetMeetingList , GetRecentClass , StartMeeting ,
     EndMeeting , JoinMeeting , GetIncommingNews , CreatePrivateRoom 
-   , JoinPrivateRoom , ShowSuccess , GetActiveStream})(Home);
+   , JoinPrivateRoom , ShowSuccess , GetActiveStream , GetSchoolList})(Home);
 
 export default withTranslation()(cwrapped);

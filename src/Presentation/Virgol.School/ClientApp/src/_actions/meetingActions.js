@@ -178,14 +178,14 @@ export const GetRecordList = (scheduleId) => async dispatch => {
 
 }
 
-export const CreatePrivateRoom = (roomName) => async dispatch => {
+export const CreatePrivateRoom = (roomName , schoolId = 0) => async dispatch => {
 
     try {
         
 
         dispatch({ type: START })
         console.log(userToken)
-        const response = await lms.put(`/Meeting/CreatePrivateRoom?roomName=${roomName}` , null , {
+        const response = await lms.put(`/Meeting/CreatePrivateRoom?roomName=${roomName}&schoolId=${schoolId}` , null , {
             headers: {
                 authorization: `Bearer ${userToken}`
             }
