@@ -35,6 +35,7 @@ namespace Schedule
                     FarazSmsApi smsApi = new FarazSmsApi();
 
                     string message = "";
+                    string service = " - ";
 
                     LDAP_db ldap = new LDAP_db(dbContext);
                     BBBApi bBBApi = new BBBApi(dbContext);
@@ -42,7 +43,7 @@ namespace Schedule
                     var ldapResponse = ldap.CheckStatus();
                     if(!ldapResponse)
                     {
-                        message += "سرویس LDAP قطع میباشد";
+                        service = "LDAP";
                     }
 
                     List<SchoolModel> schools = dbContext.Schools.ToList();;
@@ -76,7 +77,11 @@ namespace Schedule
                     if(!string.IsNullOrEmpty(message))
                     {
                         string[] numbers = {"09154807673" , "09333545494" , "09158030495"};
-                        smsApi.SendSms(numbers , message);
+                        foreach (var number in numbers)
+                        {
+                            smsApi.SendErrorCollecotr(number , service , message);    
+                        }
+                        
                     }
                     
                 }

@@ -50,18 +50,18 @@ public class ClassScheduleService {
     {
         try
         {
-            int lessonMoodle_Id = appDbContext.School_Lessons.Where(x => x.classId == classSchedule.ClassId && x.Lesson_Id == classSchedule.LessonId).FirstOrDefault().Moodle_Id;
+            // int lessonMoodle_Id = appDbContext.School_Lessons.Where(x => x.classId == classSchedule.ClassId && x.Lesson_Id == classSchedule.LessonId).FirstOrDefault().Moodle_Id;
 
-            List<EnrolUser> enrolUsers = new List<EnrolUser>();
+            // List<EnrolUser> enrolUsers = new List<EnrolUser>();
 
-            EnrolUser teacher = new EnrolUser();
-            teacher.lessonId = lessonMoodle_Id;
-            teacher.RoleId = 3;
-            teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
+            // EnrolUser teacher = new EnrolUser();
+            // teacher.lessonId = lessonMoodle_Id;
+            // teacher.RoleId = 3;
+            // teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
 
-            enrolUsers.Add(teacher);
+            // enrolUsers.Add(teacher);
 
-            List<UserModel> users = new List<UserModel>();
+            // List<UserModel> users = new List<UserModel>();
 
             //bool enrolment = await moodleApi.AssignUsersToCourse(enrolUsers);
             bool enrolment = true;

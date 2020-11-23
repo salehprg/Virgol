@@ -13,7 +13,6 @@ public class StreamModel {
     public DateTime EndTime {get; set;}
     public float duration {get; set;}
     public bool isActive {get; set;}
-    public bool started {get; set;}
     public string allowedRoles {get; set;}
 
     [NotMapped]

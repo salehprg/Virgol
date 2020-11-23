@@ -421,14 +421,18 @@ namespace lms_with_moodle.Controllers
 
                     bool userInLdap = false;
 
-                    if(ldap.CheckStatus())
+                    try
                     {
-                        userInLdap = ldap.CheckUserData(userInformation.MelliCode);
+                        if(ldap.CheckStatus())
+                        {
+                            userInLdap = ldap.CheckUserData(userInformation.MelliCode);
+                        }
+                        else
+                        {
+                            userInLdap = true;
+                        }
                     }
-                    else
-                    {
-                        userInLdap = true;
-                    }
+                    catch {}
 
 
                     if(!userInformation.ConfirmedAcc)
@@ -464,17 +468,6 @@ namespace lms_with_moodle.Controllers
                     if(UserService.HasRole(userInformation , Roles.Teacher , userRoleNames))
                     {
                         userDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == userInformation.Id).FirstOrDefault();
-                        if(!userInLdap)
-                        {
-                            await ldap.AddUserToLDAP(userInformation , true);
-                        }
-                    }
-                    else
-                    {
-                        if(!userInLdap)
-                        {
-                            await ldap.AddUserToLDAP(userInformation , false);
-                        }
                     }
 
                     if(UserService.HasRole(userInformation , Roles.Admin , userRoleNames))
@@ -554,6 +547,21 @@ namespace lms_with_moodle.Controllers
                     bool completedProfile = userInformation.LatinFirstname != null && userInformation.LatinFirstname != null;
                     
                     string UserType = (userRoleNames.Count > 1 ? userRoleNames.Where(x => x != Roles.User).FirstOrDefault() : userRoleNames.FirstOrDefault());
+
+                    if(UserType == Roles.Teacher)
+                    {
+                        if(!userInLdap)
+                        {
+                            await ldap.AddUserToLDAP(userInformation , true);
+                        }
+                    }
+                    else
+                    {
+                        if(!userInLdap)
+                        {
+                            await ldap.AddUserToLDAP(userInformation , false);
+                        }
+                    }
 
                     //Get UserType information from UserType Class
                     return Ok(new

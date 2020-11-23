@@ -820,6 +820,7 @@ namespace lms_with_moodle.Controllers
                     teacherDetail.SchoolsId = teacherDetail.SchoolsId.Replace(schoolId.ToString() + "," , "");
 
                     List<EnrolUser> unEnrolData = new List<EnrolUser>();
+                    
                     List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == teacherId).ToList();
                     foreach (var schedule in schedules)
                     {
@@ -828,11 +829,11 @@ namespace lms_with_moodle.Controllers
 
                         if(teacherSchoolId == schoolId)
                         {
-                            EnrolUser unEnrol = new EnrolUser();
-                            unEnrol.UserId = teacher.Moodle_Id;
-                            unEnrol.lessonId = appDbContext.School_Lessons.Where(x => x.School_Id == schoolId && x.classId == schoolClass.Id && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                            // EnrolUser unEnrol = new EnrolUser();
+                            // unEnrol.UserId = teacher.Moodle_Id;
+                            // unEnrol.lessonId = appDbContext.School_Lessons.Where(x => x.School_Id == schoolId && x.classId == schoolClass.Id && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
 
-                            unEnrolData.Add(unEnrol);
+                            // unEnrolData.Add(unEnrol);
                             appDbContext.ClassWeeklySchedules.Remove(schedule);
                         }
                     }

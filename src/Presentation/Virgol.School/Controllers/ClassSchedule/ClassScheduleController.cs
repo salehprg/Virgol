@@ -67,7 +67,8 @@ namespace lms_with_moodle.Controllers
                     classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == classId).ToList();
                     foreach (var schedule in classScheduleViews)
                     {
-                        int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                        //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                        int moodleId = 0;
                         schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
                     }
                 }
@@ -87,7 +88,8 @@ namespace lms_with_moodle.Controllers
 
                         foreach (var schedule in classScheduleViews)
                         {
-                            int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                            //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                            int moodleId = 0;
                             schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
 
                             List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList();
@@ -141,7 +143,8 @@ namespace lms_with_moodle.Controllers
                 List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId).ToList();
                 foreach (var schedule in classScheduleViews)
                 {
-                    int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    int moodleId = 0;
                     schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
                 }
 
@@ -286,6 +289,9 @@ namespace lms_with_moodle.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
                 return BadRequest(ex.Message);
             }
         }
@@ -423,11 +429,11 @@ namespace lms_with_moodle.Controllers
 
                 if(classSchedule.Id != 0)
                 {
-                    int lessonMoodleId = appDbContext.School_Lessons.Where(x => x.Lesson_Id == classSchedule.LessonId && x.classId == classSchedule.ClassId).FirstOrDefault().Moodle_Id;
+                    //int lessonMoodleId = appDbContext.School_Lessons.Where(x => x.Lesson_Id == classSchedule.LessonId && x.classId == classSchedule.ClassId).FirstOrDefault().Moodle_Id;
 
-                    EnrolUser teacher = new EnrolUser();
-                    teacher.lessonId = lessonMoodleId;
-                    teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
+                    // EnrolUser teacher = new EnrolUser();
+                    // teacher.lessonId = lessonMoodleId;
+                    // teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
 
                     //bool unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
                     bool unassignTeacher = true;

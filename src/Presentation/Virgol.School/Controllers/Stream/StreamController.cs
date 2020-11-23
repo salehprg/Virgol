@@ -100,7 +100,6 @@ namespace lms_with_moodle.Controllers.Stream
                     if(!stream.isActive)
                     {
                         stream.isActive = true;
-                        stream.started = true;
 
                         appDbContext.Streams.Update(stream);
                         await appDbContext.SaveChangesAsync();
@@ -177,7 +176,78 @@ namespace lms_with_moodle.Controllers.Stream
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EditReservedStream([FromBody]StreamModel streamModel)
+        {
+            try
+            {
+                if(string.IsNullOrEmpty(streamModel.StreamName.Trim()) || streamModel.Id == 0)
+                    return BadRequest("اطلاعات به درستی وارد نشده است");
+
+                streamModel.StartTime = MyDateTime.ConvertToServerTime(streamModel.StartTime);
+
+                streamModel.EndTime = streamModel.StartTime.AddMinutes(streamModel.duration);
+                
+                if(streamModel.StartTime >= streamModel.EndTime || streamModel.StartTime < MyDateTime.Now())
+                    return BadRequest("بازه انتخاب شده برای زمان رزرو صحیح نمیباشد");
+                    
+                bool interupt = streamService.CheckInterupt(streamModel.StartTime , streamModel.EndTime , streamModel.Id);
+                if(!interupt)
+                    return BadRequest("بازه انتخاب شده رزرو شده است");
+
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == streamModel.StreamerId).FirstOrDefault();
+                if(userModel == null)
+                {
+                    string userName = userManager.GetUserId(User);
+                    userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+                }
+
+                streamModel.StreamerId = userModel.Id;
+
+                bool reserveStatus = await streamService.EditStream(streamModel);
+
+                if(reserveStatus)
+                    return Ok("همایش مورد نظر با موفقیت ویرایش شد");
+
+                return BadRequest("مشکلی در ویرایش همایش بوجود آمد");
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
+                return BadRequest(ex.Message);
+            }
+        }
     
+        [HttpDelete]
+        public async Task<IActionResult> RemoveStream(int streamId)
+        {
+            try
+            {
+                if(streamId == 0)
+                    return BadRequest("اطلاعات به درستی وارد نشده است");
+
+                bool deleteStatus = await streamService.RemoveStream(streamId);
+
+                if(deleteStatus)
+                    return Ok("همایش مورد نظر با موفقیت حذف شد");
+
+                return BadRequest("مشکلی در رزرو همایش بوجود آمد");
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
+                return BadRequest(ex.Message);
+            }
+        }
+    
+
         [HttpPost]
         public async Task<IActionResult> StartStream(int streamId)
         {

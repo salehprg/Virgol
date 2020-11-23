@@ -23,13 +23,14 @@ namespace lms_with_moodle.Helper
 
             // Creating an LdapConnection instance 
             ldapConn= new LdapConnection();
-
+            ldapConn.ConnectionTimeout = 5000;
             
         }
         public bool CheckStatus()
         {
             try
             {
+                
                 if(!ldapConn.Connected)
                     ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
                 //Bind function will Bind the user object Credentials to the Server

@@ -19,6 +19,7 @@ namespace lms_with_moodle.Helper
         public AdobeApi(string _url)
         {
             client = new HttpClient();
+            client.Timeout = new TimeSpan(0 , 0 , 5);
             URL = _url;
         }
 
@@ -38,6 +39,8 @@ namespace lms_with_moodle.Helper
             try
             {
                 client = new HttpClient();
+                client.Timeout = new TimeSpan(0 , 0 , 5);
+                
                 Uri uriLogin = new Uri (string.Format(URL + "/api/xml?action=login&login={0}&password={1}" , Username , Password));
                 HttpResponseMessage response = client.GetAsync(uriLogin).Result;
                 XmlSerializer serializer = new XmlSerializer(typeof(LoginModel));

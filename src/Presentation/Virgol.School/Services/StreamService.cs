@@ -16,10 +16,11 @@ public class StreamService {
         appDbContext = _appDbContext;
     }
 
-    public bool CheckInterupt(DateTime startTime , DateTime endTime) 
+    public bool CheckInterupt(DateTime startTime , DateTime endTime , int id = 0) 
     {
         List<StreamModel> streamInterupts = appDbContext.Streams.Where(x => (x.StartTime >= startTime && x.StartTime < endTime) || // Check oldClass Start time between new class Time
-                                                                        (x.StartTime <= startTime && x.EndTime > endTime)).ToList(); // Check newClass Start Time between oldClass Time
+                                                                        (x.StartTime <= startTime && x.EndTime > endTime) &&
+                                                                        x.Id != id).ToList(); // Check newClass Start Time between oldClass Time
 
         if(streamInterupts.Count > 0)
         {
@@ -35,7 +36,7 @@ public class StreamService {
         {
             UserService userService = new UserService(userManager , appDbContext);
 
-            List<StreamModel> streams = appDbContext.Streams.Where(x => x.StartTime <= MyDateTime.Now() && x.EndTime > MyDateTime.Now() && x.started && x.isActive).ToList();
+            List<StreamModel> streams = appDbContext.Streams.Where(x => x.StartTime <= MyDateTime.Now().AddMinutes(15) && x.EndTime > MyDateTime.Now() && x.isActive).ToList();
             foreach (var stream in streams)
             {
                 List<int> allowedRoles = stream.getAllowedRolesList();
@@ -65,7 +66,7 @@ public class StreamService {
 
     public List<StreamModel> GetFutureStreams(int userId)
     {
-        List<StreamModel> streamModels = appDbContext.Streams.Where(x => x.StreamerId == userId && x.StartTime >= MyDateTime.Now() && !x.started).ToList();
+        List<StreamModel> streamModels = appDbContext.Streams.Where(x => x.StreamerId == userId && x.StartTime >= MyDateTime.Now() && !x.isActive).ToList();
         return streamModels;
     }
     public async Task<List<StreamModel>> GetEndedStreams(int userId)
@@ -78,7 +79,6 @@ public class StreamService {
         {
             if(stream.isActive)
             {
-                stream.started = true;
                 stream.isActive = false;
 
                 changedStatus.Add(stream);
@@ -115,6 +115,47 @@ public class StreamService {
         }
     }
 
+    public async Task<bool> EditStream(StreamModel stream )
+    {
+        try
+        {
+            StreamModel oldStream = appDbContext.Streams.Where(x => x.Id == stream.Id).FirstOrDefault();
+            oldStream = stream;
+
+            appDbContext.Streams.Update(oldStream);
+            await appDbContext.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            return false;
+        }
+    }
+
+    public async Task<bool> RemoveStream(int streamId )
+    {
+        try
+        {
+            StreamModel stream = appDbContext.Streams.Where(x => x.Id == streamId).FirstOrDefault();
+
+            appDbContext.Streams.Remove(stream);
+            await appDbContext.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            return false;
+        }
+    }
+
     public async Task<bool> StartStream(int streamId , int streamerId)
     {
         try
@@ -126,7 +167,6 @@ public class StreamService {
                 if(activeStream.EndTime <= MyDateTime.Now())
                 {
                     activeStream.isActive = false;
-                    activeStream.started = true;
                     appDbContext.Streams.Update(activeStream);
                     await appDbContext.SaveChangesAsync();
                 }
@@ -144,7 +184,6 @@ public class StreamService {
             if(stream != null)
             {
                 stream.isActive = true;
-                stream.started = true;
                 appDbContext.Streams.Update(stream);
                 await appDbContext.SaveChangesAsync();
 
@@ -168,7 +207,7 @@ public class StreamService {
         {
             UserService userService = new UserService(userManager , appDbContext);
 
-            StreamModel stream = appDbContext.Streams.Where(x => x.Id == streamId && x.isActive == true && x.started == true &&
+            StreamModel stream = appDbContext.Streams.Where(x => x.Id == streamId && x.isActive == true &&
                                                             x.StartTime <= MyDateTime.Now() &&
                                                             x.EndTime > MyDateTime.Now()).FirstOrDefault();
 

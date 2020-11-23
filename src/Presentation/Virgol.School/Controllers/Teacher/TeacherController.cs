@@ -211,7 +211,8 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var schedule in classScheduleViews)
                 {
-                    int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    int moodleId = 0;
                     schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
 
                     if(groupedSchedule.Where(x => x.ClassId == schedule.ClassId && x.LessonId == schedule.LessonId).FirstOrDefault() == null)

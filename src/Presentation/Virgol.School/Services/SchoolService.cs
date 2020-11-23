@@ -268,16 +268,16 @@ public class SchoolService {
 
                 int managerMoodleId = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault().Moodle_Id;
                 
-                List<EnrolUser> enrolsManager = new List<EnrolUser>();
-                foreach (var lesson in schoolLessons)
-                {
-                    EnrolUser enrol = new EnrolUser();
-                    enrol.lessonId = lesson.Moodle_Id;
-                    enrol.UserId = managerMoodleId;
-                    enrol.RoleId = 3;
+                // List<EnrolUser> enrolsManager = new List<EnrolUser>();
+                // foreach (var lesson in schoolLessons)
+                // {
+                //     EnrolUser enrol = new EnrolUser();
+                //     enrol.lessonId = lesson.Moodle_Id;
+                //     enrol.UserId = managerMoodleId;
+                //     enrol.RoleId = 3;
 
-                    enrolsManager.Add(enrol);
-                }
+                //     enrolsManager.Add(enrol);
+                // }
 
                 //await moodleApi.AssignUsersToCourse(enrolsManager);
 

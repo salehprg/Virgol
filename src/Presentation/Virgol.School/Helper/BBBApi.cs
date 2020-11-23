@@ -22,6 +22,8 @@ namespace lms_with_moodle.Helper
             client = new HttpClient(); 
             appDbContext = _appDbContext;
             
+            client.Timeout = new TimeSpan(0 , 0 , 5);
+
             bbbUrl = AppSettings.VIRGOL_SCALELITE_BASE_URL;
             bbbSecret = AppSettings.VIRGOL_SCALELITE_SECRET;
 

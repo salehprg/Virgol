@@ -121,6 +121,25 @@ namespace lms_with_moodle.Helper
             return true;
         }
 
+        public bool SendErrorCollecotr(string Numbers , string serviceError , string messages)
+        {
+            ErrorCollectorModel errorCollector = new ErrorCollectorModel();
+            errorCollector.serviceName = serviceError;
+            errorCollector.singularPlural = messages;
+
+            SendPatternModel<ErrorCollectorModel> patternModel = new SendPatternModel<ErrorCollectorModel>();
+
+            patternModel.pattern_code = "8sa6tt73ni";
+            patternModel.originator = FromNumber;
+            patternModel.recipient = Numbers;
+            patternModel.values = errorCollector;
+
+            string json = JsonConvert.SerializeObject(patternModel);
+
+            // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
+
+            return SendData(json , "/v1/messages/patterns/send");
+        }
 
         public bool SendSms(string[] Numbers , string Message)
         {
