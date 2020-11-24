@@ -27,6 +27,7 @@ public class MeetingView {
     public string OrgLessonName {get; set;}
     public string ClassName {get;set;}
     public string SchoolName {get;set;}
+    public string ServiceType {get;set;}
 
 
     [NotMapped]

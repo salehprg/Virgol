@@ -266,7 +266,7 @@ public class SchoolService {
                 appDbContext.School_Lessons.AddRange(schoolLessons);
                 await appDbContext.SaveChangesAsync();
 
-                int managerMoodleId = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault().Moodle_Id;
+                //int managerMoodleId = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault().Moodle_Id;
                 
                 // List<EnrolUser> enrolsManager = new List<EnrolUser>();
                 // foreach (var lesson in schoolLessons)
