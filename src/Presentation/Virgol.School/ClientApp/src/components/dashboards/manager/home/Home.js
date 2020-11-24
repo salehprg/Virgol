@@ -33,7 +33,7 @@ class Home extends React.Component {
                         <p className="text-white">{this.props.activeStream.streamName}</p>
                         <Link 
                             className="py-2 px-6 rounded-lg bg-greenish text-white" 
-                            to={`/stream/${this.props.activeStream.joinLink}`}>
+                            to={`/stream`}>
                             پیوستن به همایش
                         </Link>
                     </div> 

@@ -41,6 +41,12 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("orgMoodleId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("streamLimit")
+                        .HasColumnType("text");
+
+                    b.Property<string>("streamURL")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("AdminDetails");
@@ -388,6 +394,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int?>("School_Id")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ServiceType")
+                        .HasColumnType("text");
 
                     b.Property<float?>("StartHour")
                         .HasColumnType("real");
@@ -934,6 +943,12 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("sexuality")
                         .HasColumnType("integer");
+
+                    b.Property<string>("streamLimit")
+                        .HasColumnType("text");
+
+                    b.Property<string>("streamURL")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

@@ -139,6 +139,7 @@ namespace lms_with_moodle.Controllers.Stream
 
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin + "," + Roles.Manager)]
         public async Task<IActionResult> ReserveStream([FromBody]StreamModel streamModel)
         {
             try
@@ -160,7 +161,47 @@ namespace lms_with_moodle.Controllers.Stream
                 string userName = userManager.GetUserId(User);
                 UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
 
-                bool reserveStatus = await streamService.ReserveStream(streamModel , userModel);
+                
+                List<StreamModel> streamModels = streamService.GetFutureStreams(userModel.Id);
+                
+                //e.g : https://conf.legace.ir/hls/{key}.m3u8
+                string streamBaseUrl = "";
+
+                if(userService.HasRole(userModel , Roles.Admin))
+                {
+                    AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == userModel.Id).FirstOrDefault();
+
+                    if(string.IsNullOrEmpty(adminDetail.streamURL))
+                    {
+                        return BadRequest("شما دسترسی به سرویس همایش هارا ندارید");
+                    }
+
+                    if(streamModels.Count >= adminDetail.streamLimit)
+                    {
+                        return BadRequest("شما حداکثر تعداد همایش خودرا رزرو کرده اید");
+                    }
+
+                    streamBaseUrl = adminDetail.streamURL;
+                }
+
+                if(userService.HasRole(userModel , Roles.Manager))
+                {
+                    SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
+
+                    if(string.IsNullOrEmpty(school.streamURL))
+                    {
+                        return BadRequest("شما دسترسی به سرویس همایش هارا ندارید");
+                    }
+
+                    if(streamModels.Count >= school.streamLimit)
+                    {
+                        return BadRequest("شما حداکثر تعداد همایش خودرا رزرو کرده اید");
+                    }
+                    streamBaseUrl = school.streamURL;
+                }
+
+
+                bool reserveStatus = await streamService.ReserveStream(streamModel , userModel , streamBaseUrl);
 
                 if(reserveStatus)
                     return Ok("ساعت مورد نظر با موفقیت رزرو شد");
@@ -178,6 +219,7 @@ namespace lms_with_moodle.Controllers.Stream
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin + "," + Roles.Manager)]
         public async Task<IActionResult> EditReservedStream([FromBody]StreamModel streamModel)
         {
             try
@@ -223,6 +265,7 @@ namespace lms_with_moodle.Controllers.Stream
         }
     
         [HttpDelete]
+        [Authorize(Roles = Roles.Admin + "," + Roles.Manager)]
         public async Task<IActionResult> RemoveStream(int streamId)
         {
             try
@@ -249,6 +292,7 @@ namespace lms_with_moodle.Controllers.Stream
     
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin + "," + Roles.Manager)]
         public async Task<IActionResult> StartStream(int streamId)
         {
             try

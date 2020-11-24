@@ -104,7 +104,7 @@ class App extends React.Component {
                         <Route path="/meetingResponse/:id" component={MeetingResponse} />
                         <Route path="/ParticipantInfo/:id" component={ParticipantList} />
 
-                        <Route path="/stream/:id" component={Streamer} />
+                        <Route path="/stream" component={Streamer} />
                         <Route path="" component={NoFound} />
                     </Switch>
                 </Router>

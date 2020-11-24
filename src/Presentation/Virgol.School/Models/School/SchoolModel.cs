@@ -22,5 +22,11 @@ public class SchoolModel {
     public string AdobeUrl {get; set;}
     public string bbbURL {get; set;}
     public string bbbSecret {get; set;}
+    public int streamLimit {get; set;}
+
+    ///<summary>
+    ///e.g : https://conf.legace.ir/hls/{key}.m3u8
+    ///</summary>
+    public string streamURL {get; set;}
 
 }

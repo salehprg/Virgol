@@ -76,7 +76,7 @@ namespace Schedule
 
                     if(!string.IsNullOrEmpty(message))
                     {
-                        string[] numbers = {"09154807673" , "09333545494" , "09158030495"};
+                        string[] numbers = {"09154807673" , "09333545494" , "09361207250"};
                         foreach (var number in numbers)
                         {
                             smsApi.SendErrorCollecotr(number , service , message);    

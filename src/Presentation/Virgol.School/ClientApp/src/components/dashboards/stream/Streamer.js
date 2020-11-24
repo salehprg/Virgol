@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactPlayer from 'react-player'
+import { withTranslation } from 'react-i18next';
+import { connect } from "react-redux";
 
 class Streamer extends React.Component {
     render () {
@@ -9,7 +11,7 @@ class Streamer extends React.Component {
             <ReactPlayer
               width="100%"
               height="100%"
-              url={(this.props.match.params.id == 'hls' ? "https://conf.legace.ir/hls/livestream.m3u8" : "https://conf.legace.ir/dash/livestream.m3u8")}
+              url={this.props.activeStream.joinLink}
               playing
               controls
             />
@@ -19,4 +21,11 @@ class Streamer extends React.Component {
     } 
   }
 
-export default Streamer;
+  const mapStateToProps = state => {
+    return {user: state.auth.userInfo ,
+            activeStream : state.streamData.activeStream}
+}
+
+const cwrapped = connect(mapStateToProps, { })(Streamer);
+
+export default withTranslation()(cwrapped);
