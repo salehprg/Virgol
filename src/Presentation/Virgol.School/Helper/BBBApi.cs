@@ -175,9 +175,14 @@ namespace lms_with_moodle.Helper
 
                 string _response = await sendData(data);
 
-                var recordings = JsonConvert.DeserializeObject<RecordsResponse>(_response);
+                if(_response != null)
+                {
+                    var recordings = JsonConvert.DeserializeObject<RecordsResponse>(_response);
 
-                return recordings;
+                    return recordings;
+                }
+
+                return null;
             }
             catch(Exception ex)
             {

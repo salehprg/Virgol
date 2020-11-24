@@ -504,7 +504,12 @@ public class MeetingService {
         
         bool resultEnd = false;
 
-        if(meeting.ServiceType == ServiceType.BBB)
+        if(school == null)
+        {
+            resultEnd = true;
+        }
+
+        if(meeting.ServiceType == ServiceType.BBB && !resultEnd)
         {
             BBBApi bbbApi = new BBBApi(appDbContext);
             if(meeting.Private)
@@ -532,7 +537,7 @@ public class MeetingService {
             }
         }
 
-        if(meeting.ServiceType == ServiceType.AdobeConnect)
+        if(meeting.ServiceType == ServiceType.AdobeConnect && !resultEnd)
         {
             resultEnd = true;
         }

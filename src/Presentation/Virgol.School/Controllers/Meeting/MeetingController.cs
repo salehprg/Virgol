@@ -532,29 +532,42 @@ namespace lms_with_moodle.Controllers
                     meetings.AddRange(appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList());
                 }
 
-                List<RecordInfo> recordsResponses = new List<RecordInfo>();
+                List<RecordedMeeting> recordsResponses = new List<RecordedMeeting>();
                 
                 meetings = meetings.OrderBy(x => x.Id).ToList();
+
                 foreach (var meeting in meetings)
                 {
+                    RecordedMeeting temp = new RecordedMeeting();
+                    temp.meeting = meeting;
+
                     if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.BBB)
                     {
-                        Recordings recordings = (await bBApi.GetMeetingRecords(meeting.MeetingId.ToString())).recordings;
+                        RecordsResponse response = await bBApi.GetMeetingRecords(meeting.MeetingId.ToString());
 
-                        if(recordings != null)
+                        if(response != null)
                         {
-                            List<RecordInfo> records = recordings.recording;
-                            if(records.Count > 0)
-                            {
-                                records[0].name = classSchedule.OrgLessonName;
-                                records[0].url = records[0].playback.format[0].url;
-                                records[0].date = meeting.StartTime;
+                            Recordings recordings = (response).recordings;
 
-                                recordsResponses.AddRange(records);
+                            if(recordings != null)
+                            {
+                                List<RecordInfo> records = recordings.recording;
+                                if(records.Count > 0)
+                                {
+                                    foreach (var record in records)
+                                    {
+                                        record.name = classSchedule.OrgLessonName;
+                                        record.url = record.playback.format[0].url;
+                                        record.date = meeting.StartTime;
+                                    }
+
+                                    temp.recordsInfo.AddRange(records);
+                                }
                             }
                         }
                     }
                     
+                    recordsResponses.Add(temp);
                 }
                 
                     
