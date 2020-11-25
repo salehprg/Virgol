@@ -41,6 +41,7 @@ import PrivateLogin from './login/PrivateLogin';
 import AddGroup from './dashboards/manager/groups/AddGroup';
 import Streamer from './dashboards/stream/Streamer';
 import EditGroup from './dashboards/manager/groups/EditGroup';
+import SessionsList from './dashboards/student/classes/SessionsList';
 
 class App extends React.Component {
 
@@ -92,6 +93,7 @@ class App extends React.Component {
                         
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
+                        <Route path="/sessionsList" component={SessionsList} />
 
                         <Route path="/recordedSessions/:id" component={RecorededSession} />
 

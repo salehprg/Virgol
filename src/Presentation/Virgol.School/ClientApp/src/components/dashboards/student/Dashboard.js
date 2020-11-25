@@ -10,6 +10,7 @@ import Header from "../header/Header";
 import Home from './home/Home'
 import Classes from "./classes/Classes";
 import { connect } from "react-redux";
+import ClassList from "./classes/ClassList";
 
 class StudentDashboard extends React.Component {
 
@@ -73,8 +74,15 @@ class StudentDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
-                        code="classes"
+                        code="schedule"
                         title={this.props.t('schedule')}
+                        icon={layout}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="classes"
+                        title={this.props.t('classes')}
                         icon={layout}
                         changeActive={this.changeActive}
                     />
@@ -85,7 +93,8 @@ class StudentDashboard extends React.Component {
 
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
-                        <Route path={this.props.match.url + "/classes"} component={Classes}/>
+                        <Route path={this.props.match.url + "/schedule"} component={Classes}/>
+                        <Route path={this.props.match.url + "/classes"} component={ClassList}/>
                         <Redirect to="/404" />
                     </Switch>
                 </div>
