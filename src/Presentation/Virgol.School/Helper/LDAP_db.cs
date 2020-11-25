@@ -26,6 +26,7 @@ namespace lms_with_moodle.Helper
             ldapConn.ConnectionTimeout = 5000;
             
         }
+
         public bool CheckStatus()
         {
             try
@@ -35,13 +36,17 @@ namespace lms_with_moodle.Helper
                     ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
                 //Bind function will Bind the user object Credentials to the Server
                 ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);
-
+                
                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
+            }
+            finally
+            {
+                ldapConn.Disconnect();
             }
         }
 
@@ -131,7 +136,7 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                //ldapConn.Disconnect();
+                ldapConn.Disconnect();
             }
         }
 
@@ -166,7 +171,7 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                //ldapConn.Disconnect();
+                ldapConn.Disconnect();
             }
         }
         public bool EditAttribute(string IdNumbr , string attrName , string attrValue)
@@ -200,7 +205,7 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                //ldapConn.Disconnect();
+                ldapConn.Disconnect();
             }
         }
         public bool DeleteEntry(string IdNumber)
@@ -231,7 +236,7 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                //ldapConn.Disconnect();
+                ldapConn.Disconnect();
             }
         }
 
@@ -296,6 +301,10 @@ namespace lms_with_moodle.Helper
                 Console.WriteLine(ex.StackTrace);
                 return null;
             }
+            finally
+            {
+                ldapConn.Disconnect();
+            }
         }
         public bool ChangePassword(string UserName, string newPassword)
         {
@@ -328,55 +337,69 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                //ldapConn.Disconnect();
+                ldapConn.Disconnect();
             }
         }
         
         public bool CheckUserData(string userName)
         {
-            if(!ldapConn.Connected)
-                    ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
-
-            //Bind function will Bind the user object Credentials to the Server
-            ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);       
-            
-            string searchFilter = "(uniqueIdentifier=" + userName + ")";
-                                    
-            ILdapSearchResults lsc=ldapConn.Search(containerName,LdapConnection.ScopeSub,searchFilter,null,false);
-
-            while(lsc.HasMore())
+            try
             {
-                LdapEntry nextEntry = null;
-                try 
+                if(!ldapConn.Connected)
+                        ldapConn.Connect(AppSettings.LDAPServer, AppSettings.LDAPPort);
+
+                //Bind function will Bind the user object Credentials to the Server
+                ldapConn.Bind(AppSettings.LDAPUserAdmin , AppSettings.LDAPPassword);       
+                
+                string searchFilter = "(uniqueIdentifier=" + userName + ")";
+                                        
+                ILdapSearchResults lsc=ldapConn.Search(containerName,LdapConnection.ScopeSub,searchFilter,null,false);
+
+                while(lsc.HasMore())
                 {
-                    nextEntry = lsc.Next(); 
-                } 
-                catch(LdapException e) 
-                { 
-                    Console.WriteLine("Error: " + e.LdapErrorMessage);
-                    Console.WriteLine(e.StackTrace);
-                    //Exception is thrown, go for next entry
-                    continue; 
-                } 
-
-                LdapAttributeSet attributeSet = nextEntry.GetAttributeSet();
-
-                IEnumerator ienum = attributeSet.GetEnumerator();
-
-                string idNumber = "";
-                while(ienum.MoveNext())
-                { 
-                    LdapAttribute attribute = (LdapAttribute)ienum.Current;
-                    if(attribute.Name == "employeeNumber")
+                    LdapEntry nextEntry = null;
+                    try 
                     {
-                        idNumber = attribute.StringValue;
+                        nextEntry = lsc.Next(); 
+                    } 
+                    catch(LdapException e) 
+                    { 
+                        Console.WriteLine("Error: " + e.LdapErrorMessage);
+                        Console.WriteLine(e.StackTrace);
+                        //Exception is thrown, go for next entry
+                        continue; 
+                    } 
+
+                    LdapAttributeSet attributeSet = nextEntry.GetAttributeSet();
+
+                    IEnumerator ienum = attributeSet.GetEnumerator();
+
+                    string idNumber = "";
+                    while(ienum.MoveNext())
+                    { 
+                        LdapAttribute attribute = (LdapAttribute)ienum.Current;
+                        if(attribute.Name == "employeeNumber")
+                        {
+                            idNumber = attribute.StringValue;
+                        }
                     }
+
+                    return !string.IsNullOrEmpty(idNumber);
                 }
 
-                return !string.IsNullOrEmpty(idNumber);
+                return false;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
 
-            return false;
+                return false;
+            }
+            finally
+            {
+                ldapConn.Disconnect();
+            }
         }
         public async Task<bool> AddMail(UserModel user)
         {
@@ -428,7 +451,7 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                //ldapConn.Disconnect();
+                ldapConn.Disconnect();
             }
         }
         
@@ -469,7 +492,7 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                //ldapConn.Disconnect();
+                ldapConn.Disconnect();
             }
         }
         
@@ -558,7 +581,7 @@ namespace lms_with_moodle.Helper
             }
             finally
             {
-                
+                ldapConn.Disconnect();
             }
         }
         
