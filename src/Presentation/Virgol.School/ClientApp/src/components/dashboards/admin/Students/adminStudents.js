@@ -47,6 +47,7 @@ class adminStudents extends React.Component {
                     title={this.props.t('studentsList')}
                     isLoading={this.state.loading}
                     button={() => {}}
+                    searchable
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('schoolName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('fatherPhoneNumber'), this.props.t('completedAccount')]}

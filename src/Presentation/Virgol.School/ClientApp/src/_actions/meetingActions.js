@@ -169,7 +169,6 @@ export const GetRecordList = (scheduleId) => async dispatch => {
         return true
 
     } catch (e) {
-        console.log(e.response)
         dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
 
         return false
@@ -184,7 +183,6 @@ export const CreatePrivateRoom = (roomName , schoolId = 0) => async dispatch => 
         
 
         dispatch({ type: START })
-        console.log(userToken)
         const response = await lms.put(`/Meeting/CreatePrivateRoom?roomName=${roomName}&schoolId=${schoolId}` , null , {
             headers: {
                 authorization: `Bearer ${userToken}`
@@ -199,7 +197,6 @@ export const CreatePrivateRoom = (roomName , schoolId = 0) => async dispatch => 
 
     } catch (e) {
 
-        console.log(e.response)
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
 

@@ -5,7 +5,7 @@ import getColor from "../../../../assets/colors";
 class RecentClassDetail extends React.Component {
 
     render (){
-        const { text,day , startTime , endTime , schoolName , className , onStart , onEnd , joinable } = this.props
+        const { serviceType, text,day , startTime , endTime , schoolName , className , onStart , onEnd , joinable } = this.props
 
         return (
             <div className="w-full py-2 mt-6 border-b border-grayish">
@@ -15,10 +15,11 @@ class RecentClassDetail extends React.Component {
                 </div>
                 <div className="w-full flex flex-row justify-between items-center">
 
-                {(joinable ? 
+                {(!joinable ? 
                     <div className="flex flex-wrap flex-row-reverse justify-start items-center">
-                        <button onClick={() => onStart()} className={`px-6 py-1 ml-2 mb-2 rounded-full text-white bg-${getColor(3)}`}>
+                        <button onClick={() => onStart()} className={`px-6 py-1 ml-2 mb-2 flex flex-row-reverse items-center justify-center rounded-full text-white bg-${getColor(3)}`}>
                             {this.props.t('enterClass')}
+                            <img className="w-6 mx-2" src={serviceType === 'adobe' ? '/Connect.png' : '/BBB.png'} />
                         </button>
                     </div>
                 :

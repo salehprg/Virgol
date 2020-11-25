@@ -38,7 +38,7 @@ class RecorededSession extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     button={() => null}
-                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date'), this.props.t('time'), '', '', this.props.t('ParticipantionStatus')]}
+                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date'), 'ضبط', this.props.t('ParticipantionStatus')]}
                     body={() => {
                         return (
 
@@ -53,14 +53,13 @@ class RecorededSession extends React.Component {
                                         <tr>
                                             <td className="py-4">{index + 1}</td>
                                             <td className="py-4">{x.name} - {this.props.t('session')} {index + 1}</td>
-                                            <td className="py-4">1399/5/4</td>
-                                            <td className="py-4">8 تا 9</td>
+                                            <td className="py-4">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
                                             <td className="py-4">
                                             <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
                                             <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
                                             </td>
-                                            <td>
-                                                {users('w-8 text-white')}
+                                            <td onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
+                                                {users('w-8 cursor-pointer text-white')}
                                             </td>
                                         </tr>
                                     )
