@@ -45,6 +45,7 @@ class adminTeachers extends React.Component {
             <div className="w-full mt-10">
                 <PlusTable
                     title={this.props.t('teachersList')}
+                    searchable
                     isLoading={this.state.loading}
                     button={() => {}}
                     query={this.state.query}

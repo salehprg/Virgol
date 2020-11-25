@@ -117,7 +117,6 @@ export const ReserveStream = (token, formValues) => async dispatch => {
         dispatch({ type: Type.ReserveStream, payload: response.data });
 
     } catch (e) {
-        console.log(e.response.data)
 
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))

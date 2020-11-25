@@ -38,9 +38,9 @@ class StreamInfo extends React.Component {
     }
 
     setStartTime = ({ value }) => {
-        console.log(value._d);
-        console.log(value._d.toJSON());
-        console.log(value._d.toString());
+        // console.log(value._d);
+        // console.log(value._d.toJSON());
+        // console.log(value._d.toString());
 
         this.setState({startTime : value._d.toJSON() })
     }

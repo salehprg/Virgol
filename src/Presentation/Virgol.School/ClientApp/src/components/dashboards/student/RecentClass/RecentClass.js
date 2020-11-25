@@ -36,6 +36,7 @@ class RecentClass extends React.Component {
                                 (x.started ? 
                                     <RecentClassDetail
                                         text={x.meetingName}
+                                        serviceType={x.serviceType}
                                         schoolName={x.schoolName}
                                         className={x.className}
                                         onStart={() => this.props.onStart(x.meetingId)}
