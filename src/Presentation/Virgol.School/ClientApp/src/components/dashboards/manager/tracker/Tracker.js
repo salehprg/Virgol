@@ -55,7 +55,7 @@ class Tracker extends React.Component {
         })
         
         this.props.acticeMeeting.map((classs , index) => {
-            schedules.push({i: 'c' + classs[0].classId, name: this.props.t('class') + classs[0].className,x: 33 , y: index + 1, w: 2, h: 1 , static: true})
+            schedules.push({i: 'c' + classs[0].classId, name: this.props.t('class') + " " + classs[0].className,x: 33 , y: index + 1, w: 2, h: 1 , static: true})
         })
                 
         this.setState({lessons : schedules})

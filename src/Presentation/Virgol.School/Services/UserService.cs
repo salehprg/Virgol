@@ -238,20 +238,37 @@ public class UserService {
 #endregion
 
 #region SyncData
-    public async Task<List<UserModel>> SyncUserData(List<UserModel> users)
+    public async Task<List<UserModel>> SyncUserData(List<UserModel> users , bool moodle = false)
     {
         List<UserModel> updatedUser = new List<UserModel>();
+
+        MoodleApi moodleApi = new MoodleApi();
 
         foreach (var user in users)
         {
             try
             {
-                if(!ldap.CheckUserData(user.UserName))
+                if(!ldap.CheckUserData(user.UserName) && !moodle)
                 {
                     await ldap.AddUserToLDAP(user , false , user.MelliCode);
                     updatedUser.Add(user);
                 }
-            
+
+                if(moodle)
+                {
+                    int moodleid = await moodleApi.GetUserId(user.MelliCode);
+                    if(moodleid != -1 && user.Moodle_Id != moodleid)
+                    {
+                        user.Moodle_Id = moodleid;
+                        updatedUser.Add(user);
+                    }
+                    else if(moodleid == -1)
+                    {
+                        moodleid = await moodleApi.CreateUser(user);
+                        user.Moodle_Id = moodleid;
+                        updatedUser.Add(user);
+                    }
+                }
             }
             catch(Exception ex)
             {
@@ -259,6 +276,12 @@ public class UserService {
                 Console.WriteLine(ex.StackTrace);
                 return null;
             }
+        }
+
+        if(moodle)
+        {
+            appDbContext.Users.UpdateRange(updatedUser);
+            await appDbContext.SaveChangesAsync();
         }
 
        // appDbContext.Users.UpdateRange(users);

@@ -112,7 +112,7 @@ class TrackerLessonInfo extends React.Component {
                         {(this.props.lessonInfo.lessonDetail.meetingId ? 
                             <>
                                 <p className="text-center text-greenish text-xl my-4 rounded-full">{this.props.t('loading')}</p>
-                                <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.bbB_MeetingId)} >{this.props.t('enterOnlineClass')}</button>
+                                <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.meetingId)} >{this.props.t('enterOnlineClass')}</button>
                             </>
                         : 
                         null

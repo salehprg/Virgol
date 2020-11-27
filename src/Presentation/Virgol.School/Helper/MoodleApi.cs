@@ -32,23 +32,33 @@ namespace lms_with_moodle.Helper
 
         async Task<HttpResponseModel> sendData (string data)
         {
-            Uri uri = new Uri (BaseUrl + data);
-            HttpResponseMessage response = await client.GetAsync(uri);  // Send data then get response
-            HttpResponseModel model = new HttpResponseModel();
-            
-            if (response.IsSuccessStatusCode)  
-            {  
-                string content = await response.Content.ReadAsStringAsync ();
-                model.Message = content;
-                model.Code = response.StatusCode;
+            try
+            {
+                Uri uri = new Uri (BaseUrl + data);
+                HttpResponseMessage response = await client.GetAsync(uri);  // Send data then get response
+                HttpResponseModel model = new HttpResponseModel();
+                
+                if (response.IsSuccessStatusCode)  
+                {  
+                    string content = await response.Content.ReadAsStringAsync ();
+                    model.Message = content;
+                    model.Code = response.StatusCode;
 
-                return model;
-            }  
-            else  
-            {  
-                Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);  
+                    return model;
+                }  
+                else  
+                {  
+                    Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);  
+                    return null;
+                }  
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
                 return null;
-            }  
+            }
         }
 
 
@@ -114,7 +124,7 @@ namespace lms_with_moodle.Helper
 
                 string information = "";
 
-                information += "&users[0][username]=" + user.UserName;
+                information += "&users[0][username]=" + user.UserName.ToLower();
                 information += "&users[0][auth]=ldap";
                 information += "&users[0][firstname]=" + user.FirstName;
                 information += "&users[0][lastname]=" + user.LastName;
@@ -278,6 +288,11 @@ namespace lms_with_moodle.Helper
                     }
 
                     HttpResponseModel Response = await sendData(data + information);
+                    if(Response.Message != "null")
+                    {
+                        Console.WriteLine(Response.Message);
+                        Console.WriteLine(information);
+                    }
                 }
                 
                 return true;
@@ -568,6 +583,30 @@ namespace lms_with_moodle.Helper
             return courseDetail[0];
         }
         
+        public async Task<bool> CourseExist (int courseId)
+        {
+            try
+            {
+                if(courseId == 0)
+                    return false;
+
+                CourseDetail detail = await GetCourseDetail(courseId);
+                if(detail != null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return false;
+            }
+        }
+        
         #endregion
         //-----------------------
         
@@ -619,6 +658,29 @@ namespace lms_with_moodle.Helper
             }
         }
 
+        public async Task<bool> CategoryExist (int categoryId)
+        {
+            try
+            {
+                if(categoryId == 0)
+                    return false;
+
+                CategoryDetail detail = await getCategoryDetail(categoryId);
+                if(detail != null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return false;
+            }
+        }
 
         public class ErrorModel {
             public string errorcode {get; set;}
