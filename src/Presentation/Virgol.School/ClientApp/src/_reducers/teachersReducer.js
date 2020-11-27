@@ -3,7 +3,6 @@ import {LOGOUT} from "../_actions/authTypes";
 
 const INITIAL_STATE = {
     classBook : [],
-    scheduleList : [],
     schoolList : []
 }
 
@@ -13,9 +12,6 @@ export default ( state = INITIAL_STATE, action ) => {
 
         case Type.GetClassBook: 
             return { ...state, classBook: action.payload}
-
-        case Type.GetScheduleList: 
-            return { ...state, scheduleList: action.payload}
 
         case Type.GetSchoolList: 
             return { ...state, schoolList: action.payload}

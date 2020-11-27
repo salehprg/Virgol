@@ -1,7 +1,7 @@
 import React from "react";
 import { withTranslation } from 'react-i18next';
 import { connect } from "react-redux";
-import {GetScheduleList } from '../../../../_actions/teacherActions'
+import {GetGroupedSchedule } from '../../../../_actions/classScheduleActions'
 import ClassCard from "./ClassCard";
 
 class ClassList extends React.Component {
@@ -10,12 +10,12 @@ class ClassList extends React.Component {
 
     componentDidMount = async () => {
         this.setState({ loading: true })
-        await this.props.GetScheduleList(this.props.user.token )
+        await this.props.GetGroupedSchedule(this.props.user.token )
         this.setState({ loading: false })
 
         const _classesLists = [];
 
-        this.props.schedules.map(day => {
+        this.props.groupedSchedule.map(day => {
             if(day && day.length > 0)
             {
                 (day.map(x => {
@@ -31,7 +31,7 @@ class ClassList extends React.Component {
         return (
             <div className="grid my-8 teacher-classes-cards">
                 {(this.state.classesLists ? 
-                this.props.schedules.map(x => {
+                this.props.groupedSchedule.map(x => {
                     return(
                         <ClassCard
                             lessonId={x.lessonId}
@@ -50,8 +50,8 @@ class ClassList extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user : state.auth.userInfo  , schedules : state.teacherData.scheduleList}
+    return {user : state.auth.userInfo  , groupedSchedule : state.schedules.groupedSchedule}
 }
-const cwrapped = connect(mapStateToProps , {GetScheduleList })(ClassList);
+const cwrapped = connect(mapStateToProps , {GetGroupedSchedule })(ClassList);
 
 export default withTranslation()(cwrapped);

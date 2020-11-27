@@ -5,7 +5,10 @@ import { withTranslation } from 'react-i18next';
 import { connect } from "react-redux";
 import Fieldish from '../../field/Fieldish';
 import Tablish from '../tables/Tablish';
-import {GetEndedStreams , GetFutureStreams , GetCurrentStream , GetRoles , ReserveStream} from '../../../_actions/streamActions';
+import {GetEndedStreams , GetFutureStreams , GetCurrentStream 
+        , GetRoles , ReserveStream , RemoveStream} from '../../../_actions/streamActions';
+import { trash } from '../../../assets/icons';
+import DeleteConfirm from '../../modals/DeleteConfirm';
 
 class StreamInfo extends React.Component {
 
@@ -69,11 +72,32 @@ class StreamInfo extends React.Component {
         this.componentDidMount()
     }
 
+    showDelete = (id) => {
+        this.setState({showDeleteModal : true , streamId : id})
+    }
+
+    deleteStream = async () => {
+        await this.props.RemoveStream(this.props.user.token , this.state.streamId)
+        this.setState({showDeleteModal : false , streamId : 0})
+
+        this.componentDidMount()
+    }
+
     render() {
         return (
             <div className="w-full overflow-y-auto mt-10 flex flex-row flex-wrap items-center justify-evenly">
+                {this.state.showDeleteModal ? 
+                    <DeleteConfirm
+                        title={this.props.t('deleteConfirm')}
+                        confirm={this.deleteStream}
+                        cancel={() => this.setState({ showDeleteModal: false, streamId: 0 })}
+                    /> 
+                    : 
+                    null
+                }
                 <div className="bg-dark-blue rounded-lg w-full max-w-350 h-80 my-4 mx-2 px-3 py-2">
                     <p className="text-right text-white mb-4"> {this.props.t('finishedConferences')} </p>
+                    
                     <Tablish 
                         headers={[this.props.t('name'), this.props.t('date')]}
                         body={() => {
@@ -82,6 +106,9 @@ class StreamInfo extends React.Component {
                                     <tr key={x.id}>
                                         <td className="py-4"> {x.streamName} </td>
                                         <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                        <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                            {trash('w-6 text-white ')}
+                                        </td>
                                     </tr>
                                 );
                             })
@@ -98,6 +125,9 @@ class StreamInfo extends React.Component {
                                     <tr key={x.id}>
                                         <td className="py-4"> {x.streamName} </td>
                                         <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                        <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                            {trash('w-6 text-white ')}
+                                        </td>
                                     </tr>
                                 );
                             })
@@ -167,6 +197,8 @@ const mapStateToProps = state => {
                                         , currentStream: state.streamData.currentStream}
 }
 
-const cwrapped = connect(mapStateToProps, { GetEndedStreams , GetFutureStreams , ReserveStream , GetRoles , GetCurrentStream })(StreamInfo);
+const cwrapped = connect(mapStateToProps, { GetEndedStreams , GetFutureStreams , 
+                                            ReserveStream , GetRoles , GetCurrentStream ,
+                                            RemoveStream })(StreamInfo);
 
 export default withTranslation()(cwrapped);

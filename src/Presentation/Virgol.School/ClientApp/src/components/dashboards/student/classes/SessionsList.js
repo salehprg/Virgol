@@ -10,11 +10,11 @@ class RecorededSession extends React.Component {
 
     state = { loading: false, query: '' }
 
-    // componentDidMount = () => {
-    //     var scheduleId = this.props.match.params.id;
+    componentDidMount = () => {
+        var scheduleId = this.props.match.params.id;
 
-    //     this.props.GetRecordList(parseInt(scheduleId))
-    // }
+        this.props.GetRecordList(parseInt(scheduleId))
+    }
 
     changeQuery = (query) => {
         this.setState({ query })
@@ -38,7 +38,7 @@ class RecorededSession extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     button={() => null}
-                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date'), 'ضبط', this.props.t('ParticipantionStatus')]}
+                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date'), 'ضبط' , 'وضعیت غیبت']}
                     body={() => {
                         return (
 
@@ -52,15 +52,17 @@ class RecorededSession extends React.Component {
                                     return (
                                         <tr>
                                             <td className="py-4">{index + 1}</td>
-                                            <td className="py-4">{x.name} - {this.props.t('session')} {index + 1}</td>
-                                            <td className="py-4">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
+                                            <td className="py-4">{x.meeting.meetingName} - {this.props.t('session')} {index + 1}</td>
+                                            <td className="py-4">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
                                             <td className="py-4">
-                                            <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
-                                            <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
+                                            {(x.recordsInfo ?
+                                                <>
+                                                    <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
+                                                    <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
+                                                </>
+                                            : null )}
                                             </td>
-                                            <td onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
-                                                {users('w-8 cursor-pointer text-white')}
-                                            </td>
+                                            <td className="py-4">{x.participant === null || !x.participant.isPresent ? "غایب" : "حاضر"}</td>
                                         </tr>
                                     )
                                 }))

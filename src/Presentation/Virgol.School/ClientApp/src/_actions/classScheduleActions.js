@@ -21,6 +21,32 @@ export const getClassSchedule = (token, classId) => async dispatch => {
     }
 }
 
+export const GetGroupedSchedule = (token , classId = 0) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        
+        const response = await lms.get(`/ClassSchedule/GetGroupedSchedule?classId=${classId}` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.GetGroupedSchedule, payload: response.data })
+
+        return true
+
+    } catch (e) 
+    {
+
+        dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
+        return false
+    }
+
+}
+
+
 export const getClassLessons = (token, classId) => async dispatch => {
 
     try {

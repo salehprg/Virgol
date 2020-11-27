@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using lms_with_moodle.Helper;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,30 @@ public class UserService {
         appDbContext = _appDbContext;
        // moodleApi = new MoodleApi();
         ldap = new LDAP_db(_appDbContext);
+    }
+
+    public UserModel GetUserModel (ClaimsPrincipal User)
+    {
+        try
+        {
+            string idNumber = userManager.GetUserId(User);
+            UserModel userModel = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault();
+
+            if(userModel != null)
+            {
+                return userModel;
+            }
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            return null;
+            
+        }
     }
 
     ///<summary>

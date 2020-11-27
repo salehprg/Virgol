@@ -165,3 +165,24 @@ export const JoinStream = (token , streamId) => async dispatch => {
     }
 
 }
+
+export const RemoveStream = (token , streamId) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        const response = await lms.delete(`/Stream/RemoveStream?streamId=${streamId}` ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success("همایش با موفقیت حذف شد"))
+        
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطا در حذف همایش"))
+    }
+
+}
+

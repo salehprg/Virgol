@@ -93,7 +93,7 @@ class App extends React.Component {
                         
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
-                        <Route path="/sessionsList" component={SessionsList} />
+                        <Route path="/sessionsList/:id" component={SessionsList} />
 
                         <Route path="/recordedSessions/:id" component={RecorededSession} />
 

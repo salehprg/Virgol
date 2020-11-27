@@ -4,7 +4,8 @@ import {LOGOUT} from "../_actions/authTypes";
 const INITIAL_STATE = {
     classSchedules : [],
     mixedClassSchedules : [],
-    classLessons : []
+    classLessons : [],
+    groupedSchedule : []
 }
 
 export default ( state = INITIAL_STATE, action ) => {
@@ -18,6 +19,10 @@ export default ( state = INITIAL_STATE, action ) => {
 
         case Type.getTeacherSchedule:
             return { ...state, classSchedules: action.payload };
+
+        case Type.GetGroupedSchedule: 
+            return { ...state, groupedSchedule: action.payload}
+
     
         case Type.AddClassSchedule:
             return { ...state, classSchedules: [...state.classSchedules, action.payload] };

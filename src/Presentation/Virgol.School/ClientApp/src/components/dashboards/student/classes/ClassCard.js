@@ -20,7 +20,7 @@ class ClassCard extends React.Component {
                 <p onClick={() => this.ssoLogin()} className="text-center cursor-pointer text-white text-2xl font-vb">{title}</p>
                 <p className="text-white text-center">{school + " - " + nameOfClass}</p>
                 <div onClick={(e) => e.stopPropagation()} className="flex flex-row justify-evenly mt-6">
-                <Link className="w-5/12 py-1 text-center text-white" to={`/sessionsList/`}>{this.props.t('sessionList')}</Link>
+                <Link className="w-5/12 py-1 text-center text-white" to={`/sessionsList/${scheduleId}`}>{this.props.t('sessionList')}</Link>
                 <a className="w-5/12 py-1 text-center text-white" href="#" target="_blank" rel="noopener noreferrer">{this.props.t('activities')}</a>
                 </div>
             </div>

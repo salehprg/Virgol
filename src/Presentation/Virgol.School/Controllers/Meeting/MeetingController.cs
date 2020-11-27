@@ -514,18 +514,29 @@ namespace lms_with_moodle.Controllers
 #region Recordings
 
         [HttpGet]
+        [Authorize(Roles = Roles.Student + "," + Roles.Teacher)]
         [ProducesResponseType(typeof(List<Meeting>), 200)]
         public async Task<IActionResult> GetRecordList(int scheduleId) 
         {
             try
             {
-                BBBApi bBApi = new BBBApi(appDbContext , scheduleId);
+                
                 List<Meeting> meetings = new List<Meeting>();
 
                 ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
 
                 //Get schedule ids that same lessonId and TeacherId to specific classSchedule
-                List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.TeacherId == classSchedule.TeacherId && x.LessonId == classSchedule.LessonId && x.ClassId == classSchedule.ClassId).ToList();
+                List<ClassScheduleView> schedules = new List<ClassScheduleView>();
+                UserModel userModel = UserService.GetUserModel(User);
+
+                if(UserService.HasRole(userModel , Roles.Teacher))
+                {
+                    schedules = appDbContext.ClassScheduleView.Where(x => x.TeacherId == classSchedule.TeacherId && x.LessonId == classSchedule.LessonId && x.ClassId == classSchedule.ClassId).ToList();
+                }
+                else
+                {
+                    schedules = appDbContext.ClassScheduleView.Where(x => x.LessonId == classSchedule.LessonId && x.ClassId == classSchedule.ClassId).ToList();
+                }
 
                 foreach (var schedule in schedules)
                 {
@@ -541,8 +552,14 @@ namespace lms_with_moodle.Controllers
                     RecordedMeeting temp = new RecordedMeeting();
                     temp.meeting = meeting;
 
+                    ParticipantInfo participantInfo = appDbContext.ParticipantInfos.Where(x => x.UserId == userModel.Id && x.MeetingId == meeting.Id).FirstOrDefault();
+                    temp.participant = participantInfo;
+                    
+
                     if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.BBB)
                     {
+                        BBBApi bBApi = new BBBApi(appDbContext , scheduleId);
+
                         RecordsResponse response = await bBApi.GetMeetingRecords(meeting.MeetingId.ToString());
 
                         if(response != null)

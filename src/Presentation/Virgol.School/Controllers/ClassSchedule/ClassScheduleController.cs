@@ -100,9 +100,9 @@ namespace lms_with_moodle.Controllers
                                 int checkCount = meeting.CheckCount;
                                 ParticipantInfo participantInfo = appDbContext.ParticipantInfos.Where(x => x.UserId == userId && x.MeetingId == meeting.Id).FirstOrDefault();
 
-                                int presentCount = (participantInfo != null ? participantInfo.PresentCount : 0);
-
-                                if(((float)presentCount / (float)checkCount) * 100 < 70)
+                               // int presentCount = (participantInfo != null ? participantInfo.PresentCount : 0);
+                                
+                                if(participantInfo == null || (participantInfo != null && !participantInfo.IsPresent))
                                 {
                                     absenceCount++;
                                 }
@@ -128,6 +128,54 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Authorize( Roles = Roles.Teacher + "," + Roles.Student)]
+        [ProducesResponseType(typeof(List<CourseDetail>), 200)]
+        public IActionResult GetGroupedSchedule(int classId)
+        {
+            try
+            {   
+                string userName = userManager.GetUserId(User);
+                int userId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                //We set IdNumber as userId in Token
+                
+                List<ClassScheduleView> classScheduleViews = new List<ClassScheduleView>();
+
+                if(classId == 0)
+                {
+                    //reach here when request from teacher
+                    classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.TeacherId == userId).ToList();
+                }
+                else
+                {
+                    classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == classId).ToList();
+                }
+
+                var groupedSchedule = new List<ClassScheduleView>();
+
+                foreach (var schedule in classScheduleViews)
+                {
+                    //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    int moodleId = 0;
+                    schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
+
+                    if(groupedSchedule.Where(x => x.ClassId == schedule.ClassId && x.LessonId == schedule.LessonId).FirstOrDefault() == null)
+                    {
+                        groupedSchedule.Add(schedule);
+                    }
+                }
+
+                
+
+                return Ok(groupedSchedule);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+ 
 
         [HttpGet]
         [ProducesResponseType(typeof(List<GradeModel>), 200)]

@@ -460,7 +460,7 @@ namespace lms_with_moodle.Controllers
 
                         userDetail = new {
                             school,
-                            classDetail.ClassName,
+                            classDetail,
                             grade.GradeName
                         };  
                     }
@@ -535,15 +535,6 @@ namespace lms_with_moodle.Controllers
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                         ) ;
 
-                    StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == userInformation.Id).FirstOrDefault();
-                    int baseId = (studentDetail != null ? studentDetail.BaseId : -1);
-
-                    CategoryDetail category = new CategoryDetail();
-                    if(baseId != -1)
-                    {
-                        //category = await moodleApi.getCategoryDetail(baseId);
-                    }
-
                     bool completedProfile = userInformation.LatinFirstname != null && userInformation.LatinFirstname != null;
                     
                     string UserType = (userRoleNames.Count > 1 ? userRoleNames.Where(x => x != Roles.User).FirstOrDefault() : userRoleNames.FirstOrDefault());
@@ -567,9 +558,7 @@ namespace lms_with_moodle.Controllers
                     return Ok(new
                     {
                         UserType = UserType,
-                        category,
                         completedProfile,
-                        BaseId = baseId,
                         userInformation,
                         userDetail,
                         token = new JwtSecurityTokenHandler().WriteToken(token),
