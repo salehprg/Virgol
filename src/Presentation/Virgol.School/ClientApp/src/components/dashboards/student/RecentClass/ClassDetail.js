@@ -15,7 +15,7 @@ class RecentClassDetail extends React.Component {
                 </div>
                 <div className="w-full flex flex-row justify-between items-center">
 
-                {(!joinable ? 
+                {(joinable ? 
                     <div className="flex flex-wrap flex-row-reverse justify-start items-center">
                         <button onClick={() => onStart()} className={`px-6 py-1 ml-2 mb-2 flex flex-row-reverse items-center justify-center rounded-full text-white bg-${getColor(3)}`}>
                             {this.props.t('enterClass')}
