@@ -2,13 +2,10 @@ import Axios from "axios";
 import { withTranslation } from 'react-i18next'
 import React, { createRef } from "react";
 import { connect } from "react-redux";
-<<<<<<< HEAD
 import {MoodleSSO} from "../../_actions/classScheduleActions";
 import {loading, logo} from "../../assets/icons";
-=======
 import lms from "../../apis/lms";
 import {chevrons, loading, logo} from "../../assets/icons";
->>>>>>> 8f42e85af23d97ecb345a12205ae9fa72072d0de
 
 class LoginSSO extends React.Component {
 
