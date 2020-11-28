@@ -143,6 +143,31 @@ export const DeleteClassSchedule = (token, scheduleId) => async dispatch => {
 
 }
 
+
+export const MoodleSSO = (token, scheduleId , userPassword) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        const response = await lms.post(`/ClassSchedule/MoodleSSO?scheduleId=${scheduleId}&userPassword=${userPassword}`, null ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success("درحال ورود به مودل"))
+
+        return true
+
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+
+        return false
+    }
+
+}
+
 //#region Mixed Schedules
 
 export const GetMixedSchedules = (token) => async dispatch => {

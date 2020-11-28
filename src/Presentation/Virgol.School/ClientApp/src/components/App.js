@@ -70,7 +70,8 @@ class App extends React.Component {
                 <Router history={history}>
                     <Switch>
                         <Route path="/" exact component={Login} />
-                        <Route path="/SSO" exact component={LoginSSO} />
+                        <Route path="/SSO/:schedulId" exact component={LoginSSO} />
+                        <Route path="/SSO?:errorcode" exact component={LoginSSO} />
                         <Route path="/PrivateClass/:id" exact component={PrivateLogin} />
 
                         <Route path="/a" component={AdminDashboard} />  

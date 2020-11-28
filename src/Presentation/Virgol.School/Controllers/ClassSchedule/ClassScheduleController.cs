@@ -30,6 +30,7 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
         private readonly ClassScheduleService classScheduleService;
+        private readonly UserService userService;
 
         //MoodleApi moodleApi;
         
@@ -47,6 +48,7 @@ namespace lms_with_moodle.Controllers
 
             //classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
             classScheduleService = new ClassScheduleService(appDbContext);
+            userService = new UserService(userManager , appDbContext);
 
             
         }
@@ -536,6 +538,72 @@ namespace lms_with_moodle.Controllers
         
 #endregion   
 
+#region Moodle
+
+    [HttpPost]
+    public async Task<IActionResult> MoodleSSO(int scheduleId , string userPassword)
+    {
+        try
+        {
+            UserModel userModel = userService.GetUserModel(User);
+
+            LDAP_db ldap = new LDAP_db(appDbContext);
+            MoodleApi moodle = new MoodleApi();
+            ClassScheduleView scheduleVW = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
+
+            bool isTeacher = userService.HasRole(userModel , Roles.Teacher);
+
+            if(!ldap.CheckUserData(userModel.UserName))
+            {
+                await ldap.AddUserToLDAP(userModel , isTeacher , userPassword);
+            }
+
+            int moodleId = await moodle.GetUserId(userModel.MelliCode);
+            if(moodleId == -1)
+            {
+                moodleId = await moodle.CreateUser(userModel);
+                userModel.Moodle_Id = moodleId;
+            }
+
+            List<EnrolUser> enrolsData = new List<EnrolUser>();
+            List<School_Lessons> school_Lessons = appDbContext.School_Lessons.Where(x => x.School_Id == scheduleVW.School_Id && x.classId == scheduleVW.ClassId).ToList();
+
+            foreach (var schoolLesson in school_Lessons)
+            {
+                LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == schoolLesson.Lesson_Id).FirstOrDefault();
+                if(lesson != null)
+                {
+                    EnrolUser enrolInfo = new EnrolUser();
+                    enrolInfo.lessonId = schoolLesson.Moodle_Id;
+                    enrolInfo.UserId = userModel.Moodle_Id;
+                    enrolInfo.RoleId = (isTeacher ? 3 : 5);
+
+                    enrolsData.Add(enrolInfo);
+                }
+            }
+
+            if(moodleId != userModel.Moodle_Id)
+            {
+                appDbContext.Users.Update(userModel);
+                await appDbContext.SaveChangesAsync();
+            }
+
+            await moodle.AssignUsersToCourse(enrolsData);
+
+            return Ok(true);
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            return BadRequest(false);
+            
+        }
+    }
+
+#endregion
 
     }
 }

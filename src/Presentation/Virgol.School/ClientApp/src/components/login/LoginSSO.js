@@ -2,7 +2,7 @@ import Axios from "axios";
 import { withTranslation } from 'react-i18next'
 import React, { createRef } from "react";
 import { connect } from "react-redux";
-import lms from "../../apis/lms";
+import {MoodleSSO} from "../../_actions/classScheduleActions";
 import {loading, logo} from "../../assets/icons";
 
 class LoginSSO extends React.Component {
@@ -18,10 +18,15 @@ class LoginSSO extends React.Component {
 
     formRef = createRef();
 
-    componentDidMount() {
+    componentDidMount = async () => {
+
+        const result = await this.props.MoodleSSO(this.props.user.token , this.props.match.params.schedulId , localStorage.getItem('userPassword'))
         var bodyFormData = new FormData();
 
-        this.formRef.current.submit()
+        if(result)
+        {
+            this.formRef.current.submit()
+        }
 
         // bodyFormData.append('username', 'admin');
         // bodyFormData.append('password', 'yK!@#PwuVg2zzVv');
@@ -32,14 +37,14 @@ class LoginSSO extends React.Component {
         return (
             <form ref={this.formRef} className="text-center" action={process.env.REACT_APP_MOODLE_URL} method="POST"  >
                 <input
-                    hidden="true"
+                    hidden={true}
                     name="username"
                     type="text"
                     placeholder={this.props.t('username')}
                     value={this.props.user.userInformation.userName}
                 />
                 <input
-                    hidden="true"
+                    hidden={true}
                     name="password"
                     type="text"
                     placeholder={this.props.t('password')}
@@ -55,6 +60,6 @@ const mapStateToProps = state => {
     return {user : state.auth.userInfo}
 }
 
-const cwrapped = connect(mapStateToProps)(LoginSSO);
+const cwrapped = connect(mapStateToProps , {MoodleSSO})(LoginSSO);
 
 export default withTranslation()(cwrapped);

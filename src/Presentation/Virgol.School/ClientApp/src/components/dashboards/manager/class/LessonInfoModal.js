@@ -120,7 +120,7 @@ class LessonInfoModal extends React.Component {
                                     null
                             )}
 
-                            <button onClick={() => history.push("/SSO")} className="relative bg-greenish rounded-full text-white cursor-pointer px-3 py-2 mx-2 sm:my-0 my-2">
+                            <button onClick={() => history.push("/SSO/" + this.props.lessonInfo.lessonDetail.id)} className="relative bg-greenish rounded-full text-white cursor-pointer px-3 py-2 mx-2 sm:my-0 my-2">
                                 {this.props.t('enterLessonActivities')}
                             </button>
 
