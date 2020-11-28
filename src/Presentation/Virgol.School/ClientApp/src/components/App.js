@@ -42,6 +42,7 @@ import AddGroup from './dashboards/manager/groups/AddGroup';
 import Streamer from './dashboards/stream/Streamer';
 import EditGroup from './dashboards/manager/groups/EditGroup';
 import SessionsList from './dashboards/student/classes/SessionsList';
+import EditStream from './dashboards/stream/EditStream';
 
 class App extends React.Component {
 
@@ -107,6 +108,7 @@ class App extends React.Component {
                         <Route path="/ParticipantInfo/:id" component={ParticipantList} />
 
                         <Route path="/stream" component={Streamer} />
+                        <Route path="/editStream/:id" component={EditStream} />
                         <Route path="" component={NoFound} />
                     </Switch>
                 </Router>

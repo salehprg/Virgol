@@ -7,8 +7,9 @@ import Fieldish from '../../field/Fieldish';
 import Tablish from '../tables/Tablish';
 import {GetEndedStreams , GetFutureStreams , GetCurrentStream 
         , GetRoles , ReserveStream , RemoveStream} from '../../../_actions/streamActions';
-import { trash } from '../../../assets/icons';
+import { edit, trash } from '../../../assets/icons';
 import DeleteConfirm from '../../modals/DeleteConfirm';
+import history from '../../../history';
 
 class StreamInfo extends React.Component {
 
@@ -106,9 +107,9 @@ class StreamInfo extends React.Component {
                                     <tr key={x.id}>
                                         <td className="py-4"> {x.streamName} </td>
                                         <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
-                                        <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                        {/* <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                             {trash('w-6 text-white ')}
-                                        </td>
+                                        </td> */}
                                     </tr>
                                 );
                             })
@@ -127,6 +128,9 @@ class StreamInfo extends React.Component {
                                         <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
                                         <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                             {trash('w-6 text-white ')}
+                                        </td>
+                                        <td onClick={() => history.push(`/editStream/${x.id}`)} className="cursor-pointer">
+                                            {edit('w-6 text-white ')}
                                         </td>
                                     </tr>
                                 );
