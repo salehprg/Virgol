@@ -227,27 +227,32 @@ namespace lms_with_moodle.Controllers.Stream
                 if(string.IsNullOrEmpty(streamModel.StreamName.Trim()) || streamModel.Id == 0)
                     return BadRequest("اطلاعات به درستی وارد نشده است");
 
-                streamModel.StartTime = MyDateTime.ConvertToServerTime(streamModel.StartTime);
+                StreamModel oldStream = appDbContext.Streams.Where(x => x.Id == streamModel.Id).FirstOrDefault();
 
-                streamModel.EndTime = streamModel.StartTime.AddMinutes(streamModel.duration);
+                oldStream.allowedUsers = streamModel.allowedUsers;
+                oldStream.StreamName = streamModel.StreamName;
+
+                oldStream.StartTime = MyDateTime.ConvertToServerTime(streamModel.StartTime);
+                oldStream.duration = streamModel.duration;
+                oldStream.EndTime = oldStream.StartTime.AddMinutes(oldStream.duration);
                 
-                if(streamModel.StartTime >= streamModel.EndTime || streamModel.StartTime < MyDateTime.Now())
+                if(oldStream.StartTime >= oldStream.EndTime || oldStream.StartTime < MyDateTime.Now())
                     return BadRequest("بازه انتخاب شده برای زمان رزرو صحیح نمیباشد");
                     
-                bool interupt = streamService.CheckInterupt(streamModel.StartTime , streamModel.EndTime , streamModel.Id);
+                bool interupt = streamService.CheckInterupt(oldStream.StartTime , oldStream.EndTime , oldStream.Id);
                 if(!interupt)
                     return BadRequest("بازه انتخاب شده رزرو شده است");
 
-                UserModel userModel = appDbContext.Users.Where(x => x.Id == streamModel.StreamerId).FirstOrDefault();
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == oldStream.StreamerId).FirstOrDefault();
                 if(userModel == null)
                 {
                     string userName = userManager.GetUserId(User);
                     userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 }
 
-                streamModel.StreamerId = userModel.Id;
+                oldStream.StreamerId = userModel.Id;
 
-                bool reserveStatus = await streamService.EditStream(streamModel);
+                bool reserveStatus = await streamService.EditStream(oldStream);
 
                 if(reserveStatus)
                     return Ok("همایش مورد نظر با موفقیت ویرایش شد");

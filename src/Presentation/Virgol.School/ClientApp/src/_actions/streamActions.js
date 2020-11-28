@@ -124,6 +124,27 @@ export const ReserveStream = (token, formValues) => async dispatch => {
 
 }
 
+export const EditReservedStream = (token, formValues) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        const response = await lms.post(`/Stream/EditReservedStream`, formValues ,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch(alert.success(response.data))
+
+    } catch (e) {
+
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+    }
+
+}
+
 export const StartStream = (token , streamId) => async dispatch => {
 
     try {

@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   virgol:
-    image: goldenstarc/virgol:1.7.14.3-alpha3
+    image: goldenstarc/virgol:1.7.14.3-alpha4
     restart: always
     container_name: virgol_main
     volumes:
@@ -37,7 +37,7 @@ services:
       - REACT_APP_RAHE_DOOR=false
       - REACT_APP_FAVICON_NAME=favicon_virgool
       - REACT_APP_MOODLE_URL=moodle/login/index.php
-      - REACT_APP_VERSION=1.7.14.3-alpha3
+      - REACT_APP_VERSION=1.7.14.3-alpha4
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`lms.legace.ir`)"

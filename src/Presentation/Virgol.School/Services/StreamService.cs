@@ -22,9 +22,9 @@ public class StreamService {
     public bool CheckInterupt(DateTime startTime , DateTime endTime , int id = 0) 
     {
         List<StreamModel> streamInterupts = appDbContext.Streams.Where(x => (x.StartTime >= startTime && x.StartTime < endTime) || // Check oldClass Start time between new class Time
-                                                                        (x.StartTime <= startTime && x.EndTime > endTime) &&
-                                                                        x.Id != id).ToList(); // Check newClass Start Time between oldClass Time
-
+                                                                        (x.StartTime <= startTime && x.EndTime > endTime)).ToList(); // Check newClass Start Time between oldClass Time
+        
+        streamInterupts = streamInterupts.Where(x => x.Id != id).ToList();
         if(streamInterupts.Count > 0)
         {
             return false;
@@ -149,10 +149,9 @@ public class StreamService {
     {
         try
         {
-            StreamModel oldStream = appDbContext.Streams.Where(x => x.Id == stream.Id).FirstOrDefault();
-            oldStream = stream;
+            stream.setAllowedRolesList();
 
-            appDbContext.Streams.Update(oldStream);
+            appDbContext.Streams.Update(stream);
             await appDbContext.SaveChangesAsync();
 
             return true;

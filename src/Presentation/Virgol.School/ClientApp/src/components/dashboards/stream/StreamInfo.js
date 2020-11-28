@@ -184,7 +184,7 @@ class StreamInfo extends React.Component {
                                 isMulti
                                 isSearchable
                         />
-                        <button className="bg-greenish rounded-lg text-white w-5/6 py-2" onClick={() => this.reserveStream()}> {this.props.t('reserveConference')} </button>
+                        <button className="bg-greenish rounded-lg text-white w-5/6 py-2" onClick={() => this.reserveStream()}> {this.props.t('editConference')} </button>
                     </> 
                     }
                 </div>

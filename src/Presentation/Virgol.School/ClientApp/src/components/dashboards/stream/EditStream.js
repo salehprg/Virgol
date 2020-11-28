@@ -1,6 +1,8 @@
 import React from 'react';
 import { DatePicker } from "jalali-react-datepicker";
 import Select from 'react-select';
+import {connect} from 'react-redux';
+import {GetRoles , EditReservedStream} from '../../../_actions/streamActions'
 import { withTranslation } from 'react-i18next';
 
 class EditStream extends React.Component {
@@ -8,10 +10,73 @@ class EditStream extends React.Component {
     state = {
         streamName: '',
         startTime: new Date(),
-        startTime: new Date(),
         selectedGuests: [],
         duration: 90,
         guests: [{ value: 'students', label: 'دانش آموزان' }, { value: 'teachers', label: 'معلمان' }]
+    }
+
+    componentDidMount = async () => {
+
+        await this.props.GetRoles(this.props.user.token);
+        this.initializeRoles()
+        this.initializeValue(this.props.match.params.id)
+
+    }
+
+    initializeValue = (streamId) => {
+        const currentStream = this.props.futureStream.find(x => x.id == streamId)
+        var roles = currentStream.allowedRoles.split(",").map(x => {return ((x ? parseInt(x) : 0))});
+        
+        var test = []
+        var selectedGuest = roles.filter(y => y != 0).map(x => {
+            return(
+                this.state.guests.find(g => g.value == x)
+            )
+        })
+        
+        const date = new Date(currentStream.startTime);
+
+
+        this.setState({streamName : currentStream.streamName , 
+                        startTime : date.toJSON() ,
+                        duration : currentStream.duration ,
+                        selectedGuests : selectedGuest})
+    }
+
+    initializeRoles = () =>{
+        var guestRoles = [];
+        this.props.guestRoles.map(x => guestRoles.push({value : x.id , label : this.props.t(x.name)}));
+
+        this.setState({guests : guestRoles});
+    }
+
+    setStartTime = ({ value }) => {
+        this.setState({startTime : value._d.toJSON() })
+    }
+
+    handleChangeGuests = (selectedGuests) => {
+        this.setState({ selectedGuests });
+    }
+
+    setDuration = (e) => {
+        this.setState({ duration: parseFloat(e.target.value) })
+    }
+
+    editStream = async () => {
+        var allowedRoles = []
+        this.state.selectedGuests.map(x => allowedRoles.push(x.value))
+
+        var data = {
+            Id : parseInt(this.props.match.params.id) ,
+            StreamName : this.state.streamName ,
+            StartTime : this.state.startTime,
+            duration : this.state.duration,
+            allowedUsers : allowedRoles
+
+        }
+        await this.props.EditReservedStream(this.props.user.token , data)
+
+        this.componentDidMount()
     }
 
     render() {
@@ -42,7 +107,7 @@ class EditStream extends React.Component {
                     isMulti
                     isSearchable
                 />
-                <button className="bg-greenish rounded-lg text-white w-5/6 py-2" onClick={() => this.reserveStream()}> {this.props.t('reserveConference')} </button>    
+                <button className="bg-greenish rounded-lg text-white w-5/6 py-2" onClick={() => this.editStream()}> {this.props.t('editConference')} </button>    
                 </div>    
             </div>
         );
@@ -50,4 +115,11 @@ class EditStream extends React.Component {
 
 }
 
-export default withTranslation()(EditStream);
+const mapStateToProps = state => {
+    return {user: state.auth.userInfo , futureStream: state.streamData.futureStream
+                                        , guestRoles: state.streamData.roles}
+}
+
+const cwrapped = connect(mapStateToProps, { GetRoles , EditReservedStream })(EditStream);
+
+export default withTranslation()(cwrapped);
