@@ -3,9 +3,8 @@ import { withTranslation } from 'react-i18next'
 import React, { createRef } from "react";
 import { connect } from "react-redux";
 import {MoodleSSO} from "../../_actions/classScheduleActions";
-import {loading, logo} from "../../assets/icons";
+import {loading, logo , chevrons} from "../../assets/icons";
 import lms from "../../apis/lms";
-import {chevrons, loading, logo} from "../../assets/icons";
 
 class LoginSSO extends React.Component {
 
