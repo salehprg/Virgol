@@ -6,14 +6,25 @@ import { loading } from '../../../../assets/icons'
 
 class ClassSchedule extends React.Component {
 
-    state = { loading: false , finished : true }
+    state = { loading: false , finished : true, schedules: null }
     sc = createRef()
 
     componentDidMount = async () => {
         this.setState({ loading: true })
         await this.props.getTeacherSchedule(this.props.user.token )
 
-        this.setState({ loading: false })
+        const uniques = [];
+        this.props.schedules.map(day => {
+            const temp = [];
+            day.map(lesson => {
+                if (!temp.filter(function(e) { return e.mixedId === lesson.mixedId; }).length > 0) {
+                    temp.push(lesson);
+                }
+            })
+            uniques.push(temp);
+        })
+
+        this.setState({ loading: false, schedules: uniques })
 
         this.setState({finished : true})
         this.render()
@@ -21,18 +32,19 @@ class ClassSchedule extends React.Component {
     }
 
     render() {
-        if (this.state.loading) return (
+        if (this.state.loading || !this.state.schedules) return (
             <>
                 {loading('w-10 text-white centerize')}
             </>
         );
+        
         return (
             <div ref={this.sc} className="overflow-auto">
                 <Schedule
                     isTeacher={false}
                     editable={false}
                     // lessons={this.props.schedules}
-                    lessons={this.props.schedules}           
+                    lessons={this.state.schedules}           
                 />
             </div>
         );
