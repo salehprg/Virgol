@@ -777,15 +777,17 @@ namespace lms_with_moodle.Controllers
     }
     public async Task<IActionResult> RecreateMoodle()
     {
-        List<AdminDetail> adminDetails = appDbContext.AdminDetails.Where(x => x.SchoolsType != 1).ToList();
+        List<AdminDetail> adminDetails = appDbContext.AdminDetails.ToList();
+
+        AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.SchoolsType == 1).FirstOrDefault();
 
         MoodleApi moodleApi = new MoodleApi();
         List<EnrolUser> enrolsData = new List<EnrolUser>();
 
         List<UserModel> usersData = new List<UserModel>();
         
-        foreach (var adminDetail in adminDetails)
-        {
+        // foreach (var adminDetail in adminDetails)
+        // {
             if(!await moodleApi.CategoryExist(adminDetail.orgMoodleId))
             {
                 int adminCatId = await moodleApi.CreateCategory(adminDetail.TypeName);
@@ -1001,7 +1003,7 @@ namespace lms_with_moodle.Controllers
                     }
                 }
             }
-        }
+        //}
         
         await moodleApi.AssignUsersToCourse(enrolsData);
         

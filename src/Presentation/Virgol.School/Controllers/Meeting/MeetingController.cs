@@ -70,7 +70,8 @@ namespace lms_with_moodle.Controllers
                 
                 try
                 {
-                    await meetingService.EndMeeting(bbbId , userId);
+                    if(!meeting.Finished)
+                        await meetingService.EndMeeting(bbbId , userId);
                 }catch{}
             }
 

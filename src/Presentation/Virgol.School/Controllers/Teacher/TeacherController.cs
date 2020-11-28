@@ -120,7 +120,7 @@ namespace lms_with_moodle.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<CourseDetail>), 200)]
-        public IActionResult GetClassBook(int lessonId)
+        public async Task<IActionResult> GetClassBook(int scheduleId)
         {
             try
             {
@@ -129,28 +129,49 @@ namespace lms_with_moodle.Controllers
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
                 List<ClassBook> classBooks = new List<ClassBook>();
-                List<MeetingView> meetings = appDbContext.MeetingViews.Where(x => x.ScheduleId == lessonId).ToList();
+                List<Meeting> meetings = new List<Meeting>();
 
-                int classId = appDbContext.ClassWeeklySchedules.Where(x => x.Id == lessonId).FirstOrDefault().ClassId;
+                ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
+                //int classId = appDbContext.ClassWeeklySchedules.Where(x => x.Id == scheduleId).FirstOrDefault().ClassId;
 
-                List<School_studentClass> students = appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
+                List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.TeacherId == classSchedule.TeacherId && x.LessonId == classSchedule.LessonId && x.ClassId == classSchedule.ClassId).ToList();
+
+                foreach (var schedule in schedules)
+                {
+                    meetings.AddRange(appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList());
+                }
+
+                List<School_studentClass> students = appDbContext.School_StudentClasses.Where(x => x.ClassId == classSchedule.ClassId).ToList();
+                List<School_studentClass> removedStudents = new List<School_studentClass>();
 
                 foreach (var student in students)
                 {
                     UserModel studentModel = appDbContext.Users.Where(x => x.Id == student.UserId).FirstOrDefault();
                     ClassBook classBook = new ClassBook();
+                    if(studentModel != null)
+                    {
+                        classBook.AbsentCount = meetings.Count;
+                        classBook.Email = studentModel.Email;
+                        classBook.FirstName = studentModel.FirstName;
+                        classBook.LastName = studentModel.LastName;
+                        classBook.MelliCode = studentModel.MelliCode;
+                        classBook.Score = 0;
+                        classBook.UserId = studentModel.Id;
 
-                    classBook.AbsentCount = meetings.Count;
-                    classBook.Email = studentModel.Email;
-                    classBook.FirstName = studentModel.FirstName;
-                    classBook.LastName = studentModel.LastName;
-                    classBook.MelliCode = studentModel.MelliCode;
-                    classBook.Score = 0;
-                    classBook.UserId = studentModel.Id;
-
-                    classBooks.Add(classBook);
+                        classBooks.Add(classBook);
+                    }
+                    else
+                    {
+                        removedStudents.Add(student);
+                    }
                 }
 
+                if(removedStudents.Count > 0)
+                {
+                    appDbContext.School_StudentClasses.RemoveRange(removedStudents);
+                    await appDbContext.SaveChangesAsync();
+                }
+                
                 List<ParticipantView> result = new List<ParticipantView>();
 
                 foreach (var meeting in meetings)
@@ -183,7 +204,7 @@ namespace lms_with_moodle.Controllers
                 //         .Select(grp => grp.ToList())
                 //         .ToList();
 
-                var lessonDetail = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
+                var lessonDetail = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
                 return Ok(new {
                     classBooks,
                     lessonDetail

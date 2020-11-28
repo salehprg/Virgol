@@ -63,6 +63,8 @@ export const GetParticipantList = meetingId => async dispatch => {
 
     try {
         
+        dispatch({ type: Type.GetParticipantList, payload: null })
+
         var token = localStorage.getItem("userToken");
         const response = await lms.get(`/Meeting/GetParticipantList?meetingId=${meetingId}` , {
             headers: {

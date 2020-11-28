@@ -57,12 +57,12 @@ export const GetSchoolList = (token) => async dispatch => {
 
 }
 
-export const GetClassBook = (token , lessonId) => async dispatch => {
+export const GetClassBook = (token , scheduleId) => async dispatch => {
 
     try {
         dispatch({ type: START })
         
-        const response = await lms.get(`/Teacher/GetClassBook?lessonId=${lessonId}` , {
+        const response = await lms.get(`/Teacher/GetClassBook?scheduleId=${scheduleId}` , {
             headers: {
                 authorization: `Bearer ${token}`
             }
