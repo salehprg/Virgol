@@ -2,8 +2,13 @@ import Axios from "axios";
 import { withTranslation } from 'react-i18next'
 import React, { createRef } from "react";
 import { connect } from "react-redux";
+<<<<<<< HEAD
 import {MoodleSSO} from "../../_actions/classScheduleActions";
 import {loading, logo} from "../../assets/icons";
+=======
+import lms from "../../apis/lms";
+import {chevrons, loading, logo} from "../../assets/icons";
+>>>>>>> 8f42e85af23d97ecb345a12205ae9fa72072d0de
 
 class LoginSSO extends React.Component {
 
@@ -35,7 +40,14 @@ class LoginSSO extends React.Component {
 
     render() {
         return (
-            <form ref={this.formRef} className="text-center" action={process.env.REACT_APP_MOODLE_URL} method="POST"  >
+            <div className="w-screen min-h-screen">
+                <div className="centerize flex flex-col text-center items-center">
+                    {chevrons('w-24 transform rotate-180 text-dark-blue')}
+                    <p>در حال فرستادن شما به صفحه فعالیت های درس هستیم</p>
+                    <p>این عملیات ممکن است چند ثانیه طول بکشد</p>
+                    {loading('w-12 text-dark-blue')}
+                </div>
+                <form ref={this.formRef} className="text-center" action={process.env.REACT_APP_MOODLE_URL} method="POST"  >
                 <input
                     hidden={true}
                     name="username"
@@ -51,6 +63,7 @@ class LoginSSO extends React.Component {
                     value={localStorage.getItem('userPassword')}
                 />
             </form>
+            </div>
         );
     }
 
