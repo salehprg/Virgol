@@ -177,12 +177,13 @@ class Login extends React.Component {
                 <div onClick={() => this.setShowLang(false)} className="w-screen min-h-screen bg-black-blue pt-16">
                     <div className="w-full max-w-350 mx-auto">
                         <div className="text-center mb-8">
-                            {/*{logo('w-16 mb-3 text-purplish mx-auto')}*/}
+                            <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} alt="logo" />
+                            {/* {logo('w-16 mb-3 text-purplish mx-auto')}
                             {process.env.REACT_APP_RAHE_DOOR === "true" ?
                                 <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
                                 :
                                 logo('w-24 mx-auto mb-3 text-purplish')
-                            }
+                            } */}
                             <span className="text-xl text-white">
                                 {process.env.REACT_APP_RAHE_DOOR === "true" ? 'ورود به سامانه آموزش از راه دور خراسان رضوی' : this.props.t('enterVirgool')}
                             </span>

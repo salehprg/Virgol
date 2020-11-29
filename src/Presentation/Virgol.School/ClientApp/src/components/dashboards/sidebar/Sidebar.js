@@ -45,13 +45,13 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
             
             {
                 process.env.REACT_APP_RAHE_DOOR !== "true" ?
-                    logo('w-16 my-3 text-purplish mx-auto')
+                <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} />
                     :
                 logoTitle === 0 ?
-                <img src={`${process.env.PUBLIC_URL}/icons/sampad.png`} />
+                <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/sampad.png`} />
                 : 
                 logoTitle === 1 ?
-                <img src={`${process.env.PUBLIC_URL}/icons/RD.png`} /> 
+                <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} /> 
                 : 
                 <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">
                     <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
