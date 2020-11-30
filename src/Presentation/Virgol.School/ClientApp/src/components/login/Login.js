@@ -185,7 +185,7 @@ class Login extends React.Component {
                                 logo('w-24 mx-auto mb-3 text-purplish')
                             } */}
                             <span className="text-xl text-white">
-                                {process.env.REACT_APP_RAHE_DOOR === "true" ? 'ورود به سامانه آموزش از راه دور خراسان رضوی' : this.props.t('enterVirgool')}
+                                {process.env.REACT_APP_ENTER_TEXT}
                             </span>
                         </div>
                         <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">

@@ -43,7 +43,12 @@ namespace lms_with_moodle.Helper
         public static string VIRGOL_SCALELITE_BASE_URL { get; set; }
         public static string VIRGOL_SCALELITE_SECRET { get; set; }
 
+
+        //------------------------------
+        //React Env Variables
         public static string REACT_APP_RAHE_DOOR { get; set; }
+        public static string REACT_APP_VIRGOL_TEXT { get; set; }
+        public static string REACT_APP_RAHE_DOOR_TEXT { get; set; }
         public static string REACT_APP_FAVICON_NAME { get; set; }
         public static string REACT_APP_MOODLE_URL { get; set; }
         public static string REACT_APP_VERSION { get; set; }
