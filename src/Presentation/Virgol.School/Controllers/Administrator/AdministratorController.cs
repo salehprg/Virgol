@@ -49,6 +49,7 @@ namespace lms_with_moodle.Controllers
         ManagerService managerService;
         FarazSmsApi SMSApi;
         UserService UserService;
+        AdministratorService administratorService;
         MoodleApi moodleApi;
         public AdministratorController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -72,6 +73,7 @@ namespace lms_with_moodle.Controllers
             managerService = new ManagerService(appDbContext);
             UserService = new UserService(userManager , appDbContext);
             ldap = new LDAP_db(appDbContext);
+            administratorService = new AdministratorService(appDbContext , moodleApi);
         }
 #region Users
     public async Task<IActionResult> ChangePassword(string IdNumber , string newPassword)
@@ -1060,6 +1062,55 @@ namespace lms_with_moodle.Controllers
     }
 #endregion
     
+#region FixInteruptData
+    [HttpGet]
+    public async Task<IActionResult> FixSchedulesLessonId([FromBody]List<int> classesId)
+    {
+        try
+        {  
+            List<Class_WeeklySchedule> classSchedules = new List<Class_WeeklySchedule>();
+
+            foreach (var classId in classesId)
+            {
+                classSchedules = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList();
+                foreach (var schedule in classSchedules)
+                {
+                    School_Lessons schoolLesson = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault();
+
+                    if(schoolLesson == null)
+                    {
+                        string lessonCode = appDbContext.Lessons.Where(x => x.Id == schedule.LessonId).FirstOrDefault().LessonCode;
+                        List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.LessonCode == lessonCode).ToList();
+
+                        School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
+
+                        LessonModel lesson = lessons.Where(x => x.Grade_Id == schoolClass.Grade_Id).FirstOrDefault();
+
+                        schedule.LessonId = lesson.Id;
+
+                        schoolLesson = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault();
+
+                        if(schoolLesson == null)
+                        {
+                            bool addResult = await administratorService.AddLessonToClass(lesson , schoolClass , true);
+                        }
+                    }
+                }
+            }
+
+            appDbContext.ClassWeeklySchedules.UpdateRange(classSchedules);
+            await appDbContext.SaveChangesAsync();
+            
+            return Ok(true);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.StackTrace);
+        }
+    }
+    
+#endregion
+
 #region Functions
     ///<param name="CategoryId">
     ///Default is set to -1 and if Used this methode to add Student this property should set to Category Id
@@ -1270,6 +1321,8 @@ namespace lms_with_moodle.Controllers
         return result;
     }
 
+
+   
 #endregion
 
     }

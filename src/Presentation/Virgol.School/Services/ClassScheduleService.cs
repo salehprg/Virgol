@@ -106,7 +106,11 @@ public class ClassScheduleService {
                 {
                     List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.MixedId == classSchedule.MixedId).ToList();
                     appDbContext.ClassWeeklySchedules.RemoveRange(schedules);
-                    appDbContext.MixedSchedules.Remove(appDbContext.MixedSchedules.Where(x => x.Id == classSchedule.MixedId).FirstOrDefault());
+                    MixedSchedule mixed = appDbContext.MixedSchedules.Where(x => x.Id == classSchedule.MixedId).FirstOrDefault();
+                    if(mixed != null)
+                    {
+                        appDbContext.MixedSchedules.Remove(mixed);
+                    }
                 }
                 else
                 {

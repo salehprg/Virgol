@@ -246,16 +246,18 @@ namespace lms_with_moodle.Controllers
                 var groupedMixed = classScheduleViews
                             .GroupBy(x => x.MixedId);
 
-                var result = classScheduleViews = new List<ClassScheduleView>();
+                var result = new List<ClassScheduleView>();
 
                 foreach (var mixedSchedule in groupedMixed)
                 {
                     ClassScheduleView classSchedule = mixedSchedule.ToList()[0];
                     MixedSchedule mixedData = appDbContext.MixedSchedules.Where(x => x.Id == mixedSchedule.Key).FirstOrDefault();
+                    if(mixedData != null)
+                    {
+                        classSchedule.ClassName = mixedData.MixedName;
 
-                    classSchedule.ClassName = mixedData.MixedName;
-
-                    result.Add(classSchedule);
+                        result.Add(classSchedule);
+                    }
                 }
 
                 return Ok(result);
@@ -286,20 +288,26 @@ namespace lms_with_moodle.Controllers
                 bool hasInterupt = false;
                 string mixedName = "";
 
+                string lessonCode = appDbContext.Lessons.Where(x => x.Id == mixedScheduleData.schedule.LessonId).FirstOrDefault().LessonCode;
+                List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.LessonCode == lessonCode).ToList();
+
                 foreach (var classId in mixedScheduleData.classIds)
                 {
+                    School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
+                    
+                    LessonModel lesson = lessons.Where(x => x.Grade_Id == schoolClass.Grade_Id).FirstOrDefault();
+
                     Class_WeeklySchedule tempSchedule = new Class_WeeklySchedule();
                     tempSchedule.DayType = mixedScheduleData.schedule.DayType;
                     tempSchedule.TeacherId = mixedScheduleData.schedule.TeacherId;
                     tempSchedule.StartHour = mixedScheduleData.schedule.StartHour;
                     tempSchedule.EndHour = mixedScheduleData.schedule.EndHour;
-                    tempSchedule.LessonId = mixedScheduleData.schedule.LessonId;
+                    tempSchedule.LessonId = lesson.Id;
                     tempSchedule.weekly = mixedScheduleData.schedule.weekly;
                     tempSchedule.ClassId = classId;
 
                     classSchedules.Add(tempSchedule);
 
-                    School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
                     mixedName += schoolClass.ClassName + "-";
 
                     if(tempSchedule.EndHour <= tempSchedule.StartHour)
