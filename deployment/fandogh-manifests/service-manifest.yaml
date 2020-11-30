@@ -68,6 +68,10 @@ spec:
       value: ir.pool.ntp.org
     - name : REACT_APP_RAHE_DOOR
       value : true
+    - name : REACT_APP_VIRGOL_TEXT
+      value : ورود به سامانه آموزش مجازی ویرگول
+    - name : REACT_APP_RAHE_DOOR_TEXT
+      value : ورود به سامانه آموزش از راه دور خراسان رضوی
     - name : REACT_APP_FAVICON_NAME
       value : favicon_virgool
     - name : REACT_APP_MOODLE_URL
