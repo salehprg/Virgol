@@ -33,4 +33,18 @@ public class TeacherDetail {
         return schoolsId;
     }
 
+    public string setTeacherSchoolIds(List<int> schoolsId)
+    {     
+        string schoolsIdStr = "";
+
+        foreach (var schoolId in schoolsId)
+        {
+            schoolsIdStr += schoolId.ToString() + ",";
+        }
+
+        SchoolsId = schoolsIdStr;
+
+        return schoolsIdStr;
+    }
+
 }

@@ -27,8 +27,7 @@ public class MeetingService {
         try
         {
             int scheduleId = classSchedule.Id;
-            //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == classSchedule.ClassId && x.Lesson_Id == classSchedule.LessonId).FirstOrDefault().Moodle_Id;
-
+            
             string displayName = string.Format("{0} - {1} ({2})" , classSchedule.OrgLessonName , classSchedule.SchoolName , classSchedule.ClassName);
 
             DateTime timeNow = MyDateTime.Now();

@@ -39,7 +39,7 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
 
-        //MoodleApi moodleApi;
+        MoodleApi moodleApi;
         SchoolService schoolService;
         LDAP_db ldap;
         FarazSmsApi SMSApi;
@@ -54,7 +54,7 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             appDbContext = _appdbContext;
 
-            //moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi();
             SMSApi = new FarazSmsApi();
             ldap = new LDAP_db(appDbContext);
             UserService = new UserService(userManager , appDbContext);
@@ -273,8 +273,6 @@ namespace lms_with_moodle.Controllers
                 if(appDbContext.Schools.Where(x => x.SchoolType == schoolType).Count() >= adminDetail.SchoolLimit)
                     return BadRequest("شما حداکثر تعداد مدارس خود را ثبت کردید");
 
-                
-
                 bool melliCodeInterupt = UserService.CheckMelliCodeInterupt(inputData.MelliCode , 0);
                 bool phoneInterupt = UserService.CheckPhoneInterupt(inputData.managerPhoneNumber);
 
@@ -417,24 +415,34 @@ namespace lms_with_moodle.Controllers
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
 
-                //bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
-                bool removeCat = true;
+                bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
+                //bool removeCat = true;
 
                 if(removeCat)
                 {
                     UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault();
                     if(manager != null)
                     {
-                        // manager.SchoolId = -1;
-                        
+                        // manager.SchoolId = 0;
+                        // await userManager.RemoveFromRoleAsync(manager , Roles.Manager);
                         // appDbContext.Users.Update(manager);
+
                         await UserService.DeleteUser(manager);
+                        
                     }
                     
                     appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_StudyFields.RemoveRange(appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList());
                     appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
-                    appDbContext.School_Classes.RemoveRange(appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList());
+
+                    List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList();
+                    foreach (var classs in classes)
+                    {
+                        appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classs.Id).ToList());
+                    }
+
+                    appDbContext.School_Classes.RemoveRange();
+                    
 
                     List<UserModel> students = appDbContext.Users.Where(x => x.SchoolId == school.Id).ToList();
 
@@ -993,17 +1001,19 @@ namespace lms_with_moodle.Controllers
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
 
                 School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
-                int classMoodleId = schoolClass.Moodle_Id;
+                
                 
                 if(schoolClass != null)
                 {
+                    int classMoodleId = schoolClass.Moodle_Id;
+
                     schoolClass.ClassName = className;
 
                     CategoryDetail oldClass = new CategoryDetail();
                     oldClass.Id = classMoodleId;
                     oldClass.Name = schoolClass.ClassName;
                     
-                    //await moodleApi.EditCategory(oldClass);
+                    await moodleApi.EditCategory(oldClass);
 
                     appDbContext.School_Classes.Update(schoolClass);
                     await appDbContext.SaveChangesAsync();
@@ -1027,7 +1037,7 @@ namespace lms_with_moodle.Controllers
             try
             {
                 School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
-                //await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
+                await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
 
                 appDbContext.School_Classes.Remove(schoolClass);
                 appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList());
@@ -1107,17 +1117,25 @@ namespace lms_with_moodle.Controllers
 
                                 bool ldapUser = await ldap.AddUserToLDAP(manager , true , password);
 
-                                bool userToMoodle = false;
-                                if(ldapUser)
+                                if(!ldapUser)
                                 {
-                                    //userToMoodle = await moodleApi.CreateUsers(new List<UserModel>() {manager});
-                                    userToMoodle = true;
+                                    ldapUser = ldap.CheckUserData(manager.UserName);
                                 }
 
-                                if(userToMoodle)
+                                int userMoodle_id = -1;
+
+                                manager.Moodle_Id = 0;
+
+                                if(ldapUser)
+                                {
+                                    userMoodle_id = await moodleApi.CreateUser(manager);
+                                    //userToMoodle = true;
+                                }
+
+                                if(userMoodle_id != -1)
                                 {
                                     //int userMoodle_id = await moodleApi.GetUserId(manager.MelliCode);
-                                    int userMoodle_id = 0;
+                                    //int userMoodle_id = 0;
 
                                     manager.Moodle_Id = userMoodle_id;
 

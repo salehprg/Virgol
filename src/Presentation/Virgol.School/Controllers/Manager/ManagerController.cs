@@ -32,7 +32,7 @@ namespace lms_with_moodle.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly RoleManager<IdentityRole<int>> roleManager;
 
-        //MoodleApi moodleApi;
+        MoodleApi moodleApi;
         UserService UserService;
         MeetingService meetingService;
         ManagerService managerService;
@@ -50,7 +50,7 @@ namespace lms_with_moodle.Controllers
             roleManager = _roleManager;
             appSettings = _appsetting.Value;
 
-            //moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi();
             ldap = new LDAP_db(appDbContext);
 
             UserService = new UserService(userManager , appDbContext);
@@ -436,17 +436,20 @@ namespace lms_with_moodle.Controllers
 
                     bool ldapUser = await ldap.AddUserToLDAP(userModel , false);
                     
-                    bool createUser = false;
+                    int moodleId = -1;
+
                     if(ldapUser)
                     {
-                        //createUser = await moodleApi.CreateUsers(new List<UserModel>(){SelectedUser});
-                        createUser = true;
+                        moodleId = await moodleApi.CreateUser(userModel);
+                        userModel.Moodle_Id = moodleId;
+
+
                     }
 
-                    if(createUser)
+                    if(moodleId != -1)
                     {
-                        //int userMoodle_id = await moodleApi.GetUserId(SelectedUser.MelliCode);
-                        int userMoodle_id = 0;
+                        int userMoodle_id = await moodleApi.GetUserId(SelectedUser.MelliCode);
+                        //int userMoodle_id = 0;
                         if(userMoodle_id != -1)
                         {
                             SelectedUser.Moodle_Id = userMoodle_id;
@@ -809,37 +812,45 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string userNameManager = userManager.GetUserId(User);
-                int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
+                UserModel manager = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault();
+                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
+
+                int schoolId = (school != null ? school.Id : -1);
+
+                if(schoolId == -1)
+                {
+                    return BadRequest("شما دسترسی به حذف معلم ندارید");
+                }
 
                 UserService UserService = new UserService(userManager);
 
                 foreach (int teacherId in teacherIds)
                 {
                     UserModel teacher = appDbContext.Users.Where(x => x.Id == teacherId).FirstOrDefault();
+                    
                     TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
-                    teacherDetail.SchoolsId = teacherDetail.SchoolsId.Replace(schoolId.ToString() + "," , "");
+                    teacherDetail.SchoolsId = teacherDetail.setTeacherSchoolIds(teacherDetail.getTeacherSchoolIds().Where(x => x != schoolId).ToList());
 
                     List<EnrolUser> unEnrolData = new List<EnrolUser>();
                     
-                    List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == teacherId).ToList();
+                    List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId && x.School_Id == schoolId).ToList();
                     foreach (var schedule in schedules)
                     {
-                        School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == schedule.ClassId).FirstOrDefault();
-                        int teacherSchoolId = schoolClass.School_Id;
-
-                        if(teacherSchoolId == schoolId)
+                        try
                         {
-                            // EnrolUser unEnrol = new EnrolUser();
-                            // unEnrol.UserId = teacher.Moodle_Id;
-                            // unEnrol.lessonId = appDbContext.School_Lessons.Where(x => x.School_Id == schoolId && x.classId == schoolClass.Id && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                            EnrolUser unEnrol = new EnrolUser();
+                            unEnrol.UserId = teacher.Moodle_Id;
+                            unEnrol.lessonId = appDbContext.School_Lessons.Where(x => x.School_Id == schoolId && x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
 
-                            // unEnrolData.Add(unEnrol);
-                            appDbContext.ClassWeeklySchedules.Remove(schedule);
+                            unEnrolData.Add(unEnrol);
+                            //appDbContext.ClassWeeklySchedules.Remove(schedule);                             
                         }
+                        catch(Exception){}
+
                     }
 
-                    //await moodleApi.UnAssignUsersFromCourse(unEnrolData);
-                    // await UserService.DeleteUser(teacher);
+                    await moodleApi.UnAssignUsersFromCourse(unEnrolData);
+                    //await UserService.DeleteUser(teacher);
 
                     // appDbContext.TeacherCourse.RemoveRange(appDbContext.TeacherCourse.Where(x => x.TeacherId == teacher.Id));
 
@@ -963,30 +974,34 @@ namespace lms_with_moodle.Controllers
             {   
                 int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
 
-                List<School_studentClass> studentClasses = new List<School_studentClass>();
-                //List<CourseDetail> courses = await moodleApi.GetAllCourseInCat(classMoodleId); //because All user will be add to same category
-                //List<EnrolUser> enrolsData = new List<EnrolUser>();
+                List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList();
+                List<EnrolUser> unEnrolsData = new List<EnrolUser>();
 
+                List<School_studentClass> removedStudents = new List<School_studentClass>();
                 foreach (var userid in userIds)
                 {
-                    School_studentClass studentClass = appDbContext.School_StudentClasses.Where(x => x.UserId == userid && x.ClassId == classId).FirstOrDefault();
-                    //int moodelId = appDbContext.Users.Where(x => x.Id == userid).FirstOrDefault().Moodle_Id;
+                    int moodelId = appDbContext.Users.Where(x => x.Id == userid).FirstOrDefault().Moodle_Id;
 
-                    studentClasses.Add(studentClass);
+                    School_studentClass student = appDbContext.School_StudentClasses.Where(x => x.UserId == userid).FirstOrDefault();
+                    if(student != null)
+                    {
+                        foreach(var course in schedules)
+                        {
+                            School_Lessons lesson = appDbContext.School_Lessons.Where(x => x.classId == classId && x.Lesson_Id == course.LessonId).FirstOrDefault();
+                            EnrolUser enrolInfo = new EnrolUser();
+                            enrolInfo.lessonId = lesson.Moodle_Id;
+                            enrolInfo.UserId = moodelId;
 
-                    // foreach(var course in courses)
-                    // {
-                    //     EnrolUser enrolInfo = new EnrolUser();
-                    //     enrolInfo.lessonId = course.id;
-                    //     enrolInfo.UserId = moodelId;
+                            unEnrolsData.Add(enrolInfo);
 
-                    //     enrolsData.Add(enrolInfo);
-                    // }  
+                            removedStudents.Add(student);
+                        }  
+                    }
                 }
 
-                //await moodleApi.UnAssignUsersFromCourse(enrolsData);
+                await moodleApi.UnAssignUsersFromCourse(unEnrolsData);
 
-                appDbContext.School_StudentClasses.RemoveRange(studentClasses);
+                appDbContext.School_StudentClasses.RemoveRange(removedStudents);
                 await appDbContext.SaveChangesAsync();
 
                 return Ok(true);
@@ -998,118 +1013,7 @@ namespace lms_with_moodle.Controllers
         }
 
 #endregion
-    
-#region Categories
-
-    // [HttpGet]
-    // [ProducesResponseType(typeof(List<CategoryDetail>), 200)]
-    // [ProducesResponseType(typeof(string), 400)]
-    // public async Task<IActionResult> GetAllCategory()
-    // {
-    //     try
-    //     {
-            
-    //         List<CategoryDetail_moodle> result = await moodleApi.GetAllCategories();
-    //         List<CategoryDetail> Categories = new List<CategoryDetail>();
-
-    //         foreach(var cat in result)
-    //         {
-    //             if(cat.id != 1)  // Miscellaneous Category
-    //             {
-    //                 CategoryDetail cateDetail = new CategoryDetail();
-    //                 cateDetail.Id = cat.id;
-    //                 cateDetail.Name = cat.name;
-    //                 cateDetail.CourseCount = cat.coursecount;
-
-    //                 Categories.Add(cateDetail);
-    //             }
-    //         }
-
-    //         return Ok(Categories);
-    //     }
-    //     catch(Exception ex)
-    //     {
-    //         return BadRequest(ex.Message);
-    //     }
-    // }
-
-    // [HttpPut]
-    // [ProducesResponseType(typeof(CategoryDetail), 200)]
-    // [ProducesResponseType(typeof(bool), 400)]
-    // public async Task<IActionResult> AddNewCategory([FromBody]CategoryDetail Category)
-    // {
-    //     try
-    //     {
-    //         int categoryId = await moodleApi.CreateCategory(Category.Name , Category.ParentCategory);
-
-    //         if(categoryId != -1)
-    //         {
-    //             Category.Id = categoryId;
-
-    //             return Ok(Category);
-    //         }
-    //         else
-    //         {
-    //             return BadRequest(false);
-    //         }
-    //     }
-    //     catch(Exception ex)
-    //     {
-    //         return BadRequest(ex.Message);
-    //     }
-    // }
-
-    // [HttpPost]
-    // [ProducesResponseType(typeof(CategoryDetail), 200)]
-    // [ProducesResponseType(typeof(bool), 400)]
-    // public async Task<IActionResult> EditCategory([FromBody]CategoryDetail Category)
-    // {
-    //     try
-    //     {
-    //         bool result = await moodleApi.EditCategory(Category);
-
-    //         if(result)
-    //         {
-    //             return Ok(Category);
-    //         }
-    //         else
-    //         {
-    //             return BadRequest(false);
-    //         }
-    //     }
-    //     catch(Exception ex)
-    //     {
-    //         return BadRequest(ex.Message);
-    //     }
-    // }
-
-    // [HttpPost]
-    // [ProducesResponseType(typeof(bool), 200)]
-    // [ProducesResponseType(typeof(bool), 400)]
-    // public async Task<IActionResult> DeleteCategory([FromBody]CategoryDetail Category)
-    // {
-    //     try
-    //     {
-            
-    //         bool result = await moodleApi.DeleteCategory(Category.Id);
-
-    //         if(result)
-    //         {
-    //             return Ok(true);
-    //         }
-    //         else
-    //         {
-    //             return BadRequest(false);
-    //         }
-    //     }
-    //     catch(Exception ex)
-    //     {
-    //         return BadRequest(ex.Message);
-    //     }
-    // }
-
-#endregion
-    
+     
 #region Functions
 
         

@@ -35,8 +35,6 @@ namespace lms_with_moodle.Controllers
         private readonly AppSettings appSettings;
         private readonly AppDbContext appDbContext;
         private readonly UserManager<UserModel> userManager;
-
-        //MoodleApi moodleApi;
         
         public TeacherController(AppDbContext dbContext
                                 , IOptions<AppSettings> _appsetting
@@ -46,8 +44,6 @@ namespace lms_with_moodle.Controllers
             appDbContext = dbContext;
             appSettings = _appsetting.Value;
             userManager = _userManager;
-
-            //moodleApi = new MoodleApi();
 
         }
 

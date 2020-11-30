@@ -32,7 +32,7 @@ namespace lms_with_moodle.Controllers
         private readonly ClassScheduleService classScheduleService;
         private readonly UserService userService;
 
-        //MoodleApi moodleApi;
+        MoodleApi moodleApi;
         
         public ClassScheduleController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -44,10 +44,10 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             roleManager = _roleManager;
 
-            //moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi();
 
-            //classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
-            classScheduleService = new ClassScheduleService(appDbContext);
+            classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
+            //classScheduleService = new ClassScheduleService(appDbContext);
             userService = new UserService(userManager , appDbContext);
 
             
@@ -69,8 +69,8 @@ namespace lms_with_moodle.Controllers
                     classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == classId).ToList();
                     foreach (var schedule in classScheduleViews)
                     {
-                        //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
-                        int moodleId = 0;
+                        int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                        //int moodleId = 0;
                         schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
                     }
                 }
@@ -90,8 +90,8 @@ namespace lms_with_moodle.Controllers
 
                         foreach (var schedule in classScheduleViews)
                         {
-                            //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
-                            int moodleId = 0;
+                            int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                            //int moodleId = 0;
                             schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
 
                             List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList();
@@ -158,8 +158,8 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var schedule in classScheduleViews)
                 {
-                    //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
-                    int moodleId = 0;
+                    int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    //int moodleId = 0;
                     schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
 
                     if(groupedSchedule.Where(x => x.ClassId == schedule.ClassId && x.LessonId == schedule.LessonId).FirstOrDefault() == null)
@@ -193,8 +193,8 @@ namespace lms_with_moodle.Controllers
                 List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId).ToList();
                 foreach (var schedule in classScheduleViews)
                 {
-                    //int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
-                    int moodleId = 0;
+                    int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
+                    //int moodleId = 0;
                     schedule.moodleUrl = AppSettings.moddleCourseUrl + moodleId;
                 }
 
@@ -357,25 +357,18 @@ namespace lms_with_moodle.Controllers
                     if(mixed != null)
                     {
                         List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.MixedId == mixedId).ToList();
-                        appDbContext.ClassWeeklySchedules.RemoveRange(schedules);
+                        
                         appDbContext.MixedSchedules.Remove(mixed);
+                        await appDbContext.SaveChangesAsync();
 
                         foreach (var schedule in schedules)
                         {
-                            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == schedule.Id).ToList();
-                            foreach (var meeting in meetings)
-                            {
-                                if(meeting != null)
-                                {
-                                    List<ParticipantInfo> participants = appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList();
-                                    appDbContext.ParticipantInfos.RemoveRange(participants);
-                                }
-                            }
-                            appDbContext.Meetings.RemoveRange(meetings);
+                            await classScheduleService.RemoveSchedule(schedule);
                         }
-                        await appDbContext.SaveChangesAsync();
+
                         
-                        return Ok("کلاس تجمیعی با موفقیت ایجاد شد");
+                        
+                        return Ok("کلاس تجمیعی با موفقیت حذف شد");
                     }
                 }
 
@@ -479,48 +472,9 @@ namespace lms_with_moodle.Controllers
 
                 if(classSchedule.Id != 0)
                 {
-                    //int lessonMoodleId = appDbContext.School_Lessons.Where(x => x.Lesson_Id == classSchedule.LessonId && x.classId == classSchedule.ClassId).FirstOrDefault().Moodle_Id;
-
-                    // EnrolUser teacher = new EnrolUser();
-                    // teacher.lessonId = lessonMoodleId;
-                    // teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
-
-                    //bool unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
-                    bool unassignTeacher = true;
-
-                    if(unassignTeacher)
+                    bool result = await classScheduleService.RemoveSchedule(classSchedule);
+                    if(result)
                     {
-                        if(classSchedule.MixedId != 0)
-                        {
-                            List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.MixedId == classSchedule.MixedId).ToList();
-                            appDbContext.ClassWeeklySchedules.RemoveRange(schedules);
-                            appDbContext.MixedSchedules.Remove(appDbContext.MixedSchedules.Where(x => x.Id == classSchedule.MixedId).FirstOrDefault());
-                        }
-                        else
-                        {
-                            appDbContext.ClassWeeklySchedules.Remove(classSchedule);
-                        }
-
-                        await appDbContext.SaveChangesAsync();
-
-                        // if(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId && x.LessonId == classSchedule.LessonId).FirstOrDefault() == null)
-                        // {
-                        //     //await moodleApi.setCourseVisible(lessonMoodleId , false);
-                        // }
-
-                        List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).ToList();
-                        foreach (var meeting in meetings)
-                        {
-                            if(meeting != null)
-                            {
-                                appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
-                            }
-                        }
-
-                        appDbContext.Meetings.RemoveRange(meetings);
-
-                        await appDbContext.SaveChangesAsync();
-
                         return Ok(scheduleId);
                     }
 
@@ -563,6 +517,17 @@ namespace lms_with_moodle.Controllers
             {
                 moodleId = await moodle.CreateUser(userModel);
                 userModel.Moodle_Id = moodleId;
+
+                appDbContext.Users.Update(userModel);
+                await appDbContext.SaveChangesAsync();
+            }
+
+            if(moodleId != userModel.Moodle_Id)
+            {
+
+                userModel.Moodle_Id = moodleId;
+                appDbContext.Users.Update(userModel);
+                await appDbContext.SaveChangesAsync();
             }
             
             if(isTeacher)
@@ -604,12 +569,6 @@ namespace lms_with_moodle.Controllers
 
                     enrolsData.Add(enrolInfo);
                 }
-            }
-
-            if(moodleId != userModel.Moodle_Id)
-            {
-                appDbContext.Users.Update(userModel);
-                await appDbContext.SaveChangesAsync();
             }
 
             await moodle.AssignUsersToCourse(enrolsData);

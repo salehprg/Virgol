@@ -15,14 +15,14 @@ using Newtonsoft.Json;
 public class UserService {
     UserManager<UserModel> userManager;
     AppDbContext appDbContext;
-    //MoodleApi moodleApi;
+    MoodleApi moodleApi;
     LDAP_db ldap;
 
     public UserService(UserManager<UserModel> _userManager , AppDbContext _appDbContext = null)
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
-       // moodleApi = new MoodleApi();
+        moodleApi = new MoodleApi();
         ldap = new LDAP_db(_appDbContext);
     }
 
@@ -100,8 +100,8 @@ public class UserService {
                     //bool ldapResult = true;
                     if(ldapResult)
                     {
-                        //moodleId = await moodleApi.CreateUser(user);
-                        moodleId = 0;
+                        moodleId = await moodleApi.CreateUser(user);
+                        //moodleId = 0;
                         if(moodleId != -1)
                         {
                             user.Moodle_Id = moodleId;
@@ -183,7 +183,7 @@ public class UserService {
         try
         {
             if(ldap.DeleteEntry(user.MelliCode))
-                //await moodleApi.DeleteUser(user.Moodle_Id);
+                await moodleApi.DeleteUser(user.Moodle_Id);
 
             await userManager.RemoveFromRoleAsync(user , Roles.User);
             await userManager.RemoveFromRoleAsync(user , Roles.Teacher);
@@ -266,8 +266,6 @@ public class UserService {
     public async Task<List<UserModel>> SyncUserData(List<UserModel> users , bool moodle = false)
     {
         List<UserModel> updatedUser = new List<UserModel>();
-
-        MoodleApi moodleApi = new MoodleApi();
 
         foreach (var user in users)
         {
