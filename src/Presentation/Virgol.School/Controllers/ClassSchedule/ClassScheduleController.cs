@@ -564,19 +564,43 @@ namespace lms_with_moodle.Controllers
                 moodleId = await moodle.CreateUser(userModel);
                 userModel.Moodle_Id = moodleId;
             }
+            
+            if(isTeacher)
+            {
+                if(scheduleVW.TeacherId != userModel.Id)
+                    return Unauthorized("شما اجازه دسترسی به این فعالیت درسی را ندارید");
+            }
 
             List<EnrolUser> enrolsData = new List<EnrolUser>();
             List<School_Lessons> school_Lessons = appDbContext.School_Lessons.Where(x => x.School_Id == scheduleVW.School_Id && x.classId == scheduleVW.ClassId).ToList();
 
-            foreach (var schoolLesson in school_Lessons)
+            if(!isTeacher)
             {
-                LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == schoolLesson.Lesson_Id).FirstOrDefault();
-                if(lesson != null)
+                foreach (var schoolLesson in school_Lessons)
                 {
+                    LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == schoolLesson.Lesson_Id).FirstOrDefault();
+                    if(lesson != null)
+                    {
+                        EnrolUser enrolInfo = new EnrolUser();
+                        enrolInfo.lessonId = schoolLesson.Moodle_Id;
+                        enrolInfo.UserId = userModel.Moodle_Id;
+                        enrolInfo.RoleId = 5;
+
+                        enrolsData.Add(enrolInfo);
+                    }
+                }
+            }
+            else
+            {
+                School_Lessons schoolLesson = school_Lessons.Where(x => x.School_Id == scheduleVW.School_Id && x.classId == scheduleVW.ClassId && x.Lesson_Id == scheduleVW.LessonId).FirstOrDefault();
+                if(schoolLesson != null)
+                {
+                    LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == schoolLesson.Lesson_Id).FirstOrDefault();
+
                     EnrolUser enrolInfo = new EnrolUser();
                     enrolInfo.lessonId = schoolLesson.Moodle_Id;
                     enrolInfo.UserId = userModel.Moodle_Id;
-                    enrolInfo.RoleId = (isTeacher ? 3 : 5);
+                    enrolInfo.RoleId = 3;
 
                     enrolsData.Add(enrolInfo);
                 }
