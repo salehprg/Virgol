@@ -19,7 +19,7 @@ namespace lms_with_moodle.Helper
         public AdobeApi(string _url)
         {
             client = new HttpClient();
-            client.Timeout = new TimeSpan(0 , 0 , 5);
+            client.Timeout = new TimeSpan(0 , 0 , 20);
             URL = _url;
         }
 
@@ -39,7 +39,7 @@ namespace lms_with_moodle.Helper
             try
             {
                 client = new HttpClient();
-                client.Timeout = new TimeSpan(0 , 0 , 5);
+                client.Timeout = new TimeSpan(0 , 0 , 20);
                 
                 Uri uriLogin = new Uri (string.Format(URL + "/api/xml?action=login&login={0}&password={1}" , Username , Password));
                 HttpResponseMessage response = client.GetAsync(uriLogin).Result;
@@ -48,8 +48,9 @@ namespace lms_with_moodle.Helper
 
                 return model.status.code == "ok";
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
