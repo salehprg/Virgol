@@ -219,6 +219,11 @@ namespace lms_with_moodle
             //     jobType: typeof(SendNotifyJob),
             //     cronExpression: "0 */5 * ? * * *"));
 
+            // Add Check Attendee job
+            services.AddSingleton<AutoClose>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(AutoClose),
+                cronExpression: "0 0 0/2 ? * * *"));
 
             // Add Check Attendee job
             services.AddSingleton<CheckAttendeeJob>();
@@ -226,11 +231,7 @@ namespace lms_with_moodle
                 jobType: typeof(CheckAttendeeJob),
                 cronExpression: "0 0/5 * ? * * *"));
 
-            // Add Check Attendee job
-            services.AddSingleton<AutoClose>();
-            services.AddSingleton(new JobSchedule(
-                jobType: typeof(AutoClose),
-                cronExpression: "0 0 0/1 ? * * *"));
+            
 
             if(!environment.IsDevelopment())
             {
@@ -239,8 +240,6 @@ namespace lms_with_moodle
                 services.AddSingleton(new JobSchedule(
                     jobType: typeof(ServiceErrorCollector),
                     cronExpression: "0 0 0/2 ? * * *"));
-
-                services.AddHostedService<QuartzHostedService>();
             }
             else
             {
@@ -250,8 +249,9 @@ namespace lms_with_moodle
                 //     jobType: typeof(ServiceErrorCollector),
                 //     cronExpression: "0 0/5 * ? * * *"));
 
-                // services.AddHostedService<QuartzHostedService>();
             }
+
+            services.AddHostedService<QuartzHostedService>();
             
 
             // services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
