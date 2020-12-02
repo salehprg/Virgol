@@ -93,11 +93,26 @@ public class ClassScheduleService {
         {
             int lessonMoodleId = appDbContext.School_Lessons.Where(x => x.Lesson_Id == classSchedule.LessonId && x.classId == classSchedule.ClassId).FirstOrDefault().Moodle_Id;
 
-            EnrolUser teacher = new EnrolUser();
-            teacher.lessonId = lessonMoodleId;
-            teacher.UserId = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault().Moodle_Id;
+            UserModel teacherModel = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault();
 
-            bool unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
+            bool unassignTeacher = false;
+
+            if(teacherModel != null)
+            {
+                EnrolUser teacher = new EnrolUser();
+                teacher.lessonId = lessonMoodleId;
+                teacher.UserId = teacherModel.Moodle_Id;
+                
+                if(teacher.UserId != 0)
+                {
+                    unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
+                }
+                else
+                {
+                    teacherModel.Moodle_Id = await moodleApi.CreateUser(teacherModel);
+                    unassignTeacher = true;
+                }
+            }
             //bool unassignTeacher = true;
 
             if(unassignTeacher)

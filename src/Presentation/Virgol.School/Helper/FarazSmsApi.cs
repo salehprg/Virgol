@@ -121,11 +121,11 @@ namespace lms_with_moodle.Helper
             return true;
         }
 
-        public bool SendErrorCollecotr(string Numbers , string serviceError , string messages)
+        public bool SendErrorCollecotr(string Numbers , string serviceError , string singularPlural)
         {
             ErrorCollectorModel errorCollector = new ErrorCollectorModel();
             errorCollector.serviceName = serviceError;
-            errorCollector.singularPlural = messages;
+            errorCollector.singularPlural = singularPlural;
 
             SendPatternModel<ErrorCollectorModel> patternModel = new SendPatternModel<ErrorCollectorModel>();
 

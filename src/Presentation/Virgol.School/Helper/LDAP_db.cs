@@ -23,7 +23,7 @@ namespace lms_with_moodle.Helper
 
             // Creating an LdapConnection instance 
             ldapConn= new LdapConnection();
-            ldapConn.ConnectionTimeout = 5000;
+            //ldapConn.ConnectionTimeout = 10000;
             
         }
 

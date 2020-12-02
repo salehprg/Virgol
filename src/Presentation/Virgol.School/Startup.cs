@@ -243,11 +243,11 @@ namespace lms_with_moodle
             }
             else
             {
-                // Add Error Collector job
-                // services.AddSingleton<ServiceErrorCollector>();
-                // services.AddSingleton(new JobSchedule(
-                //     jobType: typeof(ServiceErrorCollector),
-                //     cronExpression: "0 0/5 * ? * * *"));
+                //Add Error Collector job
+                services.AddSingleton<ServiceErrorCollector>();
+                services.AddSingleton(new JobSchedule(
+                    jobType: typeof(ServiceErrorCollector),
+                    cronExpression: "0 0/1 * ? * * *"));
 
             }
 

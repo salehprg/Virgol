@@ -37,6 +37,8 @@ namespace Schedule
                     string message = "";
                     string service = " - ";
 
+                    int counter = 0;
+
                     LDAP_db ldap = new LDAP_db(dbContext);
                     BBBApi bBBApi = new BBBApi(dbContext);
                     
@@ -56,9 +58,11 @@ namespace Schedule
 
                             if(!bbbResponse)
                             {
-                                message += System.Environment.NewLine;
-                                message += "سرویس BBB مدرسه " + school.SchoolName + " قطع میباشد ";
+                                message += (counter > 0 ? " و " : "") + " سرویس BBB مدرسه " + school.SchoolName;
+
+                                counter++;
                             }
+                            
                         }
 
                         if(!string.IsNullOrEmpty(school.AdobeUrl))
@@ -68,8 +72,9 @@ namespace Schedule
 
                             if(!adobeResult)
                             {
-                                message += System.Environment.NewLine;
-                                message += "سرویس adobe مدرسه " + school.SchoolName + " قطع میباشد ";
+                                message += (counter > 0 ? " و " : "") + " سرویس adobe مدرسه " + school.SchoolName;
+
+                                counter++;
                             }
                         }
                     }
@@ -77,11 +82,20 @@ namespace Schedule
                     if(!string.IsNullOrEmpty(message))
                     {
                         string[] numbers = {"09154807673" , "09333545494" , "09361207250"};
-                        foreach (var number in numbers)
+                        if(counter > 1)
                         {
-                            smsApi.SendErrorCollecotr(number , service , message);    
+                            foreach (var number in numbers)
+                            {
+                                smsApi.SendErrorCollecotr(number , message , " اند ");    
+                            }
                         }
-                        
+                        if(counter == 1)
+                        {
+                            foreach (var number in numbers)
+                            {
+                                smsApi.SendErrorCollecotr(number , message , " است ");    
+                            }
+                        }
                     }
                     
                 }
