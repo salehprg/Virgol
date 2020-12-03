@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   virgol:
-    image: goldenstarc/virgol:1.7.14.4-Beta5
+    image: goldenstarc/virgol:1.8
     restart: always
     container_name: virgol_main
     volumes:
@@ -39,7 +39,7 @@ services:
       - REACT_APP_RAHE_DOOR_TEXT=ورود به سامانه آموزش از راه دور خراسان رضوی
       - REACT_APP_FAVICON_NAME=favicon_virgool
       - REACT_APP_MOODLE_URL=https://moodle.legace.ir/login/index.php
-      - REACT_APP_VERSION=1.7.14.4-Beta5
+      - REACT_APP_VERSION=1.8
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`lms.legace.ir`)"
