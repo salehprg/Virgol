@@ -256,8 +256,8 @@ class CompleteProfile extends React.Component {
 const validate = formValues => {
     const errors = {}
 
-    if (!formValues.latinFirstname) errors.latinFirstname = true
-    if (!formValues.latinLastname) errors.latinLastname = true
+    if (!formValues.latinFirstname || !validator.checkEnglish(formValues.latinFirstname)) errors.latinFirstname = true
+    if (!formValues.latinLastname || !validator.checkEnglish(formValues.latinLastname)) errors.latinLastname = true
     if (!formValues.phoneNumber) errors.phoneNumber = true
     if (!formValues.fatherPhoneNumber) errors.fatherPhoneNumber = true
     if (!formValues.cityBirth) errors.cityBirth = true

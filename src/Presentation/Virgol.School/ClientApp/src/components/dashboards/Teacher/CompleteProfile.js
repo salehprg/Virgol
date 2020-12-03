@@ -8,7 +8,7 @@ import { reduxForm, Field, formValues } from 'redux-form'
 import { connect } from 'react-redux';
 import { CompleteTeacherProfile} from "../../../_actions/authActions"
 import moment from 'moment-jalaali'
-import {validator} from '../../../assets/validator'
+import { validator } from '../../../assets/validator'
 import protectedTeacher from "../../protectedRoutes/protectedTeacher";
 
 class CompleteProfile extends React.Component {
@@ -100,8 +100,8 @@ class CompleteProfile extends React.Component {
 const validate = formValues => {
     const errors = {}
 
-    if (!formValues.latinFirstname) errors.latinFirstname = true
-    if (!formValues.latinLastname) errors.latinLastname = true
+    if (!formValues.latinFirstname || !validator.checkEnglish(formValues.latinFirstname)) errors.latinFirstname = true
+    if (!formValues.latinLastname  || !validator.checkEnglish(formValues.latinLastname)) errors.latinLastname = true
     //if (!formValues.personalIdNUmber) errors.personalIdNUmber = true
 
     return errors;
