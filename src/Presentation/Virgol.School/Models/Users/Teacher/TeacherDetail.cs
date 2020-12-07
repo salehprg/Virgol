@@ -25,7 +25,7 @@ public class TeacherDetail {
             int Id = -1;
             int.TryParse(schoolId , out Id);
 
-            if(Id != -1)
+            if(Id != -1 && Id != 0)
             {
                 schoolsId.Add(Id);
             }

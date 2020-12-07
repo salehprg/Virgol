@@ -183,7 +183,7 @@ export const CreatePrivateRoom = (roomName , schoolId = 0) => async dispatch => 
 
     try {
         
-
+        //console.log(localStorage.getItem('userToken'))
         dispatch({ type: START })
         const response = await lms.put(`/Meeting/CreatePrivateRoom?roomName=${roomName}&schoolId=${schoolId}` , null , {
             headers: {

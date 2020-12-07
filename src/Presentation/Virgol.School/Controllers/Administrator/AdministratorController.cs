@@ -76,6 +76,45 @@ namespace lms_with_moodle.Controllers
             administratorService = new AdministratorService(appDbContext , moodleApi);
         }
 #region Users
+
+    public class NewUserInput
+    {
+        public UserModel userData {get;set;}
+        public List<string> roles {get;set;}
+        public string password {get;set;}
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateNewUser([FromBody]NewUserInput userInput)
+    {
+        try
+        {
+            foreach (var role in userInput.roles)
+            {
+                if(await roleManager.FindByNameAsync(role) == null)
+                {
+                    IdentityRole<int> newRole = new IdentityRole<int>();
+                    newRole.Name = role;
+
+                    await roleManager.CreateAsync(newRole);
+                }
+            }
+            
+            UserDataModel userDataModel = new UserDataModel();
+
+            var serialized = JsonConvert.SerializeObject(userInput.userData);
+            userDataModel = JsonConvert.DeserializeObject<UserDataModel>(serialized);
+
+            List<UserDataModel> results = await UserService.CreateUser(new List<UserDataModel> {userDataModel} , userInput.roles , 0 , userInput.password);
+
+            return Ok(results);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.StackTrace);
+            throw;
+        }
+    }
     public async Task<IActionResult> ChangePassword(string IdNumber , string newPassword)
     {
         try
