@@ -62,12 +62,21 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                
-                UserModel userModel = appDbContext.Users.Where(x => x.UserName == username).FirstOrDefault();
+                if(string.IsNullOrEmpty(username))
+                    return BadRequest("مقدار 'username' تنظیم نشده است");
+
+                string[] emailInfo = username.Split('@');
+                string email = username;
+                if(emailInfo.Length == 1)
+                {
+                    email += "@legace.ir";
+                }
+
+                UserModel userModel = appDbContext.Users.Where(x => x.UserName == username || x.Email == email).FirstOrDefault();
                 List<string> roles = await UserService.GetUserRoles(userModel);
 
-                if(userModel == null)
-                    return Unauthorized("حساب شما در سامانه موجود نمیباشد");
+                if(userModel == null || string.IsNullOrEmpty(userModel.LatinFirstname) || string.IsNullOrEmpty(userModel.LatinLastname))
+                    return Unauthorized("اطلاعات حساب درخواستی موجود نمیباشد یا هنوز در سامانه احراز هویت نشده است");
                     
                 List<GroupModel> groups = new List<GroupModel>();
                 List<ContactModel> contacts = new List<ContactModel>();
