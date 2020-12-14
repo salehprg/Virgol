@@ -421,7 +421,8 @@ namespace lms_with_moodle.Controllers
 #endregion
 
 #region CoManager
-                [HttpGet]
+
+        [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [Authorize(Roles = Roles.Admin)]
@@ -604,6 +605,7 @@ namespace lms_with_moodle.Controllers
 
 
 #endregion
+
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]

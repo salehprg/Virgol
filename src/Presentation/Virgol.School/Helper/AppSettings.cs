@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Models;
 
 namespace lms_with_moodle.Helper
 {
@@ -56,6 +57,23 @@ namespace lms_with_moodle.Helper
 
         public static string ServerRootUrl { get; set; }
 
+        public static string GetValueFromDatabase (AppDbContext appDbContext , string key)
+        {
+            try
+            {
+                SiteSettings settings = appDbContext.SiteSettings.Where(x => x.key == key).FirstOrDefault();
+                if(settings != null)
+                {
+                    return settings.value;
+                }
+
+                throw new Exception("Key Not Found !");
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public override string ToString()
         {

@@ -42,6 +42,9 @@ namespace Models
         public DbSet<Region> Regions {get; set;}
         public DbSet<DocumentModel> Documents {get; set;}
         public DbSet<StreamModel> Streams {get; set;}
+        public DbSet<PaymentsModel> Payments {get; set;}
+        public DbSet<ServicePrice> ServicePrices {get; set;}
+        public DbSet<SiteSettings> SiteSettings {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}
@@ -51,10 +54,24 @@ namespace Models
         public DbSet<MeetingView> MeetingViews {get; set;}
 
 
-        // protected override void OnModelCreating(ModelBuilder builder)
-        // {
-        //     base.OnModelCreating(builder);
-
-        // }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            
+                builder.Entity<SiteSettings>().HasData(
+                    new SiteSettings
+                    {
+                        Id = 1,
+                        key = Settingkey.PayPingURL , 
+                        value = "https://api.payping.ir"
+                    } ,
+                    new SiteSettings
+                    {
+                        Id = 2,
+                        key = Settingkey.PayPingToken , 
+                        value = "token"
+                    }
+                );
+        }
     }
 }
