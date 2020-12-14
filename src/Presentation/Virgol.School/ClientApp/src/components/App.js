@@ -44,6 +44,7 @@ import Streamer from './dashboards/stream/Streamer';
 import EditGroup from './dashboards/manager/groups/EditGroup';
 import SessionsList from './dashboards/student/classes/SessionsList';
 import EditStream from './dashboards/stream/EditStream';
+import Plans from './plans/Plans';
 
 class App extends React.Component {
 
@@ -93,6 +94,7 @@ class App extends React.Component {
                         <Route path="/newStudent" component={AddStudent} />
                         <Route path="/newGroup" component={AddGroup} />
                         <Route path="/editGroup/:id" component={EditGroup} />
+                        <Route path="/plans" component={Plans} />
                         
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />

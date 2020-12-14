@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import {GetActiveStream} from "../../../../_actions/streamActions"
 import {getManagerDashboardInfo} from "../../../../_actions/managerActions"
 import {GetIncommingNews , GetMyNews} from "../../../../_actions/newsActions"
+import Activation from "./Activation";
 
 class Home extends React.Component {
 
@@ -63,12 +64,15 @@ class Home extends React.Component {
                                   ShowServiceType = {false} />
                     )}
                     <div className="mt-8">
-                        <CounterCard
+
+                        <Activation expireDate="1399/11/10" />
+
+                        {/* <CounterCard
                             title={this.props.t('allClasses')}
                             icon={home}
                             number={this.props.dashboardInfo.classCount}
                             bg="bg-sky-blue"
-                        />
+                        /> */}
 
                         <CounterCard
                             title={this.props.t('onlineClasses')}

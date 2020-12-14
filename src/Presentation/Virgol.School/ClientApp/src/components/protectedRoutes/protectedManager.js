@@ -26,7 +26,7 @@ export default ChildComponent => {
                 }
             }
 
-            //history.push('/')
+            // history.push('/')
         }
 
         render() {

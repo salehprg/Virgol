@@ -89,6 +89,14 @@ class Tracker extends React.Component {
         return null;
     }
 
+    getServiceIcon(service) {
+        if (service) {
+            if (service === 'adobe') return <img className="w-6 mx-2" src="/Connect.png" />
+            else return <img className="w-6 mx-2" src="/BBB.png" />
+        }
+        return null;
+    }
+
     render() {
         const layout = this.state.layout.concat(this.state.lessons);
         return (
@@ -112,6 +120,7 @@ class Tracker extends React.Component {
                                 return (
                                     <div onClick={() => this.showLessonInfo(x.i)} className={`pointer overflow-hidden border flex flex-col justify-center border-white text-center text-white ${x.c}`} key={x.i}>
                                         <p className="text-center">{x.name}</p>
+                                        {this.getServiceIcon(x.serviceType)}
                                         {this.showOnGoing(x.lessonDetail)}
                                     </div>
                                 );
