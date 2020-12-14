@@ -21,21 +21,10 @@ namespace lms_with_moodle.Helper
         {
             client = new HttpClient(); 
             appDbContext = _appDbContext;
-            
-            //client.Timeout = new TimeSpan(0 , 0 , 5);
-
-            bbbUrl = AppSettings.VIRGOL_SCALELITE_BASE_URL;
-            bbbSecret = AppSettings.VIRGOL_SCALELITE_SECRET;
-
+        
             if(scheduleId != 0)
             {
                 SetConnectionInfo(scheduleId);
-            }
-
-            if(AppSettings.VIRGOL_BBB_LOAD_BALANCER_MODE == "scalelite")
-            {
-                bbbUrl = AppSettings.VIRGOL_SCALELITE_BASE_URL;
-                bbbSecret = AppSettings.VIRGOL_SCALELITE_SECRET;
             }
         }       
 
@@ -282,17 +271,14 @@ namespace lms_with_moodle.Helper
 
         public void SetConnectionInfo(string _bbbUrl , string _bbbSecret)
         {
-            if(AppSettings.VIRGOL_BBB_LOAD_BALANCER_MODE == "separate")
-            {
-                bbbUrl = _bbbUrl;
-                bbbSecret = _bbbSecret;
-            }
+            bbbUrl = _bbbUrl;
+            bbbSecret = _bbbSecret;
         }
     
 
         public void SetConnectionInfo(int ScheduleId)
         {
-            if(ScheduleId != 0 && AppSettings.VIRGOL_BBB_LOAD_BALANCER_MODE == "separate")//Schedule id of PrivateMeeting is 0
+            if(ScheduleId != 0)
             {
                 int classId = appDbContext.ClassScheduleView.Where(x => x.Id == ScheduleId).FirstOrDefault().ClassId;
                 int schoolId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().School_Id;

@@ -8,13 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
 using lms_with_moodle.Helper;
-
 using Models;
 using Models.User;
+using Models.Users.Roles;
 using Microsoft.AspNetCore.Http;
-using System.IO;
 using Models.InputModel;
-using ExcelDataReader;
 using Newtonsoft.Json;
 
 namespace lms_with_moodle.Controllers
@@ -408,63 +406,61 @@ namespace lms_with_moodle.Controllers
                 bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
                 //bool removeCat = true;
 
-                if(removeCat)
+                UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault();
+                if(manager != null)
                 {
-                    UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault();
-                    if(manager != null)
-                    {
-                        // manager.SchoolId = 0;
-                        // await userManager.RemoveFromRoleAsync(manager , Roles.Manager);
-                        // appDbContext.Users.Update(manager);
+                    // manager.SchoolId = 0;
+                    // await userManager.RemoveFromRoleAsync(manager , Roles.Manager);
+                    // appDbContext.Users.Update(manager);
 
-                        await UserService.DeleteUser(manager);
-                        
-                    }
+                    await UserService.DeleteUser(manager);
                     
-                    appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
-                    appDbContext.School_StudyFields.RemoveRange(appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList());
-                    appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
-
-                    List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList();
-                    foreach (var classs in classes)
-                    {
-                        appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classs.Id).ToList());
-                    }
-
-                    appDbContext.School_Classes.RemoveRange();
-                    
-
-                    List<UserModel> students = appDbContext.Users.Where(x => x.SchoolId == school.Id).ToList();
-
-                    foreach (var student in students)
-                    {
-                        try
-                        {
-                            //Second operator just for old User
-                            if(UserService.HasRole(student , Roles.Student) || UserService.HasRole(student , Roles.User , true))
-                            {
-                                await UserService.DeleteUser(student);
-                                
-                                School_studentClass stdClass = appDbContext.School_StudentClasses.Where(x => x.UserId == student.Id).FirstOrDefault();
-                                StudentDetail stdDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
-                                ParticipantInfo participant = appDbContext.ParticipantInfos.Where(x => x.UserId == student.Id).FirstOrDefault();
-
-                                appDbContext.ParticipantInfos.Remove(participant);
-                                appDbContext.StudentDetails.Remove(stdDetail);
-                                appDbContext.School_StudentClasses.Remove(stdClass);
-                            }
-                            
-                        }catch{}
-                    }
-                    //appDbContext.Users.RemoveRange(appDbContext.Users.Where(x => x.SchoolId == school.Id));
-                    appDbContext.Schools.Remove(school);
-
-                    await appDbContext.SaveChangesAsync();
-
-                    return Ok(schoolId);
                 }
                 
-                return BadRequest("مشکلی در حذف مدرسه بوجود آمد");
+                // appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
+                // appDbContext.School_StudyFields.RemoveRange(appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList());
+                // appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
+
+                // List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList();
+                // foreach (var classs in classes)
+                // {
+                //     appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classs.Id).ToList());
+                // }
+
+                // appDbContext.School_Classes.RemoveRange();
+                
+
+                // List<UserModel> students = appDbContext.Users.Where(x => x.SchoolId == school.Id).ToList();
+
+                // foreach (var student in students)
+                // {
+                //     try
+                //     {
+                //         //Second operator just for old User
+                //         if(UserService.HasRole(student , Roles.Student) || UserService.HasRole(student , Roles.User , true))
+                //         {
+                //             await UserService.DeleteUser(student);
+                            
+                //             School_studentClass stdClass = appDbContext.School_StudentClasses.Where(x => x.UserId == student.Id).FirstOrDefault();
+                //             StudentDetail stdDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
+                //             ParticipantInfo participant = appDbContext.ParticipantInfos.Where(x => x.UserId == student.Id).FirstOrDefault();
+
+                //             appDbContext.ParticipantInfos.Remove(participant);
+                //             appDbContext.StudentDetails.Remove(stdDetail);
+                //             appDbContext.School_StudentClasses.Remove(stdClass);
+                //         }
+                        
+                //     }catch{}
+                // }
+                //appDbContext.Users.RemoveRange(appDbContext.Users.Where(x => x.SchoolId == school.Id));
+                appDbContext.Schools.Remove(school);
+
+                await appDbContext.SaveChangesAsync();
+
+                return Ok(schoolId);
+                // }
+                
+                // return BadRequest("مشکلی در حذف مدرسه بوجود آمد");
             }
             catch(Exception ex)
             {

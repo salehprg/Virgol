@@ -6,6 +6,7 @@ using lms_with_moodle.Helper;
 using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.User;
+using Models.Users.Roles;
 
 public class PaymentService {
 

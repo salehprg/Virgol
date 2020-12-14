@@ -4,18 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using System.Net;
-using System.Security.Cryptography;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Models.MoodleApiResponse;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.Extensions.Options;
+
 
 using lms_with_moodle.Helper;
 
@@ -24,7 +15,7 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
-using static SchoolService;
+using Models.Users.Roles;
 using ExcelDataReader;
 using Models.Users.Teacher;
 using Newtonsoft.Json;

@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201017075714_AdobeConnect")]
-    partial class AdobeConnect
+    [Migration("20201214205237_NewConfig")]
+    partial class NewConfig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,12 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("orgMoodleId")
                         .HasColumnType("integer");
+
+                    b.Property<int>("streamLimit")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("streamURL")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -123,6 +129,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<string>("SchoolName")
                         .HasColumnType("text");
+
+                    b.Property<int>("School_Id")
+                        .HasColumnType("integer");
 
                     b.Property<float>("StartHour")
                         .HasColumnType("real");
@@ -316,14 +325,14 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("ScheduleId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ServiceType")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("TeacherId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("serviceType")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -387,6 +396,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int?>("School_Id")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ServiceType")
+                        .HasColumnType("text");
 
                     b.Property<float?>("StartHour")
                         .HasColumnType("real");
@@ -541,6 +553,9 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("MeetingId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("MixedName")
                         .HasColumnType("text");
 
@@ -572,6 +587,9 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FatherPhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MotherName")
                         .HasColumnType("text");
 
                     b.Property<string>("ShDocument")
@@ -669,9 +687,6 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
 
-                    b.Property<int>("UserType")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -682,24 +697,6 @@ namespace lms_with_moodle.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Models.Users.Teacher.TeacherCourseInfo", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("id");
-
-                    b.ToTable("TeacherCourse");
                 });
 
             modelBuilder.Entity("Models.Users.Teacher.TeacherViewModel", b =>
@@ -861,6 +858,42 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("ParticipantViews");
                 });
 
+            modelBuilder.Entity("PaymentsModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("amount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("payTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("paymentCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("refId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("reqId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("serviceId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("status")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("Region", b =>
                 {
                     b.Property<int>("Id")
@@ -888,6 +921,15 @@ namespace lms_with_moodle.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("AdobeUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Adobe_Password")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Adobe_Username")
+                        .HasColumnType("text");
 
                     b.Property<int>("ManagerId")
                         .HasColumnType("integer");
@@ -919,6 +961,12 @@ namespace lms_with_moodle.Migrations
                     b.Property<bool>("SelfSign")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("adobeExpireDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("bbbExpireDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("bbbSecret")
                         .HasColumnType("text");
 
@@ -927,6 +975,12 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("sexuality")
                         .HasColumnType("integer");
+
+                    b.Property<int>("streamLimit")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("streamURL")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -950,6 +1004,8 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("School_Id");
 
                     b.ToTable("School_Bases");
                 });
@@ -978,6 +1034,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("School_Id");
+
                     b.ToTable("School_Classes");
                 });
 
@@ -998,6 +1056,8 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("School_Id");
 
                     b.ToTable("School_Grades");
                 });
@@ -1023,6 +1083,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("School_Id");
+
                     b.ToTable("School_Lessons");
                 });
 
@@ -1044,6 +1106,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("School_Id");
+
                     b.ToTable("School_StudyFields");
                 });
 
@@ -1062,7 +1126,68 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClassId");
+
                     b.ToTable("School_StudentClasses");
+                });
+
+            modelBuilder.Entity("ServicePrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<float>("discount")
+                        .HasColumnType("real");
+
+                    b.Property<string>("option")
+                        .HasColumnType("text");
+
+                    b.Property<int>("pricePerUser")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("serviceName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("serviceType")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServicePrices");
+                });
+
+            modelBuilder.Entity("SiteSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("key")
+                        .HasColumnType("text");
+
+                    b.Property<string>("value")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SiteSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            key = "PayPingURL",
+                            value = "https://api.payping.ir"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            key = "PayPingToken",
+                            value = "token"
+                        });
                 });
 
             modelBuilder.Entity("State", b =>
@@ -1081,6 +1206,48 @@ namespace lms_with_moodle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("States");
+                });
+
+            modelBuilder.Entity("StreamModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("JoinLink")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OBS_Key")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OBS_Link")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("StreamName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("StreamerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("allowedRoles")
+                        .HasColumnType("text");
+
+                    b.Property<float>("duration")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Streams");
                 });
 
             modelBuilder.Entity("StudentViewModel", b =>
@@ -1124,6 +1291,9 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("MelliCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MotherName")
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
@@ -1179,6 +1349,9 @@ namespace lms_with_moodle.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("MeetingService")
+                        .HasColumnType("text");
 
                     b.Property<string>("SchoolsId")
                         .HasColumnType("text");
@@ -1247,6 +1420,60 @@ namespace lms_with_moodle.Migrations
                     b.HasOne("Models.User.UserModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_Bases", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_Class", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_Grades", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_Lessons", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_StudyFields", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_studentClass", b =>
+                {
+                    b.HasOne("School_Class", null)
+                        .WithMany()
+                        .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

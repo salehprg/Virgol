@@ -49,6 +49,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("AdminDetails");
                 });
 
@@ -178,6 +180,10 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("MixedId");
+
                     b.ToTable("ClassWeeklySchedules");
                 });
 
@@ -286,6 +292,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("ManagerDetails");
                 });
 
@@ -333,6 +341,8 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
 
                     b.ToTable("Meetings");
                 });
@@ -601,6 +611,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("StudentDetails");
                 });
 
@@ -811,6 +823,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MeetingId");
+
                     b.ToTable("ParticipantInfos");
                 });
 
@@ -866,8 +880,8 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("amount")
-                        .HasColumnType("double precision");
+                    b.Property<int>("amount")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("payTime")
                         .HasColumnType("timestamp without time zone");
@@ -1003,6 +1017,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("School_Id");
+
                     b.ToTable("School_Bases");
                 });
 
@@ -1030,6 +1046,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("School_Id");
+
                     b.ToTable("School_Classes");
                 });
 
@@ -1050,6 +1068,8 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("School_Id");
 
                     b.ToTable("School_Grades");
                 });
@@ -1075,6 +1095,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("School_Id");
+
                     b.ToTable("School_Lessons");
                 });
 
@@ -1096,6 +1118,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("School_Id");
+
                     b.ToTable("School_StudyFields");
                 });
 
@@ -1114,6 +1138,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClassId");
+
                     b.ToTable("School_StudentClasses");
                 });
 
@@ -1130,8 +1156,8 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("option")
                         .HasColumnType("text");
 
-                    b.Property<double>("pricePerUser")
-                        .HasColumnType("double precision");
+                    b.Property<int>("pricePerUser")
+                        .HasColumnType("integer");
 
                     b.Property<string>("serviceName")
                         .HasColumnType("text");
@@ -1356,7 +1382,51 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TeacherId");
+
                     b.ToTable("TeacherDetails");
+                });
+
+            modelBuilder.Entity("AdminDetail", b =>
+                {
+                    b.HasOne("Models.User.UserModel", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Class_WeeklySchedule", b =>
+                {
+                    b.HasOne("School_Class", null)
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MixedSchedule", null)
+                        .WithMany()
+                        .HasForeignKey("MixedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ManagerDetail", b =>
+                {
+                    b.HasOne("Models.User.UserModel", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Meeting", b =>
+                {
+                    b.HasOne("Class_WeeklySchedule", null)
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1406,6 +1476,87 @@ namespace lms_with_moodle.Migrations
                     b.HasOne("Models.User.UserModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Models.User.StudentDetail", b =>
+                {
+                    b.HasOne("Models.User.UserModel", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ParticipantInfo", b =>
+                {
+                    b.HasOne("Meeting", null)
+                        .WithMany()
+                        .HasForeignKey("MeetingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_Bases", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_Class", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_Grades", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_Lessons", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_StudyFields", b =>
+                {
+                    b.HasOne("SchoolModel", null)
+                        .WithMany()
+                        .HasForeignKey("School_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("School_studentClass", b =>
+                {
+                    b.HasOne("School_Class", null)
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TeacherDetail", b =>
+                {
+                    b.HasOne("Models.User.UserModel", null)
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
