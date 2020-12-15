@@ -79,55 +79,70 @@ namespace Models
             #endregion
 
             #region Foreign Key Cofigure
-                builder.Entity<School_Bases>()
-                    .HasOne<SchoolModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.School_Id)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
+
+                #region SchoolModel
+
+                    builder.Entity<School_Bases>()
+                        .HasOne<SchoolModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.School_Id)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<School_Grades>()
+                        .HasOne<SchoolModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.School_Id)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<School_Lessons>()
+                        .HasOne<SchoolModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.School_Id)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<School_StudyFields>()
+                        .HasOne<SchoolModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.School_Id)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<School_Class>()
+                        .HasOne<SchoolModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.School_Id)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                #endregion
+
+                #region SchoolClass
+
+                    builder.Entity<Class_WeeklySchedule>()
+                        .HasOne<School_Class>()
+                        .WithMany()
+                        .HasForeignKey(x => x.ClassId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<School_studentClass>()
+                        .HasOne<School_Class>()
+                        .WithMany()
+                        .HasForeignKey(x => x.ClassId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<School_Lessons>()
+                        .HasOne<School_Class>()
+                        .WithMany()
+                        .HasForeignKey(x => x.classId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
                     
-
-                builder.Entity<School_Grades>()
-                    .HasOne<SchoolModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.School_Id)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                builder.Entity<School_Lessons>()
-                    .HasOne<SchoolModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.School_Id)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                builder.Entity<School_StudyFields>()
-                    .HasOne<SchoolModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.School_Id)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                builder.Entity<School_Class>()
-                    .HasOne<SchoolModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.School_Id)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                builder.Entity<Class_WeeklySchedule>()
-                    .HasOne<School_Class>()
-                    .WithMany()
-                    .HasForeignKey(x => x.ClassId)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                builder.Entity<School_studentClass>()
-                    .HasOne<School_Class>()
-                    .WithMany()
-                    .HasForeignKey(x => x.ClassId)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
+                #endregion
 
                 builder.Entity<Meeting>()
                     .HasOne<Class_WeeklySchedule>()
@@ -150,33 +165,58 @@ namespace Models
                     .HasPrincipalKey(x => x.Id)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                builder.Entity<TeacherDetail>()
-                    .HasOne<UserModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.TeacherId)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-                
-                builder.Entity<StudentDetail>()
-                    .HasOne<UserModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.UserId)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-                
-                builder.Entity<ManagerDetail>()
-                    .HasOne<UserModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.UserId)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
+                #region UserModel
 
-                 builder.Entity<AdminDetail>()
-                    .HasOne<UserModel>()
-                    .WithMany()
-                    .HasForeignKey(x => x.UserId)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    builder.Entity<Class_WeeklySchedule>()
+                        .HasOne<UserModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.TeacherId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<NewsModel>()
+                        .HasOne<UserModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.AutherId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<TeacherDetail>()
+                        .HasOne<UserModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.TeacherId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+                    
+                    builder.Entity<School_studentClass>()
+                        .HasOne<UserModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.UserId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<StudentDetail>()
+                        .HasOne<UserModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.UserId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+                    
+                    builder.Entity<ManagerDetail>()
+                        .HasOne<UserModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.UserId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<AdminDetail>()
+                        .HasOne<UserModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.UserId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                #endregion
 
 
             #endregion

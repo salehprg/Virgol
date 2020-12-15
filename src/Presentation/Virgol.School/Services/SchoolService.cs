@@ -112,6 +112,11 @@ public class SchoolService {
                             if(schoolGrade != null)
                             {
                                 appDbContext.School_Grades.Remove(schoolGrade);
+                                School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Grade_Id == schoolGrade.Grade_Id && x.School_Id == schoolBase.School_Id).FirstOrDefault();
+                                if(schoolClass != null)
+                                {
+                                    appDbContext.School_Classes.Remove(schoolClass);
+                                }
                             }
                         }
 
@@ -213,6 +218,12 @@ public class SchoolService {
                     {
                         School_Grades schoolGrade = appDbContext.School_Grades.Where(x => x.Grade_Id == grade.Id && x.School_Id == schoolStudyField.School_Id).FirstOrDefault();
                         appDbContext.School_Grades.Remove(schoolGrade);
+                        
+                        School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Grade_Id == schoolGrade.Grade_Id && x.School_Id == schoolStudyField.School_Id).FirstOrDefault();
+                        if(schoolClass != null)
+                        {
+                            appDbContext.School_Classes.Remove(schoolClass);
+                        }
                     }
 
                     appDbContext.School_StudyFields.Remove(schoolStudyField);
@@ -294,67 +305,4 @@ public class SchoolService {
             return null;
         }
 
-        // public async Task<CreateSchoolResult> CreateSchool_Grade(List<int> baseIds , List<int> studyFIds , List<int> gradeIds , int SchoolMoodleId)
-        // {
-        //     List<School_Bases> school_Bases = new List<School_Bases>();
-        //     List<School_Grades> school_Grades = new List<School_Grades>();
-        //     List<School_StudyFields> school_StudyFields = new List<School_StudyFields>();
-
-        //     foreach (var id in baseIds)
-        //     {
-
-        //         BaseModel baseModel = appDbContext.Bases.Where(x => x.Id == id).FirstOrDefault();
-        //         int baseMoodleId = await moodleApi.CreateCategory(baseModel.BaseName , SchoolMoodleId);
-
-        //         School_Bases school_Base = new School_Bases();
-        //         school_Base.Base_Id = id;
-        //         school_Base.Moodle_Id = baseMoodleId;
-        //         school_Bases.Add(school_Base);
-                
-        //         List<StudyFieldModel> studyFields = appDbContext.StudyFields.Where(x => x.Base_Id == id).ToList();
-        //         if(studyFields != null)
-        //         {
-        //             foreach (var studyFieldId in studyFIds)
-        //             {
-        //                 StudyFieldModel study = studyFields.Where(x => x.Id == studyFieldId).FirstOrDefault();
-        //                 int studyFMoodleId = await moodleApi.CreateCategory(study.StudyFieldName , baseMoodleId);
-
-        //                 //Add syudyFielsd to school Study Fields List
-        //                 School_StudyFields school_StudyField = new School_StudyFields();
-        //                 school_StudyField.Moodle_Id = studyFMoodleId;
-        //                 school_StudyField.StudyField_Id = studyFieldId;
-
-        //                 school_StudyFields.Add(school_StudyField);
-
-
-        //                 List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.StudyField_Id == studyFieldId).ToList();
-        //                 foreach (var gradeModel in gradeModels)
-        //                 {
-        //                     //Just add grades in selected studyField
-        //                     int gradeId = gradeIds.Where(x => x == gradeModel.Id).FirstOrDefault();
-        //                     if(gradeId > 0)
-        //                     {
-                                
-        //                         int gradeIdMoodle = await moodleApi.CreateCategory(gradeModel.GradeName  , studyFMoodleId);
-
-        //                         School_Grades school_Grade = new School_Grades();
-        //                         school_Grade.Moodle_Id = gradeIdMoodle;
-        //                         school_Grade.Grade_Id = gradeId;
-
-        //                         school_Grades.Add(school_Grade);
-
-        //                     }
-        //                 }
-        //             }
-        //         }
-
-        //     }
-
-        //     CreateSchoolResult createSchoolResult = new CreateSchoolResult();
-        //     createSchoolResult.school_Bases = school_Bases;
-        //     createSchoolResult.school_Grades = school_Grades;
-        //     createSchoolResult.school_StudyFields = school_StudyFields;
-
-        //     return createSchoolResult;
-        // }
 }

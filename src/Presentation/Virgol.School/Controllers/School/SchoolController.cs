@@ -416,51 +416,15 @@ namespace lms_with_moodle.Controllers
                     await UserService.DeleteUser(manager);
                     
                 }
-                
-                // appDbContext.School_Bases.RemoveRange(appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList());
-                // appDbContext.School_StudyFields.RemoveRange(appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList());
-                // appDbContext.School_Grades.RemoveRange(appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList());
+        
+                List<UserModel> students = appDbContext.Users.Where(x => x.SchoolId == school.Id).ToList();
+                appDbContext.Users.RemoveRange(students);
 
-                // List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id).ToList();
-                // foreach (var classs in classes)
-                // {
-                //     appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classs.Id).ToList());
-                // }
-
-                // appDbContext.School_Classes.RemoveRange();
-                
-
-                // List<UserModel> students = appDbContext.Users.Where(x => x.SchoolId == school.Id).ToList();
-
-                // foreach (var student in students)
-                // {
-                //     try
-                //     {
-                //         //Second operator just for old User
-                //         if(UserService.HasRole(student , Roles.Student) || UserService.HasRole(student , Roles.User , true))
-                //         {
-                //             await UserService.DeleteUser(student);
-                            
-                //             School_studentClass stdClass = appDbContext.School_StudentClasses.Where(x => x.UserId == student.Id).FirstOrDefault();
-                //             StudentDetail stdDetail = appDbContext.StudentDetails.Where(x => x.UserId == student.Id).FirstOrDefault();
-                //             ParticipantInfo participant = appDbContext.ParticipantInfos.Where(x => x.UserId == student.Id).FirstOrDefault();
-
-                //             appDbContext.ParticipantInfos.Remove(participant);
-                //             appDbContext.StudentDetails.Remove(stdDetail);
-                //             appDbContext.School_StudentClasses.Remove(stdClass);
-                //         }
-                        
-                //     }catch{}
-                // }
-                //appDbContext.Users.RemoveRange(appDbContext.Users.Where(x => x.SchoolId == school.Id));
                 appDbContext.Schools.Remove(school);
 
                 await appDbContext.SaveChangesAsync();
 
                 return Ok(schoolId);
-                // }
-                
-                // return BadRequest("مشکلی در حذف مدرسه بوجود آمد");
             }
             catch(Exception ex)
             {
@@ -1026,9 +990,9 @@ namespace lms_with_moodle.Controllers
                 await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
 
                 appDbContext.School_Classes.Remove(schoolClass);
-                appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList());
-                appDbContext.School_Lessons.RemoveRange(appDbContext.School_Lessons.Where(x => x.classId == classId).ToList());
-                appDbContext.School_StudentClasses.RemoveRange(appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList());
+                // appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList());
+                // appDbContext.School_Lessons.RemoveRange(appDbContext.School_Lessons.Where(x => x.classId == classId).ToList());
+                // appDbContext.School_StudentClasses.RemoveRange(appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList());
                 await appDbContext.SaveChangesAsync();
 
                 return Ok(classId);
