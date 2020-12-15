@@ -4,18 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using System.Net;
-using System.Security.Cryptography;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Models.MoodleApiResponse;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.Extensions.Options;
+
 
 using lms_with_moodle.Helper;
 
@@ -24,7 +15,7 @@ using Models.User;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
-using static SchoolService;
+using Models.Users.Roles;
 using ExcelDataReader;
 using Models.Users.Teacher;
 using Newtonsoft.Json;
@@ -50,6 +41,7 @@ namespace lms_with_moodle.Controllers
         FarazSmsApi SMSApi;
         UserService UserService;
         AdministratorService administratorService;
+        PaymentService PaymentService;
         MoodleApi moodleApi;
         public AdministratorController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -74,6 +66,7 @@ namespace lms_with_moodle.Controllers
             UserService = new UserService(userManager , appDbContext);
             ldap = new LDAP_db(appDbContext);
             administratorService = new AdministratorService(appDbContext , moodleApi);
+            PaymentService = new PaymentService(appDbContext , userManager);
         }
 #region Users
 
@@ -1148,6 +1141,65 @@ namespace lms_with_moodle.Controllers
         }
     }
     
+#endregion
+
+#region Payments
+    public async Task<IActionResult> VerifyPayment(int paymentId)
+    {
+        try
+        {
+            PaymentsModel payments = appDbContext.Payments.Where(x => x.Id == paymentId).FirstOrDefault();
+
+            VerifyPayResponseModel responseModel = await PaymentService.VerifyPayment(payments.refId.ToString() , paymentId);
+
+            if(responseModel == null)
+                return BadRequest("پرداخت با مشکل روبرو شد");
+                
+            if(responseModel.amount == payments.amount)
+            {
+                ServicePrice serviceModel = appDbContext.ServicePrices.Where(x => x.Id == payments.serviceId).FirstOrDefault();
+                string servicesType = serviceModel.serviceType.Split("|")[0];
+                string[] services = servicesType.Split(",");
+
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == payments.UserId).FirstOrDefault();
+                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
+
+                foreach (var service in services)
+                {
+                    if(service == ServiceType.AdobeConnect)
+                    {
+                        if(school.adobeExpireDate < MyDateTime.Now())
+                        {
+                            school.adobeExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
+                        }
+                        else if(school.adobeExpireDate > MyDateTime.Now())
+                        {
+                            school.adobeExpireDate = school.adobeExpireDate.AddMonths(int.Parse(serviceModel.option));
+                        }
+                    }
+                    if(service == ServiceType.BBB)
+                    {
+                        if(school.bbbExpireDate < MyDateTime.Now())
+                        {
+                            school.bbbExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
+                        }
+                        else if(school.bbbExpireDate > MyDateTime.Now())
+                        {
+                            school.bbbExpireDate = school.bbbExpireDate.AddMonths(int.Parse(serviceModel.option));
+                        }
+                    }
+                }
+
+                return Ok("پرداخت با موفقیت انجام شد");
+            }
+
+            return BadRequest(responseModel.errorMessage);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 #endregion
 
 #region Functions

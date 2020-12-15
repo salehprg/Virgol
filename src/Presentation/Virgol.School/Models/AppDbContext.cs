@@ -42,6 +42,9 @@ namespace Models
         public DbSet<Region> Regions {get; set;}
         public DbSet<DocumentModel> Documents {get; set;}
         public DbSet<StreamModel> Streams {get; set;}
+        public DbSet<PaymentsModel> Payments {get; set;}
+        public DbSet<ServicePrice> ServicePrices {get; set;}
+        public DbSet<SiteSettings> SiteSettings {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}
@@ -51,10 +54,134 @@ namespace Models
         public DbSet<MeetingView> MeetingViews {get; set;}
 
 
-        // protected override void OnModelCreating(ModelBuilder builder)
-        // {
-        //     base.OnModelCreating(builder);
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            var hasher = new PasswordHasher<UserModel>();
 
-        // }
+            #region Seed Data
+            
+                builder.Entity<SiteSettings>().HasData(
+                    new SiteSettings
+                    {
+                        Id = 1,
+                        key = Settingkey.PayPingURL , 
+                        value = "https://api.payping.ir"
+                    } ,
+                    new SiteSettings
+                    {
+                        Id = 2,
+                        key = Settingkey.PayPingToken , 
+                        value = "token"
+                    }
+                );
+
+            #endregion
+
+            #region Foreign Key Cofigure
+                builder.Entity<School_Bases>()
+                    .HasOne<SchoolModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.School_Id)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+
+                builder.Entity<School_Grades>()
+                    .HasOne<SchoolModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.School_Id)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<School_Lessons>()
+                    .HasOne<SchoolModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.School_Id)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<School_StudyFields>()
+                    .HasOne<SchoolModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.School_Id)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<School_Class>()
+                    .HasOne<SchoolModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.School_Id)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<Class_WeeklySchedule>()
+                    .HasOne<School_Class>()
+                    .WithMany()
+                    .HasForeignKey(x => x.ClassId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<School_studentClass>()
+                    .HasOne<School_Class>()
+                    .WithMany()
+                    .HasForeignKey(x => x.ClassId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<Meeting>()
+                    .HasOne<Class_WeeklySchedule>()
+                    .WithMany()
+                    .HasForeignKey(x => x.ScheduleId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<ParticipantInfo>()
+                    .HasOne<Meeting>()
+                    .WithMany()
+                    .HasForeignKey(x => x.MeetingId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<Class_WeeklySchedule>()
+                    .HasOne<MixedSchedule>()
+                    .WithMany()
+                    .HasForeignKey(x => x.MixedId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.Entity<TeacherDetail>()
+                    .HasOne<UserModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.TeacherId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+                
+                builder.Entity<StudentDetail>()
+                    .HasOne<UserModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+                
+                builder.Entity<ManagerDetail>()
+                    .HasOne<UserModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                 builder.Entity<AdminDetail>()
+                    .HasOne<UserModel>()
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .HasPrincipalKey(x => x.Id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+
+            #endregion
+        
+        
+        }
     }
 }

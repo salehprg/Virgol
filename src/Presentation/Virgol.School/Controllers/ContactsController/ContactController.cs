@@ -5,18 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using Models;
-using Models.MoodleApiResponse;
 using Microsoft.AspNetCore.Identity;
 using Models.User;
-using ExcelDataReader;
-using System.IO;
+
 using Microsoft.AspNetCore.Authorization;
 using lms_with_moodle.Helper;
 using Microsoft.Extensions.Options;
-using Models.Users.Teacher;
-using Microsoft.AspNetCore.Http;
-using Models.InputModel;
-using Newtonsoft.Json;
+using Models.Users.Roles;
 
 namespace lms_with_moodle.Controllers
 {

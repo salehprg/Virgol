@@ -80,11 +80,6 @@ namespace lms_with_moodle
                 AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");
                 AppSettings.FarazAPI_Password = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_PASSWORD");
                 AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
-                //AppSettings.BBBBaseUrl = Environment.GetEnvironmentVariable("VIRGOL_BBB_BASE_URL");
-                //AppSettings.BBBSecret = Environment.GetEnvironmentVariable("VIRGOL_BBB_SECRET");
-                AppSettings.VIRGOL_BBB_LOAD_BALANCER_MODE = Environment.GetEnvironmentVariable("VIRGOL_BBB_LOAD_BALANCER_MODE");
-                AppSettings.VIRGOL_SCALELITE_BASE_URL = Environment.GetEnvironmentVariable("VIRGOL_SCALELITE_BASE_URL");
-                AppSettings.VIRGOL_SCALELITE_SECRET = Environment.GetEnvironmentVariable("VIRGOL_SCALELITE_SECRET");
 
                 AppSettings.LDAPServer = Environment.GetEnvironmentVariable("VIRGOL_LDAP_SERVER");
                 AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));
@@ -174,6 +169,7 @@ namespace lms_with_moodle
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
                 })
+                .AddRoles<IdentityRole<int>>() 
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -272,9 +268,12 @@ namespace lms_with_moodle
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env 
+                                , UserManager<UserModel> userManager 
+                                , RoleManager<IdentityRole<int>> roleManager
+                                , AppDbContext appDbContext)
         {
-            
+            AppDbContextSeedIdentity.SeedUser(userManager , roleManager , appDbContext);
 
             app.UseCors(AllowOrigin);
             // We only use kerstrel in HTTP mode

@@ -1,3 +1,5 @@
+using System;
+
 public class SchoolModel {
     public int Id {get; set;}
     public int RegionId {get; set;}
@@ -20,8 +22,12 @@ public class SchoolModel {
     public bool SelfSign {get; set;}
     public bool RemindUser {get; set;}
     public string AdobeUrl {get; set;}
+    public string Adobe_Username {get; set;}
+    public string Adobe_Password {get; set;}
     public string bbbURL {get; set;}
     public string bbbSecret {get; set;}
+    public DateTime bbbExpireDate {get; set;}
+    public DateTime adobeExpireDate {get; set;}
     public int streamLimit {get; set;}
 
     ///<summary>

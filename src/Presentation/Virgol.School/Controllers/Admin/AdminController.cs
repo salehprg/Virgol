@@ -3,27 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Security.Cryptography;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Models.MoodleApiResponse;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.Extensions.Options;
 
 using lms_with_moodle.Helper;
 
 using Models;
 using Models.User;
-using Microsoft.AspNetCore.Http;
-using System.IO;
+using Models.Users.Roles;
 using Models.InputModel;
-using ExcelDataReader;
 using Newtonsoft.Json;
 using Models.Users.Teacher;
 
@@ -421,7 +414,8 @@ namespace lms_with_moodle.Controllers
 #endregion
 
 #region CoManager
-                [HttpGet]
+
+        [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [Authorize(Roles = Roles.Admin)]
@@ -604,6 +598,7 @@ namespace lms_with_moodle.Controllers
 
 
 #endregion
+
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]

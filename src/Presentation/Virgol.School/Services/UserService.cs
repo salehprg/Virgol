@@ -9,6 +9,10 @@ using Models;
 using Models.InputModel;
 using Models.User;
 using Newtonsoft.Json;
+using Models.Users.Roles;
+
+
+
 ///<summary>
 ///use this to Operate User in all Database in moodle , LDAP , SQL
 ///</summary>

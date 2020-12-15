@@ -59,7 +59,7 @@ namespace lms_with_moodle.Helper
         {
             Uri uri = new Uri (URL + "/api/xml?action=principal-list&filter-Login=" + LoginFilter);
             HttpResponseMessage response = client.GetAsync(uri).Result;
-
+                
             XmlSerializer serializer = new XmlSerializer(typeof(PrincipalList));
             PrincipalList principals = (PrincipalList)serializer.Deserialize(response.Content.ReadAsStreamAsync().Result);
 
