@@ -30,8 +30,8 @@ public class PaymentService {
         {
             if(paymentsModel.UserId == 0 || paymentsModel.serviceId == 0)
                 throw new Exception("کاربر مربوطه و یا نوع سرویس مشخص نشده است");
-
-            int amount = CalculatePrice(paymentsModel.serviceId , paymentsModel.UserId);
+            
+            int amount = CalculatePrice(paymentsModel.serviceId , paymentsModel.UserCount).amount;
 
             paymentsModel.amount = amount;
             paymentsModel.payTime = MyDateTime.Now();
@@ -44,7 +44,7 @@ public class PaymentService {
             makePayModel.amount = amount;
             makePayModel.payerIdentity = paymentsModel.UserId.ToString();
             makePayModel.clientRefId = paymentsModel.Id.ToString();
-            makePayModel.returnUrl = AppSettings.ServerRootUrl + "/api/Payment/VerifyPayment?clientrefid=" + makePayModel.clientRefId;
+            makePayModel.returnUrl = AppSettings.ServerRootUrl + "/api/Payment/VerifyPayment";
 
             string code = await PayPingAPI.makePay(makePayModel);
 
@@ -101,6 +101,7 @@ public class PaymentService {
             if(responseModel.amount == amount || responseModel.errorCode == "15")
             {
                 paymentsModel.status = PaymentStatus.success;
+                paymentsModel.statusMessage = responseModel.errorMessage;
                 paymentsModel.reqId = paymentrefId;
 
                 responseModel.amount = amount;
@@ -109,6 +110,7 @@ public class PaymentService {
             if(responseModel.errorCode != "15")
             {
                 paymentsModel.status = PaymentStatus.failed;
+                paymentsModel.statusMessage = responseModel.errorMessage;
             }
                 
             appDbContext.Payments.Update(paymentsModel);
@@ -125,33 +127,90 @@ public class PaymentService {
         }
     }
 
-    public int CalculatePrice(int serviceId , int userId)
+    public async Task<bool> UpdateSchoolBalance(PaymentsModel payments)
     {
         try
         {
-            UserModel userModel = appDbContext.Users.Where(x => x.Id == userId).FirstOrDefault();
-            ServicePrice service = appDbContext.ServicePrices.Where(x => x.Id == serviceId).FirstOrDefault();
-            int result = 0;
+            ServicePrice serviceModel = appDbContext.ServicePrices.Where(x => x.Id == payments.serviceId).FirstOrDefault();
+            string servicesType = serviceModel.serviceType.Split("|")[0];
+            string[] services = servicesType.Split(",");
 
-            if(service == null || userModel == null)
-                return -1;
+            UserModel userModel = appDbContext.Users.Where(x => x.Id == payments.UserId).FirstOrDefault();
+            SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
 
-            if(userService.HasRole(userModel , Roles.Manager))
+            foreach (var service in services)
             {
-                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userId).FirstOrDefault();
-                int studentsCount = appDbContext.StudentViews.Where(x => x.schoolid == school.Id).Count();
-
-                result = service.pricePerUser * studentsCount;
-
-                result = (int)(result - (result * service.discount) / 100);
+                if(service == ServiceType.AdobeConnect)
+                {
+                    if(school.adobeExpireDate < MyDateTime.Now())
+                    {
+                        school.adobeExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
+                    }
+                    else if(school.adobeExpireDate > MyDateTime.Now())
+                    {
+                        school.adobeExpireDate = school.adobeExpireDate.AddMonths(int.Parse(serviceModel.option));
+                    }
+                }
+                if(service == ServiceType.BBB)
+                {
+                    if(school.bbbExpireDate < MyDateTime.Now())
+                    {
+                        school.bbbExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
+                    }
+                    else if(school.bbbExpireDate > MyDateTime.Now())
+                    {
+                        school.bbbExpireDate = school.bbbExpireDate.AddMonths(int.Parse(serviceModel.option));
+                    }
+                }
             }
 
-            return result;
+            int userCount = payments.amount / serviceModel.pricePerUser;
+            List<UserModel> newUsers = appDbContext.Users.Where(x => !x.ConfirmedAcc && x.SchoolId == school.Id).Take(userCount).ToList();
+
+            foreach (var newUser in newUsers)
+            {
+                newUser.ConfirmedAcc = true;
+            }
+
+            appDbContext.Users.UpdateRange(newUsers);
+            await appDbContext.SaveChangesAsync();
+            
+            return true;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            return -1;
+            return false;
+            throw;
+        }
+    }
+    public PaymentsModel CalculatePrice(int serviceId , int userCount)
+    {
+        try
+        {
+            PaymentsModel paymentModel = new PaymentsModel();
+
+            ServicePrice service = appDbContext.ServicePrices.Where(x => x.Id == serviceId).FirstOrDefault();
+            int result = 0;
+
+            if(service == null)
+                return null;
+
+            int studentsCount = userCount;
+
+            paymentModel.UserCount = studentsCount;
+
+            result = service.pricePerUser * studentsCount;
+            result = (int)(result - (result * service.discount) / 100);
+
+            paymentModel.amount = result;
+
+            return paymentModel;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
         }
     }
 

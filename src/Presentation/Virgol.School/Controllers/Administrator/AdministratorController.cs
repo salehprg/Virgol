@@ -1157,38 +1157,10 @@ namespace lms_with_moodle.Controllers
                 
             if(responseModel.amount == payments.amount)
             {
-                ServicePrice serviceModel = appDbContext.ServicePrices.Where(x => x.Id == payments.serviceId).FirstOrDefault();
-                string servicesType = serviceModel.serviceType.Split("|")[0];
-                string[] services = servicesType.Split(",");
+                bool result = await PaymentService.UpdateSchoolBalance(payments);
 
-                UserModel userModel = appDbContext.Users.Where(x => x.Id == payments.UserId).FirstOrDefault();
-                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
-
-                foreach (var service in services)
-                {
-                    if(service == ServiceType.AdobeConnect)
-                    {
-                        if(school.adobeExpireDate < MyDateTime.Now())
-                        {
-                            school.adobeExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
-                        }
-                        else if(school.adobeExpireDate > MyDateTime.Now())
-                        {
-                            school.adobeExpireDate = school.adobeExpireDate.AddMonths(int.Parse(serviceModel.option));
-                        }
-                    }
-                    if(service == ServiceType.BBB)
-                    {
-                        if(school.bbbExpireDate < MyDateTime.Now())
-                        {
-                            school.bbbExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
-                        }
-                        else if(school.bbbExpireDate > MyDateTime.Now())
-                        {
-                            school.bbbExpireDate = school.bbbExpireDate.AddMonths(int.Parse(serviceModel.option));
-                        }
-                    }
-                }
+                if(result)
+                    return Ok("پرداخت با موفقیت انجام شد");
 
                 return Ok("پرداخت با موفقیت انجام شد");
             }

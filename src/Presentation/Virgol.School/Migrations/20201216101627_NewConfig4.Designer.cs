@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201216101627_NewConfig4")]
+    partial class NewConfig4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,6 +184,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasIndex("ClassId");
 
+                    b.HasIndex("MixedId");
+
                     b.HasIndex("TeacherId");
 
                     b.ToTable("ClassWeeklySchedules");
@@ -304,6 +308,9 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("AttendeeCount")
+                        .HasColumnType("integer");
+
                     b.Property<int>("CheckCount")
                         .HasColumnType("integer");
 
@@ -319,13 +326,13 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("MeetingName")
                         .HasColumnType("text");
 
+                    b.Property<int>("PresentCount")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("Private")
                         .HasColumnType("boolean");
 
                     b.Property<int>("ScheduleId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ServiceType")
@@ -339,6 +346,8 @@ namespace lms_with_moodle.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ScheduleId");
+
                     b.ToTable("Meetings");
                 });
 
@@ -348,6 +357,9 @@ namespace lms_with_moodle.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AttendeeCount")
+                        .HasColumnType("integer");
 
                     b.Property<int>("CheckCount")
                         .HasColumnType("integer");
@@ -384,6 +396,9 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<string>("OrgLessonName")
                         .HasColumnType("text");
+
+                    b.Property<int>("PresentCount")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ScheduleId")
                         .HasColumnType("integer");
@@ -1405,6 +1420,11 @@ namespace lms_with_moodle.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MixedSchedule", null)
+                        .WithMany()
+                        .HasForeignKey("MixedId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Models.User.UserModel", null)
                         .WithMany()
                         .HasForeignKey("TeacherId")
@@ -1417,6 +1437,15 @@ namespace lms_with_moodle.Migrations
                     b.HasOne("Models.User.UserModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Meeting", b =>
+                {
+                    b.HasOne("Class_WeeklySchedule", null)
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

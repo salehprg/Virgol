@@ -11,8 +11,11 @@ import classScheduleReducer from "./classScheduleReducer";
 import meetingReducer from "./meetingReducer";
 import teachersReducer from "./teachersReducer";
 import streamReducer from "./streamReducer";
+import paymetnsReducer from "./paymetnsReducer";
+
 
 export default combineReducers({
+    paymentsData : paymetnsReducer,
     teacherData: teachersReducer,
     streamData: streamReducer,
     meetingData: meetingReducer,

@@ -39,9 +39,24 @@ namespace lms_with_moodle.Controllers
             PaymentService = new PaymentService(appDbContext , userManager);
         }
 
+        public IActionResult GetServices()
+        {
+            try
+            {
+                return Ok(appDbContext.ServicePrices.ToList());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return BadRequest("خطا در دریافت اطلاعات");
+                throw;
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = Roles.Manager + "," + Roles.Admin)]
-        public async Task<IActionResult> MakePay(int serviceId)
+        public async Task<IActionResult> MakePay(int serviceId , int userCount)
         {
             try
             {
@@ -57,6 +72,7 @@ namespace lms_with_moodle.Controllers
                 PaymentsModel paymentsModel = new PaymentsModel();
                 paymentsModel.UserId = userModel.Id;
                 paymentsModel.serviceId = serviceId;
+                paymentsModel.UserCount = userCount;
 
                 paymentsModel = await PaymentService.MakePay(paymentsModel);
 
@@ -72,6 +88,7 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+        [HttpPost]
         public async Task<IActionResult> VerifyPayment([FromForm] ReturnResponseModel response)
         {
             try
@@ -82,52 +99,40 @@ namespace lms_with_moodle.Controllers
                 VerifyPayResponseModel responseModel = await PaymentService.VerifyPayment(response.refId , paymentId);
 
                 if(responseModel == null)
-                    return BadRequest("پرداخت با مشکل روبرو شد");
-
-                if(responseModel.amount == payments.amount)
                 {
-                    ServicePrice serviceModel = appDbContext.ServicePrices.Where(x => x.Id == payments.serviceId).FirstOrDefault();
-                    string servicesType = serviceModel.serviceType.Split("|")[0];
-                    string[] services = servicesType.Split(",");
-
-                    UserModel userModel = appDbContext.Users.Where(x => x.Id == payments.UserId).FirstOrDefault();
-                    SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
-
-                    foreach (var service in services)
-                    {
-                        if(service == ServiceType.AdobeConnect)
-                        {
-                            if(school.adobeExpireDate < MyDateTime.Now())
-                            {
-                                school.adobeExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
-                            }
-                            else if(school.adobeExpireDate > MyDateTime.Now())
-                            {
-                                school.adobeExpireDate = school.adobeExpireDate.AddMonths(int.Parse(serviceModel.option));
-                            }
-                        }
-                        if(service == ServiceType.BBB)
-                        {
-                            if(school.bbbExpireDate < MyDateTime.Now())
-                            {
-                                school.bbbExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
-                            }
-                            else if(school.bbbExpireDate > MyDateTime.Now())
-                            {
-                                school.bbbExpireDate = school.bbbExpireDate.AddMonths(int.Parse(serviceModel.option));
-                            }
-                        }
-                    }
-
-                    return Ok("پرداخت با موفقیت انجام شد");
+                    return this.Redirect(AppSettings.ServerRootUrl + "/PaymentDetail/" + paymentId);
                 }
 
-                return BadRequest(responseModel.errorMessage);
+                if(payments != null && responseModel.amount == payments.amount)
+                {
+                    bool result = await PaymentService.UpdateSchoolBalance(payments);
+                }
+
+                return this.Redirect(AppSettings.ServerRootUrl + "/PaymentDetail/" + paymentId);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+    
+        public IActionResult GetPaymentDetail(int paymentId)
+        {
+            try
+            {
+                PaymentsModel payments = appDbContext.Payments.Where(x => x.Id == paymentId).FirstOrDefault();
+                return  Ok(payments);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest("خطا در دریافت اطلاعات");
+                throw;
+            }
+        }
+    
+        public IActionResult CalculateAmount(int serviceId , int userCount)
+        {
+            return Ok(PaymentService.CalculatePrice(serviceId , userCount ).amount);
         }
     }
 }

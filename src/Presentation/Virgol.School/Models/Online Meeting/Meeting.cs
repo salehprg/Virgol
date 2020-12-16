@@ -5,8 +5,6 @@ public class Meeting {
     public int Id {get; set;}
     public string MeetingName {get; set;} 
     public string MeetingId {get; set;} 
-    public int AttendeeCount {get; set;}
-    public int PresentCount {get; set;}
     public bool Finished {get; set;}
     public int CheckCount {get; set;} //How many CheckAttendeJob , check for Absense/Present Student
     public DateTime StartTime {get; set;}
@@ -21,6 +19,7 @@ public class Meeting {
     ///UsSe ServiceType Class
     ///</summary>
     public string ServiceType {get; set;}
+    public int ServiceId {get; set;}
 
 
     [NotMapped]

@@ -144,24 +144,10 @@ namespace Models
                     
                 #endregion
 
-                builder.Entity<Meeting>()
-                    .HasOne<Class_WeeklySchedule>()
-                    .WithMany()
-                    .HasForeignKey(x => x.ScheduleId)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-
                 builder.Entity<ParticipantInfo>()
                     .HasOne<Meeting>()
                     .WithMany()
                     .HasForeignKey(x => x.MeetingId)
-                    .HasPrincipalKey(x => x.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                builder.Entity<Class_WeeklySchedule>()
-                    .HasOne<MixedSchedule>()
-                    .WithMany()
-                    .HasForeignKey(x => x.MixedId)
                     .HasPrincipalKey(x => x.Id)
                     .OnDelete(DeleteBehavior.Cascade);
 

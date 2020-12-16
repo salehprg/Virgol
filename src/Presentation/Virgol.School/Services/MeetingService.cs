@@ -365,7 +365,7 @@ public class MeetingService {
         meeting.ServiceType = serviceType;
         meeting.StartTime = timeNow;
         //We set ScheduleId as School Id for future use
-        meeting.ScheduleId = school.Id;
+        meeting.ServiceId = school.Id;
         meeting.TeacherId = userId;
         meeting.Private = true;
         meeting.MeetingId = RandomPassword.GenerateGUID(true , true , true);
@@ -441,7 +441,7 @@ public class MeetingService {
         else
         {
             //We set School id as Schedule Id in CreatePrivateRoom
-            school = appDbContext.Schools.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
+            school = appDbContext.Schools.Where(x => x.Id == meeting.ServiceId).FirstOrDefault();
         }
 
         if(school == null)
@@ -497,7 +497,7 @@ public class MeetingService {
         if(meeting.Private)
         {
             //We set School id as Schedule Id in CreatePrivateRoom
-            school = appDbContext.Schools.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
+            school = appDbContext.Schools.Where(x => x.Id == meeting.ServiceId).FirstOrDefault();
         }
         
         bool resultEnd = false;

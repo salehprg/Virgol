@@ -2,7 +2,7 @@ import * as Type from '../_actions/managerTypes'
 import { LOGOUT } from "../_actions/authTypes";
 
 const INITIAL_STATE = {
-    'newUsers' : [],
+    newUsers : null,
     'inNews': [],
     myNews: [],
     schoolLessonInfo : null,

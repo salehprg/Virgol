@@ -182,7 +182,7 @@ namespace lms_with_moodle.Controllers
 
                 student.SchoolId = schoolId;
                 student.UserName = student.MelliCode;
-                student.ConfirmedAcc = true;
+                student.ConfirmedAcc = false;
                 
                 if(UserService.CheckMelliCodeInterupt(student.MelliCode , 0))
                     return BadRequest("کد ملی وارد شده تکراریست");
@@ -1046,7 +1046,7 @@ namespace lms_with_moodle.Controllers
                 {
                     try
                     {
-                        selectedUser.ConfirmedAcc = true;
+                        selectedUser.ConfirmedAcc = (userType == Roles.Student ? false : true);
                         selectedUser.UserName = selectedUser.MelliCode;
                         //selectedUser.UserType = userType;
                         selectedUser.SchoolId = schoolId;

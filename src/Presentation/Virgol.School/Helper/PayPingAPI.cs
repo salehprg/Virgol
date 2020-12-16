@@ -76,12 +76,12 @@ public class PayPingAPI {
 
             var errorMsg = JObject.Parse(response.Message);
             string error = "";
-            string errorCode = "15";
+            string errorCode = "";
 
             try { 
                 error = errorMsg.GetValue(payModel.refId).ToString(); 
                 errorCode = payModel.refId;
-            } catch (Exception){}
+            } catch (Exception){ errorCode = "15";}
 
             VerifyPayResponseModel responseModel = JsonConvert.DeserializeObject<VerifyPayResponseModel>(response.Message);
             
