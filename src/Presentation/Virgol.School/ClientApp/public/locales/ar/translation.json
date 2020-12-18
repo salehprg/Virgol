@@ -195,5 +195,12 @@
     "evenWeek" : "أزواج أسابيع",
     "oddWeek" : "أسابيع فردية",
     "everyWeek" : "كل اسبوع",
-    "newTeacher": "المعلم الجديد"
+    "newTeacher": "المعلم الجديد",
+    "paymentStatus": "حالة السداد",
+    "paymentCost": "المبلغ المدفوع",
+    "paymentDate": "تاريخ الدفع",
+    "payments": "قائمة الدفع",
+    "userCount": "عدد الطلاب",
+    "paymentMsg": "رسالة النظام",
+    "paymentReqId": "شفرة التتبع"
 }

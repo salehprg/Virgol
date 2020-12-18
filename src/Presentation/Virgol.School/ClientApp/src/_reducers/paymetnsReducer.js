@@ -4,6 +4,7 @@ import {LOGOUT} from "../_actions/authTypes";
 const INITIAL_STATE = {
     services : [],
     paymentDetail : {},
+    allPaymnet : [],
     amount : null
 }
 
@@ -12,6 +13,9 @@ export default ( state = INITIAL_STATE, action ) => {
 
         case Type.GetServices: 
             return { ...state, services: action.payload}
+
+        case Type.GetAllPayments: 
+            return { ...state, allPaymnet: action.payload}
 
         case Type.GetPaymentDetail: 
             return { ...state, paymentDetail: action.payload}

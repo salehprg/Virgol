@@ -54,6 +54,30 @@ export const GetPaymentDetail = (token , paymentId) => async dispatch => {
 
 }
 
+export const GetAllPayments = (token) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+        
+        const response = await lms.get('/Payment/GetAllPayments' , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+        dispatch({ type: Type.GetAllPayments, payload: response.data })
+
+        return true
+
+    } catch (e) {
+
+            dispatch(alert.error(e.response.data))
+        return false
+    }
+
+}
+
 export const MakePay = (token , serviceId , userCount) => async dispatch => {
 
     try {

@@ -45,8 +45,8 @@ class Plans extends React.Component {
                                 <span dir="rtl" className="font-vb">{this.state.selectedPlan.pricePerUser.toLocaleString()} تومان</span>
                             </div>
                             <div className="flex flex-col items-center">
-                                <span className="my-1">مدت قرارداد</span>
-                                <span className="font-vb">{this.state.selectedPlan.option}</span>
+                                <span className="my-1">مدت قرارداد (روز)</span>
+                                <span className="font-vb">{parseInt(this.state.selectedPlan.option) * 30}</span>
                             </div>
                             <div className="flex flex-col items-center">
                                 <span className="my-1">تعداد دانش آموزان</span>
