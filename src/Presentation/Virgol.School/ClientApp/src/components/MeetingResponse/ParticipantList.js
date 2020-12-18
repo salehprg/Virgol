@@ -12,7 +12,7 @@ class ParticipantList extends React.Component {
 
     componentDidMount = async () => {
         this.setState({ loading: true })
-        await this.props.GetParticipantList(this.props.match.params.id);
+        await this.props.GetParticipantList(this.props.user.token , this.props.match.params.id);
         this.setState({ loading: false })
 
         var newStatus = this.props.participants.map(x => {
@@ -46,7 +46,7 @@ class ParticipantList extends React.Component {
     }
 
     handleSubmit = async () => {
-        await this.props.SetPresentStatus(this.state.participants)
+        await this.props.SetPresentStatus(this.props.user.token , this.state.participants)
     }
 
     render() {
@@ -183,7 +183,7 @@ class ParticipantList extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {participants : state.meetingData.participantsList}
+    return {user : state.auth.userInfo  , participants : state.meetingData.participantsList}
 }
 
 const cwrapped = connect(mapStateToProps, { GetParticipantList , SetPresentStatus})(ParticipantList);

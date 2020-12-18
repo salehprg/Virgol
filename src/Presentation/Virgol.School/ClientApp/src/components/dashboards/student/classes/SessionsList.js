@@ -13,7 +13,7 @@ class RecorededSession extends React.Component {
     componentDidMount = () => {
         var scheduleId = this.props.match.params.id;
 
-        this.props.GetRecordList(parseInt(scheduleId))
+        this.props.GetRecordList(this.props.user.token , parseInt(scheduleId))
     }
 
     changeQuery = (query) => {
