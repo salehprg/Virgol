@@ -41,11 +41,11 @@ class Plans extends React.Component {
                         <p className="text-black-blue text-xl">پرداخت آسان و مطمئن با <span className="text-sky-blue">پی پینگ</span></p>
                         <div className="w-full my-6 flex md:flex-row flex-col justify-evenly items-center">
                             <div className="flex flex-col items-center md:mb-0 mb-6">
-                                <span className="my-1">هزینه هر دانش آموز به صورت ماهیانه</span>
+                                <span className="my-1">هزینه هر دانش آموز </span>
                                 <span dir="rtl" className="font-vb">{this.state.selectedPlan.pricePerUser.toLocaleString()} تومان</span>
                             </div>
                             <div className="flex flex-col items-center">
-                                <span className="my-1">تعداد ماه ها</span>
+                                <span className="my-1">مدت قرارداد</span>
                                 <span className="font-vb">{this.state.selectedPlan.option}</span>
                             </div>
                             <div className="flex flex-col items-center">
