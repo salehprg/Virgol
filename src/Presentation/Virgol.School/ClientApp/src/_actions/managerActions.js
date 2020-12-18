@@ -30,17 +30,16 @@ export const confirmUser = (token, id) => async dispatch => {
 export const getNewUsers = token => async dispatch => {
 
     try {
-        dispatch({ type: START })
+
         const response = await lms.get("/Manager/GetNewUsers", {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
-
-        dispatch({ type: STOP })
+        
         dispatch({ type: Type.GET_NEW_USERS, payload: response.data });
     } catch (e) {
-        dispatch({ type: STOP })
+        
         dispatch(alert.error("خطا دربرقراری اتصال"))
     }
 
