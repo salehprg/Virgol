@@ -24,6 +24,7 @@ public class PaymentService {
     {
         return PayPingAPI.gotoIPG(paymentsModel.paymentCode);
     }
+
     public async Task<PaymentsModel> MakePay(PaymentsModel paymentsModel) 
     {
         try
@@ -31,7 +32,7 @@ public class PaymentService {
             if(paymentsModel.UserId == 0 || paymentsModel.serviceId == 0)
                 throw new Exception("کاربر مربوطه و یا نوع سرویس مشخص نشده است");
             
-            int amount = CalculatePrice(paymentsModel.serviceId , paymentsModel.UserCount).amount;
+            int amount = CalculatePrice(paymentsModel , paymentsModel.UserId).amount;
 
             paymentsModel.amount = amount;
             paymentsModel.payTime = MyDateTime.Now();
@@ -146,10 +147,6 @@ public class PaymentService {
                     {
                         school.adobeExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
                     }
-                    else if(school.adobeExpireDate > MyDateTime.Now())
-                    {
-                        school.adobeExpireDate = school.adobeExpireDate.AddMonths(int.Parse(serviceModel.option));
-                    }
                 }
                 if(service == ServiceType.BBB)
                 {
@@ -157,14 +154,10 @@ public class PaymentService {
                     {
                         school.bbbExpireDate = MyDateTime.Now().AddMonths(int.Parse(serviceModel.option));
                     }
-                    else if(school.bbbExpireDate > MyDateTime.Now())
-                    {
-                        school.bbbExpireDate = school.bbbExpireDate.AddMonths(int.Parse(serviceModel.option));
-                    }
                 }
             }
 
-            int userCount = payments.amount / serviceModel.pricePerUser;
+            int userCount = payments.UserCount;
             List<UserModel> newUsers = appDbContext.Users.Where(x => !x.ConfirmedAcc && x.SchoolId == school.Id).Take(userCount).ToList();
 
             foreach (var newUser in newUsers)
@@ -184,24 +177,36 @@ public class PaymentService {
             throw;
         }
     }
-    public PaymentsModel CalculatePrice(int serviceId , int userCount)
+    
+    public PaymentsModel CalculatePrice(PaymentsModel paymentModel , int managerId)
     {
         try
         {
-            PaymentsModel paymentModel = new PaymentsModel();
+            SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+            List<UserModel> newUsers = appDbContext.Users.Where(x => !x.ConfirmedAcc && x.SchoolId == school.Id).Take(paymentModel.UserCount).ToList();
 
-            ServicePrice service = appDbContext.ServicePrices.Where(x => x.Id == serviceId).FirstOrDefault();
+
+            ServicePrice serviceModel = appDbContext.ServicePrices.Where(x => x.Id == paymentModel.serviceId).FirstOrDefault();
             int result = 0;
 
-            if(service == null)
+            if(serviceModel == null)
                 return null;
 
-            int studentsCount = userCount;
 
-            paymentModel.UserCount = studentsCount;
+            result = serviceModel.pricePerUser * paymentModel.UserCount;
 
-            result = service.pricePerUser * studentsCount;
-            result = (int)(result - (result * service.discount) / 100);
+            DateTime contractDate = (school.adobeExpireDate > MyDateTime.Now() ? school.adobeExpireDate : school.bbbExpireDate);
+
+            if(contractDate > MyDateTime.Now())
+            {
+                int remainDays = (contractDate - MyDateTime.Now()).Days;
+                int contractDays = int.Parse(serviceModel.option) * 30;
+                
+                result = (remainDays * result) / contractDays;
+            }
+
+            
+            result = (int)(result - (result * serviceModel.discount) / 100);
 
             paymentModel.amount = result;
 

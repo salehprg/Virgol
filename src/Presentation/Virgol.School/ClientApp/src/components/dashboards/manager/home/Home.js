@@ -65,7 +65,7 @@ class Home extends React.Component {
                     )}
                     <div className="mt-8">
 
-                        <Activation expireDate="1399/11/10" />
+                        <Activation expireDate={new Date(this.props.dashboardInfo.school.adobeExpireDate).toLocaleString('fa-IR').split("،")[0]} />
 
                         {/* <CounterCard
                             title={this.props.t('allClasses')}

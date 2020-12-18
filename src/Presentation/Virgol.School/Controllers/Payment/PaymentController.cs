@@ -132,7 +132,13 @@ namespace lms_with_moodle.Controllers
     
         public IActionResult CalculateAmount(int serviceId , int userCount)
         {
-            return Ok(PaymentService.CalculatePrice(serviceId , userCount ).amount);
+            UserModel manager = UserService.GetUserModel(User);
+            PaymentsModel paymentsModel = new PaymentsModel();
+            paymentsModel.UserCount = userCount;
+            paymentsModel.serviceId = serviceId;
+            paymentsModel.UserId = manager.Id;
+
+            return Ok(PaymentService.CalculatePrice(paymentsModel , manager.Id ).amount);
         }
     }
 }
