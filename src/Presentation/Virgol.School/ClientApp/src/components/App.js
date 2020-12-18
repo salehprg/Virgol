@@ -44,9 +44,9 @@ import Streamer from './dashboards/stream/Streamer';
 import EditGroup from './dashboards/manager/groups/EditGroup';
 import SessionsList from './dashboards/student/classes/SessionsList';
 import EditStream from './dashboards/stream/EditStream';
-
 import Plans from './plans/Plans';
 import PaymentDetail from './plans/PaymentDetail'
+import { localizer } from '../assets/localizer';
 
 class App extends React.Component {
 
@@ -54,11 +54,14 @@ class App extends React.Component {
         history.listen((location, action) => {
             this.props.dispatch({ type: CLEAR });
         });
-        if (process.env.REACT_APP_RAHE_DOOR !== "true") {
-            document.title = "سامانه ویرگول";
-        } else {
-            document.title = "سامانه آموزش از راه دور استان خراسان رضوی";
-        }
+        // if (process.env.REACT_APP_RAHE_DOOR !== "true") {
+        //     document.title = "سامانه ویرگول";
+        // } else {
+        //     document.title = "سامانه آموزش از راه دور استان خراسان رضوی";
+        // }
+        const url = window.location.href;
+        document.title = localizer.getTitle(url);
+        localizer.setFavIcon(url);
     }
 
     fadeAlert = () => {
@@ -97,7 +100,7 @@ class App extends React.Component {
                         <Route path="/newGroup" component={AddGroup} />
                         <Route path="/editGroup/:id" component={EditGroup} />
                         <Route path="/plans" component={Plans} />
-                        <Route path="/PaymentDetail/:paymentId" component={PaymentDetail} />
+                        <Route path="/paymentDetail/:paymentId" component={PaymentDetail} />
                         
                         <Route path="/s" component={StudentDashboard} />
                         <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
@@ -114,7 +117,7 @@ class App extends React.Component {
                         <Route path="/meetingResponse/:id" component={MeetingResponse} />
                         <Route path="/ParticipantInfo/:id" component={ParticipantList} />
 
-                        <Route path="/stream" component={Streamer} />
+                        <Route path="/stream" component={Streamer} />   
                         <Route path="/editStream/:id" component={EditStream} />
                         <Route path="" component={NoFound} />
                     </Switch>

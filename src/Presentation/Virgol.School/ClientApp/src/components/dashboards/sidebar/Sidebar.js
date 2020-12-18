@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {logo, menu, x} from "../../../assets/icons";
+import { localizer } from '../../../assets/localizer';
 
 const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, children }) => {
 
@@ -43,7 +44,7 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
                 {show ? x('w-8 text-white') : menu("w-8 text-white")}
             </motion.div>
             
-            {
+            {/* {
                 process.env.REACT_APP_RAHE_DOOR !== "true" ?
                 <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} />
                     :
@@ -56,9 +57,9 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
                 <h1 className="text-center lg:mt-4 mt-10 text-xl text-white font-vm">
                     <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
                 </h1>
-            }
+            } */}
 
-
+            <img className="w-24 mx-auto my-3" src={localizer.getLogo(window.location.href)} />
 
             <div className="w-full mt-10 max-h-75 overflow-y-auto">
                 {children}

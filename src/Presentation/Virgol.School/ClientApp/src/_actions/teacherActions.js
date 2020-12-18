@@ -19,6 +19,7 @@ export const SetMeetingService = (token , serviceName) => async dispatch => {
         });
 
         dispatch({ type: STOP })
+        dispatch({ type: Type.SetMeetingService, payload: serviceName })
         dispatch(alert.success(response.data))
 
         return true

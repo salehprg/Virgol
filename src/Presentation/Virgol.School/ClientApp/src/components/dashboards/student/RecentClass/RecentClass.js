@@ -32,6 +32,7 @@ class RecentClass extends React.Component {
                     <span className="text-2xl text-grayish block text-center">{this.props.t('noClassAvailable')}</span> 
                         :
                         classes.map(x => {
+                            console.log(x.serviceType);
                             return (
                                 (x.started ? 
                                     <RecentClassDetail

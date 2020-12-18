@@ -9,7 +9,7 @@ class Hero extends React.Component {
     componentDidMount = () => {
         if(this.props.ShowServiceType)
         {
-            this.setState({serviceType : this.props.userDetail.userDetail.meetingService})
+            this.setState({serviceType : this.props.service})
         }
     }
 

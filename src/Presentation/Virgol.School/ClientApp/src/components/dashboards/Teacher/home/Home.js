@@ -28,7 +28,7 @@ class Home extends React.Component {
             await this.props.GetIncommingNews(this.props.user.token);
             await this.props.GetRecentClass(this.props.user.token);
             this.setState({loading: false})
-
+            console.log(this.props.user.userDetail.userDetail.meetingService);
     }
 
     StatrMeeting = async(id) => {
@@ -125,7 +125,8 @@ class Home extends React.Component {
                 <div className="col-span-1 flex flex-col items-center justify-between">
                     <Hero userInfo={this.props.user.userInformation}
                           userDetail={this.props.user.userDetail}
-                          ShowServiceType = {true}/>
+                          ShowServiceType = {true}
+                          service={this.props.user.userDetail.userDetail.meetingService}/>
 
                     <RecentClass
                         onStart={(id) => this.StatrMeeting(id)}

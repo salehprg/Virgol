@@ -47,38 +47,31 @@ class EditGroup extends React.Component {
     }
 
     handleChangeClass = async (selectedClasses) => {
-        //console.log("change class")
         this.setState({ selectedClasses });
     };
 
     handleChangeLesson = selectedLesson => {
-        //console.log("change lesson")
         this.setState({ selectedLesson });
     };
 
     handleChangeTeacher = selectedTeacher => {
-        //console.log("change teacher")
         this.setState({ selectedTeacher });
     };
 
     handleChangeDay = selectedDay => {
-        //console.log("change day")
 
         this.setState({ selectedDay });
     };
 
     handleChangeStart = selectedStartTime => {
-        //console.log("change start")
         this.setState({ selectedStartTime });
     };
 
     handleChangeEnd = selectedEndTime => {
-        //console.log("change end")
         this.setState({ selectedEndTime });
     };
 
     onSubmit = async (formValues) => {
-        //console.log("Submit")
         if (this.state.selectedDay && this.state.selectedLesson && this.state.selectedTeacher && this.state.selectedStartTime && this.state.selectedEndTime) 
         {
             // var classIds = []

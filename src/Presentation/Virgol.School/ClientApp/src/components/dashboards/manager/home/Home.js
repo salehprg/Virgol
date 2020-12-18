@@ -23,6 +23,15 @@ class Home extends React.Component {
             await this.props.GetMyNews(this.props.user.token);
             this.setState({loading: false})
     }
+
+    getExpireDate() {
+        const d = new Date(this.props.dashboardInfo.school.adobeExpireDate);
+        if (d.getFullYear() === 1) {
+            return 'قرارداد فعالی وجود ندارد'
+        } else {
+            return d.toLocaleString('fa-IR').split("،")[0];
+        }
+    }
     
     render() {
         if(this.state.loading) loading('w-10 text-grayish centerize')
@@ -65,8 +74,11 @@ class Home extends React.Component {
                     )}
                     <div className="mt-8">
 
-                        <Activation expireDate={new Date(this.props.dashboardInfo.school.adobeExpireDate).toLocaleString('fa-IR').split("،")[0]} />
-
+                        {this.props.dashboardInfo.school ? 
+                        <Activation expireDate={this.getExpireDate()} />
+                        : 
+                        null
+                        }
                         {/* <CounterCard
                             title={this.props.t('allClasses')}
                             icon={home}

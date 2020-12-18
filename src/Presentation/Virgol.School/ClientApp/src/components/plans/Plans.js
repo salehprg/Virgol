@@ -53,9 +53,13 @@ class Plans extends React.Component {
                                 <span className="font-vb">{this.state.userCount}</span>
                             </div>
                         </div>
+                        <div className="flex flex-col justify-center">
+                            <p>کسر از قرارداد فعلی</p>
+                            <p>{+this.props.newUsers.length * +this.state.selectedPlan.pricePerUser - +this.state.amount}</p>
+                        </div>
                         <div>
                             <p className="text-xl font-vb mb-2">( تومان ) هزینه نهایی</p>
-                            <p className="text-xl">{this.props.newUsers.length} X {this.state.selectedPlan.pricePerUser} = {this.state.amount}</p>
+                            <p className="text-xl">{this.props.newUsers.length} X {this.state.selectedPlan.pricePerUser} - {+this.props.newUsers.length * +this.state.selectedPlan.pricePerUser - +this.state.amount} = {this.state.amount}</p>
                         </div>
                         <button className="py-2 w-2/3 mt-6 rounded-lg mx-auto bg-greenish text-white" onClick={(e) => this.OnPayment()}>پرداخت</button>
                     </>

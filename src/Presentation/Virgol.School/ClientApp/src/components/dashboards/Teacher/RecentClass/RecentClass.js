@@ -39,6 +39,7 @@ class RecentClass extends React.Component {
                                 (x.classId ?
                                 <RecentClassDetail
                                     weekly={x.weekly}
+                                    serviceType={x.serviceType}
                                     text={(joinList ? x.meetingName : x.orgLessonName)}
                                     schoolName={x.schoolName}
                                     className={x.className}

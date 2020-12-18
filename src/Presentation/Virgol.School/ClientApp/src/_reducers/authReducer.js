@@ -1,4 +1,5 @@
 import * as Type from "../_actions/authTypes";
+import { SetMeetingService } from "../_actions/teachersTypes";
 
 const INITIAL_STATE = {
     'authed': false,
@@ -19,6 +20,9 @@ export default ( state = INITIAL_STATE, action ) => {
 
         case Type.LOGOUT: 
             return INITIAL_STATE
+
+        case SetMeetingService:
+            return { ...state, userInfo: { ...state.userInfo, userDetail: { ...state.userInfo.userDetail, userDetail: { ...state.userInfo.userDetail.userDetail, meetingService: action.payload } } } }
             
         default: return state
 

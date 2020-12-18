@@ -8,6 +8,7 @@ import {Field, reduxForm} from "redux-form";
 import Fieldish from "../field/Fieldish";
 import Passish from "../field/Passish";
 import SelectLang from "./SelectLang";
+import { localizer } from '../../assets/localizer'
 
 class Login extends React.Component {
 
@@ -177,7 +178,8 @@ class Login extends React.Component {
                 <div onClick={() => this.setShowLang(false)} className="w-screen min-h-screen bg-black-blue pt-16">
                     <div className="w-full max-w-350 mx-auto">
                         <div className="text-center mb-8">
-                            <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} alt="logo" />
+                            {/* <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} alt="logo" /> */}
+                            <img className="w-24 mx-auto mb-3" src={localizer.getLogo(window.location.href)} alt="logo" />
                             {/* {logo('w-16 mb-3 text-purplish mx-auto')}
                             {process.env.REACT_APP_RAHE_DOOR === "true" ?
                                 <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
@@ -185,7 +187,8 @@ class Login extends React.Component {
                                 logo('w-24 mx-auto mb-3 text-purplish')
                             } */}
                             <span className="text-xl text-white">
-                                {process.env.REACT_APP_ENTER_TEXT}
+                                {/* {process.env.REACT_APP_ENTER_TEXT} */}
+                                {localizer.getTitle(window.location.href)}
                             </span>
                         </div>
                         <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
