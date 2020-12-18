@@ -480,31 +480,21 @@ namespace lms_with_moodle.Controllers
 
                     int schoolType = (schoolModel != null ? schoolModel.SchoolType : 0);
 
+                    string schooltypeName = "";
+
                     if(schoolType == 0)
                     {
                         try{
-                            schoolType = ((AdminDetail)userDetail).SchoolsType; 
+                            schooltypeName = ((AdminDetail)userDetail).TypeName; 
                         }catch{}
                     }
+                    else
+                    {
+                        AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.SchoolsType == schoolModel.SchoolType).FirstOrDefault();
+                        schooltypeName = adminDetail.TypeName;
+                    }
 
-
-                    string schooltypeName = "";
-                    if (schoolType == SchoolType.Sampad)
-                    {
-                        schooltypeName = "استعداد های درخشان";
-                    }
-                    else if (schoolType == SchoolType.AmoozeshRahDor)
-                    {
-                        schooltypeName = "آموزش از راه دور";
-                    }
-                    else if (schoolType == SchoolType.Gheyrdolati)
-                    {
-                        schooltypeName = "غیر دولتی";
-                    }
-                    else if (schoolType == SchoolType.Dolati)
-                    {
-                        schooltypeName = "دولتی";
-                    }
+                    
 
                     userDetail = new {userDetail , schooltypeName }; 
 
