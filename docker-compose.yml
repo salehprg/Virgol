@@ -12,7 +12,7 @@ services:
       - ASPNETCORE_URLS=http://+ # ;https://+
       - ASPNETCORE_ENVIRONMENT=Production
       - NODE_ENV=production
-      - VIRGOL_SERVER_ROOT_URL=https://lms.legace.ir
+      - VIRGOL_SERVER_ROOT_URL=https://panel.vir-gol.ir
       - VIRGOL_DATABASE_TYPE=postgres
       - VIRGOL_DATABASE_HOST=postgres
       - VIRGOL_DATABASE_NAME=LMS
@@ -36,11 +36,11 @@ services:
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
       - REACT_APP_RAHE_DOOR=false
       - REACT_APP_FAVICON_NAME=favicon_virgool
-      - REACT_APP_MOODLE_URL=moodle/login/index.php
+      - REACT_APP_MOODLE_URL=https://moodle.legace.ir/login/index.php
       - REACT_APP_VERSION=1.7.14.2-Beta2
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.virgol.rule=Host(`lms.legace.ir`)"
+      - "traefik.http.routers.virgol.rule=Host(`panel.vir-gol.ir`, `sampad.razaviedu.ir`, `dei.razaviedu.ir`)"
       - "traefik.http.services.virgol.loadbalancer.server.port=80"
       - "traefik.http.routers.virgol.entrypoints=secure"
       - "traefik.http.routers.virgol.tls.certresolver=letsencrypt"
@@ -53,7 +53,7 @@ services:
       - openldap
   postgres:
     image: postgres
-    hostname: postgres.legace.ir
+    hostname: postgres.vir-gol.ir
     container_name: virgol_db
     ports:
       - "5432:5432"
@@ -69,17 +69,17 @@ services:
       - web
   pgadmin4:
     image: dpage/pgadmin4
-    hostname: pgadmin.legace.ir 
+    hostname: pgadmin.vir-gol.ir 
     container_name: virgol_pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@legace.ir
+      - PGADMIN_DEFAULT_EMAIL=admin@vir-gol.ir
       - PGADMIN_DEFAULT_PASSWORD=pgAdminpass.24
     restart: always
     depends_on:
       - postgres
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.legace.ir`)"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.vir-gol.ir`)"
       - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
       - "traefik.http.routers.pgadmin.entrypoints=secure"
       - "traefik.http.routers.pgadmin.tls.certresolver=letsencrypt"
@@ -145,11 +145,11 @@ services:
     container_name: virgol_phpmyadmin
     restart: always
     environment:
-      - PMA_ABSOLUTE_URI=https://phpmyadmin.legace.ir/
+      - PMA_ABSOLUTE_URI=https://phpmyadmin.vir-gol.ir/
       - PMA_HOST=mariadb
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.legace.ir`)"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.vir-gol.ir`)"
       - "traefik.http.services.phpmyadmin.loadbalancer.server.port=8080"
       - "traefik.http.routers.phpmyadmin.entrypoints=secure"
       - "traefik.http.routers.phpmyadmin.tls.certresolver=letsencrypt"
@@ -178,7 +178,7 @@ services:
 # Password: OpenLDAPpass.24
   phpldapadmin:
     image: osixia/phpldapadmin
-    hostname: phpldapadmin.legace.ir 
+    hostname: phpldapadmin.vir-gol.ir 
     container_name: virgol_phpldapadmin
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=openldap
@@ -189,7 +189,7 @@ services:
       - openldap
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.phpldapadmin.rule=Host(`phpldapadmin.legace.ir`)"
+      - "traefik.http.routers.phpldapadmin.rule=Host(`phpldapadmin.vir-gol.ir`)"
       - "traefik.http.services.phpldapadmin.loadbalancer.server.port=80"
       - "traefik.http.routers.phpldapadmin.entrypoints=secure"
       - "traefik.http.routers.phpldapadmin.tls.certresolver=letsencrypt"
