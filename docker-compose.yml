@@ -42,7 +42,7 @@ services:
       - REACT_APP_VERSION=1.8.1
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.virgol.rule=Host(`lms.legace.ir`)"
+      - "traefik.http.routers.virgol.rule=Host(`lms.legace.ir`, `panel.vir-gol.ir`, `sampad.razaviedu.ir`, `dei.razaviedu.ir`)"
       - "traefik.http.services.virgol.loadbalancer.server.port=80"
       - "traefik.http.routers.virgol.entrypoints=secure"
       - "traefik.http.routers.virgol.tls.certresolver=letsencrypt"
