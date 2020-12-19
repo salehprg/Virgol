@@ -215,5 +215,14 @@
     "duration": "مدت زمان",
     "activeStream": "همایش فعال",
     "streamUrl": "لینک همایش",
-    "streamKey": "کلید همایش"
+    "streamKey": "کلید همایش",
+    "paymentStatus": "وضعیت پرداخت",
+    "paymentCost": "مبلغ پرداختی",
+    "paymentDate": "تاریخ پرداختی",
+    "payments": "لیست پرداختی ها",
+    "userCount": "تعداد دانش آموز",
+    "paymentMsg": "پیام سیستم",
+    "paymentReqId": "کد رهگیری",
+    "serviceName": "نام سرویس"
+
 }

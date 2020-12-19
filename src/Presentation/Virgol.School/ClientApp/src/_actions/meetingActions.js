@@ -6,8 +6,6 @@ import * as authType from './authTypes'
 import { worker } from "./workerActions";
 import {START, STOP} from "./workerTypes";
 
-const userToken = localStorage.getItem('userToken');
-
 export const GetAllActiveMeeting = token => async dispatch => {
 
     try {
@@ -27,11 +25,10 @@ export const GetAllActiveMeeting = token => async dispatch => {
 
 }
 
-export const SetPresentStatus = students => async dispatch => {
+export const SetPresentStatus = (token , students) => async dispatch => {
 
     try {
         
-        var token = localStorage.getItem("userToken");
         const response = await lms.post('/Meeting/SetPresentStatus' , students , {
             headers: {
                 authorization: `Bearer ${token}`
@@ -59,13 +56,12 @@ export const SetPresentStatus = students => async dispatch => {
 
 }
 
-export const GetParticipantList = meetingId => async dispatch => {
+export const GetParticipantList = (token , meetingId) => async dispatch => {
 
     try {
         
         dispatch({ type: Type.GetParticipantList, payload: null })
 
-        var token = localStorage.getItem("userToken");
         const response = await lms.get(`/Meeting/GetParticipantList?meetingId=${meetingId}` , {
             headers: {
                 authorization: `Bearer ${token}`
@@ -156,13 +152,13 @@ export const GetRecentClass = token => async dispatch => {
 
 }
 
-export const GetRecordList = (scheduleId) => async dispatch => {
+export const GetRecordList = (token , scheduleId) => async dispatch => {
 
     try {
         
         const response = await lms.get(`/Meeting/GetRecordList?scheduleId=${scheduleId}` , {
             headers: {
-                authorization: `Bearer ${userToken}`
+                authorization: `Bearer ${token}`
             }
         });
 
@@ -179,14 +175,14 @@ export const GetRecordList = (scheduleId) => async dispatch => {
 
 }
 
-export const CreatePrivateRoom = (roomName , schoolId = 0) => async dispatch => {
+export const CreatePrivateRoom = (token , roomName , schoolId = 0) => async dispatch => {
 
     try {
         
         dispatch({ type: START })
         const response = await lms.put(`/Meeting/CreatePrivateRoom?roomName=${roomName}&schoolId=${schoolId}` , null , {
             headers: {
-                authorization: `Bearer ${userToken}`
+                authorization: `Bearer ${token}`
             }
         });
 

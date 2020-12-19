@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.User;
@@ -78,18 +79,21 @@ public static class AppDbContextSeedIdentity {
                                 MelliCode = "AdminTest",
                             };
 
-        
-        if(userManager.FindByNameAsync("AdminTest").Result == null)
+        UserModel admin = userManager.FindByNameAsync("AdminTest").Result;
+
+        if(admin == null)
         {
             userManager.CreateAsync(testAdmin , "1234567890").Wait();
             userManager.AddToRoleAsync(testAdmin , Roles.Admin).Wait();
-
+        }
+        if(appDbContext.AdminDetails.Where(x => x.UserId == admin.Id).FirstOrDefault() == null)
+        {
             AdminDetail adminDetail = new AdminDetail{
                                         Id = 1,
                                         SchoolLimit = 20,
-                                        SchoolsType = 1,
+                                        SchoolsType = 3,
                                         TypeName = "مدارس تست سامانه",
-                                        UserId = testAdmin.Id
+                                        UserId = admin.Id
                                     };
 
             appDbContext.AdminDetails.AddAsync(adminDetail);

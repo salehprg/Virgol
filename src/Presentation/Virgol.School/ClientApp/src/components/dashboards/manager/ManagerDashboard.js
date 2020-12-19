@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import Tracker from "./tracker/Tracker";
 import Groups from "./groups/Groups";
 import StreamInfo from "../stream/StreamInfo";
+import Payments from "../../payments/AllPayments"
 
 class ManagerDashboard extends React.Component {
 
@@ -130,6 +131,13 @@ class ManagerDashboard extends React.Component {
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
+                    <SidebarCard
+                        active={this.state.active}
+                        code="payments"
+                        title={this.props.t('payments')}
+                        icon={open_book}
+                        changeActive={this.changeActive}
+                    />
                 </Sidebar>
 
                 <div className="lg:w-5/6 px-6 w-full min-h-screen bg-bold-blue">
@@ -144,6 +152,8 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/conference"} component={StreamInfo}/>
                         <Route path={this.props.match.url + "/news"} component={News}/>
                         <Route path={this.props.match.url + "/tracker"} component={Tracker}/>
+                        <Route path={this.props.match.url + "/payments"} component={Payments}/>
+
                         <Redirect to="/404" />
                     </Switch>
                 </div>

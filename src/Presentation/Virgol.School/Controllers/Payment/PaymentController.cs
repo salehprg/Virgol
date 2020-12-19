@@ -130,6 +130,13 @@ namespace lms_with_moodle.Controllers
             }
         }
     
+        public IActionResult GetAllPayments()
+        {
+            UserModel manager = UserService.GetUserModel(User);
+            
+            return Ok(appDbContext.PaymentsView.Where(x => x.UserId == manager.Id).ToList());
+        }
+
         public IActionResult CalculateAmount(int serviceId , int userCount)
         {
             UserModel manager = UserService.GetUserModel(User);

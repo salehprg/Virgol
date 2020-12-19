@@ -371,29 +371,31 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                List<UserModel> NewUsers = appDbContext.Users.Where(x => x.ConfirmedAcc == false).ToList();
-                List<UserDataModel> users = new List<UserDataModel>();
+                UserModel manager = UserService.GetUserModel(User);
+                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
 
-                foreach (var user in NewUsers)
-                {
-                    StudentDetail userDetail = new StudentDetail();
-                    userDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
+                List<StudentViewModel> NewUsers = appDbContext.StudentViews.Where(x => x.schoolid == school.Id).ToList();
 
-                    UserDataModel dataModel= new UserDataModel();
-                    dataModel.Id = user.Id;
-                    dataModel.FirstName = user.FirstName;
-                    dataModel.LastName = user.LastName;
-                    dataModel.PhoneNumber = user.PhoneNumber;
-                    dataModel.MelliCode = user.MelliCode;
-                    dataModel.Moodle_Id = user.Moodle_Id;
-                    dataModel.UserName = user.UserName;
+                // foreach (var user in NewUsers)
+                // {
+                //     StudentDetail userDetail = new StudentDetail();
+                //     userDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
 
-                    dataModel.studentDetail = userDetail;
+                //     UserDataModel dataModel= new UserDataModel();
+                //     dataModel.Id = user.Id;
+                //     dataModel.FirstName = user.FirstName;
+                //     dataModel.LastName = user.LastName;
+                //     dataModel.PhoneNumber = user.PhoneNumber;
+                //     dataModel.MelliCode = user.MelliCode;
+                //     dataModel.Moodle_Id = user.Moodle_Id;
+                //     dataModel.UserName = user.UserName;
 
-                    users.Add(dataModel);
-                }
+                //     dataModel.studentDetail = userDetail;
 
-                return Ok(users);
+                //     users.Add(dataModel);
+                // }
+
+                return Ok(NewUsers);
             }
             catch(Exception ex)
             {

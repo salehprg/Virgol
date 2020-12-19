@@ -52,6 +52,7 @@ namespace Models
         public DbSet<StudentViewModel> StudentViews {get; set;}
         public DbSet<TeacherViewModel> TeacherViews {get; set;}
         public DbSet<MeetingView> MeetingViews {get; set;}
+        public DbSet<PaymentView> PaymentsView {get; set;}
 
 
         protected override void OnModelCreating(ModelBuilder builder)

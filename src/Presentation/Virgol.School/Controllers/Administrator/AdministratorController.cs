@@ -1141,6 +1141,260 @@ namespace lms_with_moodle.Controllers
         }
     }
     
+
+    [HttpPost]
+    public async Task<IActionResult> OptimizeDatabase()
+    {
+        try
+        {
+            
+
+            var groupedSchStudents = appDbContext.School_StudentClasses.GroupBy(x => x.UserId).Select(x => x.Key).ToList();
+            groupedSchStudents.Sort();
+
+            foreach (var studentId in groupedSchStudents)
+            {
+                UserModel student = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
+                if(student == null)
+                {
+                    School_studentClass studentClass = appDbContext.School_StudentClasses.Where(x => x.UserId == studentId).FirstOrDefault();
+                    if(studentClass != null)
+                        appDbContext.School_StudentClasses.Remove(studentClass);
+                    
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedLesson = appDbContext.School_Lessons.GroupBy(x => x.School_Id).Select(x => x.Key).ToList();
+            groupedLesson.Sort();
+
+            foreach (var schoolId in groupedLesson)
+            {
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                if(school == null)
+                {
+                    List<School_Lessons> lessons = appDbContext.School_Lessons.Where(x => x.School_Id == schoolId).ToList();
+                    appDbContext.School_Lessons.RemoveRange(lessons);
+                    
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedClass = appDbContext.School_Classes.GroupBy(x => x.School_Id).Select(x => x.Key).ToList();
+            groupedClass.Sort();
+
+            foreach (var schoolId in groupedClass)
+            {
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                if(school == null)
+                {
+                    List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == schoolId).ToList();
+                    appDbContext.School_Classes.RemoveRange(classes);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedParticipant = appDbContext.ParticipantInfos.GroupBy(x => x.MeetingId).Select(x => x.Key).ToList();
+            groupedParticipant.Sort();
+
+            foreach (var meetingId in groupedParticipant)
+            {
+                Meeting meeting = appDbContext.Meetings.Where(x => x.Id == meetingId).FirstOrDefault();
+                if(meeting == null)
+                {
+                    List<ParticipantInfo> participants = appDbContext.ParticipantInfos.Where(x => x.MeetingId == meetingId).ToList();
+                    appDbContext.ParticipantInfos.RemoveRange(participants);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedLesson_Class = appDbContext.School_Lessons.GroupBy(x => x.classId).Select(x => x.Key).ToList();
+            groupedLesson_Class.Sort();
+
+            foreach (var classId in groupedLesson_Class)
+            {
+                School_Class schoolClass = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
+                if(schoolClass == null)
+                {
+                    List<School_studentClass> studentClasses = appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList();
+                    appDbContext.School_StudentClasses.RemoveRange(studentClasses);
+
+                    List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList();
+                    appDbContext.ClassWeeklySchedules.RemoveRange(schedules);
+                    
+                    List<School_Lessons> lessons = appDbContext.School_Lessons.Where(x => x.classId == classId).ToList();
+                    appDbContext.School_Lessons.RemoveRange(lessons);
+                    
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedMeeting = appDbContext.Meetings.GroupBy(x => x.ScheduleId).Select(x => x.Key).ToList();
+            groupedMeeting.Sort();
+
+            foreach (var scheduleId in groupedMeeting)
+            {
+                Class_WeeklySchedule schedule = appDbContext.ClassWeeklySchedules.Where(x => x.Id == scheduleId).FirstOrDefault();
+                if(schedule == null)
+                {
+                    List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == scheduleId).ToList();
+
+                    foreach (var meeting in meetings)
+                    {
+                        List<ParticipantInfo> participants = appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList();
+                        appDbContext.ParticipantInfos.RemoveRange(participants);
+                    }
+
+                    appDbContext.Meetings.RemoveRange(meetings);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedTeacherDetail = appDbContext.TeacherDetails.Select(x => x.TeacherId).ToList();
+            groupedTeacherDetail.Sort();
+
+            foreach (var teacherId in groupedTeacherDetail)
+            {
+                UserModel teacher = appDbContext.Users.Where(x => x.Id == teacherId).FirstOrDefault();
+                if(teacher == null)
+                {
+                    TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
+
+                    if(teacherDetail != null)
+                        appDbContext.TeacherDetails.Remove(teacherDetail);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedTeacher = appDbContext.ClassWeeklySchedules.GroupBy(x => x.TeacherId).Select(x => x.Key).ToList();
+            groupedTeacher.Sort();
+
+            foreach (var teacherId in groupedTeacher)
+            {
+                UserModel teacher = appDbContext.Users.Where(x => x.Id == teacherId).FirstOrDefault();
+                if(teacher == null)
+                {
+                    List<Class_WeeklySchedule> schedules= appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == teacherId).ToList();
+                    appDbContext.ClassWeeklySchedules.RemoveRange(schedules);
+
+                    TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
+
+                    if(teacherDetail != null)
+                        appDbContext.TeacherDetails.Remove(teacherDetail);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedManager = appDbContext.ManagerDetails.Select(x => x.UserId).ToList();
+            groupedManager.Sort();
+
+            foreach (var managerId in groupedManager)
+            {
+                UserModel manager = appDbContext.Users.Where(x => x.Id == managerId).FirstOrDefault();
+                if(manager == null)
+                {
+                    ManagerDetail managerDetail = appDbContext.ManagerDetails.Where(x => x.UserId == managerId).FirstOrDefault();
+
+                    if(managerDetail != null)
+                        appDbContext.ManagerDetails.Remove(managerDetail);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedAdmin = appDbContext.AdminDetails.Select(x => x.UserId).ToList();
+            groupedAdmin.Sort();
+
+            foreach (var adminId in groupedAdmin)
+            {
+                UserModel admin = appDbContext.Users.Where(x => x.Id == adminId).FirstOrDefault();
+                if(admin == null)
+                {
+                    AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault();
+
+                    if(adminDetail != null)
+                        appDbContext.AdminDetails.Remove(adminDetail);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedNews = appDbContext.News.Select(x => x.AutherId).ToList();
+            groupedNews.Sort();
+
+            foreach (var newsAutherId in groupedNews)
+            {
+                UserModel auther = appDbContext.Users.Where(x => x.Id == newsAutherId).FirstOrDefault();
+                if(auther == null)
+                {
+                    List<NewsModel> news = appDbContext.News.Where(x => x.AutherId == newsAutherId).ToList();
+                    appDbContext.News.RemoveRange(news);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+            var groupedStudent = appDbContext.StudentDetails.Select(x => x.UserId).ToList();
+            groupedStudent.Sort();
+
+            foreach (var stId in groupedStudent)
+            {
+                UserModel student = appDbContext.Users.Where(x => x.Id == stId).FirstOrDefault();
+                if(student == null)
+                {
+                    StudentDetail studentDetail = appDbContext.StudentDetails.Where(x => x.UserId == stId).FirstOrDefault();
+
+                    if(studentDetail != null)
+                        appDbContext.StudentDetails.Remove(studentDetail);
+
+                    await appDbContext.SaveChangesAsync();
+                }
+            }
+
+
+
+ 
+            return Ok("Done !");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("Failed ! " + Environment.NewLine + ex.StackTrace);
+            throw;
+        }
+    }
+
+    public async Task<IActionResult> ConfirmManagerAccount()
+    {
+        try
+        {
+            List<ManagerDetail> managers = appDbContext.ManagerDetails.ToList();
+            foreach (var manager in managers)
+            {
+                UserModel managerModel = appDbContext.Users.Where(x => x.Id == manager.UserId).FirstOrDefault();
+                if(managerModel != null)
+                {
+                    managerModel.ConfirmedAcc = true;
+                    appDbContext.Users.Update(managerModel);
+                }
+            }
+
+            
+            await appDbContext.SaveChangesAsync();
+
+            return Ok("Done !");
+        }
+        catch (System.Exception)
+        {
+            return BadRequest("Failed !");
+            throw;
+        }
+    }
+
 #endregion
 
 #region Payments
