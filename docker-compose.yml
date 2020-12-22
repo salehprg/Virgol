@@ -47,6 +47,8 @@ services:
       - "traefik.http.routers.virgol.entrypoints=secure"
       - "traefik.http.routers.virgol.tls.certresolver=letsencrypt"
       - "traefik.docker.network=web"
+      - "traefik.http.middlewares.virgol_compress.compress=true"
+      - "traefik.http.routers.virgol.middlewares=virgol_compress"
     networks:
       - virgol
       - web
