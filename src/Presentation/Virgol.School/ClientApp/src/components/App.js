@@ -62,6 +62,11 @@ class App extends React.Component {
         const url = window.location.href;
         document.title = localizer.getTitle(url);
         localizer.setFavIcon(url);
+        document.querySelector('meta[name="og:title"]').setAttribute(localizer.getTitle(), _desc);
+        document.querySelector('meta[name="og:site_name"]').setAttribute(localizer.getTitle(), _desc);
+        document.querySelector('meta[name="og:image"]').setAttribute(`%PUBLIC_URL%${localizer.getLogo()}`, _desc);
+        document.querySelector('meta[name="description"]').setAttribute(localizer.getTitle(), _desc);
+        
     }
 
     fadeAlert = () => {
