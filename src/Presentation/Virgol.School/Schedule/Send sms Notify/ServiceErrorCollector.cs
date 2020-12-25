@@ -48,33 +48,43 @@ namespace Schedule
                         service = "LDAP";
                     }
 
-                    List<SchoolModel> schools = dbContext.Schools.ToList();;
+                    List<SchoolModel> schools = dbContext.Schools.ToList();
+                    SchoolService schoolService = new SchoolService(dbContext);
+
                     foreach (var school in schools)
                     {
-                        if(!string.IsNullOrEmpty(school.bbbURL) && !string.IsNullOrEmpty(school.bbbSecret))
+                        if(school.EnableSms)
                         {
-                            bBBApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
-                            bool bbbResponse = bBBApi.CheckStatus().Result;
+                            List<MeetingServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
 
-                            if(!bbbResponse)
+                            MeetingServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+                            MeetingServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+
+                            if(bbbServiceModel != null)
                             {
-                                message += (counter > 0 ? " و " : "") + " سرویس BBB مدرسه " + school.SchoolName;
+                                bBBApi.SetConnectionInfo(bbbServiceModel.Service_URL , bbbServiceModel.Service_Key);
+                                bool bbbResponse = bBBApi.CheckStatus().Result;
 
-                                counter++;
+                                if(!bbbResponse)
+                                {
+                                    message += (counter > 0 ? " و " : "") + " سرویس BBB مدرسه " + school.SchoolName;
+
+                                    counter++;
+                                }
+                                
                             }
-                            
-                        }
 
-                        if(!string.IsNullOrEmpty(school.AdobeUrl))
-                        {
-                            AdobeApi adobeApi = new AdobeApi(school.AdobeUrl);
-                            bool adobeResult = adobeApi.CheckStatus();
-
-                            if(!adobeResult)
+                            if(adobeServiceModel != null)
                             {
-                                message += (counter > 0 ? " و " : "") + " سرویس adobe مدرسه " + school.SchoolName;
+                                AdobeApi adobeApi = new AdobeApi(adobeServiceModel.Service_URL);
+                                bool adobeResult = adobeApi.CheckStatus();
 
-                                counter++;
+                                if(!adobeResult)
+                                {
+                                    message += (counter > 0 ? " و " : "") + " سرویس adobe مدرسه " + school.SchoolName;
+
+                                    counter++;
+                                }
                             }
                         }
                     }

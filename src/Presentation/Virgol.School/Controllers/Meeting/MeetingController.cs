@@ -26,6 +26,7 @@ namespace lms_with_moodle.Controllers
         private readonly UserManager<UserModel> userManager;
         private readonly MeetingService meetingService;
         UserService UserService;
+        SchoolService schoolService;
 
         
         public MeetingController(AppDbContext dbContext
@@ -37,6 +38,7 @@ namespace lms_with_moodle.Controllers
 
             UserService = new UserService(userManager , appDbContext);
             meetingService = new MeetingService(appDbContext , UserService);
+            schoolService = new SchoolService(appDbContext);
 
         }
 
@@ -149,11 +151,16 @@ namespace lms_with_moodle.Controllers
 
                 string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
 
-                if(serviceType == ServiceType.AdobeConnect && string.IsNullOrEmpty(school.AdobeUrl))
+                List<MeetingServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
+
+                MeetingServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+                MeetingServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+
+                if(serviceType == ServiceType.AdobeConnect && adobeServiceModel == null)
                 {
                     return BadRequest("مدرسه از سرویس دهنده ادوب کانکت پشتیبانی نمیکند");
                 }
-                if(serviceType == ServiceType.BBB && (string.IsNullOrEmpty(school.bbbSecret) || string.IsNullOrEmpty(school.bbbURL)))
+                if(serviceType == ServiceType.BBB && bbbServiceModel == null)
                 {
                     return BadRequest("مدرسه از سرویس دهنده بیگ بلو باتن پشتیبانی نمیکند");
                 }
@@ -231,11 +238,16 @@ namespace lms_with_moodle.Controllers
 
                 bool mixed = (classSchedule.MixedId != 0 ? true : false); // if Teacher start mixed class
 
-                if(serviceType == ServiceType.AdobeConnect && string.IsNullOrEmpty(school.AdobeUrl))
+                List<MeetingServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
+
+                MeetingServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+                MeetingServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+
+                if(serviceType == ServiceType.AdobeConnect && adobeServiceModel == null)
                 {
                     return BadRequest("مدرسه از سرویس دهنده ادوب کانکت پشتیبانی نمیکند");
                 }
-                if(serviceType == ServiceType.BBB && (string.IsNullOrEmpty(school.bbbSecret) || string.IsNullOrEmpty(school.bbbURL)))
+                if(serviceType == ServiceType.BBB && bbbServiceModel == null)
                 {
                     return BadRequest("مدرسه از سرویس دهنده بیگ بلو باتن پشتیبانی نمیکند");
                 }

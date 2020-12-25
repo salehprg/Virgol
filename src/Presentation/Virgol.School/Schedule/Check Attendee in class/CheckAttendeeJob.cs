@@ -34,6 +34,8 @@ namespace Schedule
                     var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
                     var appSetting = scope.ServiceProvider.GetService<IOptions<AppSettings>>().Value;
 
+                    SchoolService schoolService = new SchoolService(dbContext);
+
                     BBBApi bbbApi = new BBBApi(dbContext);
                     List<SchoolModel> schools = dbContext.Schools.ToList();
 
@@ -42,10 +44,11 @@ namespace Schedule
                         try
                         {
                             errorSchool = school;
+                            MeetingServicesModel serviceModel = schoolService.GetSchoolMeetingServices(school.Id).Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
 
-                            if(!string.IsNullOrEmpty(school.bbbURL) && !string.IsNullOrEmpty(school.bbbSecret))
+                            if(serviceModel != null)
                             {
-                                bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
+                                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
                                 MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
                                 List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
 

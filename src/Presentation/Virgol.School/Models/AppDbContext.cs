@@ -45,6 +45,7 @@ namespace Models
         public DbSet<PaymentsModel> Payments {get; set;}
         public DbSet<ServicePrice> ServicePrices {get; set;}
         public DbSet<SiteSettings> SiteSettings {get; set;}
+        public DbSet<MeetingServicesModel> MeetingServices {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}

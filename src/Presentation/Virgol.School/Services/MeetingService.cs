@@ -11,11 +11,13 @@ using Newtonsoft.Json;
 public class MeetingService {
     AppDbContext appDbContext;
     UserService UserService;
+    SchoolService schoolService;
     public MeetingService(AppDbContext _appDbContext , UserService _userService)
     {
         appDbContext = _appDbContext;
         UserService = _userService;
 
+        schoolService = new SchoolService(appDbContext);
     }
 
 #region Private Functions
@@ -89,16 +91,19 @@ public class MeetingService {
 
         MeetingsResponse bbb_response = new MeetingsResponse();
         MeetingInfoResponse adobe_MeetingInfo = new MeetingInfoResponse();
+        List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
+
+        MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == serviceType).FirstOrDefault();
+
+        if(serviceModel == null)
+        {
+            return false;
+        }
 
         if(serviceType == ServiceType.BBB)
         {
-            if(string.IsNullOrEmpty(school.bbbURL) || string.IsNullOrEmpty(school.bbbSecret))
-            {
-                return false;
-            }
-
             BBBApi bbbApi = new BBBApi(appDbContext);
-            bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
+            bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
             bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
 
             if(bbb_response == null)
@@ -108,12 +113,7 @@ public class MeetingService {
         }
         else if(serviceType == ServiceType.AdobeConnect)
         {
-            if(string.IsNullOrEmpty(school.AdobeUrl))
-            {
-                return false;
-            }
-
-            AdobeApi adobeApi = new AdobeApi(school.AdobeUrl);
+            AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL);
             adobe_MeetingInfo = adobeApi.StartMeeting(meeting.MeetingName);
             
             if(adobe_MeetingInfo == null)
@@ -184,13 +184,16 @@ public class MeetingService {
 
             MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
             SchoolModel school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
+            List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
 
             bool result = false , createRoom = true;
 
             //Just for Optimizing Meeting
             if(mainAdobeMeeting != null && serviceType == ServiceType.AdobeConnect)
             {
-                AdobeApi adobeApi = new AdobeApi(school.AdobeUrl);
+                MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+
+                AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL);
 
                 string scoId = "";
                 try{scoId =  mainAdobeMeeting.MeetingId.Split("|")[0];}catch{}
@@ -328,6 +331,7 @@ public class MeetingService {
         {
             meetingVW.MeetingId = meeting.MeetingId;
             meetingVW.MeetingName = meeting.MeetingName;
+            meetingVW.ServiceType = meeting.ServiceType;
         }
 
         return meetingVW;
@@ -447,9 +451,12 @@ public class MeetingService {
         if(school == null)
             return null;
 
+        List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
+        MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == meeting.ServiceType).FirstOrDefault();
+
         if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
-            AdobeApi adobeApi = new AdobeApi(school.AdobeUrl);
+            AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL);
             string scoId = (meeting.Private ? meeting.MeetingId.Split("|")[1] : meeting.MeetingId.Split("|")[0]);
 
             //await UserService.SyncUserData(new List<UserModel> {user});
@@ -461,7 +468,7 @@ public class MeetingService {
             BBBApi bbbApi = new BBBApi(appDbContext);
             if(meeting.Private)
             {
-                bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
+                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
             }
             else
             {
@@ -493,7 +500,9 @@ public class MeetingService {
             return false;
         }
         
-        SchoolModel school = new SchoolModel();
+        int schoolId = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault().School_Id;
+
+        SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
         if(meeting.Private)
         {
             //We set School id as Schedule Id in CreatePrivateRoom
@@ -507,12 +516,16 @@ public class MeetingService {
             resultEnd = true;
         }
 
+        List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
+
         if(meeting.ServiceType == ServiceType.BBB && !resultEnd)
         {
+            MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+
             BBBApi bbbApi = new BBBApi(appDbContext);
             if(meeting.Private)
             {
-                bbbApi.SetConnectionInfo(school.bbbURL , school.bbbSecret);
+                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
             }
             else
             {

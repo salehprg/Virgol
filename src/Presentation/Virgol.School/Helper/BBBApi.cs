@@ -284,9 +284,12 @@ namespace lms_with_moodle.Helper
                 int schoolId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().School_Id;
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                SchoolService schoolService = new SchoolService(appDbContext);
 
-                bbbUrl = school.bbbURL;
-                bbbSecret = school.bbbSecret;
+                MeetingServicesModel servicesModel = schoolService.GetSchoolMeetingServices(school.Id).Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+
+                bbbUrl = servicesModel.Service_URL;
+                bbbSecret = servicesModel.Service_Key;
             }
         }
     

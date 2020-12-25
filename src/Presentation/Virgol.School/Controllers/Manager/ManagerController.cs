@@ -178,16 +178,22 @@ namespace lms_with_moodle.Controllers
             try
             {
                 string userNameManager = userManager.GetUserId(User);
-                int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
+                int userId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().Id;
+                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userId).FirstOrDefault();
 
-                student.SchoolId = schoolId;
+                student.SchoolId = school.Id;
                 student.UserName = student.MelliCode;
                 student.ConfirmedAcc = false;
+
+                if(school.Free)
+                {
+                    student.ConfirmedAcc = true;
+                }
                 
                 if(UserService.CheckMelliCodeInterupt(student.MelliCode , 0))
                     return BadRequest("کد ملی وارد شده تکراریست");
 
-                List<UserDataModel> result = await UserService.CreateUser(new List<UserDataModel>{student} , new List<string>{Roles.Student} , schoolId );
+                List<UserDataModel> result = await UserService.CreateUser(new List<UserDataModel>{student} , new List<string>{Roles.Student} , school.Id );
 
                 if(result.Count > 0)
                 {
@@ -374,26 +380,7 @@ namespace lms_with_moodle.Controllers
                 UserModel manager = UserService.GetUserModel(User);
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
 
-                List<StudentViewModel> NewUsers = appDbContext.StudentViews.Where(x => x.schoolid == school.Id).ToList();
-
-                // foreach (var user in NewUsers)
-                // {
-                //     StudentDetail userDetail = new StudentDetail();
-                //     userDetail = appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault();
-
-                //     UserDataModel dataModel= new UserDataModel();
-                //     dataModel.Id = user.Id;
-                //     dataModel.FirstName = user.FirstName;
-                //     dataModel.LastName = user.LastName;
-                //     dataModel.PhoneNumber = user.PhoneNumber;
-                //     dataModel.MelliCode = user.MelliCode;
-                //     dataModel.Moodle_Id = user.Moodle_Id;
-                //     dataModel.UserName = user.UserName;
-
-                //     dataModel.studentDetail = userDetail;
-
-                //     users.Add(dataModel);
-                // }
+                List<StudentViewModel> NewUsers = appDbContext.StudentViews.Where(x => x.schoolid == school.Id && !x.ConfirmedAcc).ToList();
 
                 return Ok(NewUsers);
             }
