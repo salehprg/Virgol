@@ -5,12 +5,14 @@ import history from '../../../../history';
 import DeleteConfirm from '../../../modals/DeleteConfirm';
 import { edit, external_link, trash } from '../../../../assets/icons';
 import { connect } from 'react-redux';
+import EditLesson from './EditLesson';
+import {EditClassSchedule} from '../../../../_actions/classScheduleActions'
 
 class LessonInfoModal extends React.Component {
 
     state = { selectedCourse: null, selectedTeacher: null , selectedDay : 0
              , selectedStartTime: null, selectedEndTime: null, loading : false ,
-            teachers : [] , lessons : [] , showDeleteModal : false , times : []};
+            teachers : [] , lessons : [] , showDeleteModal : false , times : [] , showEditModal : false};
 
     componentDidMount = async () =>{
 
@@ -29,13 +31,14 @@ class LessonInfoModal extends React.Component {
         }
 
         this.setState({times})
+
     }
 
 
     options = [
         { value: 1, label: this.props.t('saturday') },
         { value: 2, label: this.props.t('sunday') },
-        { value: 3, label: this.props.t('monsday') },
+        { value: 3, label: this.props.t('monday') },
         { value: 4, label: this.props.t('tuesday') },
         { value: 5, label: this.props.t('wednesday') },
         { value: 6, label: this.props.t('thursday') },
@@ -78,6 +81,18 @@ class LessonInfoModal extends React.Component {
         this.setState({showDeleteModal : true})
     }
 
+    showEdit(){
+        this.setState({showEditModal : true})
+    }
+
+    onEdit = async(userIds) =>{
+        await this.props.EditClassSchedule(this.props.user.token , userIds );
+        this.setState({showEditModal : false})
+        this.props.cancel()
+        this.componentDidMount()
+        this.render()
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -89,6 +104,16 @@ class LessonInfoModal extends React.Component {
                 /> 
                 : 
                 null
+                }
+                {this.state.showEditModal ?
+                    <EditLesson 
+                    cancel={() => this.setState({showEditModal : false})}
+                    info={this.props.lessonInfo.lessonDetail}
+                    onEdit={this.onEdit}
+                    />
+                    :
+                    null
+                    //write EditLesson Component here
                 }
                 <Modal cancel={this.props.cancel}>
                     <div onClick={(e) => e.stopPropagation()} className="w-11/12 max-w-500 rounded-lg bg-dark-blue px-4 py-6">
@@ -113,16 +138,24 @@ class LessonInfoModal extends React.Component {
 
                         <div className="w-full flex sm:flex-row flex-col-reverse items-center justify-center">
                             {(this.props.canEdit ?
-                                    <div onClick={() => this.showDelete()} className="w-12 h-12 relative bg-redish rounded-full cursor-pointer">
+                                    <div onClick={() => this.showDelete()} className="w-12 h-12 relative mx-1 bg-redish rounded-full cursor-pointer">
                                         {trash('w-6 text-white centerize')}
                                     </div>
                                     :
                                     null
                             )}
 
-                            <button onClick={() => history.push("/SSO/" + this.props.lessonInfo.lessonDetail.id)} className="relative bg-greenish rounded-full text-white cursor-pointer px-3 py-2 mx-2 sm:my-0 my-2">
+
+                            {(this.props.canEdit ?
+                                    <div onClick={() => this.showEdit()} className="w-12 h-12 relative mx-1 bg-greenish rounded-full cursor-pointer">
+                                        {edit('w-6 text-white centerize')}
+                                    </div>
+                                    :
+                                    null
+                            )}
+                            {/* <button onClick={() => history.push("/SSO/" + this.props.lessonInfo.lessonDetail.id)} className="relative bg-greenish rounded-full text-white cursor-pointer px-3 py-2 mx-2 sm:my-0 my-2">
                                 {this.props.t('enterLessonActivities')}
-                            </button>
+                            </button> */}
 
                             {(this.props.isTeacher ?
                                 <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative text-white bg-purplish rounded-full cursor-pointer px-3 py-2">
@@ -169,6 +202,6 @@ const mapStateToProps = state => {
     return {user : state.auth.userInfo}
 }
 
-const cwrapped = connect(mapStateToProps , {})(LessonInfoModal);
+const cwrapped = connect(mapStateToProps , {EditClassSchedule})(LessonInfoModal);
 
 export default withTranslation()(cwrapped);
