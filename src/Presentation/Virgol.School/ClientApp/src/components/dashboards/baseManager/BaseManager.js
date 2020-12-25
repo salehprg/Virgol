@@ -9,7 +9,25 @@ import AddClass from "./AddClass";
 
 class BaseManager extends React.Component {
 
-    state = { addStatus: null }
+    state = { addStatus: null , locked : false }
+
+    UpdateLockState (Id) {
+        
+        var freeBase = this.props.categories.find(x => x.id == Id);
+
+        if(freeBase && freeBase.baseName == "جلسات")
+        {
+            this.setState({locked : true})
+            this.props.OnLockCall(true)
+        }
+        else
+        {
+            this.setState({locked : false})
+            this.props.OnLockCall(false)
+        }
+
+        
+    }
 
     onAddData = (data) => {
         this.props.onAdd(this.state.addStatus , data);
@@ -25,17 +43,22 @@ class BaseManager extends React.Component {
         this.setState({ addStatus: null })
     }
 
+    OnSelectCat = (Id) => {
+        this.props.selectCat(Id)
+        this.UpdateLockState(Id)
+    }
+
     renderCats = () => {
-        const { selectCat, selectedCat, categories, loadingCats } = this.props
+        const {selectedCat, categories, loadingCats } = this.props
         if (loadingCats) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-    if (categories.length === 0) return <p className="text-grayish text-center centerize w-full">{this.props.t('noBase')}</p>
+        if (categories.length === 0) return <p className="text-grayish text-center centerize w-full">{this.props.t('noBase')}</p>
         return categories.map(cat => {
                 return (
                     <SelectableCard
                         id={cat.id}
                         title={cat.baseName}
                         isSelected={cat.id === selectedCat}
-                        select={selectCat}
+                        select={Id => this.OnSelectCat(Id)}
                     />
                 );
             })
@@ -95,8 +118,8 @@ class BaseManager extends React.Component {
     renderClasses = () => {
         const {selectedGrade , selectClass, selectedClass, classes, loadingClasses } = this.props
         if (loadingClasses) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedGrade) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectGrade')} </p>
-        if (classes.length === 0) return <p className="text-grayish text-center"> {this.props.t('noClass')} </p>
+        if (!selectedGrade && !this.state.locked) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectGrade')} </p>
+        if (classes.length === 0 && !this.state.locked) return <p className="text-grayish text-center"> {this.props.t('noClass')} </p>
         return classes.map(kelas => {
             return (
                 <SelectableCard
@@ -110,44 +133,45 @@ class BaseManager extends React.Component {
     }
 
     render() {
-        const { editable, classable, classes, onEdit, selectedClass, categories, deleteCat, deleteField, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
+        const {editable, classable, classes, onEdit, selectedClass, categories, deleteCat, deleteField, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
         return (
             <div className="w-full grid grid-cols-4 gap-6 min-w-900">
                 {this.state.addStatus === 'category' ? <AddCategory onAddBase={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
                 {this.state.addStatus === 'field' ? <AddField selectedBaseId={selectedCat} onAddField={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
                 {this.state.addStatus === 'class' ? <AddClass onAddClass={(data) => this.onAddData(data)} cancel={this.onCancel} /> : null}
                 {!classable ? 
-                <BMCard
-                    title={this.props.t('lessons')}
-                    editable={false}
-                    isSelected={selectedCourse}
-                    showAdd={selectedGrade}
-                    listed={courses}
-                    onAdd={() => this.onAdd('course')}
-                    onCancel={this.onCancel}
-                    addStatus={this.state.addStatus === 'course'}
-                >
-                    {this.renderCourses()}
-                </BMCard>
-                : 
-                <BMCard
-                    title={this.props.t('classes')}
-                    editable={true}
-                    editIcon={true}
-                    onEdit={onEdit}
-                    isSelected={selectedClass}
-                    showAdd={selectedGrade}
-                    listed={classes}
-                    onAdd={() => this.onAdd('class')}
-                    onCancel={this.onCancel}
-                    addStatus={this.state.addStatus === 'class'}
-                >
-                    {this.renderClasses()}
-                </BMCard>
+                    <BMCard
+                        title={this.props.t('lessons')}
+                        editable={false}
+                        isSelected={selectedCourse}
+                        showAdd={selectedGrade}
+                        listed={courses}
+                        onAdd={() => this.onAdd('course')}
+                        onCancel={this.onCancel}
+                        addStatus={this.state.addStatus === 'course'}
+                    >
+                        {this.renderCourses()}
+                    </BMCard>
+                    : 
+                    <BMCard
+                        title={this.props.t('classes')}
+                        editable={true}
+                        editIcon={true}
+                        onEdit={onEdit}
+                        isSelected={selectedClass}
+                        showAdd={this.state.locked ? 0 : selectedGrade}
+                        listed={classes}
+                        onAdd={() => this.onAdd('class')}
+                        onCancel={this.onCancel}
+                        addStatus={this.state.addStatus === 'class'}
+                    >
+                        {this.renderClasses()}
+                    </BMCard>
                 }
+                
                 <BMCard
                     title={this.props.t('grades')}
-                    editable={false}
+                    editable={false }
                     isSelected={selectedGrade}
                     showAdd={selectedField}
                     listed={grades}
@@ -159,7 +183,7 @@ class BaseManager extends React.Component {
                 </BMCard>
                 <BMCard
                     title={this.props.t('fields')}
-                    editable={editable}
+                    editable={editable && !this.state.locked}
                     isSelected={selectedField}
                     showAdd={selectedCat}
                     deleteItem={deleteField}
@@ -170,6 +194,7 @@ class BaseManager extends React.Component {
                 >
                     {this.renderFields()}
                 </BMCard>
+
                 <BMCard
                     title={this.props.t('bases')}
                     editable={editable}

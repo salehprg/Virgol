@@ -19,7 +19,9 @@ class AddStudent extends React.Component {
 
     componentDidMount = async () => {
         this.setState({ loading: true })
-        await this.props.getAllStudents(this.props.user.token , 'true')
+        var FreeClass = this.props.IsFreeClass;
+
+        await this.props.getAllStudents(this.props.user.token , !FreeClass)
         this.setState({ loading: false })
     }
 

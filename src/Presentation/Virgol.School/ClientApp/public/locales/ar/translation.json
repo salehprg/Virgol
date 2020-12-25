@@ -202,5 +202,8 @@
     "payments": "قائمة الدفع",
     "userCount": "عدد الطلاب",
     "paymentMsg": "رسالة النظام",
-    "paymentReqId": "شفرة التتبع"
+    "paymentReqId": "شفرة التتبع",
+    "host": "مزود",
+    "meetingName": "اسم الاجتماع",
+    "addFreeMeeting": "أضف وقت الاجتماع"
 }

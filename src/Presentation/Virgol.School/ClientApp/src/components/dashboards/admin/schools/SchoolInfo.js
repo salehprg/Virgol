@@ -346,6 +346,7 @@ class SchoolInfo extends React.Component {
                             selectedCourse={this.state.selectedCourse}
                             selectCourse={this.selectCourse}
                             loadingCourses={this.state.loadingCourses}
+                            OnLockCall={(e) => this.setState({lock : e})}
                         />
                         
                     </div>

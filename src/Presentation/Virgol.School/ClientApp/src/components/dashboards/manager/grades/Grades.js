@@ -39,6 +39,13 @@ class Grades extends React.Component {
 
     }
 
+    OnLock = (state) => {
+        if(state)
+        {
+            this.selectGrade(0)
+        }
+    }
+
     selectCat = async (id) => {
         this.setState({ selectedCat: id, selectedField: null, selectedGrade: null, selectedCourse: null })
 
@@ -92,6 +99,7 @@ class Grades extends React.Component {
                 <div className="w-full rounded-lg min-h-90 lg:col-span-3 col-span-1">
                     <div className="mt-8 overflow-auto">
                         <BaseManager
+                            OnLockCall={(state) => this.OnLock(state)}
                             schoolId={this.props.match.params.id}
                             editable={false}
                             classable={true}

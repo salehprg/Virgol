@@ -106,6 +106,10 @@ public class ClassScheduleService {
                 if(teacher.UserId != 0)
                 {
                     unassignTeacher = await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{teacher});
+                    if(teacher.lessonId == -1)
+                    {
+                        unassignTeacher = true;
+                    }
                 }
                 else
                 {

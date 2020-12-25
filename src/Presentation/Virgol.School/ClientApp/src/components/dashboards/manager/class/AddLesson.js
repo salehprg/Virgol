@@ -86,7 +86,8 @@ class AddLesson extends React.Component {
             const classSchedule = {
                 classId : parseInt(this.props.classId),
                 dayType : this.state.selectedDay.value,
-                lessonId : this.state.selectedCourse.value,
+                lessonId : (this.props.IsFreeClass ? 0 : this.state.selectedCourse.value) ,
+                customLessonName : (this.props.IsFreeClass ? this.state.selectedCourse : null),
                 teacherId : this.state.selectedTeacher.value,
                 startHour : this.state.selectedStartTime.value,
                 endHour : this.state.selectedEndTime.value,
@@ -96,19 +97,6 @@ class AddLesson extends React.Component {
             this.props.addLesson(classSchedule);
         }
     }
-
-
-    // onHandleInput = e => {
-    //     let start = e.target.value;
-    //
-    //     if (!Number(start)) {
-    //         return;
-    //     }
-    //
-    //     this.setState({
-    //         [e.target.name]: parseInt(start)
-    //     });
-    // };
 
     options = [
         { value: 1, label: this.props.t('saturday') },
@@ -120,57 +108,39 @@ class AddLesson extends React.Component {
         { value: 7, label: this.props.t('friday') }
     ];
 
-    // times = [
-    //     { value: 7, label: '07:00' },
-    //     { value: 7, label: '07:00' },
-    //     { value: 7.5, label: '07:30' },
-    //     { value: 8, label: '08:00' },
-    //     { value: 8.5, label: '08:30' },
-    //     { value: 9, label: '09:00' },
-    //     { value: 9.5, label: '09:30' },
-    //     { value: 10, label: '10:00' },
-    //     { value: 10.5, label: '10:30' },
-    //     { value: 11, label: '11:00' },
-    //     { value: 11.5, label: '11:30' },
-    //     { value: 12, label: '12:00' },
-    //     { value: 12.5, label: '12:30' },
-    //     { value: 13, label: '13:00' },
-    //     { value: 13.5, label: '13:30' },
-    //     { value: 14, label: '14:00' },
-    //     { value: 14.5, label: '14:30' },
-    //     { value: 15, label: '15:00' },
-    //     { value: 15.5, label: '15:30' },
-    //     { value: 16, label: '16:00' },
-    //     { value: 16.5, label: '16:30' },
-    //     { value: 17, label: '17:00' },
-    //     { value: 17.5, label: '17:30' },
-    //     { value: 18, label: '18:00' },
-    //     { value: 18.5, label: '18:30' },
-    //     { value: 19, label: '19:00' },
-    //     { value: 19.5, label: '19:30' },
-    //     { value: 20, label: '20:00' }
-    // ]
+    handleChange = (event) => {
+        this.setState({className: event.target.value});  
+    }
 
     render() {
         return (
             <Modal cancel={this.props.cancel}>
-                <div onClick={(e) => e.stopPropagation()} className="w-11/12 max-w-500 bg-dark-blue px-4 py-6">
-                    <p className="text-center text-white my-4"> {this.props.t('addLessonToSchudle')} </p>
+                <div onClick={(e) => e.stopPropagation()} dir="rtl" className="w-11/12 max-w-500 bg-dark-blue px-4 py-6">
+                    <p className="text-center text-white my-4"> {this.props.IsFreeClass ? this.props.t('addFreeMeeting') : this.props.t('addLessonToSchedule')} </p>
                     {(this.state.loading ? this.props.t('loading') :  
                     <React.Fragment>
-                        <Select
-                            className="w-1/2 mx-auto my-4"
-                            value={this.state.selectedCourse}
-                            onChange={this.handleChangeCourse}
-                            options={this.state.classLessons}
-                            placeholder={this.props.t('lesson')}
-                        />
+                        {this.props.IsFreeClass ?
+                            <div className="w-1/2 mx-auto my-4">
+                                <input dir="rtl" placeholder={this.props.t('meetingName')} className="px-4 py-2 text-black focus:outline-none focus:shadow-outline border-2 border-dark-blue rounded-lg" onChange={(e) => this.handleChangeCourse(e.target.value)} value={this.state.selectedCourse} />
+                            </div>
+                        :
+                            <Select
+                                escapeClearsValue={true}
+                                
+                                onInputChange={(e) => console.log(e)}
+                                className="w-1/2 mx-auto my-4"
+                                value={this.state.selectedCourse}
+                                onChange={this.handleChangeCourse}
+                                options={this.state.classLessons}
+                                placeholder={this.props.t('lesson')}
+                            />
+                        }
                         <Select
                             className="w-1/2 mx-auto my-4"
                             value={this.state.selectedTeacher}
                             onChange={this.handleChangeTeacher}
                             options={this.state.teachers}
-                            placeholder={this.props.t('teacher')}
+                            placeholder={this.props.IsFreeClass ? this.props.t('host') : this.props.t('teacher')}
                         />
                         <Select
                             className="w-1/2 mx-auto my-4"

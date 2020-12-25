@@ -9,7 +9,7 @@ const BMCard = ({ onAdd, title, editIcon, onEdit, editable, deleteItem, isSelect
             <div className="w-full relative flex-grow py-6 overflow-auto">
                 {children}
             </div>
-            <div className={`w-full flex flex-row justify-start items-center ${editable && showAdd ? 'block' : 'hidden'}`}>
+            <div className={`w-full flex flex-row justify-start items-center ${editable && showAdd != null ? 'block' : 'hidden'}`}>
                 <div onClick={onAdd} className={`w-12 cursor-pointer h-12 mx-2 relative rounded-full bg-greenish ${listed ? 'block' : 'hidden'}`}>
                     {plus('w-6 text-white centerize')}
                 </div>

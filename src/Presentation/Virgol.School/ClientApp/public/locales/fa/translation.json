@@ -223,6 +223,10 @@
     "userCount": "تعداد دانش آموز",
     "paymentMsg": "پیام سیستم",
     "paymentReqId": "کد رهگیری",
-    "serviceName": "نام سرویس"
+    "serviceName": "نام سرویس",
+    "host": "ارائه دهنده",
+    "meetingName": "نام جلسه",
+    "addFreeMeeting": "افزودن ساعت جلسه",
+    "viewerList": "لیست افراد حاضر"
 
 }

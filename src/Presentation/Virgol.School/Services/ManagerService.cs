@@ -33,7 +33,7 @@ public class ManagerService {
             studentClass.UserId = userid;
             
 
-            School_studentClass oldStudentClass = appDbContext.School_StudentClasses.Where(x => x.UserId == userid).FirstOrDefault();
+            School_studentClass oldStudentClass = appDbContext.School_StudentClasses.Where(x => x.UserId == userid && x.ClassId == classModel.Id).FirstOrDefault();
 
             //Prevent from add duplicate user to class
             if(oldStudentClass == null)

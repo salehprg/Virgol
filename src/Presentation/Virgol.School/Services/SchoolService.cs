@@ -289,7 +289,7 @@ public class SchoolService
 
         if(classMoodleId != -1)
         {
-            List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == gradeModel.Grade_Id).ToList();
+            List<LessonModel> lessons = (gradeModel.Grade_Id != 0 ? appDbContext.Lessons.Where(x => x.Grade_Id == gradeModel.Grade_Id).ToList() : new List<LessonModel>());
             List<School_Lessons> schoolLessons = new List<School_Lessons>();
 
             School_Class schoolClass = new School_Class();

@@ -407,48 +407,59 @@ namespace lms_with_moodle.Controllers
 
                     if(noInterupt)
                     {
-
                         if(!string.IsNullOrEmpty(classSchedule.CustomLessonName))
                         {
-                            UserModel manager = userService.GetUserModel(User);
-                        
-                            SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
-                            School_Class school_Class = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Id == classSchedule.ClassId).FirstOrDefault();
 
-                            LessonModel freeLesson = new LessonModel();
-                            freeLesson.Grade_Id = 0;
-                            freeLesson.LessonCode = "F_" + classSchedule.ClassId.ToString();
-                            freeLesson.LessonName = classSchedule.CustomLessonName;
-                            freeLesson.OrgLessonName = freeLesson.LessonName;
-                            freeLesson.Vahed = 0;
+                            LessonModel freeLesson = appDbContext.Lessons.Where(x => x.Grade_Id == 0 && x.LessonName == classSchedule.CustomLessonName).FirstOrDefault();
+
+                            School_Lessons schoolLesson = null;
+                            if(freeLesson != null)
+                            {
+                                schoolLesson = appDbContext.School_Lessons.Where(x => x.Lesson_Id == freeLesson.Id && x.classId == classSchedule.ClassId).FirstOrDefault();
+                            }
+
+                            if(schoolLesson == null)
+                            {
+                                UserModel manager = userService.GetUserModel(User);
                             
-                            appDbContext.Lessons.Add(freeLesson);
-                            await appDbContext.SaveChangesAsync();
-                            
-                            List<EnrolUser> enrolsManager = new List<EnrolUser>();
-                            int managerMoodleId = manager.Moodle_Id;
-                            int moodleId = await moodleApi.CreateCourse(freeLesson.LessonName + " (" + school.Moodle_Id + "-" + school_Class.Moodle_Id + ")", freeLesson.LessonName + " (" + school.SchoolName + "-" + school_Class.ClassName + ")" , school_Class.Moodle_Id);
-                            //int moodleId = 0;
+                                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
+                                School_Class school_Class = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Id == classSchedule.ClassId).FirstOrDefault();
 
-                            School_Lessons schoolLesson = new School_Lessons();
-                            schoolLesson.Lesson_Id = freeLesson.Id;
-                            schoolLesson.Moodle_Id = moodleId;
-                            schoolLesson.School_Id = school.Id;
-                            schoolLesson.classId = school_Class.Id;
+                                freeLesson = new LessonModel();
+                                freeLesson.Grade_Id = 0;
+                                freeLesson.LessonCode = "F_" + classSchedule.ClassId.ToString();
+                                freeLesson.LessonName = classSchedule.CustomLessonName;
+                                freeLesson.OrgLessonName = freeLesson.LessonName;
+                                freeLesson.Vahed = 0;
+                                
+                                appDbContext.Lessons.Add(freeLesson);
+                                await appDbContext.SaveChangesAsync();
+                                
+                                List<EnrolUser> enrolsManager = new List<EnrolUser>();
+                                int managerMoodleId = manager.Moodle_Id;
+                                int moodleId = await moodleApi.CreateCourse(freeLesson.LessonName + " (" + school.Moodle_Id + "-" + school_Class.Moodle_Id + ")", freeLesson.LessonName + " (" + school.SchoolName + "-" + school_Class.ClassName + ")" , school_Class.Moodle_Id);
+                                //int moodleId = 0;
 
-                            //Enrol manager to all Lessons
+                                schoolLesson = new School_Lessons();
+                                schoolLesson.Lesson_Id = freeLesson.Id;
+                                schoolLesson.Moodle_Id = moodleId;
+                                schoolLesson.School_Id = school.Id;
+                                schoolLesson.classId = school_Class.Id;
 
-                            EnrolUser enrol = new EnrolUser();
-                            enrol.lessonId = moodleId;
-                            enrol.UserId = managerMoodleId;
-                            enrol.RoleId = 3;
+                                //Enrol manager to all Lessons
 
-                            enrolsManager.Add(enrol);
-                            
-                            appDbContext.School_Lessons.AddRange(schoolLesson);
-                            await appDbContext.SaveChangesAsync();
+                                EnrolUser enrol = new EnrolUser();
+                                enrol.lessonId = moodleId;
+                                enrol.UserId = managerMoodleId;
+                                enrol.RoleId = 3;
 
-                            await moodleApi.AssignUsersToCourse(enrolsManager);
+                                enrolsManager.Add(enrol);
+                                
+                                appDbContext.School_Lessons.AddRange(schoolLesson);
+                                await appDbContext.SaveChangesAsync();
+
+                                await moodleApi.AssignUsersToCourse(enrolsManager);
+                            }
 
                             classSchedule.LessonId = schoolLesson.Lesson_Id;
                         }

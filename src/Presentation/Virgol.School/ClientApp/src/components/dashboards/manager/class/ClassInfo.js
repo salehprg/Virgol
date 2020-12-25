@@ -127,7 +127,12 @@ class ClassInfo extends React.Component {
                 <div onClick={() => history.push('/m/bases')} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-4 rounded-lg border-2 border-purplish">
                     {arrow_left('w-6 centerize text-purplish')}
                 </div>
-                {this.state.addStudent ? <AddStudent onAddStudent={(dataIds) => this.onAddStudent(dataIds)} cancel={() => this.setState({addStudent : false})} /> : null}
+                {this.state.addStudent ? 
+                    <AddStudent IsFreeClass={this.state.classDetail.grade_Id == 0 ? true : false} 
+                                onAddStudent={(dataIds) => this.onAddStudent(dataIds)} 
+                                cancel={() => this.setState({addStudent : false})} /> 
+                                : null}
+                                
                 {this.state.showDeleteModal ? 
                     <DeleteConfirm
                         title={this.props.t('deleteConfirm')}
@@ -149,6 +154,7 @@ class ClassInfo extends React.Component {
                 {this.state.addLesson ? 
                 <AddLesson
                     addLesson={this.addLesson}
+                    IsFreeClass={this.state.classDetail.grade_Id == 0 ? true : false}
                     classId={this.props.match.params.id}
                     cancel={() => this.setState({ addLesson: false })}
                 /> 
