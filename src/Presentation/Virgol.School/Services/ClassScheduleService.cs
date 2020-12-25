@@ -26,7 +26,7 @@ public class ClassScheduleService {
                                                                                 (x.StartHour <= classSchedule.StartHour && x.EndHour > classSchedule.StartHour)) // Check newClass Start Time between oldClass Time
                 ).ToList();
 
-        if(classInterupts.Count > 0 && classInterupts.Where(x => x.weekly == classSchedule.weekly || x.weekly == 0).FirstOrDefault() != null)
+        if(string.IsNullOrEmpty(classSchedule.CustomLessonName) && classInterupts.Count > 0 && classInterupts.Where(x => x.weekly == classSchedule.weekly || x.weekly == 0).FirstOrDefault() != null)
         {
             return "ساعت ایجاد شده با درس دیگر تداخل دارد";
         }

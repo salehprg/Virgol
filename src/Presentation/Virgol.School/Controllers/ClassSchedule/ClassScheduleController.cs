@@ -407,6 +407,52 @@ namespace lms_with_moodle.Controllers
 
                     if(noInterupt)
                     {
+
+                        if(!string.IsNullOrEmpty(classSchedule.CustomLessonName))
+                        {
+                            UserModel manager = userService.GetUserModel(User);
+                        
+                            SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
+                            School_Class school_Class = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Id == classSchedule.ClassId).FirstOrDefault();
+
+                            LessonModel freeLesson = new LessonModel();
+                            freeLesson.Grade_Id = 0;
+                            freeLesson.LessonCode = "F_" + classSchedule.ClassId.ToString();
+                            freeLesson.LessonName = classSchedule.CustomLessonName;
+                            freeLesson.OrgLessonName = freeLesson.LessonName;
+                            freeLesson.Vahed = 0;
+                            
+                            appDbContext.Lessons.Add(freeLesson);
+                            await appDbContext.SaveChangesAsync();
+                            
+                            List<EnrolUser> enrolsManager = new List<EnrolUser>();
+                            int managerMoodleId = manager.Moodle_Id;
+                            int moodleId = await moodleApi.CreateCourse(freeLesson.LessonName + " (" + school.Moodle_Id + "-" + school_Class.Moodle_Id + ")", freeLesson.LessonName + " (" + school.SchoolName + "-" + school_Class.ClassName + ")" , school_Class.Moodle_Id);
+                            //int moodleId = 0;
+
+                            School_Lessons schoolLesson = new School_Lessons();
+                            schoolLesson.Lesson_Id = freeLesson.Id;
+                            schoolLesson.Moodle_Id = moodleId;
+                            schoolLesson.School_Id = school.Id;
+                            schoolLesson.classId = school_Class.Id;
+
+                            //Enrol manager to all Lessons
+
+                            EnrolUser enrol = new EnrolUser();
+                            enrol.lessonId = moodleId;
+                            enrol.UserId = managerMoodleId;
+                            enrol.RoleId = 3;
+
+                            enrolsManager.Add(enrol);
+                            
+                            appDbContext.School_Lessons.AddRange(schoolLesson);
+                            await appDbContext.SaveChangesAsync();
+
+                            await moodleApi.AssignUsersToCourse(enrolsManager);
+
+                            classSchedule.LessonId = schoolLesson.Lesson_Id;
+                        }
+
                         Class_WeeklySchedule schedule = await classScheduleService.AddClassSchedule(classSchedule);
                         ClassScheduleView classScheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == schedule.Id).FirstOrDefault();
 
@@ -490,7 +536,6 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
         
 #endregion   
 

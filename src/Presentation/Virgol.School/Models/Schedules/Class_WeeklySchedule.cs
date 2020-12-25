@@ -21,7 +21,8 @@ public class Class_WeeklySchedule {
     public int weekly {get; set;}
     public int MixedId {get;set;}
 
-
+    [NotMapped]
+    public string CustomLessonName {get;set;}
 
 
 }

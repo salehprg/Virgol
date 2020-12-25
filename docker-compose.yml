@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   virgol:
-    image: goldenstarc/virgol:1.8.2
+    image: goldenstarc/virgol:1.8.2-beta1
     restart: always
     container_name: virgol_main
     volumes:

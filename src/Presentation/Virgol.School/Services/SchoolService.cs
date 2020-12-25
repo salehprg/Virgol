@@ -270,12 +270,22 @@ public class SchoolService
     
     public async Task<School_Class> AddClass(ClassData classModel , SchoolModel school)
     {
-        School_Grades gradeModel = appDbContext.School_Grades.Where(x => x.Grade_Id == classModel.gradeId && x.School_Id == school.Id).FirstOrDefault();
+        int classMoodleId = -1;
+        School_Grades gradeModel = new School_Grades();
 
-        int grade_moodleId = gradeModel.Moodle_Id;
+        //It means Going to Create Non-Free Meeting
+        if(classModel.gradeId != 0)
+        {
+            gradeModel = appDbContext.School_Grades.Where(x => x.Grade_Id == classModel.gradeId && x.School_Id == school.Id).FirstOrDefault();
 
-        int classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , grade_moodleId);
-        //int classMoodleId = 0;
+            classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , gradeModel.Moodle_Id);
+        }
+        else
+        {
+            classMoodleId = await moodleApi.CreateCategory(classModel.ClassName , school.Moodle_Id);
+            gradeModel.Grade_Id = 0;
+            gradeModel.Moodle_Id = 0;
+        }
 
         if(classMoodleId != -1)
         {
@@ -285,7 +295,7 @@ public class SchoolService
             School_Class schoolClass = new School_Class();
             schoolClass.ClassName = classModel.ClassName;
             schoolClass.Grade_Id = gradeModel.Grade_Id;
-            schoolClass.Grade_MoodleId = grade_moodleId;
+            schoolClass.Grade_MoodleId = gradeModel.Moodle_Id;
             schoolClass.Moodle_Id = classMoodleId;
             schoolClass.School_Id = school.Id;
 
