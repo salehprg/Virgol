@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace lms_with_moodle
 {
@@ -208,7 +209,9 @@ namespace lms_with_moodle
              // Add Quartz services
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            
             // // Add Send Sms Notify job
             // services.AddSingleton<SendNotifyJob>();
             // services.AddSingleton(new JobSchedule(

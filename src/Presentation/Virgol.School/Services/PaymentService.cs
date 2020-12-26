@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using lms_with_moodle.Helper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.User;
@@ -13,10 +14,10 @@ public class PaymentService {
     AppDbContext appDbContext;
     PayPingAPI PayPingAPI;
     UserService userService;
-    public PaymentService (AppDbContext context , UserManager<UserModel> userManager)
+    public PaymentService (AppDbContext context , UserManager<UserModel> userManager , string URL)
     {
         appDbContext = context;
-        PayPingAPI = new PayPingAPI(appDbContext);
+        PayPingAPI = new PayPingAPI(appDbContext , URL);
         userService = new UserService(userManager , appDbContext);
     }
 

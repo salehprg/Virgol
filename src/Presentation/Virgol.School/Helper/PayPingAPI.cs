@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using lms_with_moodle.Helper;
+using Microsoft.AspNetCore.Http;
 using Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,12 +14,17 @@ public class PayPingAPI {
     static HttpClient client;
     string BaseUrl;
     string token;
-    public PayPingAPI(AppDbContext appDbContext)
+    public PayPingAPI(AppDbContext appDbContext , string RequestURL)
     {
         client = new HttpClient();   
 
         BaseUrl = AppSettings.GetValueFromDatabase(appDbContext , Settingkey.PayPingURL);
-        token = AppSettings.GetValueFromDatabase(appDbContext , Settingkey.PayPingToken);
+
+        DomainInfoModel domain = appDbContext.DomainInfos.Where(x => x.Domain == RequestURL).FirstOrDefault();
+        if(domain != null)
+        {
+            token = domain.PaypingToken;
+        }
 
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer" , token);
     }

@@ -46,7 +46,8 @@ namespace lms_with_moodle.Controllers
         public AdministratorController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
-                                , AppDbContext _appdbContext , AppDbContextBackup _appDBBackup)
+                                , AppDbContext _appdbContext , AppDbContextBackup _appDBBackup
+                                , IHttpContextAccessor httpContext)
         {
             userManager = _userManager;
             roleManager = _roleManager;
@@ -66,7 +67,7 @@ namespace lms_with_moodle.Controllers
             UserService = new UserService(userManager , appDbContext);
             ldap = new LDAP_db(appDbContext);
             administratorService = new AdministratorService(appDbContext , moodleApi);
-            PaymentService = new PaymentService(appDbContext , userManager);
+            PaymentService = new PaymentService(appDbContext , userManager , httpContext.HttpContext.Request.Host.Value);
         }
 #region Users
 

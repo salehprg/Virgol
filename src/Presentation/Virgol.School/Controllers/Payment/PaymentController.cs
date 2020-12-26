@@ -15,6 +15,7 @@ using lms_with_moodle.Helper;
 using Models;
 using Models.User;
 using Models.Users.Roles;
+using Microsoft.AspNetCore.Http;
 
 namespace lms_with_moodle.Controllers
 {
@@ -29,14 +30,14 @@ namespace lms_with_moodle.Controllers
         UserService UserService;
         PaymentService PaymentService;
         public PaymentController(UserManager<UserModel> _userManager
-                                , AppDbContext _appdbContext)
+                                , AppDbContext _appdbContext , IHttpContextAccessor httpContext)
         {
             userManager = _userManager;
 
             appDbContext = _appdbContext;
             SMSApi = new FarazSmsApi();
             UserService = new UserService(userManager , appDbContext);
-            PaymentService = new PaymentService(appDbContext , userManager);
+            PaymentService = new PaymentService(appDbContext , userManager , httpContext.HttpContext.Request.Host.Value);
         }
 
         public IActionResult GetServices()
