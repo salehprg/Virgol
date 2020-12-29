@@ -37,6 +37,9 @@ namespace lms_with_moodle.Controllers
             appDbContext = _appdbContext;
             SMSApi = new FarazSmsApi();
             UserService = new UserService(userManager , appDbContext);
+            string url = httpContext.HttpContext.Request.Host.Value;
+
+            Console.WriteLine(url);
             PaymentService = new PaymentService(appDbContext , userManager , httpContext.HttpContext.Request.Host.Value);
         }
 
