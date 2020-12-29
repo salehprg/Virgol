@@ -40,6 +40,10 @@ namespace lms_with_moodle.Controllers
             string url = httpContext.HttpContext.Request.Host.Value;
 
             Console.WriteLine(url);
+            Console.WriteLine(httpContext.HttpContext.Request.PathBase);
+            Console.WriteLine(httpContext.HttpContext.Request.Path);
+            Console.WriteLine(httpContext.HttpContext.Request.Host);
+
             PaymentService = new PaymentService(appDbContext , userManager , httpContext.HttpContext.Request.Host.Value);
         }
 
