@@ -500,7 +500,15 @@ public class MeetingService {
             return false;
         }
         
-        int schoolId = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault().School_Id;
+        int schoolId = 0;
+        if(meeting.Private)
+        {
+            schoolId = meeting.ServiceId;
+        }
+        else
+        {
+            schoolId = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault().School_Id;
+        }
 
         SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
         if(meeting.Private)
