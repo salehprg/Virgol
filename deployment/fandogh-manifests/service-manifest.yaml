@@ -6,6 +6,7 @@ spec:
   image_pull_secret: $SEC_NAME
   domains:
      - name: beta.legace.ir
+     - name: lms.legace.ir
   port: 80
   volume_mounts:
     - mount_path: /app/BulkData
