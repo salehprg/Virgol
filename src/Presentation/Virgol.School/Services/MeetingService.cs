@@ -104,8 +104,12 @@ public class MeetingService {
         {
             BBBApi bbbApi = new BBBApi(appDbContext);
             bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
+            Console.WriteLine("Set Connection");
+            Console.WriteLine("URL: " + serviceModel.Service_URL + " Secret : " + serviceModel.Service_Key);
+
             bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
 
+            Console.WriteLine("Room in BBB Created");
             if(bbb_response == null)
             {
                 return false;
@@ -162,6 +166,8 @@ public class MeetingService {
         try
         {
             Meeting mainAdobeMeeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id && x.TeacherId == teacherId).FirstOrDefault();
+
+            Console.WriteLine("Make Meeting in Db");
             Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
 
             if(meeting == null)

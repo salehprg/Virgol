@@ -201,7 +201,11 @@ namespace lms_with_moodle.Helper
                 
                 string data = FunctionName;
 
+                Console.WriteLine("Sending Data in BBB API");
                 string _response = await sendData(data);
+
+                Console.WriteLine("Send Done !");
+                Console.WriteLine("Response : " + _response);
 
                 var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
                 

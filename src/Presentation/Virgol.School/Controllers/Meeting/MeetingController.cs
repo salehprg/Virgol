@@ -258,10 +258,13 @@ namespace lms_with_moodle.Controllers
 
                     if(mixedSchedule != null)
                     {
-
+                        Console.WriteLine("Going to start Meeting");
+                        
                         int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType , mixedSchedule.MixedName);
                         //Get all schedules have same MixedId according to Selected Schedule
                         List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
+
+                        Console.WriteLine("Done !");
 
                         if(parentId != -1)
                         {
@@ -282,10 +285,14 @@ namespace lms_with_moodle.Controllers
                 }
                 else
                 {
+                    Console.WriteLine("Going to start Meeting");
                     int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
+
+                    Console.WriteLine("Done !");
                 }
 
-                return Ok(true);
+                Console.WriteLine("Return Phase");
+                return Ok(true);    
             }
             catch(Exception ex)
             {
