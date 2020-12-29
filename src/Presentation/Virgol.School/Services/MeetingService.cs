@@ -263,7 +263,7 @@ public class MeetingService {
 
         int weekType = MyDateTime.OddEven_Week(MyDateTime.Now());
 
-        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => (currentTime <= x.EndHour && (x.DayType == dayOfWeek || x.DayType == dayOfTommorow) && (x.weekly == 0 || x.weekly == weekType))).ToList();                                                                          
+        List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => ((currentTime <= x.EndHour && x.DayType == dayOfWeek ) || x.DayType == dayOfTommorow) && (x.weekly == 0 || x.weekly == weekType)).ToList();                                                                          
         List<MeetingView> recentClasses = new List<MeetingView>();
         
 
