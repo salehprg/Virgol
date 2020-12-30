@@ -513,7 +513,12 @@ public class MeetingService {
         }
         else
         {
-            schoolId = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault().School_Id;
+            ClassScheduleView scheduleData = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
+
+            if(scheduleData != null)
+            {
+                schoolId = scheduleData.School_Id;
+            }
         }
 
         SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
@@ -530,10 +535,11 @@ public class MeetingService {
             resultEnd = true;
         }
 
-        List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
 
         if(meeting.ServiceType == ServiceType.BBB && !resultEnd)
         {
+            List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
+
             MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
 
             BBBApi bbbApi = new BBBApi(appDbContext);

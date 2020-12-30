@@ -144,16 +144,16 @@ public class ClassScheduleService {
                     await moodleApi.setCourseVisible(lessonMoodleId , false);
                 }
 
-                // List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).ToList();
-                // foreach (var meeting in meetings)
-                // {
-                //     if(meeting != null)
-                //     {
-                //         appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
-                //     }
-                // }
+                List<Meeting> meetings = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id).ToList();
+                foreach (var meeting in meetings)
+                {
+                    if(meeting != null)
+                    {
+                        appDbContext.ParticipantInfos.RemoveRange(appDbContext.ParticipantInfos.Where(x => x.MeetingId == meeting.Id).ToList());
+                    }
+                }
 
-                // appDbContext.Meetings.RemoveRange(meetings);
+                appDbContext.Meetings.RemoveRange(meetings);
 
                 await appDbContext.SaveChangesAsync();
 

@@ -36,7 +36,7 @@ class RecentClass extends React.Component {
                         :
                         classes.map(x => {
                             return (
-                                (x.classId ?
+                                (!x.private ?
                                 <RecentClassDetail
                                     weekly={x.weekly}
                                     serviceType={x.serviceType}

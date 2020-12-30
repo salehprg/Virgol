@@ -6,6 +6,7 @@ public class MeetingView {
     public string MeetingName {get; set;} 
     public string MeetingId {get; set;} 
     public bool Finished {get; set;}
+    public bool Private {get; set;}
     public int CheckCount {get; set;} //How many CheckAttendeJob , check for Absense/Present Student
     public DateTime StartTime {get; set;}
     public DateTime EndTime {get; set;}
