@@ -6,6 +6,7 @@ spec:
   image_pull_secret: $SEC_NAME
   domains:
      - name: beta.legace.ir
+     - name: lms.legace.ir
   port: 80
   volume_mounts:
     - mount_path: /app/BulkData
@@ -13,7 +14,7 @@ spec:
       # volume_name: virgol
   # volume_browser_enabled: true
   resources:
-      memory: 300Mi
+      memory: 340Mi
   env:
     - name: ASPNETCORE_URLS
       value: http://+
