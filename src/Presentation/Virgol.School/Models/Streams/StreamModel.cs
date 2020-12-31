@@ -7,7 +7,7 @@ public class StreamModel {
     public int StreamerId {get; set;}
     public string StreamName {get; set;}
     public string OBS_Link {get; set;}
-    public string OBS_Key {get; set;}
+    public string MeetingId {get; set;}
     public string JoinLink {get; set;}
     public DateTime StartTime {get; set;}
     public DateTime EndTime {get; set;}

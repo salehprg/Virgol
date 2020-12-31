@@ -177,9 +177,11 @@ namespace lms_with_moodle.Controllers.Stream
                     streamBaseUrl = adminDetail.streamURL;
                 }
 
+                SchoolModel school = new SchoolModel();
+
                 if(userService.HasRole(userModel , Roles.Manager))
                 {
-                    SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
+                    school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
 
                     if(string.IsNullOrEmpty(school.streamURL))
                     {
@@ -193,8 +195,13 @@ namespace lms_with_moodle.Controllers.Stream
                     streamBaseUrl = school.streamURL;
                 }
 
+                MeetingServicesModel servicesModel = new MeetingServicesModel();
+                servicesModel.Service_URL = school.streamURL;
+                servicesModel.Service_Key = school.streamKey;
 
-                bool reserveStatus = await streamService.ReserveStream(streamModel , userModel , streamBaseUrl);
+                StreamModel stream = new StreamModel();
+
+                bool reserveStatus = await streamService.ReserveStream(userModel , servicesModel , streamModel);
 
                 if(reserveStatus)
                     return Ok("ساعت مورد نظر با موفقیت رزرو شد");

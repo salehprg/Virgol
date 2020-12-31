@@ -1,5 +1,6 @@
 
 using System.Xml.Serialization;
+using Models.AdobeConnectApi;
 
 [XmlRoot("results")]
 public class CommonInfo {

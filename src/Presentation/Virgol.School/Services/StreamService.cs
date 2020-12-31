@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using lms_with_moodle.Helper;
 using Microsoft.AspNetCore.Identity;
 using Models;
+using Models.StreamApi;
 using Models.User;
 
 public class StreamService {
@@ -11,12 +13,19 @@ public class StreamService {
     UserManager<UserModel> userManager;
     UserService userService;
     AppDbContext appDbContext;
+    StreamApi streamApi;
+    
+    string APIURL = "";
+    const string APIUserName = "streamAPI";
+    const string APIPassword = "Saleh-1379";
+
     public StreamService (UserManager<UserModel> _userManager , AppDbContext _appDbContext)
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
 
         userService = new UserService(userManager , appDbContext);
+        APIURL = AppSettings.GetValueFromDatabase(appDbContext , "StreamApiURL");
     }
 
     public bool CheckInterupt(DateTime startTime , DateTime endTime , int id = 0) 
@@ -83,6 +92,7 @@ public class StreamService {
 
         return streamModels;
     }
+    
     public async Task<List<StreamModel>> GetEndedStreams(int userId)
     {
         List<StreamModel> streamModels = appDbContext.Streams.Where(x => x.StreamerId == userId && x.EndTime <= MyDateTime.Now()).ToList();
@@ -104,37 +114,56 @@ public class StreamService {
 
         return streamModels;
     }
-    public async Task<bool> ReserveStream(StreamModel stream , UserModel streamerUser , string streamBaseUrl)
+    
+    public async Task<bool> ReserveStream(UserModel streamerUser , MeetingServicesModel meetingServiceModel , StreamModel stream)
     {
         try
         {
+            StreamApi loginStream = new StreamApi(APIURL , "");
+            string token = await loginStream.Login(APIUserName , APIPassword);
+            
+            StreamApi streamApi = new StreamApi(APIURL , token);
 
-            string key = RandomPassword.GeneratePassword(true , true , true , 8);
-            string joinLink = streamBaseUrl.Replace("{key}" , key);
+            int serviceId = 0;
 
-            int attempts = 0;
+            List<StreamServicesModel> services = await streamApi.GetServicesList();
 
-            //prevent duplicate key
-            while(appDbContext.Streams.Where(x => x.JoinLink == joinLink).FirstOrDefault() != null || attempts == 5)
+            StreamServicesModel servicesModel = services.Where(x => x.Service_URL == meetingServiceModel.Service_URL).FirstOrDefault();
+            if(servicesModel == null)
             {
-                key = RandomPassword.GeneratePassword(true , true , true , 8);
-                joinLink = streamBaseUrl.Replace("{key}" , key);
+                servicesModel = new StreamServicesModel();
+                servicesModel.Service_URL = meetingServiceModel.Service_URL;
+                servicesModel.Service_Key = meetingServiceModel.Service_Key;
 
-                attempts++;
+                serviceId = await streamApi.AddServiceInfo(servicesModel);
             }
-            
+            else
+            {
+                serviceId = servicesModel.Id;
+            }
 
-            stream.OBS_Link = "rtmp://conf.legace.ir/stream";
-            stream.OBS_Key = key;
-            stream.JoinLink = joinLink;
-            stream.StreamerId = streamerUser.Id;
-            stream.isActive = false;
-            stream.setAllowedRolesList();
-            
-            await appDbContext.Streams.AddAsync(stream);
-            await appDbContext.SaveChangesAsync();
+            CreateMeeting createMeeting = new CreateMeeting();
+            createMeeting.Meetingname = stream.StreamName;
+            createMeeting.ServiceId = serviceId;
 
-            return true;
+            CreateResponse response = await streamApi.CreateStreamRoom(createMeeting);
+            
+            if(response != null)
+            {
+                stream.OBS_Link = response.rtmpLink;
+                stream.MeetingId = response.MeetingId;
+                stream.JoinLink = response.attendeeLink;
+                stream.StreamerId = streamerUser.Id;
+                stream.isActive = false;
+                stream.setAllowedRolesList();
+                
+                await appDbContext.Streams.AddAsync(stream);
+                await appDbContext.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
         }
         catch (Exception ex)
         {
@@ -165,16 +194,30 @@ public class StreamService {
         }
     }
 
-    public async Task<bool> RemoveStream(int streamId )
+    public async Task<bool> RemoveStream(int streamId)
     {
         try
         {
+            StreamModel streamModel = appDbContext.Streams.Where(x => x.Id == streamId).FirstOrDefault();
+            UserModel userModel = appDbContext.Users.Where(x => x.Id == streamModel.StreamerId).FirstOrDefault();
+            SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
+
+
+            StreamApi loginStream = new StreamApi(APIURL , "");
+            string token = await loginStream.Login(APIUserName , APIPassword);
+            
             StreamModel stream = appDbContext.Streams.Where(x => x.Id == streamId).FirstOrDefault();
 
-            appDbContext.Streams.Remove(stream);
-            await appDbContext.SaveChangesAsync();
+            StreamApi streamApi = new StreamApi(APIURL , token);
+            bool result = await streamApi.EndRoom(stream.MeetingId);
 
-            return true;
+            if(result)
+            {
+                appDbContext.Streams.Remove(stream);
+                await appDbContext.SaveChangesAsync();
+            }
+
+            return result;
         }
         catch (Exception ex)
         {

@@ -1,6 +1,6 @@
 using System;
 using System.Xml.Serialization;
-
+using Models.AdobeConnectApi;
 public class SCO
 {
     [XmlAttribute("sco-id")]public string scoId { get; set; }

@@ -1,4 +1,4 @@
-namespace streamingservice.Controllers
+namespace Models.StreamApi
 {
     public class CreateMeeting
     {

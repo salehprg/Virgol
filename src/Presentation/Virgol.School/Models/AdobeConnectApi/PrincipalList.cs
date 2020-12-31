@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
-
+using Models.AdobeConnectApi;
 
 [XmlRoot("results")]
 public class PrincipalList
