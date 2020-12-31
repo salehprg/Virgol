@@ -56,9 +56,7 @@ namespace lms_with_moodle.Helper
                 if(joinRoom)
                     return uri.AbsoluteUri;
 
-                Console.WriteLine(bbbUrl + modifiedData + "checksum=" + checkSum.ToLower() );
                 HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
-                Console.WriteLine("Done");
 
                 try
                 {
@@ -66,7 +64,6 @@ namespace lms_with_moodle.Helper
                     {  
                         XmlDocument xmlResponse = new XmlDocument();
                         
-                        Console.WriteLine("Read Content");
                         xmlResponse.Load(await response.Content.ReadAsStreamAsync());
                         string jsonObj = JsonConvert.SerializeXmlNode(xmlResponse , Newtonsoft.Json.Formatting.None , true);
 

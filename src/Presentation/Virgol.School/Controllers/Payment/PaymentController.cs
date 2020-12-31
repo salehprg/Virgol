@@ -51,7 +51,44 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.ServicePrices.ToList());
+                UserModel userModel = UserService.GetUserModel(User);
+                int schType = 0;
+
+                if(UserService.HasRole(userModel , Roles.Manager))
+                {
+                    SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
+                    if(school != null)
+                    {
+                        schType = school.SchoolType;
+                    }
+                }
+
+                List<ServicePrice> services = appDbContext.ServicePrices.Where(x => string.IsNullOrEmpty(x.OnlyUser)).ToList();
+                List<ServicePrice> onlyUsersService = appDbContext.ServicePrices.Where(x => !string.IsNullOrEmpty(x.OnlyUser)).ToList();
+
+                List<ServicePrice> result = new List<ServicePrice>();
+
+                foreach (var service in services)
+                {
+                    List<int> exclude = service.GetExcludeId();
+
+                    if(exclude.Where(x => x == schType).FirstOrDefault() == 0)
+                    {
+                        result.Add(service);
+                    }
+                }
+
+                foreach (var service in onlyUsersService)
+                {
+                    List<int> onlyUserIds = service.GetOnlyUsersId();
+
+                    if(onlyUserIds.Where(x => x == schType).FirstOrDefault() != 0)
+                    {
+                        result.Add(service);
+                    }
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
