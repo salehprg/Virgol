@@ -20,7 +20,7 @@ sudo git stash
 sudo git pull origin Beta
 # sudo git pull origin master
 
-
+# docker image prune 
 sudo docker login
 sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest .
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
