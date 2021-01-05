@@ -23,6 +23,8 @@ sudo git pull origin Beta
 # docker image prune 
 sudo docker login
 sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest .
+cp src/Presentation/Virgol.School/ClientApp/public/manifest-dei.json src/Presentation/Virgol.School/ClientApp/public/manifest.json 
+sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei .
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG 
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
