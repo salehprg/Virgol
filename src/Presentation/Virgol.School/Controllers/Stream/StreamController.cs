@@ -157,14 +157,14 @@ namespace lms_with_moodle.Controllers.Stream
                 
                 List<StreamModel> streamModels = streamService.GetFutureStreams(userModel.Id);
                 
-                //e.g : https://conf.legace.ir/hls/{key}.m3u8
-                string streamBaseUrl = "";
 
+                ServicesModel servicesModel = new ServicesModel();
                 if(userService.HasRole(userModel , Roles.Admin))
                 {
                     AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == userModel.Id).FirstOrDefault();
 
-                    if(string.IsNullOrEmpty(adminDetail.streamURL))
+                    servicesModel = streamService.GetServicesInfo(adminDetail.ServiceId);
+                    if(servicesModel == null)
                     {
                         return BadRequest("شما دسترسی به سرویس همایش هارا ندارید");
                     }
@@ -173,8 +173,6 @@ namespace lms_with_moodle.Controllers.Stream
                     {
                         return BadRequest("شما حداکثر تعداد همایش خودرا رزرو کرده اید");
                     }
-
-                    streamBaseUrl = adminDetail.streamURL;
                 }
 
                 SchoolModel school = new SchoolModel();
@@ -183,7 +181,15 @@ namespace lms_with_moodle.Controllers.Stream
                 {
                     school = appDbContext.Schools.Where(x => x.ManagerId == userModel.Id).FirstOrDefault();
 
-                    if(string.IsNullOrEmpty(school.streamURL))
+                    foreach (var serviceId in school.GetServicesId())
+                    {
+                        if(servicesModel != null)
+                        {
+                            servicesModel = streamService.GetServicesInfo(serviceId);
+                        }
+                    }
+                    
+                    if(servicesModel == null)
                     {
                         return BadRequest("شما دسترسی به سرویس همایش هارا ندارید");
                     }
@@ -192,12 +198,7 @@ namespace lms_with_moodle.Controllers.Stream
                     {
                         return BadRequest("شما حداکثر تعداد همایش خودرا رزرو کرده اید");
                     }
-                    streamBaseUrl = school.streamURL;
                 }
-
-                MeetingServicesModel servicesModel = new MeetingServicesModel();
-                servicesModel.Service_URL = school.streamURL;
-                servicesModel.Service_Key = school.streamKey;
 
                 StreamModel stream = new StreamModel();
 

@@ -151,10 +151,10 @@ namespace lms_with_moodle.Controllers
 
                 string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
 
-                List<MeetingServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
+                List<ServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
 
-                MeetingServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
-                MeetingServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+                ServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+                ServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
 
                 if(serviceType == ServiceType.AdobeConnect && adobeServiceModel == null)
                 {
@@ -238,10 +238,10 @@ namespace lms_with_moodle.Controllers
 
                 bool mixed = (classSchedule.MixedId != 0 ? true : false); // if Teacher start mixed class
 
-                List<MeetingServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
+                List<ServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
 
-                MeetingServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
-                MeetingServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+                ServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+                ServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
 
                 if(serviceType == ServiceType.AdobeConnect && adobeServiceModel == null)
                 {

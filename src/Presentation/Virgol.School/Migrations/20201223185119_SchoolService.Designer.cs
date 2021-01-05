@@ -344,7 +344,7 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("Meetings");
                 });
 
-            modelBuilder.Entity("MeetingServicesModel", b =>
+            modelBuilder.Entity("ServicesModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

@@ -26,10 +26,16 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<bool>("Free")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("SchoolLimit")
                         .HasColumnType("integer");
 
                     b.Property<int>("SchoolsType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
                     b.Property<string>("TypeName")
@@ -43,9 +49,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("streamLimit")
                         .HasColumnType("integer");
-
-                    b.Property<string>("streamURL")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -367,30 +370,6 @@ namespace lms_with_moodle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Meetings");
-                });
-
-            modelBuilder.Entity("MeetingServicesModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("ServiceType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Service_Key")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Service_Login")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Service_URL")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MeetingServices");
                 });
 
             modelBuilder.Entity("MeetingView", b =>
@@ -1033,9 +1012,6 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("APIPassword")
-                        .HasColumnType("text");
-
                     b.Property<bool>("EnableSms")
                         .HasColumnType("boolean");
 
@@ -1084,14 +1060,8 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("sexuality")
                         .HasColumnType("integer");
 
-                    b.Property<string>("streamKey")
-                        .HasColumnType("text");
-
                     b.Property<int>("streamLimit")
                         .HasColumnType("integer");
-
-                    b.Property<string>("streamURL")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -1277,6 +1247,30 @@ namespace lms_with_moodle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ServicePrices");
+                });
+
+            modelBuilder.Entity("ServicesModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("ServiceType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Service_Key")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Service_Login")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Service_URL")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("SiteSettings", b =>

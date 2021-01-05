@@ -1,4 +1,4 @@
-public class MeetingServicesModel {
+public class ServicesModel {
     public int Id {get; set;}
     public string ServiceType {get; set;}
     public string Service_URL {get; set;}

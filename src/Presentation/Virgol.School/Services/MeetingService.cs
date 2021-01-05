@@ -91,9 +91,9 @@ public class MeetingService {
 
         MeetingsResponse bbb_response = new MeetingsResponse();
         MeetingInfoResponse adobe_MeetingInfo = new MeetingInfoResponse();
-        List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
+        List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
 
-        MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == serviceType).FirstOrDefault();
+        ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == serviceType).FirstOrDefault();
 
         if(serviceModel == null)
         {
@@ -190,14 +190,14 @@ public class MeetingService {
 
             MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
             SchoolModel school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
-            List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
+            List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
 
             bool result = false , createRoom = true;
 
             //Just for Optimizing Meeting
             if(mainAdobeMeeting != null && serviceType == ServiceType.AdobeConnect)
             {
-                MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+                ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
 
                 AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL);
 
@@ -457,8 +457,8 @@ public class MeetingService {
         if(school == null)
             return null;
 
-        List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
-        MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == meeting.ServiceType).FirstOrDefault();
+        List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
+        ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == meeting.ServiceType).FirstOrDefault();
 
         if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
@@ -538,9 +538,9 @@ public class MeetingService {
 
         if(meeting.ServiceType == ServiceType.BBB && !resultEnd)
         {
-            List<MeetingServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
+            List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
 
-            MeetingServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+            ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
 
             BBBApi bbbApi = new BBBApi(appDbContext);
             if(meeting.Private)

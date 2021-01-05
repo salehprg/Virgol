@@ -25,16 +25,16 @@ public class SchoolService
         public List<School_StudyFields> school_StudyFields;
         }
 
-    public List<MeetingServicesModel> GetSchoolMeetingServices(int schoolId)
+    public List<ServicesModel> GetSchoolMeetingServices(int schoolId)
     {
         try
         {
             List<int> serviceIds = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().GetServicesId();
-            List<MeetingServicesModel> services = new List<MeetingServicesModel>();
+            List<ServicesModel> services = new List<ServicesModel>();
 
             foreach (var srvcId in serviceIds)
             {
-                MeetingServicesModel servicesModel = appDbContext.MeetingServices.Where(x => x.Id == srvcId).FirstOrDefault();
+                ServicesModel servicesModel = appDbContext.Services.Where(x => x.Id == srvcId).FirstOrDefault();
                 if(servicesModel != null)
                 {
                     services.Add(servicesModel);

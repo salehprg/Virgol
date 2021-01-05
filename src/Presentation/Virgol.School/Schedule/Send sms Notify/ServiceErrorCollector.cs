@@ -55,10 +55,10 @@ namespace Schedule
                     {
                         if(school.EnableSms)
                         {
-                            List<MeetingServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
+                            List<ServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
 
-                            MeetingServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
-                            MeetingServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+                            ServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+                            ServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
 
                             if(bbbServiceModel != null)
                             {

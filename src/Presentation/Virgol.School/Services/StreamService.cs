@@ -28,6 +28,28 @@ public class StreamService {
         APIURL = AppSettings.GetValueFromDatabase(appDbContext , "StreamApiURL");
     }
 
+    public ServicesModel GetServicesInfo(int serviceId)
+    {
+        try
+        {
+            if(serviceId == 0)
+                return null;
+
+            ServicesModel result = appDbContext.Services.Where(x => x.Id == serviceId && x.ServiceType == ServiceType.Stream).FirstOrDefault();
+            if(result != null)
+            {
+                return result;
+            }
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
     public bool CheckInterupt(DateTime startTime , DateTime endTime , int id = 0) 
     {
         List<StreamModel> streamInterupts = appDbContext.Streams.Where(x => (x.StartTime >= startTime && x.StartTime < endTime) || // Check oldClass Start time between new class Time
@@ -115,7 +137,7 @@ public class StreamService {
         return streamModels;
     }
     
-    public async Task<bool> ReserveStream(UserModel streamerUser , MeetingServicesModel meetingServiceModel , StreamModel stream)
+    public async Task<bool> ReserveStream(UserModel streamerUser , ServicesModel meetingServiceModel , StreamModel stream)
     {
         try
         {

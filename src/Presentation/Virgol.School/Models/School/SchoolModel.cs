@@ -39,12 +39,6 @@ public class SchoolModel {
     public DateTime adobeExpireDate {get; set;}
     public int streamLimit {get; set;}
 
-    ///<summary>
-    ///e.g : https://conf.legace.ir/hls/{key}.m3u8
-    ///</summary>
-    public string streamURL {get; set;}
-    public string streamKey {get; set;}
-
 
     public List<int> GetServicesId()
     {

@@ -44,7 +44,7 @@ namespace Schedule
                         try
                         {
                             errorSchool = school;
-                            MeetingServicesModel serviceModel = schoolService.GetSchoolMeetingServices(school.Id).Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+                            ServicesModel serviceModel = schoolService.GetSchoolMeetingServices(school.Id).Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
 
                             if(serviceModel != null)
                             {

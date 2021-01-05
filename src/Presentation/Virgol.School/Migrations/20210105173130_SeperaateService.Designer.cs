@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace lms_with_moodle.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201231110935_Ex-Include")]
-    partial class ExInclude
+    [Migration("20210105173130_SeperaateService")]
+    partial class SeperaateService
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,10 +28,16 @@ namespace lms_with_moodle.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<bool>("Free")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("SchoolLimit")
                         .HasColumnType("integer");
 
                     b.Property<int>("SchoolsType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
                     b.Property<string>("TypeName")
@@ -45,9 +51,6 @@ namespace lms_with_moodle.Migrations
 
                     b.Property<int>("streamLimit")
                         .HasColumnType("integer");
-
-                    b.Property<string>("streamURL")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -369,30 +372,6 @@ namespace lms_with_moodle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Meetings");
-                });
-
-            modelBuilder.Entity("ServicesModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("ServiceType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Service_Key")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Service_Login")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Service_URL")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MeetingServices");
                 });
 
             modelBuilder.Entity("MeetingView", b =>
@@ -1086,9 +1065,6 @@ namespace lms_with_moodle.Migrations
                     b.Property<int>("streamLimit")
                         .HasColumnType("integer");
 
-                    b.Property<string>("streamURL")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.ToTable("Schools");
@@ -1275,6 +1251,30 @@ namespace lms_with_moodle.Migrations
                     b.ToTable("ServicePrices");
                 });
 
+            modelBuilder.Entity("ServicesModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("ServiceType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Service_Key")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Service_Login")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Service_URL")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Services");
+                });
+
             modelBuilder.Entity("SiteSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -1338,7 +1338,7 @@ namespace lms_with_moodle.Migrations
                     b.Property<string>("JoinLink")
                         .HasColumnType("text");
 
-                    b.Property<string>("OBS_Key")
+                    b.Property<string>("MeetingId")
                         .HasColumnType("text");
 
                     b.Property<string>("OBS_Link")
