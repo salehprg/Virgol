@@ -83,13 +83,13 @@ services:
       - REACT_APP_VERSION=1.8.2-beta5-dei
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.virgol.rule=Host(`dei.razaviedu.ir`)"
-      - "traefik.http.services.virgol.loadbalancer.server.port=80"
-      - "traefik.http.routers.virgol.entrypoints=secure"
-      - "traefik.http.routers.virgol.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.virgolDei.rule=Host(`dei.razaviedu.ir`)"
+      - "traefik.http.services.virgolDei.loadbalancer.server.port=80"
+      - "traefik.http.routers.virgolDei.entrypoints=secure"
+      - "traefik.http.routers.virgolDei.tls.certresolver=letsencrypt"
       - "traefik.docker.network=web"
       - "traefik.http.middlewares.virgol_compress.compress=true"
-      - "traefik.http.routers.virgol.middlewares=virgol_compress"
+      - "traefik.http.routers.virgolDei.middlewares=virgol_compress"
     networks:
       - virgol
       - web
@@ -249,6 +249,7 @@ networks:
     external: true
 volumes:
   virgolData:
+  virgolDeiData:
   postgresDb:
   openldapDb:
   openldapConf:
