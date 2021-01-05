@@ -48,12 +48,12 @@ services:
     depends_on:
       - postgres
       - openldap
-    virgol:
+  virgol-dei:
     image: goldenstarc/virgol:1.8.2-beta5
     restart: always
-    container_name: virgol_main
+    container_name: virgol_dei
     volumes:
-      - virgolData:/app/BulkData
+      - virgolDeiData:/app/BulkData
     # build:
     #   context: .
     environment:
@@ -63,7 +63,7 @@ services:
       - VIRGOL_SERVER_ROOT_URL=https://dei.razaviedu.ir
       - VIRGOL_DATABASE_TYPE=postgres
       - VIRGOL_DATABASE_HOST=postgres
-      - VIRGOL_DATABASE_NAME=LMS_Di
+      - VIRGOL_DATABASE_NAME=LMS_DEI
       - VIRGOL_DATABASE_USER=postgres
       - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
       - VIRGOL_MODDLE_COURSE_URL=https://moodle.legace.ir/course/view.php?id=
