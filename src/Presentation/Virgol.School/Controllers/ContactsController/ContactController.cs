@@ -64,7 +64,7 @@ namespace lms_with_moodle.Controllers
                 string email = username;
                 if(emailInfo.Length == 1)
                 {
-                    email += "@legace.ir";
+                    email += "@vir-gol.ir";
                 }
 
                 UserModel userModel = appDbContext.Users.Where(x => x.UserName == username || x.Email == email).FirstOrDefault();

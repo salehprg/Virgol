@@ -94,7 +94,7 @@ namespace lms_with_moodle.Helper
                             information += "&users["+i+"][auth]=ldap";
                             information += "&users["+i+"][firstname]=" + users[i].FirstName;
                             information += "&users["+i+"][lastname]=" + users[i].LastName;
-                            information += "&users["+i+"][email]=" + users[i].MelliCode + "@legace.ir";
+                            information += "&users["+i+"][email]=" + users[i].MelliCode + "@vir-gol.ir";
                             information += "&users["+i+"][idnumber]=" + users[i].MelliCode;
                         }
                     }
@@ -128,7 +128,7 @@ namespace lms_with_moodle.Helper
                 information += "&users[0][auth]=ldap";
                 information += "&users[0][firstname]=" + user.FirstName;
                 information += "&users[0][lastname]=" + user.LastName;
-                information += "&users[0][email]=" + user.MelliCode + "@legace.ir";
+                information += "&users[0][email]=" + user.MelliCode + "@vir-gol.ir";
                 information += "&users[0][idnumber]=" + user.MelliCode;
 
                 HttpResponseModel Response = await sendData(data + information);

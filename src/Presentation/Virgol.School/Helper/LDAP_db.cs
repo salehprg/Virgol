@@ -72,7 +72,7 @@ namespace lms_with_moodle.Helper
                 }
                 
 
-                string mailAddress = uniqueMailId + "@legace.ir";
+                string mailAddress = uniqueMailId + "@vir-gol.ir";
 
                 string title = null;
                 if(IsTeacher)
@@ -415,7 +415,7 @@ namespace lms_with_moodle.Helper
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
 
 
-                string mailAddress = uniqueMailId + "@legace.ir";
+                string mailAddress = uniqueMailId + "@vir-gol.ir";
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute mail = new LdapAttribute("mail", mailAddress);
@@ -538,7 +538,7 @@ namespace lms_with_moodle.Helper
                                                                 , user.MelliCode.Substring(user.MelliCode.Length - 2 , 2));
 
 
-                mailAddress = uniqueMailId + "@legace.ir";
+                mailAddress = uniqueMailId + "@vir-gol.ir";
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute mail = new LdapAttribute("mail", mailAddress);
