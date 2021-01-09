@@ -5,7 +5,7 @@ spec:
   image_pull_policy: Always
   image_pull_secret: $SEC_NAME
   domains:
-     - name: beta.legace.ir
+     - name: beta.vir-gol.ir
   port: 80
   volume_mounts:
     - mount_path: /app/BulkData
@@ -20,7 +20,7 @@ spec:
     - name: ASPNETCORE_ENVIRONMENT
       value: Production
     - name: VIRGOL_SERVER_ROOT_URL
-      value: https://beta.legace.ir
+      value: https://beta.vir-gol.ir
       # value: https://lms.legace.ir
     - name: VIRGOL_DATABASE_TYPE
       value: postgres
@@ -48,12 +48,6 @@ spec:
       value: hektug-fakbAm-0vypje
     - name: VIRGOL_FARAZAPI_API_KEY
       value: qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=
-    - name: VIRGOL_BBB_LOAD_BALANCER_MODE
-      value: separate
-    - name: VIRGOL_SCALELITE_BASE_URL
-      value: https://fb1.legace.ir/bigbluebutton/api/
-    - name: VIRGOL_SCALELITE_SECRET
-      value: 1b6s1esKbXNM82ussxx8OHJTenNvfkBu59tkHHADvqk
     - name: VIRGOL_JWT_SECRET
       value: Saleh Secret Key
     - name: VIRGOL_LDAP_SERVER
