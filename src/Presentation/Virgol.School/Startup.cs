@@ -130,8 +130,10 @@ namespace lms_with_moodle
                         text = text.Replace("process.env.REACT_APP_VERSION", AppSettings.REACT_APP_VERSION);
                         text = text.Replace("REACT_APP_VERSION:\"REACT_APP_VERSION\"", "REACT_APP_VERSION:\"" +AppSettings.REACT_APP_VERSION +"\"");
 
-                        text = text.Replace("API_URL: 'https://panel.vir-gol.ir/api/'", "API_URL:\""+AppSettings.ServerRootUrl+"/api\"");
-                        text = text.Replace("API_URL:\"https://panel.vir-gol.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api\"");
+                        text = text.Replace("API_URL: 'https://panel.vir-gol.ir/api/'", "API_URL: '"+AppSettings.ServerRootUrl+"/api/'");
+                        Console.WriteLine(text);
+                        text = text.Replace("API_URL:\"https://panel.vir-gol.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api/\"");
+                        Console.WriteLine(text);
 
                         if(bool.Parse(AppSettings.REACT_APP_RAHE_DOOR))
                         {
