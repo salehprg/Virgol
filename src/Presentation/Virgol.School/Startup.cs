@@ -130,7 +130,7 @@ namespace lms_with_moodle
                         text = text.Replace("process.env.REACT_APP_VERSION", AppSettings.REACT_APP_VERSION);
                         text = text.Replace("REACT_APP_VERSION:\"REACT_APP_VERSION\"", "REACT_APP_VERSION:\"" +AppSettings.REACT_APP_VERSION +"\"");
 
-                        text = text.Replace("API_URL:\"https://lms.legace.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api\"");
+                        text = text.Replace("API_URL:\"https://panel.vir-gol.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api\"");
 
                         if(bool.Parse(AppSettings.REACT_APP_RAHE_DOOR))
                         {
@@ -196,8 +196,8 @@ namespace lms_with_moodle
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
-                    ValidAudience = "http://lms.legace.ir",
-                    ValidIssuer = "http://lms.legace.ir"
+                    ValidAudience = "http://panel.vir-gol.ir",
+                    ValidIssuer = "http://panel.vir-gol.ir"
                 };
             });
 
