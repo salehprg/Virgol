@@ -30,3 +30,5 @@ sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei .
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG 
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
 docker-compose up -d
+docker exec -it virgol_dei  sed -i 's/panel.vir-gol.ir/dei.razaviedu.ir/g' ./ClientApp/build/static/js/main.7f756e2c.chunk.js.map
+docker exec -it virgol_dei  sed -i 's/panel.vir-gol.ir/dei.razaviedu.ir/g' ./ClientApp/build/static/js/main.7f756e2c.chunk.js
