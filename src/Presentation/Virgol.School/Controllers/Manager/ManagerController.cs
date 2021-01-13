@@ -310,7 +310,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                UserService UserService = new UserService(userManager);
+                UserService UserService = new UserService(userManager , appDbContext);
 
                 foreach (int studentId in studentIds)
                 {
@@ -809,7 +809,7 @@ namespace lms_with_moodle.Controllers
                     return BadRequest("شما دسترسی به حذف معلم ندارید");
                 }
 
-                UserService UserService = new UserService(userManager);
+                UserService UserService = new UserService(userManager , appDbContext);
 
                 foreach (int teacherId in teacherIds)
                 {

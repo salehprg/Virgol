@@ -22,7 +22,7 @@ public class UserService {
     MoodleApi moodleApi;
     LDAP_db ldap;
 
-    public UserService(UserManager<UserModel> _userManager , AppDbContext _appDbContext = null)
+    public UserService(UserManager<UserModel> _userManager , AppDbContext _appDbContext)
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
@@ -189,7 +189,7 @@ public class UserService {
             if(ldap.DeleteEntry(user.MelliCode))
                 await moodleApi.DeleteUser(user.Moodle_Id);
 
-            string userType = GetUserRoles(user).Result.Where(x => x != Roles.User).FirstOrDefault();
+            //string userType = GetUserRoles(user).Result.Where(x => x != Roles.User).FirstOrDefault();
 
             await userManager.DeleteAsync(user);
             

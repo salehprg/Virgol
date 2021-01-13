@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   virgol:
-    image: goldenstarc/virgol:1.8.2-beta5
+    image: goldenstarc/virgol:1.8.2-beta6
     restart: always
     container_name: virgol_main
     volumes:
@@ -32,7 +32,7 @@ services:
       - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
       - REACT_APP_MOODLE_URL=https://moodle.legace.ir/login/index.php
-      - REACT_APP_VERSION=1.8.2-beta5
+      - REACT_APP_VERSION=1.8.2-beta6
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`lms.legace.ir`, `panel.vir-gol.ir`, `sampad.razaviedu.ir`, `dei.razaviedu.ir`)"

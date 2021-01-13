@@ -78,4 +78,4 @@ spec:
     - name : REACT_APP_MOODLE_URL
       value : https://moodle.legace.ir/login/index.php
     - name : REACT_APP_VERSION
-      value : 1.8.2-beta5
+      value : 1.8.2-beta6

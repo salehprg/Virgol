@@ -403,7 +403,7 @@ namespace lms_with_moodle.Controllers
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
 
-                bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
+                //bool removeCat = await moodleApi.DeleteCategory(school.Moodle_Id);
                 //bool removeCat = true;
 
                 UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault();

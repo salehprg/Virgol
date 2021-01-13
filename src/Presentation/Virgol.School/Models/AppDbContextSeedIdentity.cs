@@ -85,11 +85,11 @@ public static class AppDbContextSeedIdentity {
         {
             userManager.CreateAsync(testAdmin , "1234567890").Wait();
             userManager.AddToRoleAsync(testAdmin , Roles.Admin).Wait();
+            admin = testAdmin;
         }
         if(appDbContext.AdminDetails.Where(x => x.UserId == admin.Id).FirstOrDefault() == null)
         {
             AdminDetail adminDetail = new AdminDetail{
-                                        Id = 1,
                                         SchoolLimit = 20,
                                         SchoolsType = 3,
                                         TypeName = "مدارس تست سامانه",
