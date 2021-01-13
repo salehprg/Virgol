@@ -60,12 +60,12 @@ class Header extends React.Component {
                             {/* <span className={`mx-2 cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge != 'ar' ? 'text-greenish' : 'text-white'}`}>فارسی</span>
                             <span onClick={() => this.props.i18n.changeLanguage('ar')} className={`mx-2 cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge == 'ar' ? 'text-greenish' : 'text-white'}`}>العربیه</span> */}
                             <div data-tip={this.props.t('support')} className="relative mx-1">
-                                <a className="absolute top-0 bottom-0 right-0 left-0" href="mailto:support@legace.ir">
+                                <a className="absolute top-0 bottom-0 right-0 left-0" href="mailto:support@vir-gol.ir">
                                 </a>
                                 {headphones("w-6 text-white cursor-pointer")}
                             </div>
                             <div data-tip={this.props.t('webmail')} className="relative mx-1">
-                                <a target="_blank" rel="noopener noreferrer" className="absolute top-0 bottom-0 right-0 left-0" href="https://webmail.legace.ir/">
+                                <a target="_blank" rel="noopener noreferrer" className="absolute top-0 bottom-0 right-0 left-0" href="https://webmail.vir-gol.ir/">
                                 </a>
                                 {mail("w-6 text-white cursor-pointer")}
                             </div>

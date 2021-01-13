@@ -25,7 +25,7 @@ class Hero extends React.Component {
             <div className="relative w-full text-center rounded-xl py-4 px-6">
                 {/*<Particles className="absolute top-0 bottom-0 right-0 left-0" params={particles} />*/}
                 <p className="text-3xl text-white my-2">{props.userInfo.firstName} {props.userInfo.lastName}</p>
-                <a href="https://webmail.legace.ir/" className="text-md text-white my-2" style={{color : "#60b5ff"}}>{props.userInfo.email}</a>
+                <a href="https://webmail.vir-gol.ir/" className="text-md text-white my-2" style={{color : "#60b5ff"}}>{props.userInfo.email}</a>
                 {(props.adminTitle ?
                     <p className="text-white my-2">{props.adminTitle}</p>
                 : ""
