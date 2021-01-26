@@ -814,225 +814,237 @@ namespace lms_with_moodle.Controllers
         return Ok(await UserService.SyncUserData(users , true));
         
     }
-    public async Task<IActionResult> RecreateMoodle()
+    public async Task<IActionResult> RecreateMoodle(int schoolType , int desiredSchoolId)
     {
-        List<AdminDetail> adminDetails = appDbContext.AdminDetails.ToList();
+        try
+        {
+            List<AdminDetail> adminDetails = appDbContext.AdminDetails.ToList();
 
-        AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.SchoolsType == 1).FirstOrDefault();
+            AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.SchoolsType == schoolType).FirstOrDefault();
 
-        MoodleApi moodleApi = new MoodleApi();
-        List<EnrolUser> enrolsData = new List<EnrolUser>();
+            MoodleApi moodleApi = new MoodleApi();
+            List<EnrolUser> enrolsData = new List<EnrolUser>();
 
-        List<UserModel> usersData = new List<UserModel>();
-        
-        // foreach (var adminDetail in adminDetails)
-        // {
-            if(!await moodleApi.CategoryExist(adminDetail.orgMoodleId))
-            {
-                int adminCatId = await moodleApi.CreateCategory(adminDetail.TypeName);
-                adminDetail.orgMoodleId = adminCatId;
-
-                appDbContext.AdminDetails.Update(adminDetail);
-                await appDbContext.SaveChangesAsync();
-            }
-
-            List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == adminDetail.SchoolsType).ToList();
+            List<UserModel> usersData = new List<UserModel>();
             
-            foreach (var school in schools)
-            {
-                if(!await moodleApi.CategoryExist(school.Moodle_Id))
+            // foreach (var adminDetail in adminDetails)
+            // {
+                if(!await moodleApi.CategoryExist(adminDetail.orgMoodleId))
                 {
-                    int schoolId = await moodleApi.CreateCategory(school.SchoolName , adminDetail.orgMoodleId);
-                    school.Moodle_Id = schoolId;
+                    int adminCatId = await moodleApi.CreateCategory(adminDetail.TypeName);
+                    adminDetail.orgMoodleId = adminCatId;
 
-                    appDbContext.Schools.Update(school);
+                    appDbContext.AdminDetails.Update(adminDetail);
                     await appDbContext.SaveChangesAsync();
                 }
 
-                List<School_Bases> baseModels = appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList();
-                foreach (var baseModel in baseModels)
+                List<SchoolModel> schools = new List<SchoolModel>();
+                if(desiredSchoolId != 0 )
                 {
-                    string baseName = appDbContext.Bases.Where(x => x.Id == baseModel.Base_Id).FirstOrDefault().BaseName;
-
-                    if(!await moodleApi.CategoryExist(baseModel.Moodle_Id))
+                    schools = appDbContext.Schools.Where(x => x.Id == desiredSchoolId).ToList();
+                    adminDetail = appDbContext.AdminDetails.Where(x => x.SchoolsType == schools.FirstOrDefault().SchoolType).FirstOrDefault();
+                }
+                else
+                {
+                    schools = appDbContext.Schools.Where(x => x.SchoolType == adminDetail.SchoolsType).ToList();
+                }
+                
+                foreach (var school in schools)
+                {
+                    if(!await moodleApi.CategoryExist(school.Moodle_Id))
                     {
-                        int baseId = await moodleApi.CreateCategory(baseName , school.Moodle_Id );
-                        baseModel.Moodle_Id = baseId;
+                        int schoolId = await moodleApi.CreateCategory(school.SchoolName , adminDetail.orgMoodleId);
+                        school.Moodle_Id = schoolId;
 
-                        appDbContext.School_Bases.Update(baseModel);
+                        appDbContext.Schools.Update(school);
                         await appDbContext.SaveChangesAsync();
                     }
 
-                    List<School_StudyFields> schoolStudyFields = appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList();
-                    List<StudyFieldModel> studyFields = appDbContext.StudyFields.Where(x => x.Base_Id == baseModel.Base_Id).ToList();
-                    foreach (var schoolStudyF in schoolStudyFields)
+                    List<School_Bases> baseModels = appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList();
+                    foreach (var baseModel in baseModels)
                     {
-                        StudyFieldModel studyField = studyFields.Where(x => x.Id == schoolStudyF.StudyField_Id).FirstOrDefault();
-                        if(studyField != null)
+                        string baseName = appDbContext.Bases.Where(x => x.Id == baseModel.Base_Id).FirstOrDefault().BaseName;
+
+                        if(!await moodleApi.CategoryExist(baseModel.Moodle_Id))
                         {
-                            if(!await moodleApi.CategoryExist(schoolStudyF.Moodle_Id))
-                            {
-                                int studyFId = await moodleApi.CreateCategory(studyField.StudyFieldName , baseModel.Moodle_Id);
-                                schoolStudyF.Moodle_Id = studyFId;
+                            int baseId = await moodleApi.CreateCategory(baseName , school.Moodle_Id );
+                            baseModel.Moodle_Id = baseId;
 
-                                appDbContext.School_StudyFields.Update(schoolStudyF);
-                                await appDbContext.SaveChangesAsync();
-                            }
+                            appDbContext.School_Bases.Update(baseModel);
+                            await appDbContext.SaveChangesAsync();
+                        }
 
-                            List<School_Grades> school_Grades = appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList();
-                            List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.StudyField_Id == studyField.Id).ToList();
-                            foreach (var schollGrade in school_Grades)
+                        List<School_StudyFields> schoolStudyFields = appDbContext.School_StudyFields.Where(x => x.School_Id == school.Id).ToList();
+                        List<StudyFieldModel> studyFields = appDbContext.StudyFields.Where(x => x.Base_Id == baseModel.Base_Id).ToList();
+                        foreach (var schoolStudyF in schoolStudyFields)
+                        {
+                            StudyFieldModel studyField = studyFields.Where(x => x.Id == schoolStudyF.StudyField_Id).FirstOrDefault();
+                            if(studyField != null)
                             {
-                                GradeModel gradeModel = gradeModels.Where(x => x.Id == schollGrade.Grade_Id).FirstOrDefault();
-                                if(gradeModel != null)
+                                if(!await moodleApi.CategoryExist(schoolStudyF.Moodle_Id))
                                 {
-                                    if(!await moodleApi.CategoryExist(schollGrade.Moodle_Id))
-                                    {
-                                        int gradeId = await moodleApi.CreateCategory(gradeModel.GradeName , schoolStudyF.Moodle_Id);
-                                        schollGrade.Moodle_Id = gradeId;
+                                    int studyFId = await moodleApi.CreateCategory(studyField.StudyFieldName , baseModel.Moodle_Id);
+                                    schoolStudyF.Moodle_Id = studyFId;
 
-                                        appDbContext.School_Grades.Update(schollGrade);
-                                        await appDbContext.SaveChangesAsync();
-                                    }
+                                    appDbContext.School_StudyFields.Update(schoolStudyF);
+                                    await appDbContext.SaveChangesAsync();
+                                }
 
-                                    List<School_Class> school_Classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Grade_Id == schollGrade.Grade_Id).ToList();
-                                    foreach (var schoolClass in school_Classes)
+                                List<School_Grades> school_Grades = appDbContext.School_Grades.Where(x => x.School_Id == school.Id).ToList();
+                                List<GradeModel> gradeModels = appDbContext.Grades.Where(x => x.StudyField_Id == studyField.Id).ToList();
+                                foreach (var schollGrade in school_Grades)
+                                {
+                                    GradeModel gradeModel = gradeModels.Where(x => x.Id == schollGrade.Grade_Id).FirstOrDefault();
+                                    if(gradeModel != null)
                                     {
-                                        if(!await moodleApi.CategoryExist(schoolClass.Moodle_Id))
+                                        if(!await moodleApi.CategoryExist(schollGrade.Moodle_Id))
                                         {
-                                            int classId = await moodleApi.CreateCategory(schoolClass.ClassName , schollGrade.Moodle_Id);
-                                            schoolClass.Moodle_Id = classId;
+                                            int gradeId = await moodleApi.CreateCategory(gradeModel.GradeName , schoolStudyF.Moodle_Id);
+                                            schollGrade.Moodle_Id = gradeId;
 
-                                            appDbContext.School_Classes.Update(schoolClass);
+                                            appDbContext.School_Grades.Update(schollGrade);
                                             await appDbContext.SaveChangesAsync();
                                         }
 
-                                        List<School_Lessons> school_Lessons = appDbContext.School_Lessons.Where(x => x.School_Id == school.Id && x.classId == schoolClass.Id).ToList();
-                                        List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == schollGrade.Grade_Id).ToList();
-
-                                        
-                                        foreach (var schoolLesson in school_Lessons)
+                                        List<School_Class> school_Classes = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Grade_Id == schollGrade.Grade_Id).ToList();
+                                        foreach (var schoolClass in school_Classes)
                                         {
-                                            LessonModel lesson = lessons.Where(x => x.Id == schoolLesson.Lesson_Id).FirstOrDefault();
-                                            if(lesson != null)
+                                            if(!await moodleApi.CategoryExist(schoolClass.Moodle_Id))
                                             {
-                                                bool visible = false;
-                                                Class_WeeklySchedule schedule = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == schoolClass.Id && x.LessonId == lesson.Id).FirstOrDefault();
+                                                int classId = await moodleApi.CreateCategory(schoolClass.ClassName , schollGrade.Moodle_Id);
+                                                schoolClass.Moodle_Id = classId;
 
-                                                if(!await moodleApi.CourseExist(schoolLesson.Moodle_Id))
-                                                {
-                                                    int moodleId = await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + schoolClass.Moodle_Id + ")"
-                                                                                                    , lesson.LessonName + " (" + school.SchoolName + "-" + schoolClass.ClassName + ")" 
-                                                                                                    , schoolClass.Moodle_Id , visible);
-                                                    schoolLesson.Moodle_Id = moodleId;
+                                                appDbContext.School_Classes.Update(schoolClass);
+                                                await appDbContext.SaveChangesAsync();
+                                            }
 
-                                                    appDbContext.School_Lessons.Update(schoolLesson);
-                                                    await appDbContext.SaveChangesAsync();
-                                                }
+                                            List<School_Lessons> school_Lessons = appDbContext.School_Lessons.Where(x => x.School_Id == school.Id && x.classId == schoolClass.Id).ToList();
+                                            List<LessonModel> lessons = appDbContext.Lessons.Where(x => x.Grade_Id == schollGrade.Grade_Id).ToList();
 
-                                                if(schedule != null)
-                                                {
-                                                    UserModel teacher = appDbContext.Users.Where(x => x.Id == schedule.TeacherId).FirstOrDefault();
-
-                                                    if(teacher != null)
-                                                    {
-                                                        int teacherMoodleid = await moodleApi.GetUserId(teacher.MelliCode);
-                                                        if(teacherMoodleid == -1)
-                                                        {
-                                                            teacherMoodleid = await moodleApi.CreateUser(teacher);
-                                                            teacher.Moodle_Id = teacherMoodleid;
-
-                                                            appDbContext.Users.Update(teacher);
-                                                            await appDbContext.SaveChangesAsync();
-                                                        }
-                                                        else if(teacherMoodleid != teacher.Moodle_Id)
-                                                        {
-                                                            teacher.Moodle_Id = teacherMoodleid;
-
-                                                            appDbContext.Users.Update(teacher);
-                                                            await appDbContext.SaveChangesAsync();
-                                                        }
-
-
-                                                        await moodleApi.setCourseVisible(schoolLesson.Moodle_Id , true);
-                                                        
-                                                        EnrolUser enrolTeacher = new EnrolUser();
-                                                        enrolTeacher.lessonId = schoolLesson.Moodle_Id;
-                                                        enrolTeacher.UserId = teacher.Moodle_Id;
-                                                        enrolTeacher.RoleId = 3;
-
-                                                        enrolsData.Add(enrolTeacher);
-                                                    }
-                                                }
-
-                                                UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault();
-                                                
-                                                if(manager != null)
-                                                {
-                                                    int managerMoodleid = await moodleApi.GetUserId(manager.MelliCode);
-
-                                                    if(managerMoodleid == -1)
-                                                    {
-                                                        managerMoodleid = await moodleApi.CreateUser(manager);
-                                                        manager.Moodle_Id = managerMoodleid;
-
-                                                        appDbContext.Users.Update(manager);
-                                                        await appDbContext.SaveChangesAsync();
-                                                    }
-                                                    else if(managerMoodleid != manager.Moodle_Id)
-                                                    {
-                                                        manager.Moodle_Id = managerMoodleid;
-
-                                                        appDbContext.Users.Update(manager);
-                                                        await appDbContext.SaveChangesAsync();
-                                                    }
-
-                                                    EnrolUser enrol = new EnrolUser();
-                                                    enrol.lessonId = schoolLesson.Moodle_Id;
-                                                    enrol.UserId = manager.Moodle_Id;
-                                                    enrol.RoleId = 3;
-
-                                                    enrolsData.Add(enrol);
-                                                }
                                             
-                                                List<School_studentClass> studentClasses = appDbContext.School_StudentClasses.Where(x => x.ClassId == schoolClass.Id).ToList();
-                                                foreach (var student in studentClasses)
+                                            foreach (var schoolLesson in school_Lessons)
+                                            {
+                                                LessonModel lesson = lessons.Where(x => x.Id == schoolLesson.Lesson_Id).FirstOrDefault();
+                                                if(lesson != null)
                                                 {
-                                                    
-                                                    UserModel studentModel = appDbContext.Users.Where(x => x.Id == student.UserId).FirstOrDefault();
-                                                    if(studentModel != null)
+                                                    bool visible = false;
+                                                    Class_WeeklySchedule schedule = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == schoolClass.Id && x.LessonId == lesson.Id).FirstOrDefault();
+
+                                                    if(!await moodleApi.CourseExist(schoolLesson.Moodle_Id))
                                                     {
-                                                        int studentMoodleid = await moodleApi.GetUserId(studentModel.MelliCode);
+                                                        int moodleId = await moodleApi.CreateCourse(lesson.LessonName + " (" + school.Moodle_Id + "-" + schoolClass.Moodle_Id + ")"
+                                                                                                        , lesson.LessonName + " (" + school.SchoolName + "-" + schoolClass.ClassName + ")" 
+                                                                                                        , schoolClass.Moodle_Id , visible);
+                                                        schoolLesson.Moodle_Id = moodleId;
 
-                                                        if(studentMoodleid == -1)
+                                                        appDbContext.School_Lessons.Update(schoolLesson);
+                                                        await appDbContext.SaveChangesAsync();
+                                                    }
+
+                                                    if(schedule != null)
+                                                    {
+                                                        UserModel teacher = appDbContext.Users.Where(x => x.Id == schedule.TeacherId).FirstOrDefault();
+
+                                                        if(teacher != null)
                                                         {
-                                                            studentMoodleid = await moodleApi.CreateUser(studentModel);
-                                                            studentModel.Moodle_Id = studentMoodleid;
+                                                            int teacherMoodleid = await moodleApi.GetUserId(teacher.MelliCode);
+                                                            if(teacherMoodleid == -1)
+                                                            {
+                                                                teacherMoodleid = await moodleApi.CreateUser(teacher);
+                                                                teacher.Moodle_Id = teacherMoodleid;
 
-                                                            appDbContext.Users.Update(studentModel);
+                                                                appDbContext.Users.Update(teacher);
+                                                                await appDbContext.SaveChangesAsync();
+                                                            }
+                                                            else if(teacherMoodleid != teacher.Moodle_Id)
+                                                            {
+                                                                teacher.Moodle_Id = teacherMoodleid;
+
+                                                                appDbContext.Users.Update(teacher);
+                                                                await appDbContext.SaveChangesAsync();
+                                                            }
+
+
+                                                            await moodleApi.setCourseVisible(schoolLesson.Moodle_Id , true);
+                                                            
+                                                            EnrolUser enrolTeacher = new EnrolUser();
+                                                            enrolTeacher.lessonId = schoolLesson.Moodle_Id;
+                                                            enrolTeacher.UserId = teacher.Moodle_Id;
+                                                            enrolTeacher.RoleId = 3;
+
+                                                            enrolsData.Add(enrolTeacher);
+                                                        }
+                                                    }
+
+                                                    UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault();
+                                                    
+                                                    if(manager != null)
+                                                    {
+                                                        int managerMoodleid = await moodleApi.GetUserId(manager.MelliCode);
+
+                                                        if(managerMoodleid == -1)
+                                                        {
+                                                            managerMoodleid = await moodleApi.CreateUser(manager);
+                                                            manager.Moodle_Id = managerMoodleid;
+
+                                                            appDbContext.Users.Update(manager);
                                                             await appDbContext.SaveChangesAsync();
                                                         }
-                                                        else if(studentMoodleid != studentModel.Moodle_Id)
+                                                        else if(managerMoodleid != manager.Moodle_Id)
                                                         {
-                                                            studentModel.Moodle_Id = studentMoodleid;
+                                                            manager.Moodle_Id = managerMoodleid;
 
-                                                            appDbContext.Users.Update(studentModel);
+                                                            appDbContext.Users.Update(manager);
                                                             await appDbContext.SaveChangesAsync();
                                                         }
-
 
                                                         EnrolUser enrol = new EnrolUser();
                                                         enrol.lessonId = schoolLesson.Moodle_Id;
-                                                        enrol.UserId = studentModel.Moodle_Id;
-                                                        enrol.RoleId = 5;
+                                                        enrol.UserId = manager.Moodle_Id;
+                                                        enrol.RoleId = 3;
 
                                                         enrolsData.Add(enrol);
                                                     }
-
-                                                }
-                                                    
-
                                                 
+                                                    List<School_studentClass> studentClasses = appDbContext.School_StudentClasses.Where(x => x.ClassId == schoolClass.Id).ToList();
+                                                    foreach (var student in studentClasses)
+                                                    {
+                                                        
+                                                        UserModel studentModel = appDbContext.Users.Where(x => x.Id == student.UserId).FirstOrDefault();
+                                                        if(studentModel != null)
+                                                        {
+                                                            int studentMoodleid = await moodleApi.GetUserId(studentModel.MelliCode);
+
+                                                            if(studentMoodleid == -1)
+                                                            {
+                                                                studentMoodleid = await moodleApi.CreateUser(studentModel);
+                                                                studentModel.Moodle_Id = studentMoodleid;
+
+                                                                appDbContext.Users.Update(studentModel);
+                                                                await appDbContext.SaveChangesAsync();
+                                                            }
+                                                            else if(studentMoodleid != studentModel.Moodle_Id)
+                                                            {
+                                                                studentModel.Moodle_Id = studentMoodleid;
+
+                                                                appDbContext.Users.Update(studentModel);
+                                                                await appDbContext.SaveChangesAsync();
+                                                            }
+
+
+                                                            EnrolUser enrol = new EnrolUser();
+                                                            enrol.lessonId = schoolLesson.Moodle_Id;
+                                                            enrol.UserId = studentModel.Moodle_Id;
+                                                            enrol.RoleId = 5;
+
+                                                            enrolsData.Add(enrol);
+                                                        }
+
+                                                    }
+                                                        
+
+                                                    
+                                                }
                                             }
                                         }
                                     }
@@ -1041,12 +1053,16 @@ namespace lms_with_moodle.Controllers
                         }
                     }
                 }
-            }
-        //}
-        
-        await moodleApi.AssignUsersToCourse(enrolsData);
-        
-        return Ok(true);
+            //}
+            
+            await moodleApi.AssignUsersToCourse(enrolsData);
+            
+            return Ok(true);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.StackTrace);
+        }
     }
 
     public async Task<bool> SyncUserDetails()
