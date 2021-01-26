@@ -31,6 +31,7 @@ class EditLesson extends React.Component {
                 this.setState({nowLessonDay : this.props.t('monday')})
                 break;
             case 4:
+                
                 this.setState({nowLessonDay : this.props.t('tuesday')})
                 break;
             case 5: 
