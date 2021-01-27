@@ -23,7 +23,7 @@ class LoginSSO extends React.Component {
 
         const result = await this.props.MoodleSSO(this.props.user.token , this.props.match.params.schedulId , localStorage.getItem('userPassword'))
         var bodyFormData = new FormData();
-
+        
         if(result)
         {
             this.formRef.current.submit()
