@@ -129,24 +129,7 @@ namespace lms_with_moodle
                         text = text.Replace("REACT_APP_VERSION:\"REACT_APP_VERSION\"", "REACT_APP_VERSION:\"" +AppSettings.REACT_APP_VERSION +"\"");
 
                         text = text.Replace("API_URL: 'https://panel.vir-gol.ir/api/'", "API_URL: '"+AppSettings.ServerRootUrl+"/api/'");
-                        Console.WriteLine(text);
                         text = text.Replace("API_URL:\"https://panel.vir-gol.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api/\"");
-                        Console.WriteLine(text);
-
-                        if(bool.Parse(AppSettings.REACT_APP_RAHE_DOOR))
-                        {
-                            text = text.Replace("/icons/Logo.png", "/icons/RD.png");
-                            text = text.Replace("REACT_APP_ENTER_TEXT:\"REACT_APP_ENTER_TEXT\"", "REACT_APP_ENTER_TEXT:\"" +AppSettings.REACT_APP_RAHE_DOOR_TEXT +"\"");
-                            text = text.Replace("\"REACT_APP_ENTER_TEXT\"", "\"" + AppSettings.REACT_APP_RAHE_DOOR_TEXT + "\"");
-
-                        }
-                        else
-                        {
-                            text = text.Replace("/icons/Logo.png", "/icons/Virgol.png");
-                            text = text.Replace("REACT_APP_ENTER_TEXT:\"REACT_APP_ENTER_TEXT\"", "REACT_APP_ENTER_TEXT:\"" +AppSettings.REACT_APP_VIRGOL_TEXT +"\"");
-                            text = text.Replace("\"REACT_APP_ENTER_TEXT\"", "\"" + AppSettings.REACT_APP_VIRGOL_TEXT + "\"" );
-
-                        }
 
                         File.WriteAllText(filename , text);
                 }
