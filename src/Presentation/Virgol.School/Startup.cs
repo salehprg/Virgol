@@ -74,7 +74,7 @@ namespace lms_with_moodle
                 
                 AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
                 AppSettings.moddleCourseUrl = "Hava";
-                AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MODDLE_COURSE_URL");
+                AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
                 AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
                 AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
                 AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
