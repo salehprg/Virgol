@@ -66,6 +66,7 @@ services:
       - VIRGOL_DATABASE_USER=postgres
       - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
       - VIRGOL_MOODLE_TOKEN=616ed6bc394212692b03ea59b7f94670
+      - VIRGOL_MOODLE_BASE_URL=http://moodle.legace.ir/webservice/rest/server.php?moodlewsrestformat=json
       - VIRGOL_FARAZAPI_URL=http://rest.ippanel.com
       - VIRGOL_FARAZAPI_SENDER_NUMBER=+98500010707
       - VIRGOL_FARAZAPI_USERNAME=goldenstarc
