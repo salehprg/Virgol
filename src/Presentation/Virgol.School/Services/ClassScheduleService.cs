@@ -87,11 +87,12 @@ public class ClassScheduleService {
 
     }
 
-    public async Task<bool> RemoveSchedule(Class_WeeklySchedule classSchedule)
+    public async Task<bool> RemoveSchedule(Class_WeeklySchedule classSchedule , bool isFreeClass = false)
     {
         try
         {
-            int lessonMoodleId = appDbContext.School_Lessons.Where(x => x.Lesson_Id == classSchedule.LessonId && x.classId == classSchedule.ClassId).FirstOrDefault().Moodle_Id;
+            School_Lessons school_Lesson = appDbContext.School_Lessons.Where(x => x.Lesson_Id == classSchedule.LessonId && x.classId == classSchedule.ClassId).FirstOrDefault();
+            int lessonMoodleId = school_Lesson.Moodle_Id;
 
             UserModel teacherModel = appDbContext.Users.Where(x => x.Id == classSchedule.TeacherId).FirstOrDefault();
 
@@ -154,6 +155,12 @@ public class ClassScheduleService {
                 }
 
                 appDbContext.Meetings.RemoveRange(meetings);
+                if(isFreeClass)
+                {
+                    LessonModel lesson = appDbContext.Lessons.Where(x => x.Id == school_Lesson.Lesson_Id).FirstOrDefault();
+                    appDbContext.Lessons.Remove(lesson);
+                    appDbContext.School_Lessons.Remove(school_Lesson);
+                }
 
                 await appDbContext.SaveChangesAsync();
 
