@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Models.InputModel;
 using Newtonsoft.Json;
 using Models.Users.Roles;
+using Virgol.School.Models;
 
 namespace lms_with_moodle.Controllers
 {
@@ -149,6 +150,7 @@ namespace lms_with_moodle.Controllers
                 int schoolId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().SchoolId;
 
                 List<StudentViewModel> AllStudent = appDbContext.StudentViews.Where(x => x.schoolid == schoolId).ToList();
+                AllStudent = AllStudent.Distinct().ToList();
                 List<StudentViewModel> result = new List<StudentViewModel>();
 
                 if(IsForAssign)
@@ -998,6 +1000,80 @@ namespace lms_with_moodle.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        public IActionResult GetExtraLessons()
+        {
+            try
+            {
+                UserModel userModel = UserService.GetUserModel(User);
+                int schoolId = appDbContext.Users.Where(x => x.Id == userModel.Id).FirstOrDefault().SchoolId;
+
+                List<ExtraLessonView> extraLessons = appDbContext.ExtraLessonViews.Where(x => x.School_Id == schoolId).ToList();
+
+                return Ok(extraLessons);
+
+            }
+            catch (Exception)
+            {
+                return BadRequest("دریافت اطلاعات با خطا مواجه شد");
+                throw;
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> AssignUserToLesson([FromBody]ExtraLesson extralLesson , int userId)
+        {
+            try
+            {
+                if(extralLesson.ClassId == 0 || extralLesson.lessonId == 0)
+                    return BadRequest("اطلاعات به درستی کامل نشده است");
+
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == userId).FirstOrDefault();
+
+                if(await managerService.AssignUserToExtraLesson(userModel , extralLesson))
+                {
+                    return Ok("درس با موفقیت به دانش آموز اضافه شد");
+                }
+
+                return BadRequest("اطلاعات انتخاب شده تکراری میباشد");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest("ثبت اطلاعات با خطا مواجه شد");
+                throw;
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> UnAssignUserFromLesson(int extralLessonId)
+        {
+            try
+            {
+                if(extralLessonId == 0)
+                    return BadRequest("اطلاعات به درستی کامل نشده است");
+
+                ExtraLesson extraLesson = appDbContext.ExtraLessons.Where(x => x.Id == extralLessonId).FirstOrDefault();
+                if(extraLesson != null)
+                {
+                    UserModel userModel = appDbContext.Users.Where(x => x.Id == extraLesson.UserId).FirstOrDefault();
+                
+                    if(await managerService.UnAssignUserFromExtraLesson(userModel , extraLesson))
+                    {
+                        return Ok("دانش آموز با موفقیت از درس حذف شد");
+                    }
+                }
+
+                return BadRequest("رکورد انتخاب شده وجود ندارد");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest("ثبت اطلاعات با خطا مواجه شد");
+                throw;
+            }
+        }
+
 
 #endregion
      

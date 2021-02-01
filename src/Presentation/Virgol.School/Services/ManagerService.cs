@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using lms_with_moodle.Helper;
 using Models;
 using Models.User;
+using Virgol.School.Models;
 
 public class ManagerService {
     AppDbContext appDbContext;
@@ -63,6 +65,93 @@ public class ManagerService {
         await appDbContext.SaveChangesAsync();
 
         return true;
+        
+    }
+
+    public async Task<bool> AssignUserToExtraLesson(UserModel student , ExtraLesson extraLesson)
+    {
+        int classId = extraLesson.ClassId;
+
+        School_Class classModel = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault();
+        int classMoodleId = classModel.Moodle_Id;
+        int userid = student.Id;
+
+        School_studentClass studentClass = new School_studentClass();
+
+        studentClass.ClassId = classId;
+        studentClass.UserId = userid;
+        
+
+        School_studentClass oldStudentClass = appDbContext.School_StudentClasses.Where(x => x.UserId == userid && x.ClassId == classModel.Id).FirstOrDefault();
+
+        //Prevent from add duplicate user to class
+        if(oldStudentClass == null || (oldStudentClass != null && oldStudentClass.ClassId == classId))
+        {
+            School_Lessons lesson = appDbContext.School_Lessons.Where(x => x.classId == classId && x.Lesson_Id == extraLesson.lessonId).FirstOrDefault();
+            List<ExtraLesson> extraLessons = appDbContext.ExtraLessons.Where(x => x.UserId == userid).ToList();
+
+            if(extraLessons.Where(x => x.ClassId == classId && x.lessonId == lesson.Lesson_Id).FirstOrDefault() == null)
+            {
+                if(appDbContext.Users.Where(x => x.Id == studentClass.UserId && x.SchoolId == classModel.School_Id).FirstOrDefault() != null)
+                {
+                    
+                    EnrolUser enrolInfo = new EnrolUser();
+                    enrolInfo.lessonId = lesson.Moodle_Id;
+                    enrolInfo.RoleId = 5;
+                    enrolInfo.UserId = student.Moodle_Id;
+
+                    await moodleApi.AssignUsersToCourse(new List<EnrolUser>{enrolInfo});
+
+                    extraLesson.UserId = userid;
+                }
+
+                await appDbContext.ExtraLessons.AddAsync(extraLesson);
+                await appDbContext.School_StudentClasses.AddAsync(studentClass);
+                await appDbContext.SaveChangesAsync();
+
+                return true;
+            }
+        } 
+
+        return false;
+        
+    }
+
+    public async Task<bool> UnAssignUserFromExtraLesson(UserModel userModel , ExtraLesson extraLesson)
+    {
+        try
+        {   
+            int classId = extraLesson.ClassId;
+            int userid = userModel.Id;
+
+            int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
+
+            Class_WeeklySchedule schedule = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId && x.LessonId == extraLesson.lessonId).FirstOrDefault();
+
+            int moodelId = appDbContext.Users.Where(x => x.Id == userid).FirstOrDefault().Moodle_Id;
+
+            School_studentClass student = appDbContext.School_StudentClasses.Where(x => x.UserId == userid).FirstOrDefault();
+            if(student != null)
+            {
+                School_Lessons lesson = appDbContext.School_Lessons.Where(x => x.classId == classId && x.Lesson_Id == extraLesson.lessonId).FirstOrDefault();
+                EnrolUser unEnrolInfo = new EnrolUser();
+                unEnrolInfo.lessonId = lesson.Moodle_Id;
+                unEnrolInfo.UserId = moodelId;
+
+                await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{unEnrolInfo});
+
+                appDbContext.School_StudentClasses.Remove(student);
+                appDbContext.ExtraLessons.Remove(extraLesson);
+
+                await appDbContext.SaveChangesAsync();
+            }
+
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
         
     }
 

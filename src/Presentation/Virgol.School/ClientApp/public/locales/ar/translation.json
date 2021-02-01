@@ -205,5 +205,9 @@
     "paymentReqId": "شفرة التتبع",
     "host": "مزود",
     "meetingName": "اسم الاجتماع",
-    "addFreeMeeting": "أضف وقت الاجتماع"
+    "addFreeMeeting": "أضف وقت الاجتماع",
+    "additionallessons ": "دروس إضافية",
+    "extraLessonList" : "قائمة دروس الطلاب الإضافية",
+    "addExtraLesson" : "أضف الدروس للطالب"
+
 }

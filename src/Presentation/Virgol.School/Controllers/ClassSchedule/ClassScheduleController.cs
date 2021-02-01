@@ -10,6 +10,7 @@ using Models.User;
 using Microsoft.AspNetCore.Authorization;
 using lms_with_moodle.Helper;
 using Models.Users.Roles;
+using Virgol.School.Models;
 
 namespace lms_with_moodle.Controllers
 {
@@ -72,15 +73,36 @@ namespace lms_with_moodle.Controllers
                 {
                     //It means Student send request
                     //We set IdNumber as userId in Token
-                    string idNumber = userManager.GetUserId(User);
-                    int userId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().Id;
-                    School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault();
+                    UserModel student = userService.GetUserModel(User);
+                    int userId = student.Id;
+
+                    List<ExtraLesson> extraLessons = appDbContext.ExtraLessons.Where(x => x.UserId == userId).ToList();
+                    List<School_studentClass> tempStudentDatas = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).ToList();
+                    
+                    School_studentClass school_Student = null;
+
+                    foreach (var studentData in tempStudentDatas)
+                    {
+                        if(extraLessons.Where(x => x.ClassId == studentData.ClassId).FirstOrDefault() == null)
+                        {
+                            school_Student = studentData;
+                            break;
+                        }
+                    }
 
                     if(school_Student != null)
                     {
                         int userClassId = school_Student.ClassId;
 
                         classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == userClassId).ToList();
+
+                        
+                        foreach (var extraLesson in extraLessons)
+                        {
+                            List<ClassScheduleView> extraLessonSchedule = appDbContext.ClassScheduleView.Where(x => x.ClassId == extraLesson.ClassId && x.LessonId == extraLesson.lessonId).ToList();
+
+                            classScheduleViews.AddRange(extraLessonSchedule);
+                        }
 
                         foreach (var schedule in classScheduleViews)
                         {

@@ -48,6 +48,7 @@
     "teachers": "معلم ها",
     "teacher": "معلم",
     "students": "دانش آموزان",
+    "student": "دانش آموز",
     "news": "اخبار",
     "adminNewsHeader": "آخرین خبرهای منتشر شده از سمت شما",
     "loading": "درحال بارگذاری ...",
@@ -227,6 +228,10 @@
     "host": "ارائه دهنده",
     "meetingName": "نام جلسه",
     "addFreeMeeting": "افزودن ساعت جلسه",
-    "viewerList": "لیست افراد حاضر"
+    "viewerList": "لیست افراد حاضر",
+    "additionallessons": "درس اضافی",
+    "extraLessonList" : "لیست دروس اضافی دانش آموزان",
+    "addExtraLesson" : "افزودن درس به دانش آموز"
+    
 
 }
