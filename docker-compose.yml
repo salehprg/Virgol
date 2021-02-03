@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   virgol:
-    image: goldenstarc/virgol:1.8.4
+    image: goldenstarc/virgol:1.8.3-beta1
     restart: always
     container_name: virgol_main
     volumes:
@@ -19,7 +19,7 @@ services:
       - VIRGOL_DATABASE_USER=postgres
       - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
       - VIRGOL_MOODLE_TOKEN=616ed6bc394212692b03ea59b7f94670
-      - VIRGOL_MOODLE_BASE_URL=http://moodle.legace.ir/webservice/rest/server.php?moodlewsrestformat=json
+      - VIRGOL_MOODLE_BASE_URL=http://moodle.vir-gol.ir/webservice/rest/server.php?moodlewsrestformat=json
       - VIRGOL_FARAZAPI_URL=http://rest.ippanel.com
       - VIRGOL_FARAZAPI_SENDER_NUMBER=+98500010707
       - VIRGOL_FARAZAPI_USERNAME=goldenstarc
@@ -30,8 +30,8 @@ services:
       - VIRGOL_LDAP_PORT=389
       - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
-      - REACT_APP_MOODLE_URL=https://moodle.legace.ir/login/index.php
-      - REACT_APP_VERSION=1.8.4
+      - REACT_APP_MOODLE_URL=https://moodle.vir-gol.ir/login/index.php
+      - REACT_APP_VERSION=1.8.3-beta1
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`panel.vir-gol.ir`)"
@@ -97,16 +97,11 @@ services:
       - MOODLE_DATABASE_NAME=bitnami_moodle
       - MOODLE_USERNAME=admin
       - MOODLE_PASSWORD=wydta4-voqvAb-vadpaf
-      - MOODLE_EMAIL=admin@legace.ir
+      - MOODLE_EMAIL=admin@vir-gol.ir
       - MOODLE_SITE_NAME=Virgol
-      - MOODLE_SMTP_HOST=mail.legace.ir
-      - MOODLE_SMTP_PORT=587
-      - MOODLE_SMTP_USER=noreply@legace.ir
-      - MOODLE_SMTP_PASSWORD=Mailpass.24
-      - MOODLE_SMTP_PROTOCOL=tls
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.moodle.rule=Host(`moodle.legace.ir`)"
+      - "traefik.http.routers.moodle.rule=Host(`moodle.vir-gol.ir`)"
       - "traefik.http.services.moodle.loadbalancer.server.port=8080"
       - "traefik.http.routers.moodle.entrypoints=secure"
       - "traefik.http.routers.moodle.tls.certresolver=letsencrypt"
@@ -201,7 +196,6 @@ networks:
     external: true
 volumes:
   virgolData:
-  virgolDeiData:
   postgresDb:
   openldapDb:
   openldapConf:
