@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   virgol:
-    image: goldenstarc/virgol:1.8.3-beta1
+    image: goldenstarc/virgol:1.8.4-beta1
     restart: always
     container_name: virgol_main
     volumes:
@@ -31,7 +31,7 @@ services:
       - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
       - REACT_APP_MOODLE_URL=https://moodle.legace.ir/login/index.php
-      - REACT_APP_VERSION=1.8.3-beta1
+      - REACT_APP_VERSION=1.8.4-beta1
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`panel.vir-gol.ir`)"
@@ -42,53 +42,6 @@ services:
       - "traefik.docker.network=web"
       - "traefik.http.middlewares.virgol_compress.compress=true"
       - "traefik.http.routers.virgol.middlewares=virgol_compress"
-    networks:
-      - virgol
-      - web
-    depends_on:
-      - postgres
-      - openldap
-  virgol-dei:
-    image: goldenstarc/virgol:1.8.3-beta1-dei
-    restart: always
-    container_name: virgol_dei
-    volumes:
-      - virgolDeiData:/app/BulkData
-    # build:
-    #   context: .
-    environment:
-      - ASPNETCORE_URLS=http://+ # ;https://+
-      - ASPNETCORE_ENVIRONMENT=Production
-      - NODE_ENV=production
-      - VIRGOL_SERVER_ROOT_URL=https://dei.razaviedu.ir
-      - VIRGOL_DATABASE_TYPE=postgres
-      - VIRGOL_DATABASE_HOST=postgres
-      - VIRGOL_DATABASE_NAME=LMS_DEI
-      - VIRGOL_DATABASE_USER=postgres
-      - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
-      - VIRGOL_MOODLE_TOKEN=616ed6bc394212692b03ea59b7f94670
-      - VIRGOL_MOODLE_BASE_URL=http://moodle.legace.ir/webservice/rest/server.php?moodlewsrestformat=json
-      - VIRGOL_FARAZAPI_URL=http://rest.ippanel.com
-      - VIRGOL_FARAZAPI_SENDER_NUMBER=+98500010707
-      - VIRGOL_FARAZAPI_USERNAME=goldenstarc
-      - VIRGOL_FARAZAPI_PASSWORD=hektug-fakbAm-0vypje
-      - VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=
-      - VIRGOL_JWT_SECRET=Saleh Secret Key
-      - VIRGOL_LDAP_SERVER=openldap
-      - VIRGOL_LDAP_PORT=389
-      - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
-      - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
-      - REACT_APP_MOODLE_URL=https://moodle.legace.ir/login/index.php
-      - REACT_APP_VERSION=1.8.3-beta1-dei
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.virgolDei.rule=Host(`dei.razaviedu.ir`)"
-      - "traefik.http.services.virgolDei.loadbalancer.server.port=80"
-      - "traefik.http.routers.virgolDei.entrypoints=secure"
-      - "traefik.http.routers.virgolDei.tls.certresolver=letsencrypt"
-      - "traefik.docker.network=web"
-      - "traefik.http.middlewares.virgol_compress.compress=true"
-      - "traefik.http.routers.virgolDei.middlewares=virgol_compress"
     networks:
       - virgol
       - web
