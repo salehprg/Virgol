@@ -27,7 +27,7 @@ services:
       - VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=
       - VIRGOL_JWT_SECRET=Saleh Secret Key
       - VIRGOL_LDAP_SERVER=openldap
-      - VIRGOL_LDAP_PORT=389
+      - VIRGOL_LDAP_PORT=390
       - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
       - REACT_APP_MOODLE_URL=https://moodle.vir-gol.ir/login/index.php
@@ -156,7 +156,7 @@ services:
     hostname: openldap
     container_name: virgol_openldap
     ports:
-      - '389:389'
+      - '390:389'
       - '636:636'
     restart: always
     volumes:
