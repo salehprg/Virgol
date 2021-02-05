@@ -22,11 +22,11 @@ sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IM
 cp src/Presentation/Virgol.School/ClientApp/public/index-dei.html src/Presentation/Virgol.School/ClientApp/public/index.html
 cp src/Presentation/Virgol.School/ClientApp/public/manifest-dei.json src/Presentation/Virgol.School/ClientApp/public/manifest.json 
 sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei .
-# sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
-docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG 
+docker push $IMAGE_ACCOUNT/$IMAGE_REPO
+docker push $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei
+docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
 docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei
-docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
-docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest-dei
+# docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
 docker-compose up -d
 docker image prune -f  --filter "until=12d"
 # docker image prune -a -f
