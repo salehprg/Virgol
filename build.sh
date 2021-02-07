@@ -1,7 +1,3 @@
-# bash update.sh  1.3.6
-
-# sudo chown -R tiger:tiger lms-with-moodle
-
 # build options
 # BUILD_REVISION=`git rev-parse --short HEAD`
 # BUILD_DIR_BASE=`git rev-parse --git-dir`/..
@@ -25,12 +21,14 @@ sudo docker login
 sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest .
 cp src/Presentation/Virgol.School/ClientApp/public/index-dei.html src/Presentation/Virgol.School/ClientApp/public/index.html
 cp src/Presentation/Virgol.School/ClientApp/public/manifest-dei.json src/Presentation/Virgol.School/ClientApp/public/manifest.json 
-sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei .
-# sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
-# docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG 
+sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei .
+sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
+sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei
+sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
+sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
 docker-compose up -d
-docker image prune -f
+docker image prune -f  --filter "until=12d"
 # docker image prune -a -f
 # docker exec -it virgol_dei grep -rl "dei.razaviedu.ir" .
 # docker exec -it virgol_dei  sed -i 's/panel.vir-gol.ir/dei.razaviedu.ir/g' ./ClientApp/build/static/js/main.7f756e2c.chunk.js.map
