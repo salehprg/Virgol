@@ -246,6 +246,79 @@ export const UnAssignUserFromClass = (token , classId , userIds) => async dispat
 
 }
 
+export const GetExtraLessons = (token ) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+
+        const response = await lms.get(`/Manager/GetExtraLessons` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+
+        dispatch({ type: Type.GetExtraLessons, payload: response.data });
+
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error("خطا"))
+    }
+
+}
+
+export const AssignUserToLesson = (token , formValue , userId) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+
+        const response = await lms.post(`/Manager/AssignUserToLesson?userId=${userId}` , formValue, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+
+        dispatch(alert.success(response.data))
+
+        dispatch({ type: Type.AssignUserToClass, payload: response.data });
+
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+    }
+
+}
+
+export const UnAssignUserFromLesson = (token , extralLessonId , userId) => async dispatch => {
+
+    try {
+        dispatch({ type: START })
+
+        const response = await lms.delete(`/Manager/UnAssignUserFromLesson?extralLessonId=${extralLessonId}&userId=${userId}` , {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: STOP })
+
+        dispatch(alert.success(response.data))
+
+        return true;
+
+    } catch (e) {
+        dispatch({ type: STOP })
+        dispatch(alert.error(e.response.data))
+
+
+        return false
+    }
+
+}
+
 //#endregion
 
 //#region Teacher

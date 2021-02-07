@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     myNews: [],
     schoolLessonInfo : null,
     studentsInClass : null,
+    extraLesson : null,
     userInfo : null,
     'accessRoleIds': [],
     grades: [],
@@ -57,6 +58,9 @@ export default (state = INITIAL_STATE, action) => {
 
     if (action.type === Type.UnAssignUserFromClass)
         return { ...state, unAssigned: action.payload };
+
+    if (action.type === Type.GetExtraLessons)
+        return { ...state, extraLesson: action.payload };
 
     if (action.type === Type.CheckNewTeacher)
         return { ...state, checkNewTeacher: action.payload};

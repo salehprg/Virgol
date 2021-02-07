@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Models.User;
 using Models.Users.Teacher;
+using Virgol.School.Models;
 
 namespace Models
 {
@@ -47,6 +48,7 @@ namespace Models
         public DbSet<SiteSettings> SiteSettings {get; set;}
         public DbSet<ServicesModel> Services {get; set;}
         public DbSet<DomainInfoModel> DomainInfos {get; set;}
+        public DbSet<ExtraLesson> ExtraLessons {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}
@@ -55,6 +57,7 @@ namespace Models
         public DbSet<TeacherViewModel> TeacherViews {get; set;}
         public DbSet<MeetingView> MeetingViews {get; set;}
         public DbSet<PaymentView> PaymentsView {get; set;}
+        public DbSet<ExtraLessonView> ExtraLessonViews {get; set;}
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -199,6 +202,13 @@ namespace Models
                         .OnDelete(DeleteBehavior.Cascade);
 
                     builder.Entity<AdminDetail>()
+                        .HasOne<UserModel>()
+                        .WithMany()
+                        .HasForeignKey(x => x.UserId)
+                        .HasPrincipalKey(x => x.Id)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    builder.Entity<ExtraLesson>()
                         .HasOne<UserModel>()
                         .WithMany()
                         .HasForeignKey(x => x.UserId)

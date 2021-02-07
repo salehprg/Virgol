@@ -10,6 +10,7 @@ using Models.User;
 using Microsoft.AspNetCore.Authorization;
 using lms_with_moodle.Helper;
 using Models.Users.Roles;
+using Virgol.School.Models;
 
 namespace lms_with_moodle.Controllers
 {
@@ -72,15 +73,36 @@ namespace lms_with_moodle.Controllers
                 {
                     //It means Student send request
                     //We set IdNumber as userId in Token
-                    string idNumber = userManager.GetUserId(User);
-                    int userId = appDbContext.Users.Where(x => x.MelliCode == idNumber).FirstOrDefault().Id;
-                    School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault();
+                    UserModel student = userService.GetUserModel(User);
+                    int userId = student.Id;
+
+                    List<ExtraLesson> extraLessons = appDbContext.ExtraLessons.Where(x => x.UserId == userId).ToList();
+                    List<School_studentClass> tempStudentDatas = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).ToList();
+                    
+                    School_studentClass school_Student = null;
+
+                    foreach (var studentData in tempStudentDatas)
+                    {
+                        if(extraLessons.Where(x => x.ClassId == studentData.ClassId).FirstOrDefault() == null)
+                        {
+                            school_Student = studentData;
+                            break;
+                        }
+                    }
 
                     if(school_Student != null)
                     {
                         int userClassId = school_Student.ClassId;
 
                         classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.ClassId == userClassId).ToList();
+
+                        
+                        foreach (var extraLesson in extraLessons)
+                        {
+                            List<ClassScheduleView> extraLessonSchedule = appDbContext.ClassScheduleView.Where(x => x.ClassId == extraLesson.ClassId && x.LessonId == extraLesson.lessonId).ToList();
+
+                            classScheduleViews.AddRange(extraLessonSchedule);
+                        }
 
                         foreach (var schedule in classScheduleViews)
                         {
@@ -409,6 +431,10 @@ namespace lms_with_moodle.Controllers
                     {
                         if(!string.IsNullOrEmpty(classSchedule.CustomLessonName))
                         {
+                            
+                            UserModel manager = userService.GetUserModel(User);
+                            SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
+                            School_Class school_Class = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Id == classSchedule.ClassId).FirstOrDefault();
 
                             LessonModel freeLesson = appDbContext.Lessons.Where(x => x.Grade_Id == 0 && x.LessonName == classSchedule.CustomLessonName).FirstOrDefault();
 
@@ -418,13 +444,17 @@ namespace lms_with_moodle.Controllers
                                 schoolLesson = appDbContext.School_Lessons.Where(x => x.Lesson_Id == freeLesson.Id && x.classId == classSchedule.ClassId).FirstOrDefault();
                             }
 
+                            if(schoolLesson != null && schoolLesson.Moodle_Id == -1)
+                            {
+                                int moodleId = await moodleApi.CreateCourse(freeLesson.LessonName + " (" + school.Moodle_Id + "-" + school_Class.Moodle_Id + ")", freeLesson.LessonName + " (" + school.SchoolName + "-" + school_Class.ClassName + ")" , school_Class.Moodle_Id);
+                                schoolLesson.Moodle_Id = moodleId;
+
+                                appDbContext.School_Lessons.Update(schoolLesson);
+                                await appDbContext.SaveChangesAsync();
+                            }
                             if(schoolLesson == null)
                             {
-                                UserModel manager = userService.GetUserModel(User);
-                            
-                                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
-                                School_Class school_Class = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Id == classSchedule.ClassId).FirstOrDefault();
-
+                              
                                 freeLesson = new LessonModel();
                                 freeLesson.Grade_Id = 0;
                                 freeLesson.LessonCode = "F_" + classSchedule.ClassId.ToString();
@@ -531,7 +561,9 @@ namespace lms_with_moodle.Controllers
 
                 if(classSchedule.Id != 0)
                 {
-                    bool result = await classScheduleService.RemoveSchedule(classSchedule);
+                    School_Class school_Class = appDbContext.School_Classes.Where(x => x.Id == classSchedule.ClassId).FirstOrDefault();
+
+                    bool result = await classScheduleService.RemoveSchedule(classSchedule , school_Class.Grade_Id == 0);
                     if(result)
                     {
                         return Ok(scheduleId);

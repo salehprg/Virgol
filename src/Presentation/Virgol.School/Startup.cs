@@ -73,7 +73,7 @@ namespace lms_with_moodle
                 conStr = string.Format("Server={0};Database={1};Username={2};Password={3}" , host , name , userName ,password);
                 
                 AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
-                AppSettings.moddleCourseUrl = Environment.GetEnvironmentVariable("VIRGOL_MODDLE_COURSE_URL");
+                AppSettings.moddleCourseUrl = "Hava";
                 AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
                 AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
                 AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
@@ -88,8 +88,6 @@ namespace lms_with_moodle
                 AppSettings.LDAPPassword = Environment.GetEnvironmentVariable("VIRGOL_LDAP_PASSWORD");
                 AppSettings.ServerRootUrl = Environment.GetEnvironmentVariable("VIRGOL_SERVER_ROOT_URL");
 
-                AppSettings.REACT_APP_RAHE_DOOR = Environment.GetEnvironmentVariable("REACT_APP_RAHE_DOOR");
-                AppSettings.REACT_APP_FAVICON_NAME = Environment.GetEnvironmentVariable("REACT_APP_FAVICON_NAME");
                 AppSettings.REACT_APP_MOODLE_URL = Environment.GetEnvironmentVariable("REACT_APP_MOODLE_URL");
                 AppSettings.REACT_APP_VERSION = Environment.GetEnvironmentVariable("REACT_APP_VERSION");
 
@@ -131,24 +129,7 @@ namespace lms_with_moodle
                         text = text.Replace("REACT_APP_VERSION:\"REACT_APP_VERSION\"", "REACT_APP_VERSION:\"" +AppSettings.REACT_APP_VERSION +"\"");
 
                         text = text.Replace("API_URL: 'https://panel.vir-gol.ir/api/'", "API_URL: '"+AppSettings.ServerRootUrl+"/api/'");
-                        Console.WriteLine(text);
                         text = text.Replace("API_URL:\"https://panel.vir-gol.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api/\"");
-                        Console.WriteLine(text);
-
-                        if(bool.Parse(AppSettings.REACT_APP_RAHE_DOOR))
-                        {
-                            text = text.Replace("/icons/Logo.png", "/icons/RD.png");
-                            text = text.Replace("REACT_APP_ENTER_TEXT:\"REACT_APP_ENTER_TEXT\"", "REACT_APP_ENTER_TEXT:\"" +AppSettings.REACT_APP_RAHE_DOOR_TEXT +"\"");
-                            text = text.Replace("\"REACT_APP_ENTER_TEXT\"", "\"" + AppSettings.REACT_APP_RAHE_DOOR_TEXT + "\"");
-
-                        }
-                        else
-                        {
-                            text = text.Replace("/icons/Logo.png", "/icons/Virgol.png");
-                            text = text.Replace("REACT_APP_ENTER_TEXT:\"REACT_APP_ENTER_TEXT\"", "REACT_APP_ENTER_TEXT:\"" +AppSettings.REACT_APP_VIRGOL_TEXT +"\"");
-                            text = text.Replace("\"REACT_APP_ENTER_TEXT\"", "\"" + AppSettings.REACT_APP_VIRGOL_TEXT + "\"" );
-
-                        }
 
                         File.WriteAllText(filename , text);
                 }

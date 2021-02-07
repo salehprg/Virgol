@@ -49,6 +49,7 @@ import EditStream from './dashboards/stream/EditStream';
 import Plans from './plans/Plans';
 import PaymentDetail from './plans/PaymentDetail'
 import { localizer } from '../assets/localizer';
+import  AddExtraLesson from './dashboards/manager/ExtraLesson/AddExtraLesson'
 
 class App extends React.Component {
 
@@ -108,6 +109,8 @@ class App extends React.Component {
                         <Route path="/student/:id" component={StudentInfo} />
                         <Route path="/newStudent" component={AddStudent} />
                         <Route path="/newGroup" component={AddGroup} />
+                        <Route path="/addExtraLesson" component={AddExtraLesson} />
+
                         <Route path="/editGroup/:id" component={EditGroup} />
                         <Route path="/plans" component={Plans} />
                         <Route path="/paymentDetail/:paymentId" component={PaymentDetail} />

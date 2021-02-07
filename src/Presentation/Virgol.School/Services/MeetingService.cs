@@ -7,6 +7,7 @@ using Models.Users.Roles;
 using Models;
 using Models.User;
 using Newtonsoft.Json;
+using Virgol.School.Models;
 
 public class MeetingService {
     AppDbContext appDbContext;
@@ -271,7 +272,6 @@ public class MeetingService {
 
         List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => ((currentTime <= x.EndHour && x.DayType == dayOfWeek ) || x.DayType == dayOfTommorow) && (x.weekly == 0 || x.weekly == weekType)).ToList();                                                                          
         List<MeetingView> recentClasses = new List<MeetingView>();
-        
 
         if(isTeacher)
         {
@@ -315,6 +315,15 @@ public class MeetingService {
             }
 
             schedules = schedules.Where(x => x.ClassId == classId).ToList();
+
+            List<ExtraLesson> extraLessons = appDbContext.ExtraLessons.Where(x => x.UserId == userId).ToList();
+            foreach (var extraLesson in extraLessons)
+            {
+                List<ClassScheduleView> extraLessonSchedule = appDbContext.ClassScheduleView.Where(x => x.ClassId == extraLesson.ClassId && x.LessonId == extraLesson.lessonId).ToList();
+                extraLessonSchedule = extraLessonSchedule.Where(x => ((currentTime <= x.EndHour && x.DayType == dayOfWeek ) || x.DayType == dayOfTommorow) && (x.weekly == 0 || x.weekly == weekType)).ToList();                                                                          
+                
+                schedules.AddRange(extraLessonSchedule);
+            }
         }
 
         return schedules;

@@ -17,6 +17,7 @@ import Tracker from "./tracker/Tracker";
 import Groups from "./groups/Groups";
 import StreamInfo from "../stream/StreamInfo";
 import Payments from "../../payments/AllPayments"
+import ExtraLessons from "./ExtraLesson/ExtraLessons"
 
 class ManagerDashboard extends React.Component {
 
@@ -98,6 +99,13 @@ class ManagerDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
+                        code="extraLesson"
+                        title={this.props.t('additionallessons')}
+                        icon={open_book}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
                         code="tracker"
                         title={this.props.t('virtualClasses')}
                         icon={open_book}
@@ -153,6 +161,7 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/news"} component={News}/>
                         <Route path={this.props.match.url + "/tracker"} component={Tracker}/>
                         <Route path={this.props.match.url + "/payments"} component={Payments}/>
+                        <Route path={this.props.match.url + "/extraLesson"} component={ExtraLessons}/>
 
                         <Redirect to="/404" />
                     </Switch>

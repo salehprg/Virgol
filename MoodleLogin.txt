@@ -1,0 +1,5 @@
+<form classname="text-center" action="https://moodle.legace.ir/login/index.php" method="POST">
+    <input name="username" type="text">
+    <input name="password" type="text">
+    <button type="submit">ورود</button>
+</form>

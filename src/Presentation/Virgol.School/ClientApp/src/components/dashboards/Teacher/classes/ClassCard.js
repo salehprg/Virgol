@@ -24,7 +24,7 @@ class ClassCard extends React.Component {
                 <Link className="w-5/12 py-1 text-center text-white" to={`/recordedSessions/${scheduleId}`}>{this.props.t('sessionList')}</Link>
                 </div>
                 <div className="text-center my-1">
-                <a className="w-5/12 py-1 text-center text-white" href="#" target="_blank" rel="noopener noreferrer" >{this.props.t('activities')}</a>
+                    <Link className="w-5/12 py-1 text-center text-white" to={`/SSO/${scheduleId}`} rel="noopener noreferrer" >{this.props.t('activities')}</Link>
                 </div>
                 {/* <form ref={this.formRef} className="text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
                     <input
