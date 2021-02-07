@@ -111,9 +111,10 @@ public class UserService {
                             user.Moodle_Id = moodleId;
 
                             appDbContext.Users.Update(user);
-                            result.Add(userData);
                         }
                     }
+
+                    result.Add(userData);
                 }
             }
             
