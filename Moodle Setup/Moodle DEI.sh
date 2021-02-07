@@ -116,24 +116,27 @@ add in head:
 
  Custom CSS 
 
-                                                #page{
-                                                background-repeat: no-repeat;
-                                                  background-attachment: fixed;
-                                                }
-                                                .block {
-                                                    background: #ffffff80!important;
-                                                }
-                                                .block>.header,  {
-                                                    background: #ffffff80;
-                                                }
-                                                .block>.content {
-                                                    background: #ffffff80;
-                                                }
-                                                .ftco-footer {
-                                                    background: #202442 !important;
-                                                }
-                                                .block_online_users .fa-eye {display: none;}
-                                                .block_online_users .fa-eye {visibility: hidden;}
+#page{
+background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.block {
+    background: #ffffff80!important;
+}
+.block>.header,  {
+    background: #ffffff80;
+}
+.block>.content {
+    background: #ffffff80;
+}
+.ftco-footer {
+    background: #202442 !important;
+}
+.block_online_users .fa-eye {display: none;}
+.block_online_users .fa-eye {visibility: hidden;}
+
+  Import JSON File "theme settings.json" 
+  Set image "background.jpg" as Background image to theme
 
 # -------==========-------
 18- https://m-dei.vir-gol.ir/admin/settings.php?section=messages
@@ -240,3 +243,9 @@ https://m-dei.vir-gol.ir/admin/settings.php?section=usermanagement
 Todo: 
 configure System paths
 -- add aspell support --> add persian vocabs
+
+31- https://m-dei.vir-gol.ir/theme/index.php
+  Change default Theme to adaptable
+
+32 - https://m-dei.vir-gol.ir/admin/settings.php?section=manageauths
+  Alternate login URL : "http://dei.razaviedu.ir/SSO"

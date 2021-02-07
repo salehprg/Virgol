@@ -21,7 +21,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "REACT_APP_RAHE_DOOR": "true",
                 "REACT_APP_FAVICON_NAME": "favname",
-                "REACT_APP_MOODLE_URL": "https://moodle.legace.ir/login/index.php",
+                "REACT_APP_MOODLE_URL": "https://moodle.vir-gol.ir/login/index.php",
                 "REACT_APP_VERSION": "نسخه 1.4.6 آزمایشی"
             },
             "sourceFileMap": {

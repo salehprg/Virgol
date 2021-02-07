@@ -135,6 +135,9 @@ Maximum time to edit posts : 60min
   .block_online_users .fa-eye {display: none;}
   .block_online_users .fa-eye {visibility: hidden;}
 
+  Import JSON File "theme settings.json" 
+  Set image "background.jpg" as Background image to theme
+
 # -------==========-------
 18- https://moodle.vir-gol.ir/admin/settings.php?section=messages
  Notification email override : True
@@ -242,3 +245,6 @@ configure System paths
 
 31- https://moodle.vir-gol.ir/theme/index.php
   Change default Theme to adaptable
+
+32 - https://moodle.vir-gol.ir/admin/settings.php?section=manageauths
+  Alternate login URL : "https://panel.vir-gol.ir/SSO"
