@@ -39,7 +39,7 @@ class TrackerLessonInfo extends React.Component {
     options = [
         { value: 1, label: this.props.t('saturday') },
         { value: 2, label: this.props.t('sunday') },
-        { value: 3, label: this.props.t('monsday') },
+        { value: 3, label: this.props.t('monday') },
         { value: 4, label: this.props.t('tuesday') },
         { value: 5, label: this.props.t('wednesday') },
         { value: 6, label: this.props.t('thursday') },

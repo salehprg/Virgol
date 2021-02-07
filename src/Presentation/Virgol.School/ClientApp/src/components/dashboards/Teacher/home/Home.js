@@ -15,6 +15,7 @@ import {ShowSuccess} from '../../../../_actions/alertActions'
 import Modal from "../../../modals/Modal";
 import Fieldish from "../../../field/Fieldish";
 import Select from "react-select";
+import {styles} from '../../../../selectStyle'
 
 class Home extends React.Component {
 
@@ -28,7 +29,9 @@ class Home extends React.Component {
             await this.props.GetIncommingNews(this.props.user.token);
             await this.props.GetRecentClass(this.props.user.token);
             this.setState({loading: false})
-            console.log(this.props.user.userDetail.userDetail.meetingService);
+
+            
+
     }
 
     StatrMeeting = async(id) => {
@@ -75,7 +78,8 @@ class Home extends React.Component {
         var schools = [];
         this.props.schoolList.map(x => schools.push({value : x.id , label : x.schoolName}));
 
-        this.setState({schoolOptions : schools ,  newPrivateModal: true});
+        this.setState({schoolOptions : schools  , selectedSchool : schools[0],  newPrivateModal: true});
+
     }
 
     hidePrivateModal = () => {
@@ -83,7 +87,7 @@ class Home extends React.Component {
     }
     
     createPrivateRoom = async () => {
-        await this.props.CreatePrivateRoom(this.props.user.token , this.state.privateName , this.state.selectedSchool.value)
+        await this.props.CreatePrivateRoom(this.state.privateName , this.state.selectedSchool.value)
         this.hidePrivateModal()
         this.setState({privateName : ""})
         this.componentDidMount()
@@ -103,6 +107,7 @@ class Home extends React.Component {
                         <div onClick={(e) => e.stopPropagation()} className="w-11/12 rounded-lg bg-bold-blue text-center max-w-500 p-8" style={{direction : "rtl"}}>
                             <div className="w-full" style={{direction : "rtl"}} >
                                 <Select
+                                    styles={styles}
                                     isMulti={false}
                                     className="w-5/6 px-4 py-2 my-4"
                                     value={this.state.selectedSchool}
@@ -125,8 +130,7 @@ class Home extends React.Component {
                 <div className="col-span-1 flex flex-col items-center justify-between">
                     <Hero userInfo={this.props.user.userInformation}
                           userDetail={this.props.user.userDetail}
-                          ShowServiceType = {true}
-                          service={this.props.user.userDetail.userDetail.meetingService}/>
+                          ShowServiceType = {true}/>
 
                     <RecentClass
                         onStart={(id) => this.StatrMeeting(id)}
