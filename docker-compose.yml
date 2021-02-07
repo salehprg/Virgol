@@ -156,7 +156,7 @@ services:
     hostname: openldap
     container_name: virgol_openldap
     ports:
-      - '389:389'
+      - '390:389'
       - '636:636'
     restart: always
     volumes:
