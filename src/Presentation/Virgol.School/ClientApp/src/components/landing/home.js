@@ -9,14 +9,55 @@ import Useful from './utils/useful-for-organs'
 import Sponsers from './utils/sponsers'
 import SalesCooperation from './utils/sales-cooperations'
 import Footer from './utils/footer/footer'
-import { MyBabyPowder } from '../../assets/colors';
+import { MyBabyPowder, MySeaGreen } from '../../assets/colors';
+import {arrowUp} from '../../assets/icons'
+import ReactTooltip from 'react-tooltip'
 
 const LandingHome = () => {
+
+    // var button = document.getElementById('goToTop')
+
+    window.onscroll = function(){scrollFunction()};
+
+    const scrollFunction = () => {
+        if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800){
+            document.getElementById('goToTop').style.display = 'block'
+        }
+        else{
+            document.getElementById('goToTop').style.display = 'none'
+        }
+    }
+
+    const style = {
+        display : 'none' ,
+        position : 'fixed' ,
+        bottom : '20px' ,
+        right : '30px' ,
+        zIndex : '99' ,
+        backgroundColor : `${MySeaGreen}` ,
+        color : 'white' ,
+    }
+    
+
     return(
-        <div dir="rtl" style={{backgroundColor : `${MyBabyPowder}`}} className="App mx-3 my-3">
+        <div dir="rtl" style={{backgroundColor : `${MyBabyPowder}`}} className="App container mx-0 my-3">
             <div>
-                <MenuBar/>
+                
+                <MenuBar section="ajza"/>
                 <br/><br/>
+
+                <button 
+                    data-tip="بالای صفحه"
+                    data-for="top"
+                    className="btn w-12 h-12 rounded-full" 
+                    style={style}
+                    onClick={() => {document.documentElement.scrollTop=0}} 
+                    id="goToTop">
+                    {arrowUp('w-6 centerize')}
+                </button>
+
+                <ReactTooltip id="top" place='top' effect='float' type='dark'/>
+
                 <div className="row my-4 mx-4">
                 <div className = "col-lg-6 col-sm-12 col-md-12">
                     <LandingEntry/>
@@ -27,10 +68,10 @@ const LandingHome = () => {
                 </div>
                 <br/>
                 <div className="row my-5">
-                <h2 className="col-12 text-center" style={{fontWeight:'bold' , fontSize:'30px'}}>اجزای سامانه ویرگول</h2>
+                    <div id="ajza" className="col-12 text-center" style={{fontWeight:'bold' , fontSize:'30px'}}>اجزای سامانه ویرگول</div>
                 </div>
-
-                <SchoolManagement/>
+            
+                <SchoolManagement/>    
                 <OnlineSessions/>
                 <DistanceLearning/>
                 <br/><br/><br/>
@@ -40,6 +81,7 @@ const LandingHome = () => {
                 <Sponsers/>
                 <SalesCooperation/>
                 <Footer/>
+
             </div>
         </div>  
     )

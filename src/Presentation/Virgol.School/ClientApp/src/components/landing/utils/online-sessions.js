@@ -3,7 +3,7 @@ import React from 'react';
 const OnlineSessions = () => {
 
     return(
-        <div className="row my-5">
+        <div className="row my-5" style={{backgroundColor : '#e5daff'}}>
             <div className="col-lg-6 col-md-12 col-sm-12 text-center my-5">
                 <img src="./pic/onlineSessions.png" width="90%" alt="جلسات مجازی"/>
             </div>
