@@ -1,5 +1,14 @@
-<form classname="text-center" action="https://moodle.legace.ir/login/index.php" method="POST">
+<form classname="text-center" action="https://moodle.vir-gol.ir/login/index.php" method="POST">
     <input name="username" type="text">
     <input name="password" type="text">
     <button type="submit">ورود</button>
 </form>
+
+<form classname="text-center" action="https://m-dei.vir-gol.ir/login/index.php" method="POST">
+    <input name="username" type="text">
+    <input name="password" type="text">
+    <button type="submit">ورود</button>
+</form>
+
+admin
+wydta4-voqvAb-vadpaf
