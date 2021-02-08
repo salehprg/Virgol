@@ -10,6 +10,7 @@ import {GetEndedStreams , GetFutureStreams , GetCurrentStream
 import { edit, trash } from '../../../assets/icons';
 import DeleteConfirm from '../../modals/DeleteConfirm';
 import history from '../../../history';
+import {styles} from '../../../selectStyle'
 
 class StreamInfo extends React.Component {
 
@@ -173,6 +174,7 @@ class StreamInfo extends React.Component {
                             <span className="text-white"> {this.props.t("minute")} </span>
                         </div>
                         <Select
+                                styles={styles}
                                 className="w-5/6 mx-auto my-8"
                                 value={this.state.selctedGuests}
                                 onChange={this.handleChangeGuests}

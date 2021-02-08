@@ -3,6 +3,7 @@ import { withTranslation } from 'react-i18next';
 import Select from 'react-select';
 import history from '../../../../history'
 import Add from '../../../field/Add';
+import {styles} from '../../../../selectStyle'
 
 class EditGroup extends React.Component {
 
@@ -99,6 +100,7 @@ class EditGroup extends React.Component {
             >
                 <div className="w-full" style={{direction : "rtl"}} >
                     <Select
+                        styles={styles}
                         isMulti={true}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedClasses}
@@ -107,6 +109,7 @@ class EditGroup extends React.Component {
                         placeholder={this.props.t('classes')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedLesson}
                         onChange={this.handleChangeLesson}
@@ -114,6 +117,7 @@ class EditGroup extends React.Component {
                         placeholder={this.props.t('lesson')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedTeacher}
                         onChange={this.handleChangeTeacher}
@@ -121,6 +125,7 @@ class EditGroup extends React.Component {
                         placeholder={this.props.t('teacher')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedDay}
                         onChange={this.handleChangeDay}
@@ -128,6 +133,7 @@ class EditGroup extends React.Component {
                         placeholder={this.props.t('day')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedStartTime}
                         onChange={this.handleChangeStart}
@@ -136,6 +142,7 @@ class EditGroup extends React.Component {
                     />
                     {this.state.selectedStartTime ?
                         <Select
+                            styles={styles}
                             className="w-full mx-auto my-4"
                             value={this.state.selectedEndTime}
                             onChange={this.handleChangeEnd}
