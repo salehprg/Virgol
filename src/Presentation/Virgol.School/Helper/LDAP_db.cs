@@ -86,8 +86,13 @@ namespace lms_with_moodle.Helper
 
                 //Creates the List attributes of the entry and add them to attribute set 
                 LdapAttributeSet attributeSet = new LdapAttributeSet();
-                attributeSet.Add( new LdapAttribute("objectclass", new string[] {"organizationalPerson" ,
-                                                                                "PostfixBookMailAccount"
+                // attributeSet.Add( new LdapAttribute("objectclass", new string[] {"organizationalPerson" ,
+                //                                                                 "PostfixBookMailAccount"
+                //                                                                 ,"extensibleObject"
+                //                                                                 ,"person"
+                //                                                                 ,"top"}));
+
+                attributeSet.Add( new LdapAttribute("objectclass", new string[] {"organizationalPerson"
                                                                                 ,"extensibleObject"
                                                                                 ,"person"
                                                                                 ,"top"}));
@@ -100,13 +105,13 @@ namespace lms_with_moodle.Helper
 
                 attributeSet.Add( new LdapAttribute("givenName", user.FirstName));
                 attributeSet.Add( new LdapAttribute("employeeNumber", user.MelliCode));
-                attributeSet.Add( new LdapAttribute("mailEnabled", "TRUE"));
-                attributeSet.Add( new LdapAttribute("mailGidNumber", "5000"));
-                attributeSet.Add( new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress));
-                attributeSet.Add( new LdapAttribute("mailQuota", "10240"));
-                attributeSet.Add( new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir"));
-                attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
-                attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
+                // attributeSet.Add( new LdapAttribute("mailEnabled", "TRUE"));
+                // attributeSet.Add( new LdapAttribute("mailGidNumber", "5000"));
+                // attributeSet.Add( new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress));
+                // attributeSet.Add( new LdapAttribute("mailQuota", "10240"));
+                // attributeSet.Add( new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir"));
+                // attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
+                // attributeSet.Add( new LdapAttribute("mailUidNumber", "5000"));
                 attributeSet.Add( new LdapAttribute("title", title));
                 attributeSet.Add( new LdapAttribute("userPassword", (password != "" ? password : user.MelliCode)));
                 attributeSet.Add( new LdapAttribute("uniqueIdentifier", new string[]{ user.MelliCode , uniqueMailId }));
@@ -419,15 +424,15 @@ namespace lms_with_moodle.Helper
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute mail = new LdapAttribute("mail", mailAddress);
-                LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
-                LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
+                //LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
+                //LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
 
                 LdapAttribute uniqueId = new LdapAttribute("uniqueIdentifier", uniqueMailId);
 
                 mods.Add(new LdapModification(LdapModification.Add , mail));
                 mods.Add(new LdapModification(LdapModification.Add , uniqueId));
-                mods.Add(new LdapModification(LdapModification.Replace , mailHDir));
-                mods.Add(new LdapModification(LdapModification.Replace , mailSTRDir));
+                //mods.Add(new LdapModification(LdapModification.Replace , mailHDir));
+                //mods.Add(new LdapModification(LdapModification.Replace , mailSTRDir));
 
 
                 // DN of the entry to be added
@@ -542,8 +547,8 @@ namespace lms_with_moodle.Helper
 
                 List<LdapModification> mods = new List<LdapModification>();
                 LdapAttribute mail = new LdapAttribute("mail", mailAddress);
-                LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
-                LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
+                //LdapAttribute mailHDir = new LdapAttribute("mailHomeDirectory", "/srv/vmail/"+mailAddress);
+                //LdapAttribute mailSTRDir = new LdapAttribute("mailStorageDirectory", "maildir:/srv/vmail/"+mailAddress+"/Maildir");
 
                 LdapAttribute uniqueId = new LdapAttribute("uniqueIdentifier", uniqueMailId);
                 LdapAttribute previousEmail = null;
@@ -556,8 +561,8 @@ namespace lms_with_moodle.Helper
                     mods.Add(new LdapModification(LdapModification.Delete , previousEmail));
                     
                 mods.Add(new LdapModification(LdapModification.Add , uniqueId));
-                mods.Add(new LdapModification(LdapModification.Replace , mailHDir));
-                mods.Add(new LdapModification(LdapModification.Replace , mailSTRDir));
+                //mods.Add(new LdapModification(LdapModification.Replace , mailHDir));
+                //mods.Add(new LdapModification(LdapModification.Replace , mailSTRDir));
 
 
                 // DN of the entry to be added

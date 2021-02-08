@@ -107,7 +107,7 @@ Open to search engines :yes
 Allow indexing by search engines : EVERYWHERE
 Maximum time to edit posts : 60min
 # -------==========-------
-17- https://moodle.vir-gol.ir/admin/settings.php?section=additionalhtml
+17.1 - https://moodle.vir-gol.ir/admin/settings.php?section=additionalhtml
   add in head:
   <style>
     .forgetpass {display: none;}
@@ -134,6 +134,13 @@ Maximum time to edit posts : 60min
   }
   .block_online_users .fa-eye {display: none;}
   .block_online_users .fa-eye {visibility: hidden;}
+
+
+  Set image "background.jpg" as Background image to theme
+
+
+17.2 - https://moodle.vir-gol.ir/admin/settings.php?section=theme_adaptable_importexport
+  Import JSON File "theme settings.json" 
 
 # -------==========-------
 18- https://moodle.vir-gol.ir/admin/settings.php?section=messages
@@ -242,3 +249,6 @@ configure System paths
 
 31- https://moodle.vir-gol.ir/theme/index.php
   Change default Theme to adaptable
+
+32 - https://moodle.vir-gol.ir/admin/settings.php?section=manageauths
+  Alternate login URL : "https://panel.vir-gol.ir/SSO"
