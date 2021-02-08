@@ -93,6 +93,7 @@
       <workItem from="1608550403162" duration="6000" />
       <workItem from="1612721784286" duration="1162000" />
       <workItem from="1612779845941" duration="161000" />
+      <workItem from="1612782668532" duration="124000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -115,7 +116,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612779975970</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="select background changed">
+      <created>1612782750114</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1612782750114</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -140,6 +148,7 @@
     <MESSAGE value="test" />
     <MESSAGE value="a test commit" />
     <MESSAGE value="landing page optimized" />
-    <option name="LAST_COMMIT_MESSAGE" value="landing page optimized" />
+    <MESSAGE value="select background changed" />
+    <option name="LAST_COMMIT_MESSAGE" value="select background changed" />
   </component>
 </project>

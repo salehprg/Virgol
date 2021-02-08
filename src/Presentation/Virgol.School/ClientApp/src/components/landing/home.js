@@ -12,6 +12,7 @@ import Footer from './utils/footer/footer'
 import { MyBabyPowder, MySeaGreen } from '../../assets/colors';
 import {arrowUp} from '../../assets/icons'
 import ReactTooltip from 'react-tooltip'
+import Fade from 'react-reveal/Fade'
 
 const LandingHome = () => {
 
@@ -20,11 +21,13 @@ const LandingHome = () => {
     window.onscroll = function(){scrollFunction()};
 
     const scrollFunction = () => {
-        if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800){
-            document.getElementById('goToTop').style.display = 'block'
-        }
-        else{
-            document.getElementById('goToTop').style.display = 'none'
+        if(document.getElementById('getToTop') !== null){
+            if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800){
+                document.getElementById('goToTop').style.display = 'block'
+            }
+            else{
+                document.getElementById('goToTop').style.display = 'none'
+            }
         }
     }
 
@@ -43,7 +46,9 @@ const LandingHome = () => {
         <div dir="rtl" style={{backgroundColor : `${MyBabyPowder}`}} className="App container mx-0 my-3">
             <div>
                 
-                <MenuBar section="ajza"/>
+                <Fade bottom>
+                    <MenuBar section="ajza"/>
+                </Fade>
                 <br/><br/>
 
                 <button 
@@ -59,17 +64,24 @@ const LandingHome = () => {
                 <ReactTooltip id="top" place='top' effect='float' type='dark'/>
 
                 <div className="row my-4 mx-4">
-                <div className = "col-lg-6 col-sm-12 col-md-12">
-                    <LandingEntry/>
-                </div>
-                <div className="col-lg-6 col-sm-12 col-md-12">
-                    <img src="./pic/vector.png" width="100%" alt="virgool"/>
-                </div>
+                    <Fade right>
+                        <div className = "col-lg-6 col-sm-12 col-md-12">
+                            <LandingEntry/>
+                        </div>
+                    </Fade>
+
+                    <Fade left>
+                        <div className="col-lg-6 col-sm-12 col-md-12">
+                            <img src="./pic/vector.png" width="100%" alt="virgool"/>
+                        </div>
+                    </Fade>
                 </div>
                 <br/>
-                <div className="row my-5">
-                    <div id="ajza" className="col-12 text-center" style={{fontWeight:'bold' , fontSize:'30px'}}>اجزای سامانه ویرگول</div>
-                </div>
+                <Fade top>
+                    <div className="row my-5">
+                        <div id="ajza" className="col-12 text-center" style={{fontWeight:'bold' , fontSize:'30px'}}>اجزای سامانه ویرگول</div>
+                    </div>
+                </Fade>
             
                 <SchoolManagement/>    
                 <OnlineSessions/>

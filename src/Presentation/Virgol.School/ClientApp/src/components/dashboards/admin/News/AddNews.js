@@ -13,6 +13,7 @@ import {CreateNews , ShowError} from "../../../../_actions/newsActions";
 import {alert} from "../../../../_actions/alertActions";
 import getColor from "../../../../assets/colors";
 import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
+import {styles} from '../../../../selectStyle'
 
 
 class AddNews extends React.Component {
@@ -94,6 +95,7 @@ class AddNews extends React.Component {
                     component={this.renderInputs}
                 />
                 <Select
+                    styles={styles}
                     className="w-1/4 inline-grid my-4 rounded-lg"
                     value={this.state.Receivers}
                     onChange={this.handleChangeDay}
