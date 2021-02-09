@@ -18,21 +18,20 @@ const LandingHome = () => {
 
     // var button = document.getElementById('goToTop')
 
-    window.onscroll = function(){scrollFunction()};
+    // window.onscroll = function(){scrollFunction()};
 
-    const scrollFunction = () => {
-        if(document.getElementById('getToTop') !== null){
-            if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800){
-                document.getElementById('goToTop').style.display = 'block'
-            }
-            else{
-                document.getElementById('goToTop').style.display = 'none'
-            }
-        }
-    }
+    // const scrollFunction = () => {
+    //         if(window.scrollY > 800){
+    //             document.getElementById('goToTop').style.display = 'block'
+    //         }
+    //         else{
+    //             document.getElementById('goToTop').style.display = 'none'
+    //         }
+    //     // }
+    // }
 
     const style = {
-        display : 'none' ,
+        display : 'block' ,
         position : 'fixed' ,
         bottom : '20px' ,
         right : '30px' ,
@@ -46,9 +45,7 @@ const LandingHome = () => {
         <div dir="rtl" style={{backgroundColor : `${MyBabyPowder}`}} className="App container mx-0 my-3">
             <div>
                 
-                <Fade bottom>
-                    <MenuBar section="ajza"/>
-                </Fade>
+                <MenuBar section="ajza"/>
                 <br/><br/>
 
                 <button 
