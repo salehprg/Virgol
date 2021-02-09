@@ -272,14 +272,16 @@ public class MeetingService {
 
         List<ClassScheduleView> schedules = appDbContext.ClassScheduleView.Where(x => ((currentTime <= x.EndHour && x.DayType == dayOfWeek ) || x.DayType == dayOfTommorow) && (x.weekly == 0 || x.weekly == weekType)).ToList();                                                                          
         List<MeetingView> recentClasses = new List<MeetingView>();
+        List<ClassScheduleView> result = new List<ClassScheduleView>();
 
         if(isTeacher)
         {
-            schedules = schedules.Where(x => x.TeacherId == userId).ToList();
+
+            result.AddRange(schedules.Where(x => x.TeacherId == userId).ToList());
 
             List<ClassScheduleView> truncated = new List<ClassScheduleView>();
 
-            foreach (var schedule in schedules)
+            foreach (var schedule in result)
             {
                 //Add one Of the same Schedules that have same MixedId 
                 //Ex -> sch1 : MixedID = 1 , sch2 : MixedID = 1 , sch3 : MixedID = 0 , sch4 : MixedID = 0
@@ -302,7 +304,18 @@ public class MeetingService {
                 }
             }
 
-            schedules = truncated;
+            result = truncated;
+
+            School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault();
+            int classId = 0;
+
+            if(school_Student != null)
+            {
+                classId = school_Student.ClassId;
+                List<ClassScheduleView> teacherAsStudentSchedules = schedules.Where(x => x.ClassId == classId).ToList();
+                teacherAsStudentSchedules.ForEach(x => x.teacherAsStudent = true);
+                result.AddRange(teacherAsStudentSchedules);
+            }
         }
         else
         {
@@ -314,7 +327,7 @@ public class MeetingService {
                 classId = school_Student.ClassId;
             }
 
-            schedules = schedules.Where(x => x.ClassId == classId).ToList();
+            result = schedules.Where(x => x.ClassId == classId).ToList();
 
             List<ExtraLesson> extraLessons = appDbContext.ExtraLessons.Where(x => x.UserId == userId).ToList();
             foreach (var extraLesson in extraLessons)
@@ -322,21 +335,39 @@ public class MeetingService {
                 List<ClassScheduleView> extraLessonSchedule = appDbContext.ClassScheduleView.Where(x => x.ClassId == extraLesson.ClassId && x.LessonId == extraLesson.lessonId).ToList();
                 extraLessonSchedule = extraLessonSchedule.Where(x => ((currentTime <= x.EndHour && x.DayType == dayOfWeek ) || x.DayType == dayOfTommorow) && (x.weekly == 0 || x.weekly == weekType)).ToList();                                                                          
                 
-                schedules.AddRange(extraLessonSchedule);
+                result.AddRange(extraLessonSchedule);
             }
         }
 
-        return schedules;
+        return result;
     }
     private List<Meeting> getActiveMeeting(UserModel user)
     {
         List<Meeting> activeMeetings = appDbContext.Meetings.Where(x => !x.Finished).ToList();
         bool isTeacher = UserService.HasRole(user , Roles.Teacher);
 
-        if(isTeacher)
-        {
-            activeMeetings = activeMeetings.Where(x => x.TeacherId == user.Id ).ToList();
-        }
+        List<Meeting> result = new List<Meeting>();
+
+        // if(isTeacher)
+        // {
+        //     result.AddRange(activeMeetings.Where(x => x.TeacherId == user.Id ).ToList());
+
+        //     School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == user.Id).FirstOrDefault();
+        //     int classId = 0;
+
+        //     if(school_Student != null)
+        //     {
+        //         classId = school_Student.ClassId;
+        //         List<ClassScheduleView> teacherAsStudentSchedules = schedules.Where(x => x.ClassId == classId).ToList();
+
+        //         result.AddRange(activeMeetings.Where(x => x.ScheduleId == classId).ToList();
+
+        //         teacherAsStudentSchedules.ForEach(x => x.teacherAsStudent = true);
+        //         result.AddRange(teacherAsStudentSchedules);
+        //     }
+
+            
+        // }
 
         return activeMeetings;
     }
@@ -616,7 +647,16 @@ public class MeetingService {
 
         foreach (var schedule in schedules)
         {
-            Meeting meeting = activeMeetings.Where(x => x.ScheduleId == schedule.Id).FirstOrDefault();
+            Meeting meeting = new Meeting();
+
+            if(schedule.teacherAsStudent || !isTeacher)
+            {
+                meeting = activeMeetings.Where(x => x.ScheduleId == schedule.Id).FirstOrDefault();
+            }
+            else
+            {
+                meeting = activeMeetings.Where(x => x.ScheduleId == schedule.Id && x.TeacherId == user.Id).FirstOrDefault();
+            }
 
             if(schedule.MixedId != 0)
             {  
@@ -627,10 +667,13 @@ public class MeetingService {
             var serialized = JsonConvert.SerializeObject(schedule);
             MeetingView meetingVW = JsonConvert.DeserializeObject<MeetingView>(serialized);
 
-            if(!isTeacher)
+            if(!isTeacher || schedule.teacherAsStudent)
             {
                 meetingVW = handleStudentMeeting(meeting , meetingVW);
 
+                if(schedule.teacherAsStudent)
+                    meetingVW.teacherAsStudent = true;
+                    
                 result.Add(meetingVW);
             }
             else

@@ -32,5 +32,7 @@ public class ClassScheduleView {
 
     [NotMapped]
     public int absenceCount {get;set;}
+    [NotMapped]
+    public bool teacherAsStudent {get;set;}
 
 }

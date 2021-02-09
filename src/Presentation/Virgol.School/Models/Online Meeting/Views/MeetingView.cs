@@ -32,6 +32,6 @@ public class MeetingView {
     [NotMapped]
     public bool started {get; set;}
     [NotMapped]
-    public bool mixed {get; set;}
+    public bool teacherAsStudent {get; set;}
 
 }

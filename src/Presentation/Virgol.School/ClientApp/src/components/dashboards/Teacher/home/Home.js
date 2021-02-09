@@ -129,6 +129,7 @@ class Home extends React.Component {
                           service={this.props.user.userDetail.userDetail.meetingService}/>
 
                     <RecentClass
+                        onJoin={(id) => this.JoinMeeting(id)}
                         onStart={(id) => this.StatrMeeting(id)}
                         joinList={false}
                         teacher={true}

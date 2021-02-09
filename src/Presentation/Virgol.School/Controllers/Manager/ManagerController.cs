@@ -53,7 +53,7 @@ namespace lms_with_moodle.Controllers
             ldap = new LDAP_db(appDbContext);
 
             UserService = new UserService(userManager , appDbContext);
-            managerService = new ManagerService(appDbContext);
+            managerService = new ManagerService(appDbContext , userManager);
             meetingService = new MeetingService(appDbContext , UserService); 
         }
 
@@ -142,7 +142,7 @@ namespace lms_with_moodle.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<UserModel>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public IActionResult GetAllStudent(bool IsForAssign) 
+        public IActionResult GetAllStudent(bool IsForAssign , bool IncludeTeacher = false) 
         {
             try
             {
@@ -160,6 +160,24 @@ namespace lms_with_moodle.Controllers
                 else
                 {
                     result = AllStudent;
+                }
+
+                if(IncludeTeacher)
+                {
+                    List<TeacherViewModel> allTeachers = appDbContext.TeacherViews.ToList();
+
+                    foreach (var teacher in allTeachers)
+                    {
+                        if(teacher.getTeacherSchoolIds().Where(x => x == schoolId).FirstOrDefault() != 0)
+                        {
+                            StudentViewModel teacherInfo = new StudentViewModel();
+                            teacherInfo.Id = teacher.Id;
+                            teacherInfo.FirstName = teacher.FirstName;
+                            teacherInfo.LastName = teacher.LastName;
+
+                            result.Add(teacherInfo);
+                        }
+                    }
                 }
 
                 result = result.OrderBy(x => x.LastName).ToList();
@@ -897,8 +915,10 @@ namespace lms_with_moodle.Controllers
                 foreach(var studentId in studentIds)
                 {
                     UserModel studentModel = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
-
-                    result.Add(studentModel);
+                    if(studentModel != null)
+                    {
+                        result.Add(studentModel);
+                    }
                 }
 
                 await managerService.AssignUsersToClass(result , classId);

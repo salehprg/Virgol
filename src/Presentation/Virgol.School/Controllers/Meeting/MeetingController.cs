@@ -466,7 +466,7 @@ namespace lms_with_moodle.Controllers
 
                 foreach (var classs in recentClasses)
                 {
-                    if(!isTeacher)
+                    if(!isTeacher || classs.teacherAsStudent)
                     {
                         if(currentTime <= classs.EndHour && currentTime >= (classs.StartHour - 0.25))
                         {

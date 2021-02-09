@@ -9,6 +9,7 @@ import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
 import { connect } from "react-redux";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
 import ReactTooltip from "react-tooltip";
+import { fullNameSerach , pagingItems } from "../../../Search/Seaarch";
 
 class Schools extends React.Component {
 
@@ -18,7 +19,8 @@ class Schools extends React.Component {
         this.setState({ loading: true })
         await this.props.getSchools(this.props.user.token);
         this.setState({ loading: false })
-
+        
+        this.setState({schools :  pagingItems(this.props.schools ,  (this.state.currentPage != -1 ? this.state.currentPage : this.state.currentPage) , this.state.itemsPerPage)})
         this.setState({totalCard : this.props.schools.length})
     }
 
@@ -37,6 +39,7 @@ class Schools extends React.Component {
 
     changeQuery = query => {
         this.setState({ query })
+        this.queriedSchools(query)
     }
 
     submitExcel = async excel => {
@@ -45,6 +48,17 @@ class Schools extends React.Component {
 
     paginate = (num) => {
         this.setState({ currentPage: num })
+    }
+
+    queriedSchools = (query , currentPage = -1) => {
+        var serachedItems = []
+
+        serachedItems = this.props.schools.filter(x => x.schoolName.includes(query))
+
+        const pagedItems = pagingItems(serachedItems ,  (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+
+        this.setState({schools :  pagedItems})
+        this.setState({totalCard : serachedItems.length})
     }
 
     render() {
@@ -63,6 +77,7 @@ class Schools extends React.Component {
                 }
                 <PlusTable
                     title={this.props.t('coveredSchools')}
+                    searchable
                     isLoading={this.state.loading}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
@@ -83,11 +98,9 @@ class Schools extends React.Component {
                     body={() => {
                         return (
                             <React.Fragment>
-                                {
-                                    this.props.schools.slice((this.state.currentPage - 1) * this.state.itemsPerPage , this.state.currentPage  * this.state.itemsPerPage).map(x => {
-                                        if(x.schoolName.includes(this.state.query))
-                                        {
-                                            return(
+                                {(this.state.schools ?
+                                    this.state.schools.map(x => {
+                                            return (
                                             <tr key={x.id}>
                                                 <td className="py-4">{x.schoolName}</td>
                                                 <td>{x.schoolIdNumber}</td>
@@ -103,11 +116,10 @@ class Schools extends React.Component {
                                                     {trash('w-6 text-white ')}
                                                 </td>
                                             </tr>
-                                            )
-                                        }
-                                    })
-                                    
-                                }
+                                            )}
+                                        )
+                                        : null
+                                    )}             
                             </React.Fragment>
                         );
                     }}

@@ -231,7 +231,13 @@
     "viewerList": "لیست افراد حاضر",
     "additionallessons": "درس اضافی",
     "extraLessonList" : "لیست دروس اضافی دانش آموزان",
-    "addExtraLesson" : "افزودن درس به دانش آموز"
+    "addExtraLesson" : "افزودن درس به دانش آموز",
+    "participantList" : "لیست شرکت کنندگان",
+    "deleteClass" : "حذف کلاس",
+    "deleteRoom" : "حذف اتاق",
+    "emptyParticipantList": "لیست شرکت کنندگان خالیست",
+    "userList": "لیست افراد",
+    "enterRoom" : "ورود به جلسه"
     
 
 }

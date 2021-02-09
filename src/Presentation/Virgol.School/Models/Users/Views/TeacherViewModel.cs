@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -18,6 +19,24 @@ namespace Models.Users.Teacher
         public string personalIdNUmber {get;set;}
         //0 = Girl , 1 = Boy
         public int? Sexuality {get; set;}
+
+    public List<int> getTeacherSchoolIds()
+    {
+        List<int> schoolsId = new List<int>();
+        
+        string[] schoolsIdStr = SchoolsId.Split(",");
+        foreach (var schoolId in schoolsIdStr)
+        {
+            int Id = -1;
+            int.TryParse(schoolId , out Id);
+
+            if(Id != -1 && Id != 0)
+            {
+                schoolsId.Add(Id);
+            }
+        }
+        return schoolsId;
+    }
 
     }
 }

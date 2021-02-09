@@ -162,7 +162,7 @@ class ClassInfo extends React.Component {
                 null
                 }
                 <div className="addStudent lg:row-start-1 row-start-2 w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
-            <p className="text-xl text-white mb-8">{this.props.t('studentsList')}</p>
+            <p className="text-xl text-white mb-8">{this.state.classDetail.grade_Id == 0 ? this.props.t('participantList') : this.props.t('studentsList')} </p>
                     {/* <label htmlFor="excel" className="px-1 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">*/}
                     {/*    {plus('w-4')}*/}
                     {/*</label>*/}
@@ -176,7 +176,7 @@ class ClassInfo extends React.Component {
                      {(this.state.loading ? this.props.t('loading') :
                         (!this.props.students || this.props.students.length === 0 ? 
                             <div className="flex flex-row-reverse justify-between items-center">
-                                <p className="text-center text-white"> {this.props.t('emptyStudentsList')} </p>
+                                <p className="text-center text-white"> {this.state.classDetail.grade_Id == 0 ? this.props.t('emptyParticipantList') : this.props.t('emptyStudentsList')}</p>
                             </div>
                         :
                         this.props.students.map(std => {
@@ -247,11 +247,11 @@ class ClassInfo extends React.Component {
                         </div>
                         <div>
                             {/*<Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/m/bases">بازگشت</Link>*/}
-                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className="px-6 py-1 lg:mx-2 mx-0 mt-4 lg:ml-4 ml-0 rounded-lg border-2 border-redish text-redish">حذف کلاس</button>
+                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className="px-6 py-1 mx-0 mt-4 ml-0 rounded-lg border-2 border-redish text-redish">{this.state.classDetail.grade_Id == 0 ? this.props.t('deleteRoom') : this.props.t('deleteClass')} </button>
                         </div>
                     </div>
                     <div className="my-8">
-                        <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2"> {this.props.t('addLesson')} </button>
+                        <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2"> {this.state.classDetail.grade_Id == 0 ? this.props.t('participantList') : this.props.t('addLesson')} </button>
                         <div ref={this.sc} className="border-2 border-dark-blue overflow-auto">
                             {!this.props.loading ?
                                 <Schedule

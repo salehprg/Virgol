@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using lms_with_moodle.Helper;
+using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.User;
+using Models.Users.Roles;
 using Virgol.School.Models;
 
 public class ManagerService {
     AppDbContext appDbContext;
     MoodleApi moodleApi;
-    public ManagerService(AppDbContext _appDbContext)
+    UserService userService;
+    public ManagerService(AppDbContext _appDbContext , UserManager<UserModel> userManager = null)
     {
         appDbContext = _appDbContext;
         moodleApi = new MoodleApi();
+
+        if(userManager != null)
+            userService = new UserService(userManager , appDbContext);
+
     }
     public async Task<bool> AssignUsersToClass(List<UserModel> userModels , int classId)
     {
@@ -40,22 +47,42 @@ public class ManagerService {
             //Prevent from add duplicate user to class
             if(oldStudentClass == null)
             {
-                if(appDbContext.Users.Where(x => x.Id == studentClass.UserId && x.SchoolId == classModel.School_Id).FirstOrDefault() != null)
+                UserModel userModel = appDbContext.Users.Where(x => x.Id == studentClass.UserId).FirstOrDefault();
+                bool Isok = false;
+
+                if(userService.HasRole(userModel , Roles.Student))
+                {
+                    if(userModel.SchoolId == classModel.School_Id)
+                    {
+                        Isok = true;
+                    }
+                }
+                else
+                {
+                    TeacherDetail teacher = appDbContext.TeacherDetails.Where(x => x.TeacherId == student.Id).FirstOrDefault();
+                    if(teacher.getTeacherSchoolIds().Where(x => x == classModel.School_Id).FirstOrDefault() != 0)
+                    {
+                        Isok = true;
+                    }
+                }
+
+                if(Isok)
                 {
                     studentClasses.Add(studentClass);
 
                     List<School_Lessons> lessons = appDbContext.School_Lessons.Where(x => x.classId == classId).ToList();
 
-                     foreach(var lesson in lessons)
+                    foreach(var lesson in lessons)
                     {
                         EnrolUser enrolInfo = new EnrolUser();
                         enrolInfo.lessonId = lesson.Moodle_Id;
-                        enrolInfo.RoleId = 5;
+                        enrolInfo.RoleId = 3;
                         enrolInfo.UserId = student.Moodle_Id;
 
                         enrolsData.Add(enrolInfo);
                     } 
                 }
+
             } 
         }
 

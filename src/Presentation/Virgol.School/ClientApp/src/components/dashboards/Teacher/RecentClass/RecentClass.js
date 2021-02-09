@@ -1,6 +1,7 @@
 import React from "react";
 import { withTranslation } from 'react-i18next';
 import RecentClassDetail from "./ClassDetail";
+import StudentClassDetail from "../../student/RecentClass/ClassDetail";
 import PrivateClass from "./PrivateClass";
 
 class RecentClass extends React.Component {
@@ -26,7 +27,7 @@ class RecentClass extends React.Component {
             <div className={`${pos} w-full h-full my-4 px-6 py-4 relative text-right bg-dark-blue rounded-xl`}>
                 <div className="w-full flex flex-row-reverse justify-between items-center">
                     <p className="text-white">{title}</p>
-        <button onClick={btnAction} className={`px-4 py-1 bg-greenish rounded-lg text-white ${newBtn ? '' : 'hidden'}`}>{this.props.t('createPrivateClass')}</button>
+                    <button onClick={btnAction} className={`px-4 py-1 bg-greenish rounded-lg text-white ${newBtn ? '' : 'hidden'}`}>{this.props.t('createPrivateClass')}</button>
                 </div>
                 {(classes ? 
                     (
@@ -37,20 +38,48 @@ class RecentClass extends React.Component {
                         classes.map(x => {
                             return (
                                 (!x.private ?
-                                <RecentClassDetail
-                                    weekly={x.weekly}
-                                    serviceType={x.serviceType}
-                                    text={(joinList ? x.meetingName : x.orgLessonName)}
-                                    schoolName={x.schoolName}
-                                    className={x.className}
-                                    onStart={() => this.props.onStart(x.id)}
-                                    onEnd={() => this.props.onEnd(x.id)}
-                                    day={this.getDayName(x.dayType)}
-                                    joinable={joinList}
-                                    startTime={`${~~x.startHour}:${((x.startHour - ~~x.startHour) * 60 == 0 ? '00' : (x.startHour - ~~x.startHour) * 60)}`}
-                                    endTime={`${~~x.endHour}:${((x.endHour - ~~x.endHour) * 60 == 0 ? '00' : (x.endHour - ~~x.endHour) * 60)}`
-                                    }
-                                />
+                                    (x.teacherAsStudent ? 
+                                        (x.started ? 
+                                            <StudentClassDetail
+                                                text={x.meetingName}
+                                                serviceType={x.serviceType}
+                                                schoolName={x.schoolName}
+                                                className={x.className}
+                                                onStart={() => this.props.onJoin(x.meetingId)}
+                                                joinable={true}
+                                                day={this.getDayName(x.dayType)}
+                                                startTime={`${~~x.startHour}:${(x.startHour - ~~x.startHour) * 60}`}
+                                                endTime={`${~~x.endHour}:${(x.endHour - ~~x.endHour) * 60}`
+                                                }
+                                            />
+                                        :
+                                            <StudentClassDetail
+                                                text={`${x.orgLessonName} - ${x.firstName} ${x.lastName}`}
+                                                schoolName={x.schoolName}
+                                                className={x.className}
+                                                joinable={false}
+                                                startTime={`${~~x.startHour}:${(x.startHour - ~~x.startHour) * 60}`}
+                                                endTime={`${~~x.endHour}:${(x.endHour - ~~x.endHour) * 60}`
+                                                }
+                                            />
+                                        )
+                                    :
+                                    <RecentClassDetail
+                                        teacherAsStudent={x.teacherAsStudent}
+                                        weekly={x.weekly}
+                                        serviceType={x.serviceType}
+                                        text={(joinList ? x.meetingName : x.orgLessonName)}
+                                        schoolName={x.schoolName}
+                                        className={x.className}
+                                        onStart={() => (x.teacherAsStudent ? this.props.onJoin(x.id) : this.props.onStart(x.id))}
+                                        onEnd={() => this.props.onEnd(x.id)}
+                                        day={this.getDayName(x.dayType)}
+                                        joinable={joinList}
+                                        startTime={`${~~x.startHour}:${((x.startHour - ~~x.startHour) * 60 == 0 ? '00' : (x.startHour - ~~x.startHour) * 60)}`}
+                                        endTime={`${~~x.endHour}:${((x.endHour - ~~x.endHour) * 60 == 0 ? '00' : (x.endHour - ~~x.endHour) * 60)}`
+                                        }
+                                    />
+                                    )
                                 :
                                 <PrivateClass
                                     text={(joinList ? x.meetingName : x.orgLessonName)}

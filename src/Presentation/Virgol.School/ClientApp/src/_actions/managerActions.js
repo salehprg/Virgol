@@ -64,10 +64,10 @@ export const getManagerDashboardInfo = token => async dispatch => {
 //#region Students
 
 
-export const getAllStudents = (token,isForAssign = 'false') => async dispatch => {
+export const getAllStudents = (token,isForAssign = 'false' , includeTeacher = false) => async dispatch => {
 
     try {
-        const response = await lms.get(`/Manager/GetAllStudent?IsForAssign=${isForAssign}`, {
+        const response = await lms.get(`/Manager/GetAllStudent?IsForAssign=${isForAssign}&IncludeTeacher=${includeTeacher}`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
