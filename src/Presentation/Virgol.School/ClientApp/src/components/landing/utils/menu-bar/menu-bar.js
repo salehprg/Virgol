@@ -11,7 +11,7 @@ class MenuBar extends React.Component{
 
         this.state={
             status : "top" ,
-            menu : document.getElementById('menu') ,
+            menu : null ,
 
             items:[
                 {
@@ -39,8 +39,12 @@ class MenuBar extends React.Component{
     }
 
     componentDidMount(){
+        this.setState({menu : document.getElementById('menu')})
+
         this.listener = document.addEventListener("scroll" , e => {
             var scrolled = window.scrollY;
+            console.log(scrolled);
+            console.log(this.state.menu);
 
             if(scrolled >= 300){
                 if(this.state.status !== 'unTop'){
@@ -54,14 +58,14 @@ class MenuBar extends React.Component{
             }
 
 
-            if(this.state.menu !== null){
+            // if(this.state.menu !== null){
                 if(scrolled >= 800){
                     this.state.menu.classList.remove('fixed-top')
                 }
                 else{
                     this.state.menu.classList.add('fixed-top')
                 }
-            }
+            // }
         })
     }
 
