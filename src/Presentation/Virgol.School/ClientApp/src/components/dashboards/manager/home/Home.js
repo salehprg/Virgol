@@ -74,7 +74,7 @@ class Home extends React.Component {
                     )}
                     <div className="mt-8">
 
-                        {this.props.dashboardInfo.school ? 
+                        {(this.props.dashboardInfo.school && !window.location.href.includes('dei')) ? 
                         <Activation expireDate={this.getExpireDate()} />
                         : 
                         null

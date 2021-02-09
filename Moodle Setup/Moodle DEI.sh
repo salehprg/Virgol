@@ -41,8 +41,11 @@ https://m-dei.vir-gol.ir/admin/category.php?category=theme_adaptable
 https://m-dei.vir-gol.ir/admin/settings.php?section=theme_adaptable_layout
 --set Control aspects of the sites layout -->  Frontpage Background Image 
 
-https://m-dei.vir-gol.ir/admin/settings.php?section=theme_adaptable_login
---set Customize the login page --> Background image 
+https://m-dei.vir-gol.ir/admin/settings.php?section=theme_adaptable_importexport
+-- import theme settings
+
+https://m-dei.vir-gol.ir/admin/purgecaches.php
+--Purge all cache
 # -------==========-------
 4- Set Location, Country:
 https://m-dei.vir-gol.ir/admin/settings.php?section=locationsettings
@@ -237,8 +240,8 @@ https://m-dei.vir-gol.ir/admin/settings.php?section=usermanagement
 #Testing purpose:
 # -------==========-------
 29- https://m-dei.vir-gol.ir/admin/settings.php?section=debugging
-# Debug messages : Normal
-# Performance info : yes
+# Debug messages : No
+# Performance info : No
 # -------==========-------
 30- https://m-dei.vir-gol.ir/admin/settings.php?section=licensesettings
  Default site licence : all rights reserved
