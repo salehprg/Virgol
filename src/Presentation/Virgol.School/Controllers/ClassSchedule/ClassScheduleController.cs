@@ -591,16 +591,16 @@ namespace lms_with_moodle.Controllers
         {
             UserModel userModel = userService.GetUserModel(User);
 
-            LDAP_db ldap = new LDAP_db(appDbContext);
+            //LDAP_db ldap = new LDAP_db(appDbContext);
             MoodleApi moodle = new MoodleApi();
             ClassScheduleView scheduleVW = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
 
             bool isTeacher = userService.HasRole(userModel , Roles.Teacher);
 
-            if(!ldap.CheckUserData(userModel.UserName))
-            {
-                await ldap.AddUserToLDAP(userModel , isTeacher , userPassword);
-            }
+            // if(!ldap.CheckUserData(userModel.UserName))
+            // {
+            //     await ldap.AddUserToLDAP(userModel , isTeacher , userPassword);
+            // }
 
             int moodleId = await moodle.GetUserId(userModel.MelliCode);
             if(moodleId == -1)
