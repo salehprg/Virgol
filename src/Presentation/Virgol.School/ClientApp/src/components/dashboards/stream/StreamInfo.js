@@ -94,7 +94,7 @@ class StreamInfo extends React.Component {
                     : 
                     null
                 }
-                <div className="bg-dark-blue rounded-lg w-full max-w-350 h-80 my-4 mx-2 px-3 py-2">
+                <div className="bg-dark-blue rounded-lg w-full h-80 my-4 mx-2 px-3 py-2">
                     <p className="text-right text-white mb-4"> {this.props.t('finishedConferences')} </p>
                     
                     <Tablish 
@@ -103,8 +103,8 @@ class StreamInfo extends React.Component {
                             return this.props.endedStream.map(x => {
                                 return (
                                     <tr key={x.id}>
-                                        <td className="py-4"> {x.streamName} </td>
-                                        <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                        <td className="py-4 text-right"> {x.streamName} </td>
+                                        <td className="text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
                                         {/* <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                             {trash('w-6 text-white ')}
                                         </td> */}
@@ -114,7 +114,7 @@ class StreamInfo extends React.Component {
                         }}
                     />
                 </div>
-                <div className="bg-dark-blue rounded-lg w-full max-w-350 h-80 my-4 mx-2 px-3 py-2">
+                <div className="bg-dark-blue rounded-lg w-full h-80 my-4 mx-2 px-3 py-2">
                 <p className="text-right text-white mb-4"> {this.props.t('futureConferences')} </p>
                     <Tablish 
                         headers={[this.props.t('name'), this.props.t('date')]}
@@ -122,8 +122,8 @@ class StreamInfo extends React.Component {
                             return this.props.futureStream.map(x => {
                                 return (
                                     <tr key={x.id}>
-                                        <td className="py-4"> {x.streamName} </td>
-                                        <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                        <td className="py-4 text-right"> {x.streamName} </td>
+                                        <td className="text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
                                         <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                             {trash('w-6 text-white ')}
                                         </td>

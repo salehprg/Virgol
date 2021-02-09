@@ -45,16 +45,16 @@ class RecorededSession extends React.Component {
                             (this.props.recordingsList ?
                                 (this.props.recordingsList.length === 0 ?
                                     <tr>
-                                        <td className="py-4">{this.props.t('noRecordedSession')}</td>
+                                        <td className="py-4 text-right">{this.props.t('noRecordedSession')}</td>
                                     </tr>
                                 :
                                 this.props.recordingsList.map((x,index) => {
                                     return (
                                         <tr>
-                                            <td className="py-4">{index + 1}</td>
-                                            <td className="py-4">{x.name} - {this.props.t('session')} {index + 1}</td>
-                                            <td className="py-4">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
-                                            <td className="py-4">
+                                            <td className="py-4 text-right">{index + 1}</td>
+                                            <td className="py-4 text-right">{x.name} - {this.props.t('session')} {index + 1}</td>
+                                            <td className="py-4 text-right">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
+                                            <td className="py-4 text-right">
                                             <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
                                             <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
                                             </td>
