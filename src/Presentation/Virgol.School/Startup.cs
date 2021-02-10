@@ -66,11 +66,12 @@ namespace lms_with_moodle
                 // conStr = Configuration.GetConnectionString("PublishConnection_PS");
 
                 string host = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_HOST");
+                string port = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_PORT");
                 string name = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_NAME");
                 string userName = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_USER");
                 string password = Environment.GetEnvironmentVariable("VIRGOL_DATABASE_PASSWORD");
 
-                conStr = string.Format("Server={0};Database={1};Username={2};Password={3}" , host , name , userName ,password);
+                conStr = string.Format("Server={0};Port={1};Database={2};Username={3};Password={4}" , host ,port ,  name , userName ,password);
                 
                 AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
                 AppSettings.moddleCourseUrl = "Hava";

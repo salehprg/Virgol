@@ -17,8 +17,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - NODE_ENV=production
       - VIRGOL_SERVER_ROOT_URL=https://panel.vir-gol.ir
-      - VIRGOL_DATABASE_TYPE=postgres
       - VIRGOL_DATABASE_HOST=postgres
+      - VIRGOL_DATABASE_port=5432
       - VIRGOL_DATABASE_NAME=LMS
       - VIRGOL_DATABASE_USER=postgres
       - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
