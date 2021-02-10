@@ -26,7 +26,8 @@ spec:
     - name: VIRGOL_DATABASE_PORT
       value: 5432
     - name: VIRGOL_DATABASE_NAME
-      value: LMS_DEI
+      value: LMS
+      # value: LMS_DEI
     - name: VIRGOL_DATABASE_USER
       value: postgres
     - name: VIRGOL_DATABASE_PASSWORD
