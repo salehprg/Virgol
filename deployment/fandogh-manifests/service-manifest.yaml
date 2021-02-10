@@ -21,10 +21,10 @@ spec:
       value: Production
     - name: VIRGOL_SERVER_ROOT_URL
       value: https://beta.vir-gol.ir
-    - name: VIRGOL_DATABASE_PORT
-      value: 5432
     - name: VIRGOL_DATABASE_HOST
       value: m-dei.vir-gol.ir
+    - name: VIRGOL_DATABASE_PORT
+      value: 5432
     - name: VIRGOL_DATABASE_NAME
       value: LMS_DEI
     - name: VIRGOL_DATABASE_USER
