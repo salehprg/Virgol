@@ -3,6 +3,7 @@
 # -------==========-------
 # Admin page
 https://m-dei.vir-gol.ir/admin/search.php
+
 # -------==========-------
 1- Add Persian lang:
 https://m-dei.vir-gol.ir/admin/tool/langimport/index.php
@@ -254,3 +255,7 @@ configure System paths
 
 32 - https://m-dei.vir-gol.ir/admin/settings.php?section=manageauths
   Alternate login URL : "http://dei.razaviedu.ir/SSO"
+
+
+  https://m-dei.vir-gol.ir/admin/blocks.php?hide=4&sesskey=z9oNThBbr8
+  -- disablle Latest badges
