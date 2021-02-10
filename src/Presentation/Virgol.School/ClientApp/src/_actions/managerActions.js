@@ -168,7 +168,7 @@ export const getStudentsClass = (token , classId) => async dispatch => {
 
 }
 
-export const AssignUserListToClass = (token , formValue , classId ) => async dispatch => {
+export const AssignUserListToClass = (token , formValue , classId , freeClass = false ) => async dispatch => {
 
     try {
 
@@ -182,8 +182,11 @@ export const AssignUserListToClass = (token , formValue , classId ) => async dis
 
         dispatch({ type: STOP })
 
-
-        dispatch(alert.success(`لیست دانش آموزان به کلاس اضافه شد `))
+        if(!freeClass)
+            dispatch(alert.success(`لیست دانش آموزان به کلاس اضافه شد `))
+        else
+            dispatch(alert.success(`لیست شرکت کنندگان به اتاق اضافه شد `))
+        
         dispatch({ type: Type.AssignUserListToClass, payload: response.data });
     } catch (e) {
         dispatch({ type: STOP })

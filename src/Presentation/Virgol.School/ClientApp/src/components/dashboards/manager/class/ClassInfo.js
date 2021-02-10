@@ -75,7 +75,7 @@ class ClassInfo extends React.Component {
     }
 
     onAddStudent = async(userIds) =>{
-        await this.props.AssignUserListToClass(this.props.user.token , userIds , parseInt(this.props.match.params.id));
+        await this.props.AssignUserListToClass(this.props.user.token , userIds , parseInt(this.props.match.params.id) , this.state.classDetail.grade_Id == 0);
         this.setState({addStudent : false})
         this.componentDidMount()
         this.render()
@@ -251,7 +251,7 @@ class ClassInfo extends React.Component {
                         </div>
                     </div>
                     <div className="my-8">
-                        <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2"> {this.state.classDetail.grade_Id == 0 ? this.props.t('participantList') : this.props.t('addLesson')} </button>
+                        <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2"> {this.state.classDetail.grade_Id == 0 ? this.props.t('addFreeMeeting') : this.props.t('addLesson')} </button>
                         <div ref={this.sc} className="border-2 border-dark-blue overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
