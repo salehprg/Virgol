@@ -1,6 +1,6 @@
 const prod = {
     url: {
-        API_URL: 'https://lms.legace.ir/api/'
+        API_URL: window.location.href + 'api/'
     }
 }
 
