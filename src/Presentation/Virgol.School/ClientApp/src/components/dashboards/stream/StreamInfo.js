@@ -7,9 +7,11 @@ import Fieldish from '../../field/Fieldish';
 import Tablish from '../tables/Tablish';
 import {GetEndedStreams , GetFutureStreams , GetCurrentStream 
         , GetRoles , ReserveStream , RemoveStream} from '../../../_actions/streamActions';
-import { edit, trash } from '../../../assets/icons';
+import { edit, plus, trash } from '../../../assets/icons';
 import DeleteConfirm from '../../modals/DeleteConfirm';
 import history from '../../../history';
+import {styles} from '../../../selectStyle'
+import ReactTooltip from 'react-tooltip';
 
 class StreamInfo extends React.Component {
 
@@ -22,6 +24,7 @@ class StreamInfo extends React.Component {
         selectedGuests: [],
         duration: 90,
         guests: [{ value: 'students', label: 'دانش آموزان' }, { value: 'teachers', label: 'معلمان' }]
+        
     }
 
     componentDidMount = async () => {
@@ -83,7 +86,7 @@ class StreamInfo extends React.Component {
 
     render() {
         return (
-            <div className="w-full overflow-y-auto mt-10 flex flex-row flex-wrap items-center justify-evenly">
+            <div className="w-full overflow-y-auto mt-10 items-center justify-evenly">
                 {this.state.showDeleteModal ? 
                     <DeleteConfirm
                         title={this.props.t('deleteConfirm')}
@@ -93,98 +96,167 @@ class StreamInfo extends React.Component {
                     : 
                     null
                 }
-                <div className="bg-dark-blue rounded-lg w-full max-w-350 h-80 my-4 mx-2 px-3 py-2">
-                    <p className="text-right text-white mb-4"> {this.props.t('finishedConferences')} </p>
-                    
-                    <Tablish 
-                        headers={[this.props.t('name'), this.props.t('date')]}
-                        body={() => {
-                            return this.props.endedStream.map(x => {
-                                return (
-                                    <tr key={x.id}>
-                                        <td className="py-4"> {x.streamName} </td>
-                                        <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
-                                        {/* <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
-                                            {trash('w-6 text-white ')}
-                                        </td> */}
-                                    </tr>
-                                );
-                            })
-                        }}
-                    />
-                </div>
-                <div className="bg-dark-blue rounded-lg w-full max-w-350 h-80 my-4 mx-2 px-3 py-2">
-                <p className="text-right text-white mb-4"> {this.props.t('futureConferences')} </p>
-                    <Tablish 
-                        headers={[this.props.t('name'), this.props.t('date')]}
-                        body={() => {
-                            return this.props.futureStream.map(x => {
-                                return (
-                                    <tr key={x.id}>
-                                        <td className="py-4"> {x.streamName} </td>
-                                        <td> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
-                                        <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
-                                            {trash('w-6 text-white ')}
-                                        </td>
-                                        <td onClick={() => history.push(`/editStream/${x.id}`)} className="cursor-pointer">
-                                            {edit('w-6 text-white ')}
-                                        </td>
-                                    </tr>
-                                );
-                            })
-                        }}
-                    />
-                </div>
-                <div className="rounded-lg flex flex-col items-center justify-center w-full max-w-350 h-80 mx-2 my-4 px-3 py-2">
-                    {this.props.currentStream ? 
-                    <>
-                        <div className="w-full text-right py-4 px-4 text-white border-2 border-greenish rounded-lg">
-                            <p className="text-xl mb-4 text-center"> {this.props.t('activeStream')} </p>
-                            <p> {this.props.currentStream.streamName} </p>
-                            <div className="flex my-2 flex-row-reverse justify-between">
-                                <p>{new Date(this.props.currentStream.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</p>
-                                <p>{this.props.currentStream.duration}'</p>
+                
+                <ul 
+                className="nav nav-tabs nav-fill flex-column flex-sm-row" 
+                id="myTab" 
+                role="tablist">
+                    <li className="nav-item">
+                        <a  
+                        className="flex-sm-fill text-sm-center nav-link text-greenish" 
+                        id="goToFuture"
+                        data-toggle="tab" 
+                        role="tab" 
+                        aria-controls="futureConferences"
+                        href="#futureConferences"
+                        aria-selected="false"
+                        >{this.props.t('futureConferences')}
+                        </a>
+                    </li>
+
+                    <li className="nav-item">
+                        <a 
+                        id="goToFinished" 
+                        role="tab" 
+                        data-toggle="tab"
+                        aria-controls="finishedConferences" 
+                        className="flex-sm-fill text-sm-center nav-link active text-greenish" 
+                        href="#finishedConferences"
+                        aria-selected="true"
+                        >{this.props.t('finishedConferences')}</a>
+                    </li>
+
+                    <li className="nav-item">
+                        <a 
+                        id="goToActive" 
+                        role="tab" 
+                        data-toggle="tab"
+                        aria-controls="activeStream" 
+                        className="flex-sm-fill text-sm-center nav-link text-greenish" 
+                        href="#activeStream"
+                        aria-selected="false"
+                        >
+                            {this.props.currentStream ?
+                                this.props.t('activeStream')
+                                :
+                                "ثبت همایش جدید"
+                            }
+                        </a>
+                    </li>
+                </ul>
+
+                <div className="tab-content">
+                    <div role="tabpanel" aria-labelledby="goToActive" id="activeStream" className="tab-pane fade rounded-lg flex flex-col items-center justify-center w-full max-w-350 h-80 my-4 mx-auto px-3 py-2">
+                        {this.props.currentStream ? 
+                        <>
+                            <div className="w-full text-right py-4 px-4 text-white border-2 border-greenish rounded-lg">
+                                <p className="text-xl mb-4 text-center"> {this.props.t('activeStream')} </p>
+                                <p> {this.props.currentStream.streamName} </p>
+                                <div className="flex my-2 flex-row-reverse justify-between">
+                                    <p>{new Date(this.props.currentStream.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</p>
+                                    <p>{this.props.currentStream.duration}'</p>
+                                </div>
+                                <div>
+                                    <p className="mb-2"> {this.props.t('streamUrl')} </p>
+                                    <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-sky-blue">{this.props.currentStream.obS_Link}</p>
+                                </div>
+                                <div className="mt-2">
+                                    <p className="mb-2"> {this.props.t('streamKey')} </p>
+                                    <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-purplish">{this.props.currentStream.obS_Key}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="mb-2"> {this.props.t('streamUrl')} </p>
-                                <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-sky-blue">{this.props.currentStream.obS_Link}</p>
+                        </>
+                        :
+                        <>
+                            <input
+                                value={this.state.streamName}
+                                onChange={(e) => this.setState({streamName : e.target.value})}
+                                className="w-full px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue text-right text-white"
+                                placeholder={this.props.t('streamName')}
+                            />
+                            <div className="w-full my-8 flex flex-row-reverse items-center justify-around">
+                                <span className="text-white"> {this.props.t('startTime')} </span>
+                                <DatePicker 
+                                className="border-2 rounded border-dark-blue bg-transparent py-2 px-2 mb-4 text-white cursor-pointer"
+                                value={this.state.startTime} 
+                                timePicker={true} 
+                                onClickSubmitButton={this.setStartTime}
+                                />
                             </div>
-                            <div className="mt-2">
-                                <p className="mb-2"> {this.props.t('streamKey')} </p>
-                                <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-purplish">{this.props.currentStream.obS_Key}</p>
+                            <div className="flex flex-row-reverse items-center justify-start w-full">
+                                <span className="text-white ml-8"> {this.props.t('duration')} </span>
+                                <input 
+                                value={this.state.duration} 
+                                onChange={this.setDuration} 
+                                type="number" 
+                                className="text-center w-1/3 mx-2 mx-8 px-2 py-2 border-2 border-dark-blue rounded" 
+                                style={{backgroundColor : 'transparent' , color : 'white'}} />
+                                <span className="text-white mr-8"> {this.props.t("minute")} </span>
                             </div>
-                        </div>
-                    </>
-                    :
-                    <>
-                        <input
-                            value={this.state.streamName}
-                            onChange={(e) => this.setState({streamName : e.target.value})}
-                            className="w-5/6 px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue text-right text-white"
-                            placeholder={this.props.t('streamName')}
+                            <Select
+                                    styles={styles}
+                                    className="w-full mx-auto my-8"
+                                    value={this.state.selctedGuests}
+                                    onChange={this.handleChangeGuests}
+                                    options={this.state.guests}
+                                    placeholder={this.props.t('streamGuests')}
+                                    isMulti
+                                    isSearchable
+                            />
+                            <button className="bg-greenish rounded-lg text-white w-full py-2" onClick={() => this.reserveStream()}> {this.props.t('editConference')} </button>
+                        </> 
+                        }
+
+                        {/* <button data-tip="افزودن همایش جدید" className="bg-greenish rounded-full w-10 text-white">{plus()}</button>
+                        <ReactTooltip place="top" effect="float" type="success"/> */}
+                    </div>
+
+                    <div role="tabpanel" aria-labelledby="goToFuture" id="futureConferences" className="tab-pane fade bg-dark-blue rounded-lg w-full h-80 my-4 px-3 py-2">
+                        <p className="text-right text-white mb-4"> {this.props.t('futureConferences')} </p>
+                        <Tablish 
+                            headers={[this.props.t('name'), this.props.t('date')]}
+                            body={() => {
+                                return this.props.futureStream.map(x => {
+                                    return (
+                                        <tr key={x.id}>
+                                            <td className="py-4 text-right"> {x.streamName} </td>
+                                            <td className="text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                            <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                {trash('w-6 text-white ')}
+                                            </td>
+                                            <td onClick={() => history.push(`/editStream/${x.id}`)} className="cursor-pointer">
+                                                {edit('w-6 text-white ')}
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            }}
                         />
-                        <div className="w-5/6 my-8 flex flex-row-reverse items-center justify-around">
-                            <span className="text-white"> {this.props.t('startTime')} </span>
-                            <DatePicker value={this.state.startTime} timePicker={true} onClickSubmitButton={this.setStartTime} />
-                        </div>
-                        <div className="flex flex-row-reverse items-center justify-start w-5/6">
-                            <span className="text-white"> {this.props.t('duration')} </span>
-                            <input value={this.state.duration} onChange={this.setDuration} type="number" className="text-center w-1/3 mx-2" />
-                            <span className="text-white"> {this.props.t("minute")} </span>
-                        </div>
-                        <Select
-                                className="w-5/6 mx-auto my-8"
-                                value={this.state.selctedGuests}
-                                onChange={this.handleChangeGuests}
-                                options={this.state.guests}
-                                placeholder={this.props.t('streamGuests')}
-                                isMulti
-                                isSearchable
+                    </div>
+
+                    <div role="tabpanel" aria-labelledby="goToFinished" id="finishedConferences" className="tab-pane fade show active bg-dark-blue w-full rounded-lg  h-80 my-4 px-3 py-2">
+                        <p className="text-right text-white mb-4"> {this.props.t('finishedConferences')} </p>
+                        
+                        <Tablish 
+                            headers={[this.props.t('name'), this.props.t('date')]}
+                            body={() => {
+                                return this.props.endedStream.map(x => {
+                                    return (
+                                        <tr key={x.id}>
+                                            <td className="py-4 text-right"> {x.streamName} </td>
+                                            <td className="text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                            {/* <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                {trash('w-6 text-white ')}
+                                            </td> */}
+                                        </tr>
+                                    );
+                                })
+                            }}
                         />
-                        <button className="bg-greenish rounded-lg text-white w-5/6 py-2" onClick={() => this.reserveStream()}> {this.props.t('editConference')} </button>
-                    </> 
-                    }
+                    </div>
+
                 </div>
+                
             </div>
         );
     }

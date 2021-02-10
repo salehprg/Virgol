@@ -8,6 +8,7 @@ import {getAllClass , GetClassesCommonLessons} from "../../../../_actions/school
 import {getAllTeachers} from "../../../../_actions/managerActions"
 import {AddMixedClassSchedule} from "../../../../_actions/classScheduleActions"
 import Fieldish from '../../../field/Fieldish';
+import {styles} from '../../../../selectStyle'
 
 class AddGroup extends React.Component {
 
@@ -125,6 +126,7 @@ class AddGroup extends React.Component {
             >
                 <div className="w-full" style={{direction : "rtl"}} >
                     <Select
+                        styles={styles}
                         isMulti={true}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedClasses}
@@ -133,6 +135,7 @@ class AddGroup extends React.Component {
                         placeholder={this.props.t('classes')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedLesson}
                         onChange={this.handleChangeLesson}
@@ -140,6 +143,7 @@ class AddGroup extends React.Component {
                         placeholder={this.props.t('lesson')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedTeacher}
                         onChange={this.handleChangeTeacher}
@@ -147,6 +151,7 @@ class AddGroup extends React.Component {
                         placeholder={this.props.t('teacher')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedDay}
                         onChange={this.handleChangeDay}
@@ -154,6 +159,7 @@ class AddGroup extends React.Component {
                         placeholder={this.props.t('day')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedStartTime}
                         onChange={this.handleChangeStart}
@@ -162,6 +168,7 @@ class AddGroup extends React.Component {
                     />
                     {this.state.selectedStartTime ?
                         <Select
+                            styles={styles}
                             className="w-full mx-auto my-4"
                             value={this.state.selectedEndTime}
                             onChange={this.handleChangeEnd}

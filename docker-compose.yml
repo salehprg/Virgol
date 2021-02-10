@@ -1,7 +1,11 @@
 version: "3.5"
 services:
   virgol:
+<<<<<<< HEAD
     image: goldenstarc/virgol:latest
+=======
+    image: goldenstarc/virgol:1.8.4-Beta.1
+>>>>>>> df511d9055fe1df31ae00107256fa0d8745c1221
     restart: always
     container_name: virgol_main
     volumes:
@@ -157,7 +161,11 @@ services:
     container_name: virgol_openldap
     ports:
       - '390:389'
+<<<<<<< HEAD
       - '637:636'
+=======
+      - '636:636'
+>>>>>>> df511d9055fe1df31ae00107256fa0d8745c1221
     restart: always
     volumes:
       - openldapDb:/var/lib/ldap

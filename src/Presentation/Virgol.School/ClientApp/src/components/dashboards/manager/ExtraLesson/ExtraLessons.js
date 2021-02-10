@@ -61,9 +61,9 @@ class ExtraLessons extends React.Component {
                                     this.props.extraLessons.map(x => {
                                         return(
                                             <tr key={x.id}>
-                                                <td>{`${x.firstName} ${x.lastName}`}</td>
-                                                <td className="py-4">{x.className}</td>
-                                                <td>{x.lessonName}</td>
+                                                <td className="text-right">{`${x.firstName} ${x.lastName}`}</td>
+                                                <td className="py-4 text-right">{x.className}</td>
+                                                <td className="text-right">{x.lessonName}</td>
                                                 <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                                     {trash('w-6 text-white ')}
                                                 </td>

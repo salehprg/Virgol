@@ -102,10 +102,10 @@ class Schools extends React.Component {
                                     this.state.schools.map(x => {
                                             return (
                                             <tr key={x.id}>
-                                                <td className="py-4">{x.schoolName}</td>
-                                                <td>{x.schoolIdNumber}</td>
-                                                <td>{x.schoolTypeName}</td>
-                                                <td>{x.firstName} {x.lastName}</td>
+                                                <td className="py-4 text-right">{x.schoolName}</td>
+                                                <td className="text-right">{x.schoolIdNumber}</td>
+                                                <td className="text-right">{x.schoolTypeName}</td>
+                                                <td className="text-right">{x.firstName} {x.lastName}</td>
                                                 <td data-tip={this.props.t('enterAsManager')} onClick={() => this.redirect(x.id)} className="cursor-pointer">
                                                     {external_link('w-6 text-white ')}
                                                 </td>

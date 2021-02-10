@@ -19,7 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="" />
+    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/home/Hero.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/home/Hero.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,6 +59,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2020.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -91,7 +94,58 @@
       <workItem from="1600114210750" duration="4087000" />
       <workItem from="1600120000821" duration="413000" />
       <workItem from="1608550403162" duration="6000" />
+      <workItem from="1612721784286" duration="1162000" />
+      <workItem from="1612779845941" duration="161000" />
+      <workItem from="1612782668532" duration="124000" />
+      <workItem from="1612804700724" duration="269000" />
+      <workItem from="1612813181074" duration="740000" />
+      <workItem from="1612872495573" duration="27000" />
+      <workItem from="1612898321309" duration="113000" />
+      <workItem from="1612951394673" duration="732000" />
     </task>
+    <task id="LOCAL-00001" summary="test">
+      <created>1611421261059</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1611421261059</updated>
+    </task>
+    <task id="LOCAL-00002" summary="a test commit">
+      <created>1611421734193</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1611421734193</updated>
+    </task>
+    <task id="LOCAL-00003" summary="landing page optimized">
+      <created>1612779975970</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1612779975970</updated>
+    </task>
+    <task id="LOCAL-00004" summary="select background changed">
+      <created>1612782750114</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1612782750114</updated>
+    </task>
+    <task id="LOCAL-00005" summary="text align for table records changed to right">
+      <created>1612898396438</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1612898396438</updated>
+    </task>
+    <task id="LOCAL-00006" summary="stream info page re-designed">
+      <created>1612951518003</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1612951518003</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -112,22 +166,13 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="542" y="214" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1600110540637">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="542" y="214" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1600110540637" />
-    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1600109330886">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1600109330886" />
-    <state x="455" y="129" width="718" height="534" key="find.popup" timestamp="1600120035516">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="455" y="129" width="718" height="534" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1600120035516" />
-    <state x="425" y="187" key="run.anything.popup" timestamp="1599827956185">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1599827956185" />
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="test" />
+    <MESSAGE value="a test commit" />
+    <MESSAGE value="landing page optimized" />
+    <MESSAGE value="select background changed" />
+    <MESSAGE value="text align for table records changed to right" />
+    <MESSAGE value="stream info page re-designed" />
+    <option name="LAST_COMMIT_MESSAGE" value="stream info page re-designed" />
   </component>
 </project>

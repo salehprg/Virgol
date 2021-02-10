@@ -5,4 +5,9 @@ const getColor = code => {
     return colors[code % colors.length]
 }
 
+export const MyViolet = '#7033ff'
+export const MySpaceCadet = '#242747'
+export const MySeaGreen = '#0dbcb0'
+export const MyBabyPowder = '#fffffa'
+
 export default getColor;

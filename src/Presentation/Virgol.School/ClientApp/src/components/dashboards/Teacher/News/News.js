@@ -66,15 +66,15 @@ class News extends React.Component {
                                         {
                                             return(
                                             <tr key={x.id}>
-                                                <td className="py-4">{x.message.split(" ").slice(0,3).map(x => x + " ")} ...</td>
-                                                <td>{x.tags ?
+                                                <td className="py-4 text-right">{x.message.split(" ").slice(0,3).map(x => x + " ")} ...</td>
+                                                <td className="text-right">{x.tags ?
                                                         x.tags.split(",").slice(0,5).map((tag,i) => {
                                                         return (
                                                         (i + 1 != x.tags.split(",").slice(0,5).length ? tag + " , " : tag)
                                                     )})
                                                 : null}
                                                 </td>
-                                                <td>{new Date(x.createTime).toLocaleDateString('fa-IR')}</td>
+                                                <td className="text-right">{new Date(x.createTime).toLocaleDateString('fa-IR')}</td>
                                                 <td className="cursor-pointer" onClick={() => history.push(`/teacherNews/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>

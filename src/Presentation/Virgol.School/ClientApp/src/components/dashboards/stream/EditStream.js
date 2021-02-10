@@ -4,6 +4,7 @@ import Select from 'react-select';
 import {connect} from 'react-redux';
 import {GetRoles , EditReservedStream} from '../../../_actions/streamActions'
 import { withTranslation } from 'react-i18next';
+import {styles} from '../../../selectStyle'
 
 class EditStream extends React.Component {
 
@@ -99,6 +100,7 @@ class EditStream extends React.Component {
                     <span className="text-white"> {this.props.t("minute")} </span>
                 </div>
                 <Select
+                    styles={styles}
                     className="w-5/6 mx-auto my-8"
                     value={this.state.selctedGuests}
                     onChange={this.handleChangeGuests}

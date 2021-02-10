@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import {getAllClass , GetClassesCommonLessons} from "../../../../_actions/schoolActions"
 import {getAllStudents , AssignUserToLesson} from "../../../../_actions/managerActions"
 import Fieldish from '../../../field/Fieldish';
+import {styles} from '../../../../selectStyle'
 
 class AddExtraLesson extends React.Component {
 
@@ -76,6 +77,7 @@ class AddExtraLesson extends React.Component {
             >
                 <div className="w-full" style={{direction : "rtl"}} >
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedClass}
                         onChange={this.handleChangeClass}
@@ -83,6 +85,7 @@ class AddExtraLesson extends React.Component {
                         placeholder={this.props.t('className')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedLesson}
                         onChange={this.handleChangeLesson}
@@ -90,6 +93,7 @@ class AddExtraLesson extends React.Component {
                         placeholder={this.props.t('lesson')}
                     />
                     <Select
+                        styles={styles}
                         className="w-full mx-auto my-4"
                         value={this.state.selectedStudent}
                         onChange={this.handleChangeStudent}
