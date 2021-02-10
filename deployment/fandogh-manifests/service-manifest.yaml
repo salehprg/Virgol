@@ -24,17 +24,15 @@ spec:
     - name: VIRGOL_DATABASE_TYPE
       value: postgres
     - name: VIRGOL_DATABASE_HOST
-      value: db.legace.ir
+      value: m-dei.vir-gol.ir
     - name: VIRGOL_DATABASE_NAME
-      value: LMS
+      value: LMS_DEI
     - name: VIRGOL_DATABASE_USER
       value: postgres
     - name: VIRGOL_DATABASE_PASSWORD
       value: PostgreSQLpass.24
-    - name: VIRGOL_MODDLE_COURSE_URL
-      value: https://moodle.legace.ir/course/view.php?id=
     - name: VIRGOL_MOODLE_BASE_URL
-      value: https://moodle.legace.ir/webservice/rest/server.php?moodlewsrestformat=json
+      value: http://moodle.vir-gol.ir/webservice/rest/server.php?moodlewsrestformat=json
     - name: VIRGOL_MOODLE_TOKEN
       value: 616ed6bc394212692b03ea59b7f94670
     - name: VIRGOL_FARAZAPI_URL
@@ -50,20 +48,16 @@ spec:
     - name: VIRGOL_JWT_SECRET
       value: Saleh Secret Key
     - name: VIRGOL_LDAP_SERVER
-      value: ldap.legace.ir
+      value: ldap.vir-gol.ir
     - name: VIRGOL_LDAP_PORT
-      value: 389
+      value: 390
     - name: VIRGOL_LDAP_USER_ADMIN
       value: cn=admin,dc=legace,dc=ir
     - name: VIRGOL_LDAP_PASSWORD
       value: OpenLDAPpass.24
     - name: VIRGOL_NTP_SERVER_URL
       value: ir.pool.ntp.org
-    - name : REACT_APP_RAHE_DOOR
-      value : true
-    - name : REACT_APP_FAVICON_NAME
-      value : favicon_virgool
     - name : REACT_APP_MOODLE_URL
-      value : https://moodle.legace.ir/login/index.php
+      value : https://moodle.vir-gol.ir/login/index.php
     - name : REACT_APP_VERSION
-      value : 1.8.3-beta1
+      value : 1.8.6-Beta
