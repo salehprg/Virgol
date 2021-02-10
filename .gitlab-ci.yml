@@ -118,6 +118,8 @@ stages:
 push:
   stage: push
   image: docker:latest
+  only:
+    - Beta
   services:
     - docker:dind
   script:
@@ -131,6 +133,8 @@ push:
 deploy:
   stage: deploy
   image: python:3.5
+  only:
+    - Beta
   variables:
     COLLECT_ERROR: 1
   script:
