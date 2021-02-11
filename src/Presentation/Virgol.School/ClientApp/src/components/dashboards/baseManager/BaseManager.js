@@ -85,7 +85,7 @@ class BaseManager extends React.Component {
         const {selectedField , selectGrade, selectedGrade, grades, loadingGrades } = this.props
         if (loadingGrades) return <div className="centerize">{loading('w-8 text-grayish')}</div>
         if (!selectedField) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectField')} </p>
-        if (grades.length === 0) return <p className="text-grayish text-center"> {this.props.t('noGrade')} </p>
+        if (!grades || grades.length === 0) return <p className="text-grayish text-center"> {this.props.t('noGrade')} </p>
         return grades.map(grade => {
             return (
                 <SelectableCard
