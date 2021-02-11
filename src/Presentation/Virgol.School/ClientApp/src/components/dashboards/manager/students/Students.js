@@ -119,7 +119,7 @@ class Students extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/newStudent')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addStudent')}</button>
+                            <button onClick={() => history.push('/newStudent')} className="px-6 py-1 ml-4 mb-4 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addStudent')}</button>
                         );
                     }}
                     sample={this.props.t('downloadStudentsExcelSample')}
@@ -150,7 +150,7 @@ class Students extends React.Component {
                                             <td className="text-right">{x.fatherName}</td>
                                             <td className="text-right">{x.fatherPhoneNumber}</td>
                                             <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
+                                            <td className="cursor-pointer text-right" onClick={() => history.push(`/student/${x.id}`)}>
                                                 {edit('w-6 text-white')}
                                             </td>            
                                             {/*<td onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}

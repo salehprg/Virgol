@@ -108,7 +108,7 @@ class Teachers extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                        <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('newTeacher')}</button>
+                        <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 ml-4 mb-4 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('newTeacher')}</button>
                         );
                     }}
                     sample={this.props.t('downloadTeachersExcelSample')}

@@ -58,7 +58,7 @@ class RecorededSession extends React.Component {
                                             <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
                                             <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
                                             </td>
-                                            <td onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
+                                            <td className="text-right" onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
                                                 {users('w-8 cursor-pointer text-white')}
                                             </td>
                                         </tr>

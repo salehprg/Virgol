@@ -91,7 +91,7 @@ class Schools extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                        <button onClick={() => history.push('/newSchool')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addSchool')}</button>
+                        <button onClick={() => history.push('/newSchool')} className="px-6 py-1 ml-4 mb-4 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addSchool')}</button>
                         );
                     }}
                     headers={[this.props.t('schoolName'), this.props.t('code'), this.props.t('type'), this.props.t('manager'), '', '']}
@@ -109,10 +109,10 @@ class Schools extends React.Component {
                                                 <td data-tip={this.props.t('enterAsManager')} onClick={() => this.redirect(x.id)} className="cursor-pointer">
                                                     {external_link('w-6 text-white ')}
                                                 </td>
-                                                <td data-tip={this.props.t('edit')} className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
+                                                <td className="text-right" data-tip={this.props.t('edit')} className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>
-                                                <td data-tip={this.props.t('delete')} onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                <td className="text-right" data-tip={this.props.t('delete')} onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                                     {trash('w-6 text-white ')}
                                                 </td>
                                             </tr>
