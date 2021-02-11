@@ -12,6 +12,7 @@ import DeleteConfirm from '../../modals/DeleteConfirm';
 import history from '../../../history';
 import {styles} from '../../../selectStyle'
 import ReactTooltip from 'react-tooltip';
+import './styles.css';
 
 class StreamInfo extends React.Component {
 

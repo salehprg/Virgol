@@ -124,18 +124,18 @@ class Teachers extends React.Component {
                                         return(
                                         <tr>
                                             {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectTeacher}></input></td>*/}
-                                            <td className="py-4">
+                                            <td className="py-4 text-right">
                                                 <div className="flex justify-center items-center">
                                                     <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
                                                 </div>
                                             </td>
-                                            <td className="py-4">{x.firstName}</td>
-                                            <td>{x.lastName}</td>
-                                            <td>{x.melliCode}</td>
-                                            <td>{x.phoneNumber}</td>
-                                            <td>{x.personalIdNUmber}</td>
-                                            <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            <td data-tip={this.props.t('edit')} className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
+                                            <td className="py-4 text-right">{x.firstName}</td>
+                                            <td className="text-right">{x.lastName}</td>
+                                            <td className="text-right">{x.melliCode}</td>
+                                            <td className="text-right">{x.phoneNumber}</td>
+                                            <td className="text-right">{x.personalIdNUmber}</td>
+                                            <td className="text-right"><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
+                                            <td className="text-right" data-tip={this.props.t('edit')} className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                 {edit('w-6 text-white')}
                                             </td>           
                                             {/*<td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}

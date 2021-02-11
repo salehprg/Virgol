@@ -20,7 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/home/Hero.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/home/Hero.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,6 +102,8 @@
       <workItem from="1612872495573" duration="27000" />
       <workItem from="1612898321309" duration="113000" />
       <workItem from="1612951394673" duration="732000" />
+      <workItem from="1612955645728" duration="141000" />
+      <workItem from="1612980189666" duration="192000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -145,7 +147,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612951518003</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="the national code replaced the email">
+      <created>1612955779117</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1612955779117</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,6 +182,7 @@
     <MESSAGE value="select background changed" />
     <MESSAGE value="text align for table records changed to right" />
     <MESSAGE value="stream info page re-designed" />
-    <option name="LAST_COMMIT_MESSAGE" value="stream info page re-designed" />
+    <MESSAGE value="the national code replaced the email" />
+    <option name="LAST_COMMIT_MESSAGE" value="the national code replaced the email" />
   </component>
 </project>
