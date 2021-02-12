@@ -86,6 +86,7 @@ class Schedule extends React.Component {
 
     onCancel = () => {
         this.setState({ lessonInfo: null , showLessonInfo : false})
+        
     }
 
     deleteLesson () {

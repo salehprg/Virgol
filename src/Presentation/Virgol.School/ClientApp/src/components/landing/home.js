@@ -80,6 +80,7 @@ const LandingHome = () => {
                     </div>
                 </Fade>
             
+                
                 <SchoolManagement/>    
                 <OnlineSessions/>
                 <DistanceLearning/>

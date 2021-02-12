@@ -1,9 +1,9 @@
 import React from 'react';
 
 const VAdvantage = (props) => (
-    <div className="mx-auto px-5 text-center">
+    <div className="mx-auto text-center shadow-lg rounded">
         <i className={props.icon}></i>
-        <div className="text-center">{props.title}</div>
+        <div >{props.title}</div>
     </div>
 )
 

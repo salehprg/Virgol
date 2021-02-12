@@ -1,10 +1,11 @@
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 import PlusTable from '../tables/PlusTable';
-import { arrow_left, users } from '../../../assets/icons';
+import { arrow_left, edit, users } from '../../../assets/icons';
 import { connect } from 'react-redux';
 import {GetRecordList} from '../../../_actions/meetingActions'
 import history from "../../../history";
+import ReactTooltip from 'react-tooltip';
 
 class RecorededSession extends React.Component {
 
@@ -26,7 +27,7 @@ class RecorededSession extends React.Component {
                 <div onClick={() => this.props.history.goBack()} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-6 ml-6 rounded-lg border-2 border-purplish">
                     {arrow_left('w-6 centerize text-purplish')}
                 </div>
-                <div className="w-full min-h-85 flex md:flex-row flex-col items-center">
+                <div className="w-full min-h-85 flex mt-6 md:flex-row flex-col items-center">
                 {/* <div className="md:w-1/2 w-full md:mb-0 mb-8">
                     <img className="md:w-5/6 w-full" src="/recorded.svg" alt="recorded svg" />
                 </div> */}
@@ -52,7 +53,11 @@ class RecorededSession extends React.Component {
                                     return (
                                         <tr>
                                             <td className="py-4 text-right">{index + 1}</td>
-                                            <td className="py-4 text-right">{x.name} - {this.props.t('session')} {index + 1}</td>
+                                            <td className="py-4 text-right d-flex flex-wrap">
+                                                <div className="ml-2 pt-2">{x.name} - {this.props.t('session')} {index + 1}</div>
+                                                <div data-tip={this.props.t('edit')}> {edit('text-white w-10 bg-greenish rounded-lg p-2')}</div>
+                                                <ReactTooltip type="dark" effect="float" place="top"/>
+                                            </td>
                                             <td className="py-4 text-right">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
                                             <td className="py-4 text-right">
                                             <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
