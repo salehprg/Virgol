@@ -139,16 +139,20 @@ class ManagerDashboard extends React.Component {
                         icon={open_book}
                         changeActive={this.changeActive}
                     />
+                    {!window.location.href.includes('dei') ? 
                     <SidebarCard
-                        active={this.state.active}
-                        code="payments"
-                        title={this.props.t('payments')}
-                        icon={open_book}
-                        changeActive={this.changeActive}
-                    />
+                    active={this.state.active}
+                    code="payments"
+                    title={this.props.t('payments')}
+                    icon={open_book}
+                    changeActive={this.changeActive}
+                /> 
+                    : 
+                    null
+                    }
                 </Sidebar>
 
-                <div className="lg:w-5/6 px-6 w-full min-h-screen bg-bold-blue">
+                <div className="lg:w-4/5 px-6 w-full min-h-screen bg-bold-blue">
                     <Header showLang={this.state.showLang} setShowLang={this.setShowLang} />
 
                     <Switch>

@@ -1,0 +1,8 @@
+.my-link:hover{
+    color: #7033ff;
+    transition: 0.6s;
+}
+
+#menu.scrolling{
+    background-color: red;
+}

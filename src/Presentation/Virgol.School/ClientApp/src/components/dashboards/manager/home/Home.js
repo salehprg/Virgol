@@ -10,6 +10,7 @@ import {GetActiveStream} from "../../../../_actions/streamActions"
 import {getManagerDashboardInfo} from "../../../../_actions/managerActions"
 import {GetIncommingNews , GetMyNews} from "../../../../_actions/newsActions"
 import Activation from "./Activation";
+import { localizer } from '../../../../assets/localizer';
 
 class Home extends React.Component {
 

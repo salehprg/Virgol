@@ -6,6 +6,7 @@ import Switch from 'react-switch';
 import {getAllTeachers } from '../../../../_actions/managerActions'
 import {AddClassSchedule , getClassLessons} from '../../../../_actions/classScheduleActions'
 import { connect } from 'react-redux';
+import {styles} from '../../../../selectStyle'
 
 class AddLesson extends React.Component {
 
@@ -126,7 +127,7 @@ class AddLesson extends React.Component {
                         :
                             <Select
                                 escapeClearsValue={true}
-                                
+                                styles={styles}
                                 onInputChange={(e) => console.log(e)}
                                 className="w-1/2 mx-auto my-4"
                                 value={this.state.selectedCourse}
@@ -136,6 +137,7 @@ class AddLesson extends React.Component {
                             />
                         }
                         <Select
+                            styles={styles}
                             className="w-1/2 mx-auto my-4"
                             value={this.state.selectedTeacher}
                             onChange={this.handleChangeTeacher}
@@ -143,6 +145,7 @@ class AddLesson extends React.Component {
                             placeholder={this.props.IsFreeClass ? this.props.t('host') : this.props.t('teacher')}
                         />
                         <Select
+                            styles={styles}
                             className="w-1/2 mx-auto my-4"
                             value={this.state.selectedDay}
                             onChange={this.handleChangeDay}
@@ -150,6 +153,7 @@ class AddLesson extends React.Component {
                             placeholder={this.props.t('day')}
                         />
                         <Select
+                            styles={styles}
                             className="w-1/2 mx-auto my-4"
                             value={this.state.selectedStartTime}
                             onChange={this.handleChangeStart}
@@ -158,6 +162,7 @@ class AddLesson extends React.Component {
                         />
                         {this.state.selectedStartTime ?
                             <Select
+                                styles={styles}
                                 className="w-1/2 mx-auto my-4"
                                 value={this.state.selectedEndTime}
                                 onChange={this.handleChangeEnd}

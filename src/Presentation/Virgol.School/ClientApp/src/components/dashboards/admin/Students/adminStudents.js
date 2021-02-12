@@ -63,12 +63,12 @@ class adminStudents extends React.Component {
                                     this.state.students.map(x => {
                                         return(
                                         <tr>
-                                            <td className="py-4">{x.firstName}</td>
-                                            <td>{x.lastName}</td>
-                                            <td>{x.schoolName}</td>
-                                            <td>{x.melliCode}</td>
-                                            <td>{x.phoneNumber}</td>
-                                            <td>{x.fatherPhoneNumber}</td>
+                                            <td className="py-4 text-right">{x.firstName}</td>
+                                            <td className="text-right">{x.lastName}</td>
+                                            <td className="text-right">{x.schoolName}</td>
+                                            <td className="text-right">{x.melliCode}</td>
+                                            <td className="text-right">{x.phoneNumber}</td>
+                                            <td className="text-right">{x.fatherPhoneNumber}</td>
                                             <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
                                         </tr>
                                         )

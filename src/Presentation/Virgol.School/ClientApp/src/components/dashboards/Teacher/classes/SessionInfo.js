@@ -42,11 +42,11 @@ class SessionInfo extends React.Component {
                                 return (
                                     this.props.classBookData.map(x =>
                                         <tr>
-                                            <td className="py-4">{x.firstName} {x.lastName}</td>
-                                            <td>{x.melliCode}</td>
-                                            <td>{x.email ? x.email : this.props.t('notAvailable')}</td>
-                                            <td>{x.absentCount}</td>
-                                            <td>{x.score}</td>
+                                            <td className="py-4 text-right">{x.firstName} {x.lastName}</td>
+                                            <td className="text-right">{x.melliCode}</td>
+                                            <td className="text-right">{x.email ? x.email : this.props.t('notAvailable')}</td>
+                                            <td className="text-right">{x.absentCount}</td>
+                                            <td className="text-right">{x.score}</td>
                                         </tr>
                                     )
                                 );

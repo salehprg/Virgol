@@ -6,6 +6,8 @@ import Alert from "./Alert";
 import {CLEAR} from "../_actions/alertTypes";
 import Working from "./Working";
 
+import LandingHome from './landing/home'
+
 import Login from "./login/Login";
 import LoginSSO from "./login/LoginSSO";
 import LogoutSSO from "./login/LogoutSSO";
@@ -84,6 +86,8 @@ class App extends React.Component {
                 {/*<Copyright />*/}
                 <Router history={history}>
                     <Switch>
+                        <Route path="/landing" exact component={LandingHome}/>
+
                         <Route path="/" exact component={Login} />
                         <Route path="/SSO" exact component={LogoutSSO} />
                         <Route path="/SSO/:schedulId" exact component={LoginSSO} />

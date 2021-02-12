@@ -119,7 +119,7 @@ class Students extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/newStudent')} className="px-6 py-1 ml-4 lg:mb-0 mb-2 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addStudent')}</button>
+                            <button onClick={() => history.push('/newStudent')} className="px-6 py-1 ml-4 mb-4 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addStudent')}</button>
                         );
                     }}
                     sample={this.props.t('downloadStudentsExcelSample')}
@@ -138,19 +138,19 @@ class Students extends React.Component {
                                         return(
                                         <tr>
                                             {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>*/}
-                                            <td className="py-4">
+                                            <td className="py-4 text-right">
                                                 <div className="flex justify-center items-center">
                                                     <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
                                                 </div>
                                             </td>
-                                            <td className="py-4">{x.firstName}</td>
-                                            <td>{x.lastName}</td>
-                                            <td>{x.phoneNumber}</td>
-                                            <td>{x.melliCode}</td>
-                                            <td>{x.fatherName}</td>
-                                            <td>{x.fatherPhoneNumber}</td>
+                                            <td className="py-4 text-right">{x.firstName}</td>
+                                            <td className="text-right">{x.lastName}</td>
+                                            <td className="text-right">{x.phoneNumber}</td>
+                                            <td className="text-right">{x.melliCode}</td>
+                                            <td className="text-right">{x.fatherName}</td>
+                                            <td className="text-right">{x.fatherPhoneNumber}</td>
                                             <td><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            <td className="cursor-pointer" onClick={() => history.push(`/student/${x.id}`)}>
+                                            <td className="cursor-pointer text-right" onClick={() => history.push(`/student/${x.id}`)}>
                                                 {edit('w-6 text-white')}
                                             </td>            
                                             {/*<td onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}

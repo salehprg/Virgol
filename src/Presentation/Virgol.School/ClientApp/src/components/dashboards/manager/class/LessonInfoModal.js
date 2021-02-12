@@ -38,7 +38,7 @@ class LessonInfoModal extends React.Component {
     options = [
         { value: 1, label: this.props.t('saturday') },
         { value: 2, label: this.props.t('sunday') },
-        { value: 3, label: this.props.t('monday') },
+        { value: 3, label: this.props.t('monsday') },
         { value: 4, label: this.props.t('tuesday') },
         { value: 5, label: this.props.t('wednesday') },
         { value: 6, label: this.props.t('thursday') },
@@ -88,9 +88,7 @@ class LessonInfoModal extends React.Component {
     onEdit = async(userIds) =>{
         await this.props.EditClassSchedule(this.props.user.token , userIds );
         this.setState({showEditModal : false})
-        this.props.cancel()
-        this.componentDidMount()
-        this.render()
+        this.props.rerenderIt();
     }
 
     render() {

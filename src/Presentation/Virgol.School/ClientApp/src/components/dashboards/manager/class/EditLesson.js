@@ -9,72 +9,20 @@ import Select from 'react-select'
 import Switch from 'react-switch'
 
 class EditLesson extends React.Component {
-    state = { selectedCourse: null, selectedTeacher: null , selectedDay : 0
+    state = { selectedTeacher: null , selectedDay : 0
         , selectedStartTime: null, selectedEndTime: null, loading : false ,
        teachers : [] , lessons : [] , times : [], weekly: true, week: '0' , nowLessonName : '' ,
         nowLessonTeacher : '' , nowLessonDay : '' , nowLessonStartTime : '' , nowLessonEndTime : '' ,
         lessonIsWeekly : ''}
 
     componentDidMount = async () =>{
-        this.setState({nowLessonName : this.props.info.orgLessonName ,
-             nowLessonTeacher : this.props.info.firstName + " " + this.props.info.lastName })
 
-        
-        switch(this.props.info.dayType){
-            case 1:
-                this.setState({nowLessonDay : this.props.t('saturday')})
-                break;
-            case 2:
-                this.setState({nowLessonDay : this.props.t('sunday')})
-                break;
-            case 3:
-                this.setState({nowLessonDay : this.props.t('monday')})
-                break;
-            case 4:
-                
-                this.setState({nowLessonDay : this.props.t('tuesday')})
-                break;
-            case 5: 
-                this.setState({nowLessonDay : this.props.t('wednesday')})
-                break;
-            case 6:
-                this.setState({nowLessonDay : this.props.t('thursday')})
-                break;
-            case 7:
-                this.setState({nowLessonDay : this.props.t('friday')})
-                break;
-            default:break;
-        }
-
-        var start = this.props.info.startHour
-        var end = this.props.info.endHour
-
-        var labelHourStart = (start < 10 ? '0' + Math.trunc(start) : '' + Math.trunc(start))
-        var labelMinStart = ((start - Math.trunc(start)) == 0 ? '00' : (start - Math.trunc(start)) * 60);
-
-        this.setState({nowLessonStartTime : labelMinStart + " : " + labelHourStart})
-
-        var labelHourEnd = (end < 10 ? '0' + Math.trunc(end) : '' + Math.trunc(end))
-        var labelMinEnd = ((end - Math.trunc(end)) == 0 ? '00' : (end - Math.trunc(end)) * 60);
-
-        this.setState({nowLessonEndTime : labelMinEnd + " : " + labelHourEnd})
-
-        switch(this.props.info.weekly){
-            case 0 :
-                this.setState({lessonIsWeekly : 'هرهفته '})
-                break;
-            case 1 :
-                this.setState({lessonIsWeekly : 'هفته های زوج'}) 
-                break;
-            case 2 : 
-                this.setState({lessonIsWeekly : 'هفته های فرد'})
-                break;
-        }
 
         this.setState({loading : true})
         await this.props.getAllTeachers(this.props.user.token);
         // await this.props.getClassLessons(this.props.user.token , this.props.classId)
         this.setState({loading : false})
+
 
         if(this.props.teachers)
         {
@@ -109,10 +57,6 @@ class EditLesson extends React.Component {
 
     }
 
-    handleChangeCourse = selectedCourse => {
-        this.setState({ selectedCourse });
-    };
-
     handleChangeTeacher = selectedTeacher => {
         this.setState({ selectedTeacher });
     };
@@ -140,7 +84,7 @@ class EditLesson extends React.Component {
     options = [
         { value: 1, label: this.props.t('saturday') },
         { value: 2, label: this.props.t('sunday') },
-        { value: 3, label: this.props.t('monday') },
+        { value: 3, label: this.props.t('monsday') },
         { value: 4, label: this.props.t('tuesday') },
         { value: 5, label: this.props.t('wednesday') },
         { value: 6, label: this.props.t('thursday') },
@@ -149,11 +93,11 @@ class EditLesson extends React.Component {
 
     editSchedule = async () => {
 
-        if (this.state.selectedDay && this.state.selectedCourse && this.state.selectedTeacher && this.state.selectedStartTime && this.state.selectedEndTime) {
+        if (this.state.selectedDay && this.state.selectedTeacher && this.state.selectedStartTime && this.state.selectedEndTime) {
             const newSchedule = {
                 classId : parseInt(this.props.info.classId),
                 dayType : this.state.selectedDay.value,
-                lessonId : this.state.selectedCourse.value,
+                lessonId : this.props.info.lessonId,
                 teacherId : this.state.selectedTeacher.value,
                 startHour : this.state.selectedStartTime.value,
                 endHour : this.state.selectedEndTime.value,
@@ -161,7 +105,7 @@ class EditLesson extends React.Component {
                 id : this.props.info.id
             }
 
-            this.props.onEdit(newSchedule)
+             this.props.onEdit(newSchedule)
 
         }
     
@@ -170,33 +114,13 @@ class EditLesson extends React.Component {
     render() { 
         return ( 
             <Modal cancel={this.props.cancel}>
-                <div onClick={e => e.stopPropagation()} className='overflow-y-scroll h-full w-11/12 bg-dark-blue max-w-500 px-4 py-6'>
+                <div onClick={e => e.stopPropagation()} className='rounded h-3/4 w-11/12 bg-dark-blue max-w-500 px-4 py-6'>
                     <p className='text-center text-white '>{this.props.t('editClassSchedule')}</p>
 
                     {this.state.loading ? this.props.t('loading')  :
 
                         <React.Fragment>
-                            <p className='rounded-lg my-5 border-grayish border py-3 mx-10 text-center text-white'> درس انتخاب شده : {this.state.nowLessonName}</p>
-
-                            <p className='rounded-lg my-5 border-grayish border py-3 mx-10 text-center text-white'> معلم انتخاب شده : {this.state.nowLessonTeacher}</p>
-
-                            <p className='rounded-lg my-5 border-grayish border py-3 mx-10 text-center text-white'> روز انتخاب شده : {this.state.nowLessonDay}</p>
-
-                            <p className='rounded-lg my-5 border-grayish border py-3 mx-10 text-center text-white'> ساعت شروع انتخاب شده : {this.state.nowLessonStartTime}</p>
-
-                            <p className='rounded-lg my-5 border-grayish border py-3 mx-10 text-center text-white'> ساعت پایان انتخاب شده : {this.state.nowLessonEndTime}</p>
-
-                            <p className='rounded-lg my-5 border-grayish border py-3 mx-10 text-center text-white'> درس در {this.state.lessonIsWeekly} برگزار می شود</p>
-
-
-                            <Select
-                                styles={styles}
-                                className="w-1/2 mx-auto my-4 bg-transparent"
-                                value={this.state.selectedCourse}
-                                onChange={this.handleChangeCourse}
-                                options={this.state.classLessons}
-                                placeholder={this.props.t('lesson')}
-                            />
+                            
                             <Select
                                 styles={styles}
                                 className="w-1/2 mx-auto my-4"

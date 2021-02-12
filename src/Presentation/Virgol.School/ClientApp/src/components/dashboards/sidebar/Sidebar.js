@@ -30,7 +30,7 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
     }
 
     return (
-        <motion.div className="lg:w-1/6 z-40 w-3/4 lg:max-w-full max-w-250 h-screen fixed top-0 right-0 bg-black-blue"
+        <motion.div className="lg:w-1/5 z-40 w-3/4 lg:max-w-full max-w-250 h-screen fixed top-0 right-0 bg-black-blue"
             animate={show ? 'open' : 'close'}
             transition="transition"
             variants={sidebarVar}

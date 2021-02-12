@@ -112,7 +112,7 @@ class Dashboard extends React.Component {
                     />
                 </Sidebar>
 
-                <div className="lg:w-5/6 px-6 w-full min-h-screen bg-bold-blue">
+                <div className="lg:w-4/5 px-6 w-full min-h-screen bg-bold-blue">
                     <Header showLang={this.state.showLang} setShowLang={this.setShowLang} />
 
                     <Switch>

@@ -1,6 +1,6 @@
 const prod = {
     url: {
-        API_URL: 'https://panel.vir-gol.ir/api/'
+        API_URL: window.location.href + 'api/'
     }
 }
 

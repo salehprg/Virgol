@@ -86,10 +86,10 @@ class ParticipantList extends React.Component {
                                                     this.state.participants.map(x => {
                                                         return(
                                                             <tr key={x.id}>
-                                                                <td className="py-4">{x.firstName} {x.lastName}</td>
-                                                                <td className="py-4">{x.presentCount * 5} {this.props.t('minute')} </td>
+                                                                <td className="py-4 text-right">{x.firstName} {x.lastName}</td>
+                                                                <td className="py-4 text-right">{x.presentCount * 5} {this.props.t('minute')} </td>
                                                                 {/* <td className="py-4">{x.checkCount * 5} دقیقه</td> */}
-                                                                <td className="py-4">{
+                                                                <td className="py-4 text-right">{
                                                                     <div style={{direction : "rtl"}} className="text-white">
                                                                         <input
                                                                             type="radio"
