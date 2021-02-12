@@ -1,11 +1,7 @@
 version: "3.5"
 services:
   virgol:
-<<<<<<< HEAD
     image: goldenstarc/virgol:latest
-=======
-    image: goldenstarc/virgol:1.8.4-Beta.1
->>>>>>> df511d9055fe1df31ae00107256fa0d8745c1221
     restart: always
     container_name: virgol_main
     volumes:
@@ -35,7 +31,7 @@ services:
       - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
       - REACT_APP_MOODLE_URL=https://moodle.vir-gol.ir/login/index.php
-      - REACT_APP_VERSION=1.8.5
+      - REACT_APP_VERSION=1.8.8-Beta
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`panel.vir-gol.ir`)"
