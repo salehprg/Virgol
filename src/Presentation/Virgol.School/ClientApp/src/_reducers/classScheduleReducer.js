@@ -27,8 +27,8 @@ export default ( state = INITIAL_STATE, action ) => {
         case Type.AddClassSchedule:
             return { ...state, classSchedules: [...state.classSchedules, action.payload] };
             
-        case Type.EditClassSchedule:
-            return { ...state, classSchedules: state.classSchedules.map(el => el.id === action.payload.id ? action.payload : el) }
+        // case Type.EditClassSchedule:
+        //     return { ...state, classSchedules: state.classSchedules.map(el => el.id === action.payload.id ? action.payload : el) }
 
         case Type.DeleteClassSchedule:
             return { ...state, classSchedules: state.classSchedules.filter(element => element.id != action.payload) }

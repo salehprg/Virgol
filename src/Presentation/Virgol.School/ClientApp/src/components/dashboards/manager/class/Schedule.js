@@ -44,6 +44,8 @@ class Schedule extends React.Component {
     handleLessonLayout() {
         const lessons = [];
 
+        console.log("Hey", this.props.lessons);
+
         this.props.lessons.map(day => {
             if(day && day.length > 0)
             {
@@ -94,6 +96,11 @@ class Schedule extends React.Component {
         this.setState({showLessonInfo : false})
     }
 
+    cancelIt = () => {
+        this.onCancel();
+        this.props.rerenderIt()
+    }
+
     render() {
         const layout = this.state.layout.concat(this.state.lessons);
         return (
@@ -106,6 +113,7 @@ class Schedule extends React.Component {
                     cancel={() => this.onCancel()}
                     canEdit={this.props.editable}
                     onDelete={() => this.deleteLesson()}
+                    rerenderIt={() => this.cancelIt()}
                 /> 
                 : 
                 null
