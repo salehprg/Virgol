@@ -10,6 +10,7 @@ import {GetActiveStream} from "../../../../_actions/streamActions"
 import {getManagerDashboardInfo} from "../../../../_actions/managerActions"
 import {GetIncommingNews , GetMyNews} from "../../../../_actions/newsActions"
 import Activation from "./Activation";
+import { localizer } from '../../../../assets/localizer';
 
 class Home extends React.Component {
 
@@ -74,7 +75,7 @@ class Home extends React.Component {
                     )}
                     <div className="mt-8">
 
-                        {(this.props.dashboardInfo.school && !window.location.href.includes('dei')) ? 
+                        {(this.props.dashboardInfo.school && window.href) ? 
                         <Activation expireDate={this.getExpireDate()} />
                         : 
                         null

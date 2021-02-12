@@ -33,7 +33,7 @@ class RecentClass extends React.Component {
                     (
                         classes.length === 0 
                         ? 
-                    <span className="text-2xl text-grayish block centerize">{this.props.t('noClassAvailable')}</span>
+                    <span className="text-xl text-grayish block ">{this.props.t('noClassAvailable')}</span>
                         :
                         classes.map(x => {
                             return (

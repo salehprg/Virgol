@@ -12,6 +12,7 @@ import DeleteConfirm from '../../modals/DeleteConfirm';
 import history from '../../../history';
 import {styles} from '../../../selectStyle'
 import ReactTooltip from 'react-tooltip';
+import './styles.css';
 
 class StreamInfo extends React.Component {
 
@@ -189,7 +190,7 @@ class StreamInfo extends React.Component {
                                 value={this.state.duration} 
                                 onChange={this.setDuration} 
                                 type="number" 
-                                className="text-center w-1/3 mx-2 mx-8 px-2 py-2 border-2 border-dark-blue rounded" 
+                                className="text-center w-1/3 mx-8 px-2 py-2 border-2 border-dark-blue rounded" 
                                 style={{backgroundColor : 'transparent' , color : 'white'}} />
                                 <span className="text-white mr-8"> {this.props.t("minute")} </span>
                             </div>
@@ -212,7 +213,7 @@ class StreamInfo extends React.Component {
                     </div>
 
                     <div role="tabpanel" aria-labelledby="goToFuture" id="futureConferences" className="tab-pane fade bg-dark-blue rounded-lg w-full h-80 my-4 px-3 py-2">
-                        <p className="text-right text-white mb-4"> {this.props.t('futureConferences')} </p>
+                        {/* <p className="text-right text-white mb-4"> {this.props.t('futureConferences')} </p> */}
                         <Tablish 
                             headers={[this.props.t('name'), this.props.t('date')]}
                             body={() => {
@@ -235,7 +236,7 @@ class StreamInfo extends React.Component {
                     </div>
 
                     <div role="tabpanel" aria-labelledby="goToFinished" id="finishedConferences" className="tab-pane fade show active bg-dark-blue w-full rounded-lg  h-80 my-4 px-3 py-2">
-                        <p className="text-right text-white mb-4"> {this.props.t('finishedConferences')} </p>
+                        {/* <p className="text-right text-white mb-4"> {this.props.t('finishedConferences')} </p> */}
                         
                         <Tablish 
                             headers={[this.props.t('name'), this.props.t('date')]}

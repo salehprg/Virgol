@@ -19,7 +19,7 @@ class MonsterTable extends React.Component {
                     {button()}
                     {excel ?
                         <>
-                            <label htmlFor="excel" className="px-6 cursor-pointer ml-4 lg:mb-0 mb-2 py-1 border-2 border-greenish text-greenish rounded-lg">{excel}</label>
+                            <label htmlFor="excel" className="px-6 cursor-pointer ml-4 mb-4 py-1 border-2 border-greenish text-greenish rounded-lg">{excel}</label>
                             <input
                                 onChange={(e) => handleExcel(e.target.files[0])}
                                 type="file"
@@ -32,7 +32,7 @@ class MonsterTable extends React.Component {
                         null
                     }
                     {sample ?
-                        <a href={sampleLink} className="px-6 cursor-pointer py-1 border-2 border-redish text-redish rounded-lg" download>
+                        <a href={sampleLink} className="px-6 cursor-pointer py-1 mb-4 border-2 border-redish text-redish rounded-lg" download>
                             {sample}
                         </a>
                         :

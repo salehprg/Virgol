@@ -76,10 +76,10 @@ class News extends React.Component {
                                                 : null}
                                                 </td>
                                                 <td className="text-right">{new Date(x.createTime).toLocaleDateString('fa-IR')}</td>
-                                                <td className="cursor-pointer" onClick={() => history.push(`/news/${x.id}`)}>
+                                                <td className="cursor-pointer text-right" onClick={() => history.push(`/news/${x.id}`)}>
                                                     {edit('w-6 text-white')}
                                                 </td>
-                                                <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                <td className="text-right" onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                                     {trash('w-6 text-white ')}
                                                 </td>
                                             </tr>

@@ -52,8 +52,8 @@ const VirgoolAdvantages = () => {
 
     return(
         <div className="virgool py-6 my-6" style={{backgroundColor : '#f0f0f0'}}>
-            <h4 className="text-center" style={{fontWeight:'bold' , fontSize:'30px'}}>مزایای ویرگول</h4>
-            <div className="row my-5">
+            <div className="text-center font-weight-bold " style={{ fontSize:'30px'}}>مزایای ویرگول</div>
+            <div className="row my-5 justify-content-center">
             {
                 advantages.map((advantage) => (
                     <VAdvantage 

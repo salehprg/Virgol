@@ -28,13 +28,13 @@ class AllPayments extends React.Component {
                                 this.props.payments.map(x => {
                                     return(
                                         <tr key={x.id} className="p-2">
-                                            <td>{x.serviceName}</td>
-                                            <td>{x.amount.toLocaleString()}</td>
-                                            <td>{new Date(x.payTime).toLocaleDateString('fa-IR')}</td>
-                                            <td>{x.userCount}</td>
-                                            <td>{(x.status == "pending" ? "در جریان" : (x.status == "success" ? "موفقیت آمیز" :"خطا"))}</td>
-                                            <td>{x.statusMessage}</td>
-                                            <td>{(x.status == "success" ? x.reqId : x.refId)}</td>
+                                            <td className="text-right">{x.serviceName}</td>
+                                            <td className="text-right">{x.amount.toLocaleString()}</td>
+                                            <td className="text-right">{new Date(x.payTime).toLocaleDateString('fa-IR')}</td>
+                                            <td className="text-right">{x.userCount}</td>
+                                            <td className="text-right">{(x.status == "pending" ? "در جریان" : (x.status == "success" ? "موفقیت آمیز" :"خطا"))}</td>
+                                            <td className="text-right">{x.statusMessage}</td>
+                                            <td className="text-right">{(x.status == "success" ? x.reqId : x.refId)}</td>
                                         </tr>
                                     )
                                 })

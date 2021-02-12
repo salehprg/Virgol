@@ -62,7 +62,7 @@ class RecorededSession extends React.Component {
                                                 </>
                                             : null )}
                                             </td>
-                                            <td className="py-4">{x.participant === null || !x.participant.isPresent ? "غایب" : "حاضر"}</td>
+                                            <td className="py-4 text-right">{x.participant === null || !x.participant.isPresent ? "غایب" : "حاضر"}</td>
                                         </tr>
                                     )
                                 }))

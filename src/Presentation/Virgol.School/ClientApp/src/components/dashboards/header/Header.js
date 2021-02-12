@@ -44,7 +44,7 @@ class Header extends React.Component {
                     {/*</div>*/}
 
                     <div className="mr-4 px-2 py-1 flex md:flex-row-reverse flex-col justify-between items-center border-2 rounded-lg border-dark-blue">
-                        <span className="text-white text-right md:ml-4 ml-0 md:mb-0 mb-2">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</span>
+                        <span className="text-white pt-1 text-right md:ml-4 ml-0 md:mb-0 mb-2">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</span>
                         <div className="flex flex-row-reverse items-center">
                             {/*<div data-tip="سامانه مودل" className="relative mx-1">*/}
                             {/*    <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://moodle.legace.ir">*/}

@@ -9,7 +9,7 @@ import Select from 'react-select'
 import Switch from 'react-switch'
 
 class EditLesson extends React.Component {
-    state = { selectedCourse: null, selectedTeacher: null , selectedDay : 0
+    state = { selectedTeacher: null , selectedDay : 0
         , selectedStartTime: null, selectedEndTime: null, loading : false ,
        teachers : [] , lessons : [] , times : [], weekly: true, week: '0' , nowLessonName : '' ,
         nowLessonTeacher : '' , nowLessonDay : '' , nowLessonStartTime : '' , nowLessonEndTime : '' ,
@@ -22,6 +22,7 @@ class EditLesson extends React.Component {
         await this.props.getAllTeachers(this.props.user.token);
         // await this.props.getClassLessons(this.props.user.token , this.props.classId)
         this.setState({loading : false})
+
 
         if(this.props.teachers)
         {
@@ -55,10 +56,6 @@ class EditLesson extends React.Component {
         this.setState({times})
 
     }
-
-    handleChangeCourse = selectedCourse => {
-        this.setState({ selectedCourse });
-    };
 
     handleChangeTeacher = selectedTeacher => {
         this.setState({ selectedTeacher });
@@ -96,11 +93,11 @@ class EditLesson extends React.Component {
 
     editSchedule = async () => {
 
-        if (this.state.selectedDay && this.state.selectedCourse && this.state.selectedTeacher && this.state.selectedStartTime && this.state.selectedEndTime) {
+        if (this.state.selectedDay && this.state.selectedTeacher && this.state.selectedStartTime && this.state.selectedEndTime) {
             const newSchedule = {
                 classId : parseInt(this.props.info.classId),
                 dayType : this.state.selectedDay.value,
-                lessonId : this.state.selectedCourse.value,
+                lessonId : this.props.info.lessonId,
                 teacherId : this.state.selectedTeacher.value,
                 startHour : this.state.selectedStartTime.value,
                 endHour : this.state.selectedEndTime.value,
@@ -108,7 +105,7 @@ class EditLesson extends React.Component {
                 id : this.props.info.id
             }
 
-            await this.props.onEdit(newSchedule)
+             this.props.onEdit(newSchedule)
 
         }
     
@@ -117,20 +114,13 @@ class EditLesson extends React.Component {
     render() { 
         return ( 
             <Modal cancel={this.props.cancel}>
-                <div onClick={e => e.stopPropagation()} className='overflow-y-scroll h-full w-11/12 bg-dark-blue max-w-500 px-4 py-6'>
+                <div onClick={e => e.stopPropagation()} className='rounded h-3/4 w-11/12 bg-dark-blue max-w-500 px-4 py-6'>
                     <p className='text-center text-white '>{this.props.t('editClassSchedule')}</p>
 
                     {this.state.loading ? this.props.t('loading')  :
 
                         <React.Fragment>
-                            <Select
-                                styles={styles}
-                                className="w-1/2 mx-auto my-4 bg-transparent"
-                                value={this.state.selectedCourse}
-                                onChange={this.handleChangeCourse}
-                                options={this.state.classLessons}
-                                placeholder={this.props.t('lesson')}
-                            />
+                            
                             <Select
                                 styles={styles}
                                 className="w-1/2 mx-auto my-4"

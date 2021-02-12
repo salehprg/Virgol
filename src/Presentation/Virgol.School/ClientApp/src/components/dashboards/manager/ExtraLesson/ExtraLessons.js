@@ -64,7 +64,7 @@ class ExtraLessons extends React.Component {
                                                 <td className="text-right">{`${x.firstName} ${x.lastName}`}</td>
                                                 <td className="py-4 text-right">{x.className}</td>
                                                 <td className="text-right">{x.lessonName}</td>
-                                                <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
+                                                <td className="text-right" onClick={() => this.showDelete(x.id)} className="cursor-pointer">
                                                     {trash('w-6 text-white ')}
                                                 </td>
                                             </tr>
