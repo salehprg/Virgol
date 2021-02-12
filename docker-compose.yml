@@ -13,8 +13,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - NODE_ENV=production
       - VIRGOL_SERVER_ROOT_URL=https://panel.vir-gol.ir
-      - VIRGOL_DATABASE_HOST=postgres
-      - VIRGOL_DATABASE_port=5432
+      - VIRGOL_DATABASE_HOST=postgres.vir-gol.ir
+      - VIRGOL_DATABASE_PORT=5432
       - VIRGOL_DATABASE_NAME=LMS
       - VIRGOL_DATABASE_USER=postgres
       - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
@@ -26,7 +26,7 @@ services:
       - VIRGOL_FARAZAPI_PASSWORD=hektug-fakbAm-0vypje
       - VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=
       - VIRGOL_JWT_SECRET=Saleh Secret Key
-      - VIRGOL_LDAP_SERVER=openldap
+      - VIRGOL_LDAP_SERVER=openldap.vir-gol.ir
       - VIRGOL_LDAP_PORT=390
       - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
@@ -35,13 +35,59 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`panel.vir-gol.ir`)"
-      # - "traefik.http.routers.virgol.rule=Host(`sampad.razaviedu.ir`)"
       - "traefik.http.services.virgol.loadbalancer.server.port=80"
       - "traefik.http.routers.virgol.entrypoints=secure"
       - "traefik.http.routers.virgol.tls.certresolver=letsencrypt"
       - "traefik.docker.network=web"
       - "traefik.http.middlewares.virgol_compress.compress=true"
       - "traefik.http.routers.virgol.middlewares=virgol_compress"
+    networks:
+      - virgol
+      - web
+    depends_on:
+      - postgres
+      - openldap
+  virgol-dei:
+    image: goldenstarc/virgol:latest-dei
+    restart: always
+    container_name: virgol_dei
+    volumes:
+      - virgolDeiData:/app/BulkData
+    # build:
+    #   context: .
+    environment:
+      - ASPNETCORE_URLS=http://+ # ;https://+
+      - ASPNETCORE_ENVIRONMENT=Production
+      - NODE_ENV=production
+      - VIRGOL_SERVER_ROOT_URL=https://dei.razaviedu.ir
+      - VIRGOL_DATABASE_HOST=postgres
+      - VIRGOL_DATABASE_PORT=5432
+      - VIRGOL_DATABASE_NAME=LMS_DEI
+      - VIRGOL_DATABASE_USER=postgres
+      - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
+      - VIRGOL_MOODLE_TOKEN=0e68f54e65aea7bbac176acd69b7378a
+      - VIRGOL_MOODLE_BASE_URL=http://m-dei.vir-gol.ir/webservice/rest/server.php?moodlewsrestformat=json
+      - VIRGOL_FARAZAPI_URL=http://rest.ippanel.com
+      - VIRGOL_FARAZAPI_SENDER_NUMBER=+98500010707
+      - VIRGOL_FARAZAPI_USERNAME=goldenstarc
+      - VIRGOL_FARAZAPI_PASSWORD=hektug-fakbAm-0vypje
+      - VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=
+      - VIRGOL_JWT_SECRET=Saleh Secret Key
+      - VIRGOL_LDAP_SERVER=openldap
+      - VIRGOL_LDAP_PORT=389
+      - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
+      - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
+      - REACT_APP_MOODLE_URL=https://m-dei.vir-gol.ir/login/index.php
+      - REACT_APP_VERSION=1.8.7
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.virgolDei.rule=Host(`dei.razaviedu.ir`)"
+      - "traefik.http.services.virgolDei.loadbalancer.server.port=80"
+      - "traefik.http.routers.virgolDei.entrypoints=secure"
+      - "traefik.http.routers.virgolDei.tls.certresolver=letsencrypt"
+      - "traefik.docker.network=web"
+      - "traefik.http.middlewares.virgol_compress.compress=true"
+      - "traefik.http.routers.virgolDei.middlewares=virgol_compress"
     networks:
       - virgol
       - web
@@ -156,12 +202,8 @@ services:
     hostname: openldap
     container_name: virgol_openldap
     ports:
-      - '390:389'
-<<<<<<< HEAD
-      - '637:636'
-=======
+      - '389:389'
       - '636:636'
->>>>>>> df511d9055fe1df31ae00107256fa0d8745c1221
     restart: always
     volumes:
       - openldapDb:/var/lib/ldap
