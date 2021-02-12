@@ -15,6 +15,8 @@ class RecorededSession extends React.Component {
         var scheduleId = this.props.match.params.id;
 
         this.props.GetRecordList(this.props.user.token , parseInt(scheduleId))
+
+        console.log(this.props.recordingsList);
     }
 
     changeQuery = (query) => {
@@ -54,7 +56,7 @@ class RecorededSession extends React.Component {
                                         <tr>
                                             <td className="py-4 text-right">{index + 1}</td>
                                             <td className="py-4 text-right d-flex flex-wrap">
-                                                <div className="ml-2 pt-2">{x.name} - {this.props.t('session')} {index + 1}</div>
+                                                <div className="ml-2 pt-2">{x.meeting.meetingName.split('-')[1]} - {this.props.t('session')} {index + 1}</div>
                                                 <div data-tip={this.props.t('edit')}> {edit('text-white w-10 bg-greenish rounded-lg p-2')}</div>
                                                 <ReactTooltip type="dark" effect="float" place="top"/>
                                             </td>

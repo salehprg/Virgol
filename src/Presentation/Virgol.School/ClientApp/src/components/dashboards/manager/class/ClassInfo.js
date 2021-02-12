@@ -166,7 +166,7 @@ class ClassInfo extends React.Component {
                 : 
                 null
                 }
-                <div className="addStudent lg:row-start-1 row-start-2 w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
+                <div className="addStudent lg:row-start-1 row-start-2 w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 mt-4 col-span-1 border-2 border-dark-blue">
             <p className="text-xl text-white mb-8">{this.state.classDetail.grade_Id == 0 ? this.props.t('participantList') : this.props.t('studentsList')} </p>
                     {/* <label htmlFor="excel" className="px-1 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">*/}
                     {/*    {plus('w-4')}*/}
@@ -227,7 +227,7 @@ class ClassInfo extends React.Component {
                     </div>
                 </div>
 
-                <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
+                <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue mt-4">
                     <div className="flex flex-row-reverse justify-between">
                         <div className="flex flex-row-reverse justify-between">
                             {(this.state.classDetail ?
