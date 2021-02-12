@@ -48,6 +48,7 @@ class Schools extends React.Component {
 
     paginate = (num) => {
         this.setState({ currentPage: num })
+        this.queriedSchools(this.state.query , num)
     }
 
     queriedSchools = (query , currentPage = -1) => {
