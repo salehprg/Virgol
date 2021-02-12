@@ -88,9 +88,7 @@ class LessonInfoModal extends React.Component {
     onEdit = async(userIds) =>{
         await this.props.EditClassSchedule(this.props.user.token , userIds );
         this.setState({showEditModal : false})
-        this.props.cancel()
-        this.componentDidMount()
-        this.render()
+        this.props.rerenderIt();
     }
 
     render() {

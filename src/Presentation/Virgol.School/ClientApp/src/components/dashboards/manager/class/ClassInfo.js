@@ -121,6 +121,11 @@ class ClassInfo extends React.Component {
         await this.props.editClass(this.props.user.token , parseInt(this.props.match.params.id) , this.state.className)
     }
 
+    rerenderIt = () => {
+        this.componentDidMount()
+        this.render()
+    }
+
     render() {
         return (
             <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="w-screen min-h-screen py-16 lg:px-10 px-1 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
@@ -260,6 +265,7 @@ class ClassInfo extends React.Component {
                                     editable={true}
                                     lessons={this.props.schedules}
                                     deleteSchedule={(id)  => this.deleteLesson(id)}
+                                    rerenderIt={() => this.rerenderIt()}
                                     // lessons={[
                                     //     {i: "1", name: "حسابان 1", teachername: "احمدی", c: "bg-redish cursor-pointer", x: 8, y: 1, w: 2, h: 1, static: true},
                                     //     {i: "2", name: "هندسه 1", teachername: "باقری", c: "bg-purplish cursor-pointer", x: 6, y: 2, w: 3, h: 1, static: true},
