@@ -25,7 +25,7 @@ public class StudentViewModel {
     ///<summary>
     ///Get schoolType from SchoolType Class
     ///</summary>
-    public int SchoolType {get; set;}
-    public int schoolid {get; set;}
+    public int? SchoolType {get; set;}
+    public int? schoolid {get; set;}
     public int? ClassId {get; set;}
 }
