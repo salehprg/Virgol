@@ -20,7 +20,7 @@ import {styles} from '../../../../selectStyle'
 class Home extends React.Component {
 
     state = {loading : false, newPrivateModal: false, 
-            activeStream: { url: 'ewfewf' } , schoolOptions : [] , selectedSchool : {}}
+            activeStream: { url: 'ewfewf' } , schoolOptions : [] , selectedSchool : {} , privateName : ''}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
@@ -87,6 +87,8 @@ class Home extends React.Component {
     }
     
     createPrivateRoom = async () => {
+        console.log(this.state.privateName);
+        console.log(this.state.selectedSchool);
         await this.props.CreatePrivateRoom(this.state.privateName , this.state.selectedSchool.value)
         this.hidePrivateModal()
         this.setState({privateName : ""})
@@ -161,7 +163,7 @@ class Home extends React.Component {
                     <div className="tw-mb-4 tw-flex tw-flex-row-reverse tw-items-center tw-justify-evenly">
                         <p className="tw-text-white">{this.props.activeStream.streamName}</p>
                         <Link 
-                            className="tw-py-2 tw-px-6 tw-rounded-lg tw-bg-greenish tw-text-white" 
+                            className="tw-link tw-py-2 tw-px-6 tw-rounded-lg tw-bg-greenish tw-text-white" 
                             to={`/stream`}>
                             پیوستن به همایش
                         </Link>

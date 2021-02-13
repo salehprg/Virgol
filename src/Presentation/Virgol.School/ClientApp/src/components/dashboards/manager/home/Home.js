@@ -43,7 +43,7 @@ class Home extends React.Component {
                     <div className="tw-mb-4 tw-flex tw-flex-row-reverse tw-items-center tw-justify-evenly">
                         <p className="tw-text-white">{this.props.activeStream.streamName}</p>
                         <Link 
-                            className="tw-py-2 tw-px-6 tw-rounded-lg tw-bg-greenish tw-text-white" 
+                            className="tw-link tw-py-2 tw-px-6 tw-rounded-lg tw-bg-greenish tw-text-white" 
                             to={`/stream`}>
                             پیوستن به همایش
                         </Link>

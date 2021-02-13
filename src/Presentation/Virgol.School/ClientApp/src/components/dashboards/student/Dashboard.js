@@ -88,7 +88,7 @@ class StudentDashboard extends React.Component {
                     />
                 </Sidebar>
 
-                <div className="lg:tw-w-4/5 tw-px-6 tw-w-full tw-min-h-screen tw-bg-bold-blue">
+                <div className="lg:tw-w-5/6 tw-px-6 tw-w-full tw-min-h-screen tw-bg-bold-blue">
                     <Header showLang={this.state.showLang} setShowLang={this.setShowLang} />
 
                     <Switch>

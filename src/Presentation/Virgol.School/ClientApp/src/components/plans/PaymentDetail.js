@@ -30,7 +30,7 @@ class PaymentDetail extends React.Component {
                         <p className="tw-my-8 tw-text-xl">{this.props.paymentDetail.statusMessage}</p>
                     </>
                     }
-                    <Link className="tw-px-6 tw-rounded-lg tw-py-2 tw-text-white tw-bg-purplish" to="/m/dashboard">بازگشت</Link>
+                    <Link className="tw-link tw-px-6 tw-rounded-lg tw-py-2 tw-text-white tw-bg-purplish" to="/m/dashboard">بازگشت</Link>
                 </div>
             </div>
         );

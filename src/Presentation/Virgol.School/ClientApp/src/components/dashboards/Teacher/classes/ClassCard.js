@@ -20,11 +20,11 @@ class ClassCard extends React.Component {
                 <p onClick={() => this.ssoLogin()} className="tw-text-center tw-cursor-pointer tw-text-white tw-text-2xl tw-font-vb">{title}</p>
                 <p className="tw-text-white tw-text-center">{school + " - " + nameOfClass}</p>
                 <div onClick={(e) => e.stopPropagation()} className="tw-flex tw-flex-row tw-justify-evenly tw-mt-6">
-                <Link className="tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/session/${scheduleId}`}>{this.props.t('lessonInfoBook')}</Link>
-                <Link className="tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/recordedSessions/${scheduleId}`}>{this.props.t('sessionList')}</Link>
+                <Link className="tw-link tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/session/${scheduleId}`}>{this.props.t('lessonInfoBook')}</Link>
+                <Link className="tw-link tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/recordedSessions/${scheduleId}`}>{this.props.t('sessionList')}</Link>
                 </div>
                 <div className="tw-text-center tw-my-1">
-                    <Link className="tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/SSO/${scheduleId}`} rel="noopener noreferrer" >{this.props.t('activities')}</Link>
+                    <Link className="tw-link tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/SSO/${scheduleId}`} rel="noopener noreferrer" >{this.props.t('activities')}</Link>
                 </div>
                 {/* <form ref={this.formRef} className="tw-text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
                     <input

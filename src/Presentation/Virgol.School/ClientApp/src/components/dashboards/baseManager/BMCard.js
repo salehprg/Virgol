@@ -10,8 +10,8 @@ const BMCard = ({ onAdd, title, editIcon, onEdit, editable, deleteItem, isSelect
                 {children}
             </div>
             <div className={`tw-w-full tw-flex tw-flex-row tw-justify-start tw-items-center ${editable && showAdd != null ? 'tw-block' : 'tw-hidden'}`}>
-                <div onClick={onAdd} className={`w-12 cursor-pointer h-12 mx-2 relative rounded-full bg-greenish ${listed ? 'tw-block' : 'tw-hidden'}`}>
-                    {plus('tw-w-6 tw-text-white centerize')}
+                <div onClick={onAdd} className={`tw-w-12 tw-cursor-pointer tw-h-12 tw-ml-2 tw-mx-2 tw-relative tw-rounded-full tw-bg-greenish ${listed ? 'tw-block' : 'tw-hidden'}`}>
+                    {plus('tw-w-6 tw-text-white mt-3 ml-2 pl-1 tw-centerize')}
                 </div>
                 <div onClick={() => deleteItem(isSelected)} className={`tw-w-12 tw-cursor-pointer tw-h-12 tw-mx-2 tw-relative tw-rounded-full tw-bg-redish ${isSelected && !editIcon ? 'tw-block' : 'tw-hidden'}`}>
                     {trash('tw-w-6 tw-text-white centerize')}

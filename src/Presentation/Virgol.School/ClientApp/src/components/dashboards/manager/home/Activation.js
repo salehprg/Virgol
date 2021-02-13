@@ -9,7 +9,7 @@ const Activation = ({ expireDate }) => {
                 <span className="tw-text-white tw-text-lg">تاریخ اعتبار سامانه</span>
                 <span className="tw-text-white">{expireDate}</span>
             </div>
-            <Link className="tw-px-4 tw-py-1 tw-rounded-lg tw-text-greenish tw-border-2 tw-border-greenish" to="/plans">خرید اعتبار</Link>
+            <Link className="tw-link tw-px-4 tw-py-1 tw-rounded-lg tw-text-greenish tw-border-2 tw-border-greenish" to="/plans">خرید اعتبار</Link>
         </div>
     );
 

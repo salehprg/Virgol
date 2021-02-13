@@ -84,6 +84,13 @@ class Dashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
+                        code="conference"
+                        title={this.props.t('conference')}
+                        icon={video}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
                         code="teachers"
                         title={this.props.t('teachers')}
                         icon={users}
@@ -98,13 +105,6 @@ class Dashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
-                        code="conference"
-                        title={this.props.t('conference')}
-                        icon={video}
-                        changeActive={this.changeActive}
-                    />
-                    <SidebarCard
-                        active={this.state.active}
                         code="news"
                         title={this.props.t('news')}
                         icon={bell}
@@ -112,7 +112,7 @@ class Dashboard extends React.Component {
                     />
                 </Sidebar>
 
-                <div className="lg:tw-w-4/5 tw-px-6 tw-w-full tw-min-h-screen tw-bg-bold-blue">
+                <div className="lg:tw-w-5/6 tw-px-6 tw-w-full tw-min-h-screen tw-bg-bold-blue">
                     <Header showLang={this.state.showLang} setShowLang={this.setShowLang} />
 
                     <Switch>
