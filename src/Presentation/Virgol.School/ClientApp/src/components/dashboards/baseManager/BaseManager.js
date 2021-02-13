@@ -11,6 +11,7 @@ class BaseManager extends React.Component {
 
     state = { addStatus: null , locked : false }
 
+
     UpdateLockState (Id) {
         
         var freeBase = this.props.categories.find(x => x.id == Id);
@@ -103,6 +104,8 @@ class BaseManager extends React.Component {
         if (loadingCourses) return <div className="centerize">{loading('w-8 text-grayish')}</div>
         if (!selectedGrade) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectGrade')} </p>
         if (courses.length === 0) return <p className="text-grayish text-center"> {this.props.t('noLesson')} </p>
+
+
         return courses.map(course => {
             return (
                 <SelectableCard
@@ -121,6 +124,8 @@ class BaseManager extends React.Component {
         if (!selectedGrade && !this.state.locked) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectGrade')} </p>
         if (classes.length === 0 && !this.state.locked) return <p className="text-grayish text-center"> {this.props.t('noClass')} </p>
         return classes.map(kelas => {
+
+
             return (
                 <SelectableCard
                     id={kelas.id}
@@ -134,6 +139,8 @@ class BaseManager extends React.Component {
 
     render() {
         const {editable, classable, classes, onEdit, selectedClass, categories, deleteCat, deleteField, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
+        // console.log(this.props.classes);
+
         return (
             <div className="w-full grid grid-cols-4 gap-6 min-w-900">
                 {this.state.addStatus === 'category' ? <AddCategory onAddBase={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}

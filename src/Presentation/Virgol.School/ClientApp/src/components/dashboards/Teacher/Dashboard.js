@@ -21,8 +21,8 @@ class TeacherDashboard extends React.Component {
         this.setState({ active: this.props.location.pathname.split('/')[2] })
         if (window.innerWidth < 1024) this.setState({ sidebar: false })
 
-        window.$crisp = [];
-        window.CRISP_WEBSITE_ID = "4ede6290-1f82-45d7-81ff-1ea74b2afc00";
+        // window.$crisp = [];
+        // window.CRISP_WEBSITE_ID = "4ede6290-1f82-45d7-81ff-1ea74b2afc00";
 
         (function() {
             var d = document;
@@ -101,7 +101,7 @@ class TeacherDashboard extends React.Component {
                     />
                 </Sidebar>
 
-                <div className="lg:w-4/5 px-6 w-full min-h-screen bg-bold-blue">
+                <div className="lg:w-5/6 px-6 w-full min-h-screen bg-bold-blue">
                     <Header showLang={this.state.showLang} setShowLang={this.setShowLang} />
 
                     <Switch>

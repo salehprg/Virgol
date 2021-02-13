@@ -21,8 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/class/ClassInfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/class/ClassInfo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/recordedSessions/RecordedSessions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/recordedSessions/RecordedSessions.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +59,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../purephp" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2020.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -111,6 +109,8 @@
       <workItem from="1613123401731" duration="340000" />
       <workItem from="1613134949503" duration="31000" />
       <workItem from="1613135054973" duration="25000" />
+      <workItem from="1613142848190" duration="1818000" />
+      <workItem from="1613200534827" duration="675000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -189,7 +189,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613123428130</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="some change into recorded sessions">
+      <created>1613143811676</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1613143811676</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,6 +229,7 @@
     <MESSAGE value="stream tab styles added" />
     <MESSAGE value="button bugs fixed&#10;all tables in right align right now" />
     <MESSAGE value="edit lesson modal redesigned&#10;edit session button added&#10;some style added to landing page" />
-    <option name="LAST_COMMIT_MESSAGE" value="edit lesson modal redesigned&#10;edit session button added&#10;some style added to landing page" />
+    <MESSAGE value="some change into recorded sessions" />
+    <option name="LAST_COMMIT_MESSAGE" value="some change into recorded sessions" />
   </component>
 </project>

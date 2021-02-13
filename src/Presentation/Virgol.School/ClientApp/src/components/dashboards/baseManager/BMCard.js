@@ -1,7 +1,7 @@
 import React from "react";
 import {plus, trash, edit} from "../../../assets/icons";
 
-const BMCard = ({ onAdd, title, editIcon, onEdit, editable, deleteItem, isSelected, showAdd, listed, children }) => {
+const BMCard = ({ onAdd, title, editIcon, onEdit, editable, deleteItem, isSelected, showAdd, listed, children}) => {
 
     return (
         <div className="w-full p-2 h-90 max-h-500 rounded-xl flex flex-col justify-between bg-dark-blue">
