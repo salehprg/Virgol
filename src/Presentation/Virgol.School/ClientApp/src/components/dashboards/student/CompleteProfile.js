@@ -140,23 +140,23 @@ class CompleteProfile extends React.Component {
                     onCancel={() => history.push('/')}
                     title={this.props.t('completeProfile')}
                 >
-                    <form className="w-full text-right " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                        <p className="text-right text-white mb-6 text-xl">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</p>
+                    <form className="tw-w-full tw-text-right " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                        <p className="tw-text-right tw-text-white tw-mb-6 tw-text-xl">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</p>
                         <Field
                             name="latinFirstname"
                             type="text"
                             placeholder={this.props.t('latinFirstname')}
                             component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
+                            extra={"tw-w-40 tw-my-4 tw-mx-2"}
                         />
                         <Field
                             name="latinLastname"
                             type="text"
                             placeholder={this.props.t('latinLastname')}
                             component={this.renderInputs}
-                            extra={"w-40 my-4"}
+                            extra={"tw-w-40 tw-my-4"}
                         />
-                        {(this.state.verifiedPhone ? <p className="text-right text-white mb-6 text-xl"> شماره تلفن : {this.state.phoneNumber} </p> :
+                        {(this.state.verifiedPhone ? <p className="tw-text-right tw-text-white tw-mb-6 tw-text-xl"> شماره تلفن : {this.state.phoneNumber} </p> :
                             (!this.state.verifyPhone ? 
                             <>
                             <Field
@@ -165,9 +165,9 @@ class CompleteProfile extends React.Component {
                                 onChange={(e) => this.setState({phoneNumber : e.target.value})}
                                 placeholder={this.props.t('phoneNumber')}
                                 component={this.renderInputs}
-                                extra={"w-3/4 my-4"}
+                                extra={"tw-w-3/4 tw-my-4"}
                             />
-                            <button type="button" onClick={() => this.onSendPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('sendCode')}</button>
+                            <button type="button" onClick={() => this.onSendPhoneVerify()} className="tw-w-1/4 tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg">{this.props.t('sendCode')}</button>
                             </>
                             :
                             <>
@@ -177,14 +177,14 @@ class CompleteProfile extends React.Component {
                                 onChange={(e) => this.setState({verifyCodePhoneNumber : e.target.value})}
                                 placeholder={this.props.t('enterCode')}
                                 component={this.renderInputs}
-                                extra={"w-3/4 my-4"}
+                                extra={"tw-w-3/4 tw-my-4"}
                                 />
-                                <button type="button" onClick={() => this.onCheckVerifyPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
+                                <button type="button" onClick={() => this.onCheckVerifyPhone()} className="tw-w-1/4 tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg">{this.props.t('save')}</button>
                             </>
                             )
                         )}
 
-                        {/* {(this.state.verifiedFatherPhone ? <p className="text-right text-white mb-6 text-xl">  شماره تلفن ولی : {this.state.fatherPhoneNumber} </p> :
+                        {/* {(this.state.verifiedFatherPhone ? <p className="tw-text-right tw-text-white tw-mb-6 tw-text-xl">  شماره تلفن ولی : {this.state.fatherPhoneNumber} </p> :
                             (!this.state.verifyFatherPhone ? 
                                 <>
                                 <Field
@@ -193,9 +193,9 @@ class CompleteProfile extends React.Component {
                                     onChange={(e) => this.setState({fatherPhoneNumber : e.target.value})}
                                     placeholder="شماره همراه ولی"
                                     component={this.renderInputs}
-                                    extra={"w-3/4 my-4"}
+                                    extra={"tw-w-3/4 tw-my-4"}
                                 />
-                                <button type="button" onClick={() => this.onSendFatherPhoneVerify()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ارسال کد</button>
+                                <button type="button" onClick={() => this.onSendFatherPhoneVerify()} className="tw-w-1/4 tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg">ارسال کد</button>
                                 </>
                                 :
                                 <>
@@ -205,9 +205,9 @@ class CompleteProfile extends React.Component {
                                     onChange={(e) => this.setState({verifyCodeFatherPhoneNumber : e.target.value})}
                                     placeholder="کد ارسال شده را وارد نمایید"
                                     component={this.renderInputs}
-                                    extra={"w-3/4 my-4"}
+                                    extra={"tw-w-3/4 tw-my-4"}
                                     />
-                                    <button type="button" onClick={() => this.onCheckVerifyFatherPhone()} className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg">ثبت</button>
+                                    <button type="button" onClick={() => this.onCheckVerifyFatherPhone()} className="tw-w-1/4 tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg">ثبت</button>
                                 </>
                             )
                         )} */}
@@ -216,9 +216,9 @@ class CompleteProfile extends React.Component {
                             type="text"
                             placeholder={this.props.t('birthPlace')}
                             component={this.renderInputs}
-                            extra={"w-full my-4 mx-2"}
+                            extra={"tw-w-full tw-my-4 tw-mx-2"}
                         />
-                        {/* <p className="text-right text-white mb-4 text-xl">تاریخ تولد : </p>
+                        {/* <p className="tw-text-right tw-text-white tw-mb-4 tw-text-xl">تاریخ تولد : </p>
                         <DatePicker
                             timePicker={false}
                             isGregorian={false}
@@ -227,7 +227,7 @@ class CompleteProfile extends React.Component {
                         ></DatePicker> */
                         }
 
-                        {/* <p className="text-right text-white mb-4 text-xl">شناسنامه</p>
+                        {/* <p className="tw-text-right tw-text-white tw-mb-4 tw-text-xl">شناسنامه</p>
                         <input
                             onChange={(e) => this.handleUploadSH(e.target.files[0])}
                             type="file"
@@ -235,7 +235,7 @@ class CompleteProfile extends React.Component {
                             accept="image/*"
                         />
 
-                        <p className="text-right text-white mb-4 text-xl">عکس</p>
+                        <p className="tw-text-right tw-text-white tw-mb-4 tw-text-xl">عکس</p>
                         <input
                             onChange={(e) => this.handleUploadAX(e.target.files[0])}
                             type="file"
@@ -243,7 +243,7 @@ class CompleteProfile extends React.Component {
                             accept="image/*"
                         /> */}
 
-                    <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
+                    <button type="submit" className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg">{this.props.t('save')}</button>
                     </form>
 
                 </Add>

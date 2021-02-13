@@ -116,20 +116,20 @@ class AddLesson extends React.Component {
     render() {
         return (
             <Modal cancel={this.props.cancel}>
-                <div onClick={(e) => e.stopPropagation()} dir="rtl" className="w-11/12 max-w-500 bg-dark-blue px-4 py-6">
-                    <p className="text-center text-white my-4"> {this.props.IsFreeClass ? this.props.t('addFreeMeeting') : this.props.t('addLessonToSchedule')} </p>
+                <div onClick={(e) => e.stopPropagation()} dir="rtl" className="tw-w-11/12 tw-max-w-500 tw-bg-dark-blue tw-px-4 tw-py-6">
+                    <p className="tw-text-center tw-text-white tw-my-4"> {this.props.IsFreeClass ? this.props.t('addFreeMeeting') : this.props.t('addLessonToSchedule')} </p>
                     {(this.state.loading ? this.props.t('loading') :  
                     <React.Fragment>
                         {this.props.IsFreeClass ?
-                            <div className="w-1/2 mx-auto my-4">
-                                <input dir="rtl" placeholder={this.props.t('meetingName')} className="px-4 py-2 text-black focus:outline-none focus:shadow-outline border-2 border-dark-blue rounded-lg" onChange={(e) => this.handleChangeCourse(e.target.value)} value={this.state.selectedCourse} />
+                            <div className="tw-w-1/2 tw-mx-auto tw-my-4">
+                                <input dir="rtl" placeholder={this.props.t('meetingName')} className="tw-px-4 tw-py-2 tw-text-black focus:tw-outline-none focus:tw-shadow-outline tw-border-2 tw-border-dark-blue tw-rounded-lg" onChange={(e) => this.handleChangeCourse(e.target.value)} value={this.state.selectedCourse} />
                             </div>
                         :
                             <Select
                                 escapeClearsValue={true}
                                 styles={styles}
-                                onInputChange={(e) => console.log(e)}
-                                className="w-1/2 mx-auto my-4"
+                                onInputChange={(e) => {}}
+                                className="tw-w-1/2 tw-mx-auto tw-my-4"
                                 value={this.state.selectedCourse}
                                 onChange={this.handleChangeCourse}
                                 options={this.state.classLessons}
@@ -138,7 +138,7 @@ class AddLesson extends React.Component {
                         }
                         <Select
                             styles={styles}
-                            className="w-1/2 mx-auto my-4"
+                            className="tw-w-1/2 tw-mx-auto tw-my-4"
                             value={this.state.selectedTeacher}
                             onChange={this.handleChangeTeacher}
                             options={this.state.teachers}
@@ -146,7 +146,7 @@ class AddLesson extends React.Component {
                         />
                         <Select
                             styles={styles}
-                            className="w-1/2 mx-auto my-4"
+                            className="tw-w-1/2 tw-mx-auto tw-my-4"
                             value={this.state.selectedDay}
                             onChange={this.handleChangeDay}
                             options={this.options}
@@ -154,7 +154,7 @@ class AddLesson extends React.Component {
                         />
                         <Select
                             styles={styles}
-                            className="w-1/2 mx-auto my-4"
+                            className="tw-w-1/2 tw-mx-auto tw-my-4"
                             value={this.state.selectedStartTime}
                             onChange={this.handleChangeStart}
                             options={this.state.times}
@@ -163,7 +163,7 @@ class AddLesson extends React.Component {
                         {this.state.selectedStartTime ?
                             <Select
                                 styles={styles}
-                                className="w-1/2 mx-auto my-4"
+                                className="tw-w-1/2 tw-mx-auto tw-my-4"
                                 value={this.state.selectedEndTime}
                                 onChange={this.handleChangeEnd}
                                 options={this.state.times.filter(el => el.value > this.state.selectedStartTime.value)}
@@ -173,8 +173,8 @@ class AddLesson extends React.Component {
                             null
                         }
 
-                        <div className="w-1/2 mx-auto my-4 flex flex-row-reverse justify-between items-center">
-                            <p className="text-white"> {this.props.t('everyOtherWeek')} </p>
+                        <div className="tw-w-1/2 tw-mx-auto tw-my-4 tw-flex tw-flex-row-reverse tw-justify-between tw-items-center">
+                            <p className="tw-text-white"> {this.props.t('everyOtherWeek')} </p>
                             <Switch
                                 onChange={this.handleWeeklyChange}
                                 checked={!this.state.weekly}
@@ -184,10 +184,10 @@ class AddLesson extends React.Component {
                             />
                         </div>
 
-                        <div className={`w-1/2 mx-auto my-4 flex flex-row-reverse justify-between items-center ${this.state.weekly ? 'hidden' : 'block'}`}>
-                            <span className="text-white"> {this.props.t('week')} </span>
-                            <span onClick={() => this.handleWeek('1')} className={`w-1/3 text-center py-1 cursor-pointer border-2 ${this.state.week === '1' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}> {this.props.t('even')} </span>
-                            <span onClick={() => this.handleWeek('2')} className={`w-1/3 text-center py-1 cursor-pointer border-2 ${this.state.week === '2' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}> {this.props.t('odd')} </span>
+                        <div className={`tw-w-1/2 tw-mx-auto tw-my-4 tw-flex tw-flex-row-reverse tw-justify-between tw-items-center ${this.state.weekly ? 'tw-hidden' : 'tw-block'}`}>
+                            <span className="tw-text-white"> {this.props.t('week')} </span>
+                            <span onClick={() => this.handleWeek('1')} className={`tw-w-1/3 tw-text-center tw-py-1 tw-cursor-pointer tw-border-2 ${this.state.week === '1' ? 'tw-border-redish tw-text-redish' : 'tw-border-grayish tw-text-grayish'}`}> {this.props.t('even')} </span>
+                            <span onClick={() => this.handleWeek('2')} className={`tw-w-1/3 tw-text-center tw-py-1 tw-cursor-pointer tw-border-2 ${this.state.week === '2' ? 'tw-border-sky-blue tw-text-sky-blue' : 'tw-border-grayish tw-text-grayish'}`}> {this.props.t('odd')} </span>
                         </div>
 
                         {/*<input type="number" name="startHour" placeholder="ساعت" onChange={this.onHandleInput} value={this.state.startHour} />*/}
@@ -195,7 +195,7 @@ class AddLesson extends React.Component {
                         {/*<input type="number" name="endHour" placeholder="ساعت پایان" onChange={this.onHandleInput} value={this.state.endHour} />*/}
                         {/*<input type="number" name="endMin" placeholder="دقیقه پایان" onChange={this.onHandleInput} value={this.state.endMin} />*/}
 
-                        <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={this.onAddSchedule} > {this.props.t('save')} </button>
+                        <button className="tw-w-1/2 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white" onClick={this.onAddSchedule} > {this.props.t('save')} </button>
                     </React.Fragment>
                     )}
                 </div>

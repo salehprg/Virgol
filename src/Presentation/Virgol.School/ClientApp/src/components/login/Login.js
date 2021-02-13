@@ -34,7 +34,7 @@ class Login extends React.Component {
                 type={type}
                 dir="ltr"
                 placeholder={placeholder}
-                extra="w-5/6 my-4"
+                extra="tw-w-5/6 tw-my-4"
             />
         );
     }
@@ -48,7 +48,7 @@ class Login extends React.Component {
                 type={type}
                 dir="ltr"
                 placeholder={placeholder}
-                extra="w-5/6 my-4"
+                extra="tw-w-5/6 tw-my-4"
                 visible={this.state.passVisibility}
                 onChange={() => this.setState({ passVisibility: !this.state.passVisibility})}
             />
@@ -87,7 +87,7 @@ class Login extends React.Component {
         if (this.state.panel === 'login') {
             return (
                 <>
-                    <form className="text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
+                    <form className="tw-text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
                         <Field
                             name="username"
                             type="text"
@@ -100,11 +100,11 @@ class Login extends React.Component {
                             placeholder={this.props.t('password')}
                             component={this.renderPassword}
                         />
-                        <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
-                            {this.state.logingin ? loading('w-6 text-white') : this.props.t('enter')}
+                        <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
+                            {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('enter')}
                         </button>
                     </form>
-                    <button onClick={() => this.setState({ panel: 'sendcode' })} className={`w-5/6 mx-auto text-sm flex justify-center rounded-lg py-2 focus:outline-none mt-8 text-white`}>
+                    <button onClick={() => this.setState({ panel: 'sendcode' })} className={`tw-w-5/6 tw-mx-auto tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none tw-mt-8 tw-text-white`}>
                         {this.props.t('forgotPassword')}
                     </button>
                 </>
@@ -112,28 +112,28 @@ class Login extends React.Component {
         } else if (this.state.panel === 'sendcode') {
             return (
                 <>
-                    <p className="text-center text-white"></p>
-                    <form className="text-center" onSubmit={this.props.handleSubmit(this.sendCode)}>
+                    <p className="tw-text-center tw-text-white"></p>
+                    <form className="tw-text-center" onSubmit={this.props.handleSubmit(this.sendCode)}>
                         <Field
                             name="IdNumer"
                             type="text"
                             placeholder={this.props.t('nationCode')}
                             component={this.renderInputs}
                         />
-                        <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
-                            {this.state.sendingCode ? loading('w-6 text-white') : this.props.t('sendVerificationCode')}
+                        <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
+                            {this.state.sendingCode ? loading('tw-w-6 tw-text-white') : this.props.t('sendVerificationCode')}
                         </button>
                     </form>
 
-                    <button onClick={() => this.setState({ panel: 'login' })} className={`w-5/6 mx-auto text-sm flex justify-center rounded-lg py-2 focus:outline-none mt-8 text-white`}>
-                        {this.state.logingin ? loading('w-6 text-white') : this.props.t('backToLogin')}
+                    <button onClick={() => this.setState({ panel: 'login' })} className={`tw-w-5/6 tw-mx-auto tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none tw-mt-8 tw-text-white`}>
+                        {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('backToLogin')}
                     </button>
                 </>
             );
         } else {
             return (
                 <>
-                    <form className="text-center" onSubmit={this.props.handleSubmit(this.confirm)}>
+                    <form className="tw-text-center" onSubmit={this.props.handleSubmit(this.confirm)}>
                         <Field
                             name="code"
                             type="text"
@@ -153,15 +153,15 @@ class Login extends React.Component {
                             component={this.renderInputs}
                         />
 
-                        <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
-                            {this.state.reseting ? loading('w-6 text-white') : this.props.t('confirm')}
+                        <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
+                            {this.state.reseting ? loading('tw-w-6 tw-text-white') : this.props.t('confirm')}
                         </button>
                     </form>
-                    {/*<button className={`w-5/6 mx-auto text-sm flex justify-center rounded-lg py-2 focus:outline-none mt-8 text-white`}>*/}
-                    {/*    {this.state.logingin ? loading('w-6 text-white') : 'کدی دریافت نکردید؟'}*/}
+                    {/*<button className={`tw-w-5/6 tw-mx-auto tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none tw-mt-8 tw-text-white`}>*/}
+                    {/*    {this.state.logingin ? loading('tw-w-6 tw-text-white') : 'کدی دریافت نکردید؟'}*/}
                     {/*</button>*/}
-                    <button onClick={() => this.setState({ panel: 'login' })} className={`w-5/6 mx-auto text-sm flex justify-center rounded-lg py-2 focus:outline-none mt-8 text-white`}>
-                        {this.state.logingin ? loading('w-6 text-white') : this.props.t('backToLogin')}
+                    <button onClick={() => this.setState({ panel: 'login' })} className={`tw-w-5/6 tw-mx-auto tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none tw-mt-8 tw-text-white`}>
+                        {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('backToLogin')}
                     </button>
                 </>
             );
@@ -175,29 +175,29 @@ class Login extends React.Component {
     render() {
         return (
             <>
-                <div onClick={() => this.setShowLang(false)} className="w-screen min-h-screen bg-black-blue pt-16">
-                    <div className="w-full max-w-350 mx-auto">
-                        <div className="text-center mb-8">
-                            {/* <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} alt="logo" /> */}
-                            <img className="w-24 mx-auto mb-3" src={localizer.getLogo(window.location.href)} alt="logo" />
-                            {/* {logo('w-16 mb-3 text-purplish mx-auto')}
+                <div onClick={() => this.setShowLang(false)} className="tw-w-screen tw-min-h-screen tw-bg-black-blue tw-pt-16">
+                    <div className="tw-w-full tw-max-w-350 tw-mx-auto">
+                        <div className="tw-text-center tw-mb-8">
+                            {/* <img className="tw-w-24 tw-mx-auto tw-mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} alt="logo" /> */}
+                            <img className="tw-w-24 tw-mx-auto tw-mb-3" src={localizer.getLogo(window.location.href)} alt="logo" />
+                            {/* {logo('tw-w-16 tw-mb-3 tw-text-purplish tw-mx-auto')}
                             {process.env.REACT_APP_RAHE_DOOR === "true" ?
-                                <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
+                                <img className="tw-w-24 tw-mx-auto tw-mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
                                 :
-                                logo('w-24 mx-auto mb-3 text-purplish')
+                                logo('tw-w-24 tw-mx-auto tw-mb-3 tw-text-purplish')
                             } */}
-                            <span className="text-xl text-white">
+                            <span className="tw-text-xl tw-text-white">
                                 {/* {process.env.REACT_APP_ENTER_TEXT} */}
                                 {localizer.getTitle(window.location.href)}
                             </span>
                         </div>
-                        <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
+                        <div className="tw-w-full tw-py-16 tw-text-center sm:tw-border-2 sm:tw-border-dark-blue tw-rounded-lg">
                             {this.renderPanel()}
                         </div>
                         <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} />
                     </div>
                 </div>
-                <span style={{position : "fixed" , bottom : 0 }} class="text-white mb-2 ml-3">process.env.REACT_APP_VERSION</span>
+                <span style={{position : "fixed" , bottom : 0 }} class="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
             </>
         );
     }

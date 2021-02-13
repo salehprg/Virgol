@@ -63,8 +63,8 @@ class StudentInfo extends React.Component {
                     onCancel={() => this.emptyData()}
                     title={this.props.t('studentInfo')}
                 >
-                    <form className="w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                        {/*<div className="text-white">*/}
+                    <form className="tw-w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                        {/*<div className="tw-text-white">*/}
                         {/*    <input checked="true" */}
                         {/*        type="radio" */}
                         {/*        value="Female" */}
@@ -74,7 +74,7 @@ class StudentInfo extends React.Component {
                         {/*    /> دختر*/}
 
                         {/*    <input */}
-                        {/*        className="mr-4" */}
+                        {/*        className="tw-mr-4" */}
                         {/*        checked={this.state.selectedOption === "Male"}*/}
                         {/*        onChange={this.handleRadioBtnChng} */}
                         {/*        type="radio" */}
@@ -82,36 +82,36 @@ class StudentInfo extends React.Component {
                         {/*        name="gender" */}
                         {/*    /> پسر*/}
                         {/*</div>*/}
-                        <div className="w-full flex justify-between items-center">
+                        <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                             <Field
                                 name="firstName"
                                 type="text"
                                 placeholder={this.props.t('firstName')}
                                 component={this.renderInputs}
-                                extra={"w-1/2 ml-1 my-4"}
+                                extra={"tw-w-1/2 tw-ml-1 tw-my-4"}
                             />
                             <Field
                                 name="lastName"
                                 type="text"
                                 placeholder={this.props.t('lastName')}
                                 component={this.renderInputs}
-                                extra={"w-1/2 mr-1 my-4"}
+                                extra={"tw-w-1/2 tw-mr-1 tw-my-4"}
                             />
                         </div>
-                        <div className="w-full flex justify-between items-center">
+                        <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                             <Field
                                 name="latinFirstname"
                                 type="text"
                                 placeholder={this.props.t('latinFirstname')}
                                 component={this.renderInputs}
-                                extra={"w-1/2 ml-1 my-4"}
+                                extra={"tw-w-1/2 tw-ml-1 tw-my-4"}
                             />
                             <Field
                                 name="latinLastname"
                                 type="text"
                                 placeholder={this.props.t('latinLastname')}
                                 component={this.renderInputs}
-                                extra={"w-1/2 mr-1 my-4"}
+                                extra={"tw-w-1/2 tw-mr-1 tw-my-4"}
                             />
                         </div>
                         <Field
@@ -119,37 +119,37 @@ class StudentInfo extends React.Component {
                             type="text"
                             placeholder={this.props.t('phoneNumber')}
                             component={this.renderInputs}
-                            extra={"w-full my-4"}
+                            extra={"tw-w-full tw-my-4"}
                         />
                         <Field
                             name="melliCode"
                             type="text"
                             placeholder={this.props.t('nationCode')}
                             component={this.renderInputs}
-                            extra={"w-full my-4"}
+                            extra={"tw-w-full tw-my-4"}
                         />
-                        <div className="w-full flex justify-between items-center">
+                        <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                             <Field
                                 name="fatherName"
                                 type="text"
                                 placeholder={this.props.t('fatherName')}
                                 component={this.renderInputs}
-                                extra={"w-1/2 ml-1 my-4"}
+                                extra={"tw-w-1/2 tw-ml-1 tw-my-4"}
                             />
                             <Field
                                 name="fatherPhoneNumber"
                                 type="text"
                                 placeholder={this.props.t('fatherPhoneNumber')}
                                 component={this.renderInputs}
-                                extra={"w-1/2 mr-1 my-4"}
+                                extra={"tw-w-1/2 tw-mr-1 tw-my-4"}
                             />
                         </div>
-                        <div className="w-full my-4 flex justify-between items-center">
-                            <span className="text-white"> {this.props.t('gender')} </span>
-                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>{this.props.t('girl')}</span>
-        <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>{this.props.t('boy')}</span>
+                        <div className="tw-w-full tw-my-4 tw-flex tw-justify-between tw-items-center">
+                            <span className="tw-text-white"> {this.props.t('gender')} </span>
+                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`tw-w-1/3 tw-text-center tw-py-2 tw-cursor-pointer tw-border-2 ${this.state.selectedOption === 'Female' ? 'tw-border-redish tw-text-redish' : 'tw-border-grayish tw-text-grayish'}`}>{this.props.t('girl')}</span>
+        <span onClick={() => this.handleRadioBtnChng("Male")} className={`tw-w-1/3 tw-text-center tw-py-2 tw-cursor-pointer tw-border-2 ${this.state.selectedOption === 'Male' ? 'tw-border-sky-blue tw-text-sky-blue' : 'tw-border-grayish tw-text-grayish'}`}>{this.props.t('boy')}</span>
                         </div>
-                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
+                        <button type="submit" className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg">{this.props.t('save')}</button>
                     </form>
                 </Add>
             </div>

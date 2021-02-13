@@ -35,15 +35,15 @@ class Home extends React.Component {
     }
     
     render() {
-        if(this.state.loading) loading('w-10 text-grayish centerize')
+        if(this.state.loading) loading('tw-w-10 tw-text-grayish centerize')
         return (
-            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
+            <div className="tw-grid sm:tw-grid-cols-2 tw-grid-cols-1 tw-gap-4 tw-py-6">
                 <div>
                     {this.props.activeStream ? 
-                    <div className="mb-4 flex flex-row-reverse items-center justify-evenly">
-                        <p className="text-white">{this.props.activeStream.streamName}</p>
+                    <div className="tw-mb-4 tw-flex tw-flex-row-reverse tw-items-center tw-justify-evenly">
+                        <p className="tw-text-white">{this.props.activeStream.streamName}</p>
                         <Link 
-                            className="py-2 px-6 rounded-lg bg-greenish text-white" 
+                            className="tw-py-2 tw-px-6 tw-rounded-lg tw-bg-greenish tw-text-white" 
                             to={`/stream`}>
                             پیوستن به همایش
                         </Link>
@@ -54,7 +54,7 @@ class Home extends React.Component {
                     <Feed
                         news={this.props.inNews}
                         title={this.props.t('managerNewsTitle')}
-                        pos="sm:row-start-1 row-start-2"
+                        pos="sm:tw-row-start-1 tw-row-start-2"
                     />
                 </div>
                 <div className="">
@@ -73,7 +73,7 @@ class Home extends React.Component {
                                   title={this.props.t('loading')}
                                   ShowServiceType = {false} />
                     )}
-                    <div className="mt-8">
+                    <div className="tw-mt-8">
 
                         {(this.props.dashboardInfo.school && !window.location.href.includes('dei')) ? 
                         <Activation expireDate={this.getExpireDate()} />
@@ -84,30 +84,30 @@ class Home extends React.Component {
                             title={this.props.t('allClasses')}
                             icon={home}
                             number={this.props.dashboardInfo.classCount}
-                            bg="bg-sky-blue"
+                            tw-bg="tw-bg-sky-blue"
                         /> */}
 
                         <CounterCard
                             title={this.props.t('onlineClasses')}
                             icon={user}
                             number={this.props.dashboardInfo.onlineClass}
-                            bg="bg-purplish"
+                            bg="tw-bg-purplish"
                         />
 
                         <CounterCard
                             title={this.props.t('teachers')}
                             icon={users}
                             number={this.props.dashboardInfo.teacherCount}
-                            bg="bg-redish"
-                            pos="row-start-3"
+                            bg="tw-bg-redish"
+                            pos="tw-row-start-3"
                         />
 
                         <CounterCard
                             title={this.props.t('students')}
                             icon={key}
                             number={this.props.dashboardInfo.studentsCount}
-                            bg="bg-greenish"
-                            pos="row-start-3"
+                            bg="tw-bg-greenish"
+                            pos="tw-row-start-3"
                         />
                     </div>
                 </div>

@@ -24,16 +24,16 @@ class RecentClass extends React.Component {
         const { title, pos , joinList, newBtn, btnAction, classes } = this.props
 
         return (
-            <div className={`${pos} w-full h-full my-4 px-6 py-4 relative text-right bg-dark-blue rounded-xl`}>
-                <div className="w-full flex flex-row-reverse justify-between items-center">
-                    <p className="text-white">{title}</p>
-                    <button onClick={btnAction} className={`px-4 py-1 bg-greenish rounded-lg text-white ${newBtn ? '' : 'hidden'}`}>{this.props.t('createPrivateClass')}</button>
+            <div className={`${pos} tw-w-full tw-h-full tw-my-4 tw-px-6 tw-py-4 tw-relative tw-text-right tw-bg-dark-blue tw-rounded-xl`}>
+                <div className="tw-w-full tw-flex tw-flex-row-reverse tw-justify-between tw-items-center">
+                    <p className="tw-text-white">{title}</p>
+                    <button onClick={btnAction} className={`tw-px-4 tw-py-1 tw-bg-greenish tw-rounded-lg tw-text-white ${newBtn ? '' : 'tw-hidden'}`}>{this.props.t('createPrivateClass')}</button>
                 </div>
                 {(classes ? 
                     (
                         classes.length === 0 
                         ? 
-                    <span className="text-xl text-grayish block ">{this.props.t('noClassAvailable')}</span>
+                    <span className="tw-text-xl tw-text-grayish tw-block ">{this.props.t('noClassAvailable')}</span>
                         :
                         classes.map(x => {
                             return (
@@ -92,7 +92,7 @@ class RecentClass extends React.Component {
                         })
                     )
                     :
-                    <span className="text-2xl text-grayish block text-center">{this.props.t('noClassAvailable')}</span> 
+                    <span className="tw-text-2xl tw-text-grayish tw-block tw-text-center">{this.props.t('noClassAvailable')}</span> 
                 )
                 }
             

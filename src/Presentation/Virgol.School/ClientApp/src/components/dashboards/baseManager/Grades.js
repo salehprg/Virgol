@@ -79,7 +79,7 @@ class Grades extends React.Component {
     render() {
         if(this.state.loading) return this.props.t('loading')
         return (
-            <div className="mt-10 w-full overflow-auto">
+            <div className="tw-mt-10 tw-w-full tw-overflow-auto">
                 <BaseManager
                     editable={false}
                     classable={true}

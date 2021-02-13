@@ -33,8 +33,8 @@ class Home extends React.Component {
     render() {
         if(this.state.loading) return this.props.t('loading')
         return (
-            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
-                <div className="col-span-1 flex flex-col justify-between">
+            <div className="tw-grid sm:tw-grid-cols-2 tw-grid-cols-1 tw-gap-4 tw-py-6">
+                <div className="tw-col-span-1 tw-flex tw-flex-col tw-justify-between">
                     <Hero userInfo={this.props.user.userInformation}
                           userDetail={this.props.user.userDetail}
                           userTitle={this.props.user.userDetail.schooltypeName}
@@ -44,15 +44,15 @@ class Home extends React.Component {
                         joinList={true}
                         classes={this.props.recentClass}
                         title={this.props.t('activeClasses')}
-                        pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                        pos="tw-row-start-4 sm:tw-row-start-auto tw-col-span-2 tw-row-span-2"
                     />
                 </div>
                 <div>
                     {this.props.activeStream ? 
-                    <div className="mb-4 flex flex-row-reverse items-center justify-evenly">
-                        <p className="text-white">{this.props.activeStream.streamName}</p>
+                    <div className="tw-mb-4 tw-flex tw-flex-row-reverse tw-items-center tw-justify-evenly">
+                        <p className="tw-text-white">{this.props.activeStream.streamName}</p>
                         <Link 
-                            className="py-2 px-6 rounded-lg bg-greenish text-white" 
+                            className="tw-py-2 tw-px-6 tw-rounded-lg tw-bg-greenish tw-text-white" 
                             to={`/stream`}>
                             پیوستن به همایش
                         </Link>
@@ -63,7 +63,7 @@ class Home extends React.Component {
                     <Feed
                     news={this.props.inNews}
                     title={this.props.t('studentsNews')}
-                    pos="col-span-1"
+                    pos="tw-col-span-1"
                 />
                 </div>
             </div>

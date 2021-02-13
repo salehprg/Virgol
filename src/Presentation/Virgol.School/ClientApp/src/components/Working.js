@@ -4,8 +4,8 @@ import {working} from "../assets/icons";
 const Working = () => {
 
     return (
-        <div className="z-50 w-screen h-screen fixed bg-black-blue bg-opacity-75 flex justify-center items-center">
-            {working('w-12 text-grayish')}
+        <div className="tw-z-50 tw-w-screen tw-h-screen tw-fixed tw-bg-black-blue tw-bg-tw-opacity-75 tw-flex tw-justify-center tw-items-center">
+            {working('tw-w-12 tw-text-grayish')}
         </div>
     );
 

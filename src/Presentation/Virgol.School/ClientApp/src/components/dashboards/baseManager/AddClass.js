@@ -27,15 +27,15 @@ class AddClass extends React.Component {
     render() {
         return (
             <Modal cancel={this.props.cancel}>
-                <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-500 bg-bold-blue px-4 py-16 flex flex-col items-center">
-                    <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
-                        <input dir="rtl" placeholder={this.props.t('className')} className="px-4 py-2 text-white bg-transparent focus:outline-none focus:shadow-outline border-2 border-dark-blue rounded-lg" onChange={this.handleChange} value={this.state.className} />
+                <div onClick={e => e.stopPropagation()} className="tw-w-5/6 tw-max-w-500 tw-bg-bold-blue tw-px-4 tw-py-16 tw-flex tw-flex-col tw-items-center">
+                    <div className="tw-w-11/12 tw-mt-4 tw-flex tw-flex-row-reverse tw-justify-center tw-flex-wrap">
+                        <input dir="rtl" placeholder={this.props.t('className')} className="tw-px-4 tw-py-2 tw-text-white tw-bg-transparent focus:tw-outline-none focus:tw-shadow-outline tw-border-2 tw-border-dark-blue tw-rounded-lg" onChange={this.handleChange} value={this.state.className} />
                     </div>
-                    <div className="flex mt-8 flex-row items-center">
-                        <button onClick={this.addClass} className="px-6 py-1 mx-1 border-2 border-transparent rounded-lg bg-greenish text-white">
+                    <div className="tw-flex tw-mt-8 tw-flex-row tw-items-center">
+                        <button onClick={this.addClass} className="tw-px-6 tw-py-1 tw-mx-1 tw-border-2 tw-border-transparent tw-rounded-lg tw-bg-greenish tw-text-white">
                             {this.props.t('save')}
                         </button>
-                        <button onClick={this.props.cancel} className="px-6 mx-1 py-1 rounded-lg border-2 border-grayish text-grayish">
+                        <button onClick={this.props.cancel} className="tw-px-6 tw-mx-1 tw-py-1 tw-rounded-lg tw-border-2 tw-border-grayish tw-text-grayish">
                             {this.props.t('cancel')}
                         </button>
                     </div>

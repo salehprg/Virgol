@@ -31,7 +31,7 @@ class AddNews extends React.Component {
         type={type}
         dir="rtl"
         placeholder={placeholder}
-        extra={extra + " my-4"}
+        extra={extra + " tw-my-4"}
       />
     );
   };
@@ -44,7 +44,7 @@ class AddNews extends React.Component {
         type={type}
         dir="rtl"
         placeholder={placeholder}
-        extra={extra + " my-4"}
+        extra={extra + " tw-my-4"}
       />
     );
   };
@@ -77,7 +77,7 @@ class AddNews extends React.Component {
         title={this.props.t("sendNews")}
       >
         <form
-          className="w-full "
+          className="tw-w-full "
           style={{ direction: "rtl" }}
           onSubmit={this.props.handleSubmit(this.onSubmit)}
         >
@@ -85,7 +85,7 @@ class AddNews extends React.Component {
             name="message"
             type="text"
             placeholder={this.props.t("newsText")}
-            extra={"w-full my-4 mx-2 h-40"}
+            extra={"tw-w-full tw-my-4 tw-mx-2 tw-h-40"}
             component={this.renderTextArea}
           />
           <Field
@@ -93,24 +93,24 @@ class AddNews extends React.Component {
             type="text"
             onChange={(e) => this.setState({ tags: e.target.value.split(",") })}
             placeholder={this.props.t("tagsInfo")}
-            extra={"w-2/4 my-4 mx-2"}
+            extra={"w-2/4 tw-my-4 tw-mx-2"}
             component={this.renderInputs}
           />
           <Select
             styles={styles}
-            className="w-1/4 inline-grid my-4 rounded-lg"
+            className="tw-w-1/4 tw-inline-grid tw-my-4 tw-rounded-lg"
             value={this.state.Receivers}
             onChange={this.handleChangeDay}
             options={this.options}
             placeholder={this.props.t("reciever")}
           />
-          <div className="w-3/4 flex flex-wrap justify-start items-center">
+          <div className="tw-w-3/4 tw-flex tw-flex-wrap tw-justify-start tw-items-center">
             {this.state.tags.length > 0
               ? this.state.tags.map((tag, i) => {
                   if (tag.trim() != "") {
                     return (
                       <div
-                        className={`px-6 py-1 ml-2 mb-2 rounded-full text-white bg-${getColor(
+                        className={`tw-px-6 tw-py-1 tw-ml-2 tw-mb-2 tw-rounded-full tw-text-white tw-bg-${getColor(
                           i
                         )}`}
                       >
@@ -124,7 +124,7 @@ class AddNews extends React.Component {
 
           <button
             type="submit"
-            className="w-1/4 py-2 mt-4 text-white bg-purplish rounded-lg"
+            className="tw-w-1/4 tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg"
           >
             {" "}
             {this.props.t("add")}{" "}

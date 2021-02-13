@@ -23,7 +23,7 @@ class PrivateLogin extends React.Component {
                 type={type}
                 dir="ltr"
                 placeholder={placeholder}
-                extra="w-5/6 my-4"
+                extra="tw-w-5/6 tw-my-4"
             />
         );
     }
@@ -37,7 +37,7 @@ class PrivateLogin extends React.Component {
                 type={type}
                 dir="ltr"
                 placeholder={placeholder}
-                extra="w-5/6 my-4"
+                extra="tw-w-5/6 tw-my-4"
                 visible={this.state.passVisibility}
                 onChange={() => this.setState({ passVisibility: !this.state.passVisibility})}
             />
@@ -56,19 +56,19 @@ class PrivateLogin extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen bg-black-blue py-16">
-                <div className="w-full max-w-350 mx-auto">
-                    <div className="text-center mb-8">
-                        {/*{logo('w-16 mb-3 text-purplish mx-auto')}*/}
+            <div className="tw-w-screen tw-min-h-screen tw-bg-black-blue tw-py-16">
+                <div className="tw-w-full tw-max-w-350 tw-mx-auto">
+                    <div className="tw-text-center tw-mb-8">
+                        {/*{logo('tw-w-16 tw-mb-3 tw-text-purplish tw-mx-auto')}*/}
                         {process.env.REACT_APP_RAHE_DOOR === "true" ?
-                            <img className="w-24 mx-auto mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
+                            <img className="tw-w-24 tw-mx-auto tw-mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
                             :
-                            logo('w-24 mx-auto mb-3 text-purplish')
+                            logo('tw-w-24 tw-mx-auto tw-mb-3 tw-text-purplish')
                         }
-                        <span className="text-xl text-white">{this.props.t('enterPrivateClass')}</span>
+                        <span className="tw-text-xl tw-text-white">{this.props.t('enterPrivateClass')}</span>
                     </div>
-                    <div className="w-full py-16 text-center sm:border-2 sm:border-dark-blue rounded-lg">
-                    <form className="text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
+                    <div className="tw-w-full tw-py-16 tw-text-center sm:tw-border-2 sm:tw-border-dark-blue tw-rounded-lg">
+                    <form className="tw-text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
                         <Field
                             name="username"
                             type="text"
@@ -81,8 +81,8 @@ class PrivateLogin extends React.Component {
                             placeholder={this.props.t('password')}
                             component={this.renderPassword}
                         />
-                        <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
-                            {this.state.logingin ? loading('w-6 text-white') : this.props.t('enter')}
+                        <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
+                            {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('enter')}
                         </button>
                     </form>
                     </div>

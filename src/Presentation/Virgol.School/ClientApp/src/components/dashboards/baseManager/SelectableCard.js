@@ -4,9 +4,9 @@ import {check_circle} from "../../../assets/icons";
 const SelectableCard = ({ id, title, isSelected, select , isBigTitle }) => {
 
     return (
-        <div dir="ltr" onClick={() => select(id)} className={`w-full cursor-pointer rounded-lg border-2 ${isSelected? 'border-greenish' : 'border-transparent'} px-1 py-2 flex flex-row-reverse justify-start items-center`}>
-            {check_circle('w-8 text-greenish')}
-            <span className="text-white mr-2 text-right">{title}</span>
+        <div dir="ltr" onClick={() => select(id)} className={`tw-w-full tw-cursor-pointer tw-rounded-lg tw-border-2 ${isSelected? 'tw-border-greenish' : 'tw-border-transparent'} tw-px-1 tw-py-2 tw-flex tw-flex-row-reverse tw-justify-start tw-items-center`}>
+            {check_circle('tw-w-8 tw-text-greenish')}
+            <span className="tw-text-white tw-mr-2 tw-text-right">{title}</span>
         </div>
     );
 

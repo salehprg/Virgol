@@ -5,8 +5,8 @@ class Notification extends React.Component {
 
     render() {
         return (
-            <div className="bg-dark-blue p-4 lg:mr-0 mr-6 rounded-b-xl">
-                {bell('w-6 text-white')}
+            <div className="tw-bg-dark-blue tw-p-4 lg:tw-mr-0 tw-mr-6 tw-rounded-b-xl">
+                {bell('tw-w-6 tw-text-white')}
             </div>
         );
     }

@@ -7,10 +7,10 @@ const NoFound = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="w-screen h-screen bg-dark-blue flex flex-col justify-center items-center">
-            <img className="md:w-1/3 w-2/3" src="/Lost Keys-big.png" alt="404 zert" />
-            <p className="text-white my-4 text-xl"> {t('notFound')} </p>
-            <Link className="px-10 rounded-lg py-2 bg-greenish text-white" to="/"> {t('enter')} </Link>
+        <div className="tw-w-screen tw-h-screen tw-bg-dark-blue tw-flex tw-flex-col tw-justify-center tw-items-center">
+            <img className="md:tw-w-1/3 tw-w-2/3" src="/Lost Keys-big.png" alt="404 zert" />
+            <p className="tw-text-white tw-my-4 tw-text-xl"> {t('notFound')} </p>
+            <Link className="tw-px-10 tw-rounded-lg tw-py-2 tw-bg-greenish tw-text-white" to="/"> {t('enter')} </Link>
         </div>
     );
 

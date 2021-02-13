@@ -48,38 +48,38 @@ class CompleteProfile extends React.Component {
                     onCancel={() => history.push('/')}
                     title={this.props.t('completeProfile')}
                 >
-                    <form className="w-full text-right " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                        <p className="text-right text-white mb-6 text-xl">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</p>
-                        <p className="text-right text-white mb-6 text-xl">{this.props.t('personelCode')} : {this.props.user.userDetail.userDetail.personalIdNUmber}</p>
+                    <form className="tw-w-full tw-text-right " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                        <p className="tw-text-right tw-text-white tw-mb-6 tw-text-xl">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</p>
+                        <p className="tw-text-right tw-text-white tw-mb-6 tw-text-xl">{this.props.t('personelCode')} : {this.props.user.userDetail.userDetail.personalIdNUmber}</p>
                         <Field
                             name="latinFirstname"
                             type="text"
                             placeholder={this.props.t('latinFirstName')}
                             component={this.renderInputs}
-                            extra={"w-40 my-4 mx-2"}
+                            extra={"tw-w-40 tw-my-4 tw-mx-2"}
                         />
                         <Field
                             name="latinLastname"
                             type="text"
                             placeholder={this.props.t('latinLastname')}
                             component={this.renderInputs}
-                            extra={"w-40 my-4"}
+                            extra={"tw-w-40 tw-my-4"}
                         />
                         {/* <Field
                             name="personalIdNUmber"
                             type="text"
                             placeholder="کد پرسنلی"
                             component={this.renderInputs}
-                            extra={"w-full my-4 mx-2"}
+                            extra={"tw-w-full tw-my-4 tw-mx-2"}
                         /> */}
                         <Field
                             name="cityBirth"
                             type="text"
                             placeholder={this.props.t('birthPlace')}
                             component={this.renderInputs}
-                            extra={"w-full my-4 mx-2"}
+                            extra={"tw-w-full tw-my-4 tw-mx-2"}
                         />
-                        <p className="text-right text-white mb-4 text-xl">{this.props.t('birthDate')} :</p>
+                        <p className="tw-text-right tw-text-white tw-mb-4 tw-text-xl">{this.props.t('birthDate')} :</p>
                         <DatePicker
                             timePicker={false}
                             isGregorian={false}
@@ -88,7 +88,7 @@ class CompleteProfile extends React.Component {
                         ></DatePicker>
                         
 
-                    <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
+                    <button type="submit" className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg">{this.props.t('save')}</button>
                     </form>
                 </Add>
             </div>

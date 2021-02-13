@@ -8,22 +8,22 @@ class RecentClassDetail extends React.Component {
         const { serviceType, text,day , startTime , endTime , schoolName , className , onStart , onEnd , joinable } = this.props
 
         return (
-            <div className="w-full py-2 mt-6 border-b border-grayish">
-                <div className="w-full flex flex-row justify-between items-center">
-                    <span className="w-1/4 text-white mb-4">{day} {this.props.t('from')} {startTime} {this.props.t('till')} {endTime}</span>
-                    <span className="w-3/4 text-white mb-4">{text}</span>
+            <div className="tw-w-full tw-py-2 tw-mt-6 tw-border-b tw-border-grayish">
+                <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">
+                    <span className="tw-w-1/4 tw-text-white tw-mb-4">{day} {this.props.t('from')} {startTime} {this.props.t('till')} {endTime}</span>
+                    <span className="tw-w-3/4 tw-text-white tw-mb-4">{text}</span>
                 </div>
-                <div className="w-full flex flex-row justify-between items-center">
+                <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">
 
                 {(joinable ? 
-                    <div className="flex flex-wrap flex-row-reverse justify-start items-center">
-                        <button onClick={() => onStart()} className={`px-6 py-1 ml-2 mb-2 flex flex-row-reverse items-center justify-center rounded-full text-white bg-${getColor(3)}`}>
+                    <div className="tw-flex tw-flex-wrap tw-flex-row-reverse tw-justify-start tw-items-center">
+                        <button onClick={() => onStart()} className={`tw-px-6 tw-py-1 tw-ml-2 tw-mb-2 tw-flex tw-flex-row-reverse tw-items-center tw-justify-center tw-rounded-full tw-text-white tw-bg-${getColor(3)}`}>
                             {this.props.t('enterClass')}
-                            <img className="w-6 mx-2" src={serviceType === 'adobe' ? '/Connect.png' : '/BBB.png'} />
+                            <img className="tw-w-6 tw-mx-2" src={serviceType === 'adobe' ? '/Connect.png' : '/BBB.png'} />
                         </button>
                     </div>
                 :
-                <span className="text-redish mb-4">{this.props.t('notStarted')}</span>
+                <span className="tw-text-redish tw-mb-4">{this.props.t('notStarted')}</span>
                 )}
                 </div>
             </div>

@@ -28,13 +28,13 @@ const Copyright = () => {
     }, [])
 
     return (
-        <motion.div className="fixed w-screen bg-transparent opacity-0"
+        <motion.div className="tw-fixed tw-w-screen tw-bg-transparent tw-opacity-0"
             animate={show ? 'open' : 'close'}
             transition="transition"
             variants={vars}
         >
-            <div className="w-5/6 bg-white flex flex-row-reverse justify-evenly items-center rounded-lg px-4 py-1 text-center max-w-350 md:ml-12 mt-12 mx-auto">
-                {logo("w-12 text-purplish")}
+            <div className="tw-w-5/6 tw-bg-white tw-flex tw-flex-row-reverse tw-justify-evenly tw-items-center tw-rounded-lg tw-px-4 tw-py-1 tw-text-center tw-max-w-350 md:tw-ml-12 tw-mt-12 tw-mx-auto">
+                {logo("tw-w-12 tw-text-purplish")}
                 <p>
                     طراحی و توسعه توسط تیم ویرگول دانشگاه فردوسی مشهد
                 </p>

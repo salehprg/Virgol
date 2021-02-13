@@ -43,37 +43,37 @@ class AddSchool extends React.Component {
         return (
             <Add 
                 isNews={true}
-                // className="max-w-md"
-                newsClassName={"max-w-md w-11/12 "}
+                // className="tw-max-w-md"
+                newsClassName={"tw-max-w-md tw-w-11/12 "}
                 onCancel={() => history.push('/a/schools')}
                 title={this.props.t('addSchool')}
             >
                 {this.state.showManagerInfo || !this.props.managerInfo ? 
-                <form className="w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                <div className="w-full flex flex-row justify-between items-center">
+                <form className="tw-w-full" style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">
                     <Field
                         name="schoolName"
                         type="text"
                         placeholder={this.props.t('schoolName')}
-                        extra={"w-3/4 ml-1 my-4"}
+                        extra={"tw-w-3/4 tw-ml-1 tw-my-4"}
                         component={this.renderInputs}
                     />
                     <Field
                         name="schoolIdNumber"
                         type="text"
                         placeholder={this.props.t('code')}
-                        extra={"w-1/4 mr-1 my-4"}
+                        extra={"tw-w-1/4 tw-mr-1 tw-my-4"}
                         component={this.renderInputs}
                     />
                 </div>
 
-                <div className="w-full my-4 flex justify-between items-center">
-                    <span className="text-white"> {this.props.t('gender')} </span>
-                    <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}> {this.props.t('feminine')} </span>
-                    <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}> {this.props.t('masculine')} </span>
+                <div className="tw-w-full tw-my-4 tw-flex tw-justify-between tw-items-center">
+                    <span className="tw-text-white"> {this.props.t('gender')} </span>
+                    <span onClick={() => this.handleRadioBtnChng("Female")} className={`tw-w-1/3 tw-text-center tw-py-2 tw-cursor-pointer tw-border-2 ${this.state.selectedOption === 'Female' ? 'tw-border-redish tw-text-redish' : 'tw-border-grayish tw-text-grayish'}`}> {this.props.t('feminine')} </span>
+                    <span onClick={() => this.handleRadioBtnChng("Male")} className={`tw-w-1/3 tw-text-center tw-py-2 tw-cursor-pointer tw-border-2 ${this.state.selectedOption === 'Male' ? 'tw-border-sky-blue tw-text-sky-blue' : 'tw-border-grayish tw-text-grayish'}`}> {this.props.t('masculine')} </span>
                 </div>
                 
-                {/*<div className="text-white">*/}
+                {/*<div className="tw-text-white">*/}
                 {/*    <input checked="true" */}
                 {/*        type="radio" */}
                 {/*        value="Female" */}
@@ -84,7 +84,7 @@ class AddSchool extends React.Component {
                 {/*    /> دخترانه*/}
 
                 {/*    <input */}
-                {/*        className="mr-4" */}
+                {/*        className="tw-mr-4" */}
                 {/*        checked={this.state.selectedOption === "Male"}*/}
                 {/*        onChange={this.handleRadioBtnChng} */}
                 {/*        type="radio" */}
@@ -93,34 +93,34 @@ class AddSchool extends React.Component {
                 {/*    /> پسرانه*/}
                 {/*</div>*/}
                 
-                <div className="w-full flex flex-row justify-between items-center">
+                <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">
                     <Field
                         name="firstName"
                         type="text"
                         placeholder={this.props.t('managerFirstName')}
-                        extra={"w-1/2 my-4 mx-2"}
+                        extra={"tw-w-1/2 tw-my-4 tw-mx-2"}
                         component={this.renderInputs}
                     />
                     <Field
                         name="lastName"
                         type="text"
-                        extra={"w-1/2 my-4"}
+                        extra={"tw-w-1/2 tw-my-4"}
                         placeholder={this.props.t('managerLastName')}
                         component={this.renderInputs}
                     />
                 </div>
-                <div className="w-full flex flex-row justify-between items-center">
+                <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">
                     <Field
                         name="latinFirstname"
                         type="text"
                         placeholder={this.props.t('latinFirstName')}
-                        extra={"w-1/2 my-4 mx-2"}
+                        extra={"tw-w-1/2 tw-my-4 tw-mx-2"}
                         component={this.renderInputs}
                     />
                     <Field
                         name="latinLastname"
                         type="text"
-                        extra={"w-1/2 my-4"}
+                        extra={"tw-w-1/2 tw-my-4"}
                         placeholder={this.props.t('latinLastName')}
                         component={this.renderInputs}
                     />
@@ -128,33 +128,33 @@ class AddSchool extends React.Component {
                 <Field
                     name="managerPhoneNumber"
                     type="text"
-                    extra={"w-full my-4"}
+                    extra={"tw-w-full tw-my-4"}
                     placeholder={this.props.t('managerPhoneNumber')}
                     component={this.renderInputs}
                 />
-                <div className="w-full flex flex-row justify-between items-center">
+                <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">
                     <Field
                         name="melliCode"
                         type="text"
                         placeholder={this.props.t('managerNationCode')}
-                        extra={"w-1/2 ml-1 my-4"}
+                        extra={"tw-w-1/2 tw-ml-1 tw-my-4"}
                         component={this.renderInputs}
                     />
                     <Field
                         name="personalIdNumber"
                         type="text"
                         placeholder={this.props.t('managerPersonelCode')}
-                        extra={"w-1/2 mr-1 my-4"}
+                        extra={"tw-w-1/2 tw-mr-1 tw-my-4"}
                         component={this.renderInputs}
                     />
                 </div>
 
-                <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg"> {this.props.t('add')} </button>
+                <button type="submit" className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg"> {this.props.t('add')} </button>
             </form> 
                 : 
-                <div className="p-6 border-2 border-dashed border-dark-blue">
-                    {check_circle('w-1/4 mx-auto text-greenish')}
-                    <p className="text-center text-greenish">
+                <div className="tw-p-6 tw-border-2 tw-border-dashed tw-border-dark-blue">
+                    {check_circle('tw-w-1/4 tw-mx-auto tw-text-greenish')}
+                    <p className="tw-text-center tw-text-greenish">
                         {this.props.t('schoolCreated')}
                     </p>
                     <ManagerGenerated 
@@ -165,7 +165,7 @@ class AddSchool extends React.Component {
                         title={this.props.t('password')}
                         value={this.props.managerInfo.password}
                     />
-                    <button type="button" className="w-full px-4 py-2 border-2 border-sky-blue text-sky-blue" onClick={() => history.push(`/school/${this.props.managerInfo.schoolId}`)}> {this.props.t('addingLessons')} </button>
+                    <button type="button" className="tw-w-full tw-px-4 tw-py-2 tw-border-2 tw-border-sky-blue tw-text-sky-blue" onClick={() => history.push(`/school/${this.props.managerInfo.schoolId}`)}> {this.props.t('addingLessons')} </button>
                 </div>
                 }
             </Add>

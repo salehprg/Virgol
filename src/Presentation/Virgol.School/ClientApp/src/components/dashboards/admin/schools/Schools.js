@@ -63,9 +63,9 @@ class Schools extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return loading('w-10 text-grayish centerize')
+        if(this.state.loading) return loading('tw-w-10 tw-text-grayish centerize')
         return (
-            <div className="w-full mt-10">
+            <div className="tw-w-full tw-mt-10">
                 <ReactTooltip />
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
@@ -92,7 +92,7 @@ class Schools extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                        <button onClick={() => history.push('/newSchool')} className="px-6 py-1 ml-4 mb-4 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('addSchool')}</button>
+                        <button onClick={() => history.push('/newSchool')} className="tw-px-6 tw-py-1 tw-ml-4 tw-mb-4 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg">{this.props.t('addSchool')}</button>
                         );
                     }}
                     headers={[this.props.t('schoolName'), this.props.t('code'), this.props.t('type'), this.props.t('manager'), '', '']}
@@ -103,18 +103,18 @@ class Schools extends React.Component {
                                     this.state.schools.map(x => {
                                             return (
                                             <tr key={x.id}>
-                                                <td className="py-4 text-right">{x.schoolName}</td>
-                                                <td className="text-right">{x.schoolIdNumber}</td>
-                                                <td className="text-right">{x.schoolTypeName}</td>
-                                                <td className="text-right">{x.firstName} {x.lastName}</td>
-                                                <td data-tip={this.props.t('enterAsManager')} onClick={() => this.redirect(x.id)} className="cursor-pointer">
-                                                    {external_link('w-6 text-white ')}
+                                                <td className="tw-py-4 tw-text-right">{x.schoolName}</td>
+                                                <td className="tw-text-right">{x.schoolIdNumber}</td>
+                                                <td className="tw-text-right">{x.schoolTypeName}</td>
+                                                <td className="tw-text-right">{x.firstName} {x.lastName}</td>
+                                                <td data-tip={this.props.t('enterAsManager')} onClick={() => this.redirect(x.id)} className="tw-cursor-pointer">
+                                                    {external_link('tw-w-6 tw-text-white ')}
                                                 </td>
-                                                <td className="text-right" data-tip={this.props.t('edit')} className="cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
-                                                    {edit('w-6 text-white')}
+                                                <td className="tw-text-right" data-tip={this.props.t('edit')} className="tw-cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
+                                                    {edit('tw-w-6 tw-text-white')}
                                                 </td>
-                                                <td className="text-right" data-tip={this.props.t('delete')} onClick={() => this.showDelete(x.id)} className="cursor-pointer">
-                                                    {trash('w-6 text-white ')}
+                                                <td className="tw-text-right" data-tip={this.props.t('delete')} onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
+                                                    {trash('tw-w-6 tw-text-white ')}
                                                 </td>
                                             </tr>
                                             )}

@@ -7,10 +7,10 @@ const Searchish = ({ className, query, changeQuery }) => {
     const { t } = useTranslation();
 
     return (
-        <div className={`flex flex-row-reverse items-center px-2 py-1 rounded-lg border-2 border-purplish ${className}`}>
-            {search('w-8 text-purplish transform rotate-90')}
+        <div className={`tw-flex tw-flex-row-reverse tw-items-center tw-px-2 tw-py-1 tw-rounded-lg tw-border-2 tw-border-purplish ${className}`}>
+            {search('tw-w-8 tw-text-purplish tw-transform tw-rotate-90')}
             <input
-                className="w-full h-full bg-transparent px-2 text-white placeholder-purplish focus:outline-none"
+                className="tw-w-full tw-h-full tw-bg-transparent tw-px-2 tw-text-white tw-placeholder-purplish focus:tw-outline-none"
                 type="text"
                 dir="rtl"
                 placeholder={t('search')}

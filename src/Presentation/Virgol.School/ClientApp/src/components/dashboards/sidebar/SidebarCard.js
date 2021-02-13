@@ -4,9 +4,9 @@ const SidebarCard = ({ active, code, title, icon, changeActive }) => {
     const titleSize = title.length
 
     return (
-        <div onClick={() => changeActive(code)} className={`w-full my-3 cursor-pointer mx-auto px-4 py-3 flex flex-row justify-end items-center rounded-xl transform duration-200 ${active === code ? 'bg-purplish' : 'bg-transparent'}`}>
-            <span className={`${titleSize >= 14 ?  `text-sm` : `text-xl`}  text-right text-white mr-2`}>{title}</span>
-            {icon('w-8 text-white')}
+        <div onClick={() => changeActive(code)} className={`tw-w-full tw-my-3 tw-cursor-pointer tw-mx-auto tw-px-4 tw-py-3 tw-flex tw-flex-row tw-justify-end tw-items-center tw-rounded-xl tw-transform tw-duration-200 ${active === code ? 'tw-bg-purplish' : 'tw-bg-transparent'}`}>
+            <span className={`${titleSize >= 14 ?  `tw-text-sm` : `tw-text-xl`}  tw-text-right tw-text-white tw-mr-2`}>{title}</span>
+            {icon('tw-w-8 tw-text-white')}
         </div>
     );
 

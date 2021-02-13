@@ -16,13 +16,13 @@ class Feed extends React.Component {
         const { title, pos } = this.props
 
         return (
-            <div className={`${pos} w-full h-85 overflow-auto px-6 py-4 text-right bg-dark-blue rounded-xl`}>
-                <p className="text-white">{title}</p>
+            <div className={`${pos} tw-w-full tw-h-85 tw-overflow-auto tw-px-6 tw-py-4 tw-text-right tw-bg-dark-blue tw-rounded-xl`}>
+                <p className="tw-text-white">{title}</p>
                 {
                     (
                         this.props.news.length == 0 
                         ? 
-                    <span className="text-2xl text-grayish block text-center">{this.props.t('noNews')}</span> 
+                    <span className="tw-text-2xl tw-text-grayish tw-block tw-text-center">{this.props.t('noNews')}</span> 
                         :
                         this.props.news.map(x => {
                             return (

@@ -107,7 +107,7 @@ class SchoolInfo extends React.Component {
                 type={type}
                 dir={dir}
                 placeholder={placeholder}
-                extra={extra + "max-w-350 my-4"}
+                extra={extra + "tw-max-w-350 tw-my-4"}
             />
         );
     }
@@ -163,9 +163,9 @@ class SchoolInfo extends React.Component {
 
     render() {
         return (
-            <div onClick={() => this.setState({ showChangeName: false })} className="w-screen min-h-screen lg:px-16 px-2 py-16 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 col-gap-4 row-gap-10">
-                <div onClick={() => history.push('/a/schools')} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-4 rounded-lg border-2 border-purplish">
-                    {arrow_left('w-6 centerize text-purplish')}
+            <div onClick={() => this.setState({ showChangeName: false })} className="tw-w-screen tw-min-h-screen lg:tw-px-16 tw-px-2 tw-py-16 tw-relative tw-bg-bold-blue tw-grid lg:tw-grid-cols-4 tw-grid-cols-1 lg:tw-col-tw-gap-4 tw-col-tw-gap-4 tw-row-tw-gap-10">
+                <div onClick={() => history.push('/a/schools')} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-4 tw-rounded-lg tw-border-2 tw-border-purplish">
+                    {arrow_left('tw-w-6 centerize tw-text-purplish')}
                 </div>
                 {this.state.showDeleteModal ?
                 <DeleteConfirm
@@ -176,17 +176,17 @@ class SchoolInfo extends React.Component {
                 : 
                 null
                 }
-                <div className="w-full relative rounded-lg lg:min-h-85 text-center min-h-0 py-6 px-4 col-span-1 border-2 border-dark-blue">
-                    {/*<div className="absolute manager-options">*/}
-                    {/*    {slash('w-6 text-white')}*/}
+                <div className="tw-w-full tw-relative tw-rounded-lg lg:tw-min-h-85 tw-text-center tw-min-h-0 tw-py-6 tw-px-4 tw-col-span-1 tw-border-2 tw-border-dark-blue">
+                    {/*<div className="tw-absolute manager-options">*/}
+                    {/*    {slash('tw-w-6 tw-text-white')}*/}
                     {/*</div>*/}
-                    {briefcase('w-1/5 mb-2 text-white mx-auto')}
-                    <p className="text-white"> {this.props.t('managerInfo')} </p>
-                    {this.state.loadingCats ? loading('w-10 text-grayish centerize')
+                    {briefcase('tw-w-1/5 tw-mb-2 tw-text-white tw-mx-auto')}
+                    <p className="tw-text-white"> {this.props.t('managerInfo')} </p>
+                    {this.state.loadingCats ? loading('tw-w-10 tw-text-grayish centerize')
                     : 
-                    <form className="text-center mt-8 w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
-                        <div className="w-full flex flex-row justify-end items-center flex-wrap">
-                            {/*<div style={{direction : "rtl"}} className="text-white">*/}
+                    <form className="tw-text-center tw-mt-8 tw-w-full" onSubmit={this.props.handleSubmit(this.changeManagerInfo)}>
+                        <div className="tw-w-full tw-flex tw-flex-row tw-justify-end tw-items-center tw-flex-wrap">
+                            {/*<div style={{direction : "rtl"}} className="tw-text-white">*/}
                             {/*    <input checked="true" */}
                             {/*        type="radio" */}
                             {/*        value="Female" */}
@@ -197,7 +197,7 @@ class SchoolInfo extends React.Component {
                             {/*    /> دخترانه*/}
 
                             {/*    <input */}
-                            {/*        className="mr-4" */}
+                            {/*        className="tw-mr-4" */}
                             {/*        checked={this.state.selectedOption === "Male"}*/}
                             {/*        onChange={this.handleRadioBtnChng} */}
                             {/*        type="radio" */}
@@ -205,12 +205,12 @@ class SchoolInfo extends React.Component {
                             {/*        name="gender" */}
                             {/*    /> پسرانه*/}
                             {/*</div>*/}
-                            <div className="w-full flex justify-between items-center">
+                            <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                                 <Field
                                     name="latinFirstname"
                                     type="text"
                                     placeholder={this.props.t('latinFirstName')}
-                                    extra={"w-1/2 mr-1 my-4"}
+                                    extra={"tw-w-1/2 tw-mr-1 tw-my-4"}
                                     component={this.renderInputs}
                                 />
                                 <Field
@@ -218,15 +218,15 @@ class SchoolInfo extends React.Component {
                                     dir="rtl"
                                     type="text"
                                     placeholder={this.props.t('firstName')}
-                                    extra={"w-1/2 ml-1 my-4"}
+                                    extra={"tw-w-1/2 tw-ml-1 tw-my-4"}
                                     component={this.renderInputs}
                                 />
                             </div>
-                            <div className="w-full flex justify-between items-center">
+                            <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                                 <Field
                                     name="latinLastname"
                                     type="text"
-                                    extra={"w-1/2 mr-1 my-4"}
+                                    extra={"tw-w-1/2 tw-mr-1 tw-my-4"}
                                     placeholder={this.props.t('latinLastName')}
                                     component={this.renderInputs}
                                 />
@@ -235,17 +235,17 @@ class SchoolInfo extends React.Component {
                                     dir="rtl"
                                     type="text"
                                     placeholder={this.props.t('lastName')}
-                                    extra={"w-1/2 ml-1 my-4"}
+                                    extra={"tw-w-1/2 tw-ml-1 tw-my-4"}
                                     component={this.renderInputs}
                                 />
                             </div>
-                            <div className="w-full flex justify-between items-center">
+                            <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                                 <Field
                                     name="personalIdNumber"
                                     dir="ltr"
                                     type="text"
                                     placeholder={this.props.t('personelCode')}
-                                    extra={"w-1/2 mr-1 my-4"}
+                                    extra={"tw-w-1/2 tw-mr-1 tw-my-4"}
                                     component={this.renderInputs}
                                 />
                                 <Field
@@ -253,7 +253,7 @@ class SchoolInfo extends React.Component {
                                     type="text"
                                     dir="ltr"
                                     placeholder={this.props.t('nationCode')}
-                                    extra={"w-1/2 ml-1 my-4"}
+                                    extra={"tw-w-1/2 tw-ml-1 tw-my-4"}
                                     component={this.renderInputs}
                                 />
                             </div>
@@ -262,20 +262,20 @@ class SchoolInfo extends React.Component {
                                 type="text"
                                 dir="ltr"
                                 placeholder={this.props.t('phoneNumber')}
-                                extra={"w-full my-4"}
+                                extra={"tw-w-full tw-my-4"}
                                 component={this.renderInputs}
                             />
-                            <div className="w-full my-4 flex flex-row-reverse justify-between items-center">
-                                <span className="text-white"> {this.props.t('gender')} </span>
-                                <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-2/5 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>زن</span>
-                                <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-2/5 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>مرد</span>
+                            <div className="tw-w-full tw-my-4 tw-flex tw-flex-row-reverse tw-justify-between tw-items-center">
+                                <span className="tw-text-white"> {this.props.t('gender')} </span>
+                                <span onClick={() => this.handleRadioBtnChng("Female")} className={`tw-w-2/5 tw-text-center tw-py-2 tw-cursor-pointer tw-border-2 ${this.state.selectedOption === 'Female' ? 'tw-border-redish tw-text-redish' : 'tw-border-grayish tw-text-grayish'}`}>زن</span>
+                                <span onClick={() => this.handleRadioBtnChng("Male")} className={`tw-w-2/5 tw-text-center tw-py-2 tw-cursor-pointer tw-border-2 ${this.state.selectedOption === 'Male' ? 'tw-border-sky-blue tw-text-sky-blue' : 'tw-border-grayish tw-text-grayish'}`}>مرد</span>
                             </div>
                             <Field
                                 name="password"
                                 type="text"
                                 dir="ltr"
                                 placeholder={this.props.t('password')}
-                                extra={"w-full my-4"}
+                                extra={"tw-w-full tw-my-4"}
                                 component={this.renderInputs}
                             />
                             <Field
@@ -283,15 +283,15 @@ class SchoolInfo extends React.Component {
                                 type="text"
                                 dir="ltr"
                                 placeholder={this.props.t('confirmPassword')}
-                                extra={"w-full my-4"}
+                                extra={"tw-w-full tw-my-4"}
                                 component={this.renderInputs}
                             />
                         </div>
-                        <div className="w-full mx-auto max-w-350 flex flex-row justify-between items-center">
-                            <button type="submit" className="w-full py-1 mx-1 rounded-lg border-2 border-transparent bg-pinkish text-white">
+                        <div className="tw-w-full tw-mx-auto tw-max-w-350 tw-flex tw-flex-row tw-justify-between tw-items-center">
+                            <button type="submit" className="tw-w-full tw-py-1 tw-mx-1 tw-rounded-lg tw-border-2 tw-border-transparent tw-bg-pinkish tw-text-white">
                                 {this.props.t('save')}
                             </button>
-                            {/*<button onClick={this.props.reset} className="w-5/12 py-1 mx-1 rounded-lg border-2 border-pinkish text-pinkish">*/}
+                            {/*<button onClick={this.props.reset} className="tw-w-5/12 tw-py-1 tw-mx-1 tw-rounded-lg tw-border-2 tw-border-pinkish tw-text-pinkish">*/}
                             {/*    ریست*/}
                             {/*</button>*/}
                         </div>
@@ -299,14 +299,14 @@ class SchoolInfo extends React.Component {
                     }
                 </div>
 
-                {(this.state.loadingCats || this.props.schoolLessonInfo == null ? loading('w-10 text-grayish centerize')
+                {(this.state.loadingCats || this.props.schoolLessonInfo == null ? loading('tw-w-10 tw-text-grayish centerize')
                 :
-                <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue">
-                    <div className="flex lg:flex-row-reverse flex-col justify-between">
+                <div className="tw-w-full tw-rounded-lg tw-min-h-90 tw-p-4 lg:tw-col-span-3 tw-col-span-1 tw-border-2 tw-border-dark-blue">
+                    <div className="tw-flex lg:tw-flex-row-reverse tw-flex-col tw-justify-between">
                         <div>
                             <PencilText 
                                 text={this.props.schoolLessonInfo.schoolModel.schoolName} 
-                                className="text-right text-white lg:text-2xl text-lg"
+                                className="tw-text-right tw-text-white lg:tw-text-2xl tw-text-lg"
                                 show={this.state.showChangeName}
                                 showBox={() => this.setState({ showChangeName: true })}
                                 value={this.state.className}
@@ -318,11 +318,11 @@ class SchoolInfo extends React.Component {
                             />
                         </div>
                         <div>
-                            {/*<Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/a/schools">بازگشت</Link>*/}
-                            <button onClick={this.redirect} className="px-6 py-1 lg:mx-2 mx-0 mt-4 rounded-lg border-2 border-greenish text-greenish"> {this.props.t('enterAsManager')} </button>
+                            {/*<Link className="tw-px-6 tw-py-1 tw-rounded-lg tw-border-2 tw-border-grayish tw-text-grayish" to="/a/schools">بازگشت</Link>*/}
+                            <button onClick={this.redirect} className="tw-px-6 tw-py-1 lg:tw-mx-2 tw-mx-0 tw-mt-4 tw-rounded-lg tw-border-2 tw-border-greenish tw-text-greenish"> {this.props.t('enterAsManager')} </button>
                         </div>
                     </div>
-                    <div className="mt-8 overflow-auto">
+                    <div className="tw-mt-8 tw-overflow-auto">
                         
                         <BaseManager
                             schoolId={this.props.match.params.id}

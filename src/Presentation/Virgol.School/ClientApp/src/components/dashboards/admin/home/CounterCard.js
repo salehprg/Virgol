@@ -3,17 +3,17 @@ import React from "react";
 const CounterCard = ({ title, icon, number, bg, pos , isText }) => {
 
     return (
-        <div className={`${pos} w-full max-w-350 my-3 px-6 mx-auto bg-dark-blue rounded-xl py-4 flex flex-row justify-between items-center`}>
+        <div className={`${pos} tw-w-full tw-max-w-350 tw-my-3 tw-px-6 tw-mx-auto tw-bg-dark-blue tw-rounded-xl tw-py-4 tw-flex tw-flex-row tw-justify-between tw-items-center`}>
             {(
                 isText ? 
-                <p className="md:text-3xl text-3xl text-white">{number}</p>
+                <p className="md:tw-text-3xl tw-text-3xl tw-text-white">{number}</p>
                 : 
-                <p className="lg:text-4xl text-3xl text-white">{number}</p>
+                <p className="lg:tw-text-4xl tw-text-3xl tw-text-white">{number}</p>
             )}
-            <div className="flex flex-row items-center">
-                <span className="lg:text-xl text-right text-sm mx-2 text-white">{title}</span>
-                <div className={`w-12 h-12 relative rounded-full ${bg}`}>
-                    {icon('w-6 text-white centerize')}
+            <div className="tw-flex tw-flex-row tw-items-center">
+                <span className="lg:tw-text-xl tw-text-right tw-text-sm tw-mx-2 tw-text-white">{title}</span>
+                <div className={`tw-w-12 tw-h-12 tw-relative tw-rounded-full ${bg}`}>
+                    {icon('tw-w-6 tw-text-white centerize')}
                 </div>
             </div>
         </div>

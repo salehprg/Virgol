@@ -30,18 +30,18 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
     }
 
     return (
-        <motion.div className="lg:w-1/6 z-40 w-3/4 lg:max-w-full max-w-250 h-screen fixed top-0 right-0 bg-black-blue"
+        <motion.div className="tw-lg:w-1/6 tw-z-40 tw-w-3/4 lg:tw-max-w-full tw-max-w-250 tw-h-screen tw-fixed tw-top-0 tw-right-0 tw-bg-black-blue"
             animate={show ? 'open' : 'close'}
             transition="transition"
             variants={sidebarVar}
         >
-            <motion.div onClick={toggle} className="lg:hidden block absolute sidebar-toggle cursor-pointer"
+            <motion.div onClick={toggle} className="lg:tw-hidden tw-block tw-absolute sidebar-toggle tw-cursor-pointer"
                 // whileTap={{ rotate: 90 }}
                 animate={show ? 'open' : 'close'}
                 transition="transition"
                 variants={toggleVar}
             >
-                {show ? x('w-8 text-white') : menu("w-8 text-white")}
+                {show ? x('tw-w-8 tw-text-white') : menu("tw-w-8 tw-text-white")}
             </motion.div>
             
             {/* {
@@ -59,9 +59,9 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
                 </h1>
             } */}
 
-            <img className="w-24 mx-auto my-3" src={localizer.getLogo(window.location.href)} />
+            <img className="tw-w-24 tw-mx-auto tw-my-3" src={localizer.getLogo(window.location.href)} />
 
-            <div className="w-full mt-10 max-h-75 overflow-y-auto">
+            <div className="tw-w-full tw-mt-10 tw-max-h-75 tw-overflow-y-auto">
                 {children}
             </div>
         </motion.div>

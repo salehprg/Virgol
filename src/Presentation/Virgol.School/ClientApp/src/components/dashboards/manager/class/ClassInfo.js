@@ -128,9 +128,9 @@ class ClassInfo extends React.Component {
 
     render() {
         return (
-            <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="w-screen min-h-screen py-16 lg:px-10 px-1 relative bg-bold-blue grid lg:grid-cols-4 grid-cols-1 lg:col-gap-4 xl:col-gap-10 col-gap-10 row-gap-10">
-                <div onClick={() => history.push('/m/bases')} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-4 rounded-lg border-2 border-purplish">
-                    {arrow_left('w-6 centerize text-purplish')}
+            <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="tw-w-screen tw-min-h-screen tw-py-16 lg:tw-px-10 tw-px-1 tw-relative tw-bg-bold-blue tw-grid lg:tw-grid-cols-4 tw-grid-cols-1 lg:tw-col-tw-gap-4 xl:tw-col-tw-gap-10 tw-col-tw-gap-10 tw-row-tw-gap-10">
+                <div onClick={() => history.push('/m/bases')} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-4 tw-rounded-lg tw-border-2 tw-border-purplish">
+                    {arrow_left('tw-w-6 centerize tw-text-purplish')}
                 </div>
                 {this.state.addStudent ? 
                     <AddStudent IsFreeClass={this.state.classDetail.grade_Id == 0 ? true : false} 
@@ -166,9 +166,9 @@ class ClassInfo extends React.Component {
                 : 
                 null
                 }
-                <div className="addStudent lg:row-start-1 row-start-2 w-full relative rounded-lg lg:min-h-90 text-center min-h-0 py-6 px-4 mt-4 col-span-1 border-2 border-dark-blue">
-            <p className="text-xl text-white mb-8">{this.state.classDetail.grade_Id == 0 ? this.props.t('participantList') : this.props.t('studentsList')} </p>
-                    {/* <label htmlFor="excel" className="px-1 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">*/}
+                <div className="addStudent lg:tw-row-start-1 tw-row-start-2 tw-w-full tw-relative tw-rounded-lg lg:tw-min-h-90 tw-text-center tw-min-h-0 tw-py-6 tw-px-4 tw-mt-4 tw-col-span-1 tw-border-2 tw-border-dark-blue">
+            <p className="tw-text-xl tw-text-white tw-mb-8">{this.state.classDetail.grade_Id == 0 ? this.props.t('participantList') : this.props.t('studentsList')} </p>
+                    {/* <label htmlFor="excel" className="tw-px-1 tw-cursor-pointer tw-py-1 tw-border-2 tw-border-greenish tw-text-greenish tw-rounded-lg">*/}
                     {/*    {plus('w-4')}*/}
                     {/*</label>*/}
                     {/*<input*/}
@@ -180,17 +180,17 @@ class ClassInfo extends React.Component {
                     {/*/>*/}
                      {(this.state.loading ? this.props.t('loading') :
                         (!this.props.students || this.props.students.length === 0 ? 
-                            <div className="flex flex-row-reverse justify-between items-center">
-                                <p className="text-center text-white"> {this.state.classDetail.grade_Id == 0 ? this.props.t('emptyParticipantList') : this.props.t('emptyStudentsList')}</p>
+                            <div className="tw-flex tw-flex-row-reverse tw-justify-between tw-items-center">
+                                <p className="tw-text-center tw-text-white"> {this.state.classDetail.grade_Id == 0 ? this.props.t('emptyParticipantList') : this.props.t('emptyStudentsList')}</p>
                             </div>
                         :
                         this.props.students.map(std => {
                             return ((std ?
-                                        <div className="flex flex-row-reverse justify-between items-center">
+                                        <div className="tw-flex tw-flex-row-reverse tw-justify-between tw-items-center">
                                             {/* <input type="checkbox" value={std.id} onChange={this.handleSelectStudent}></input> */}
-                                            <span onClick={() => this.showUnassign(std.id)}>{x('w-6 text-redish cursor-pointer')}</span>
-                                            <p className="text-right text-white">{std.firstName} {std.lastName}</p>
-                                            <p className="text-right text-white">{std.melliCode}</p>
+                                            <span onClick={() => this.showUnassign(std.id)}>{x('tw-w-6 tw-text-redish tw-cursor-pointer')}</span>
+                                            <p className="tw-text-right tw-text-white">{std.firstName} {std.lastName}</p>
+                                            <p className="tw-text-right tw-text-white">{std.melliCode}</p>
                                         </div>
                                         :
                                         null
@@ -198,42 +198,42 @@ class ClassInfo extends React.Component {
                             })
                         )
                      )}
-                    <div className={`addStudentBtn transition-all duration-200 absolute bottom-0 mb-4 flex flex-row justify-start items-center`}>
-                        <div onClick={() => this.setState({ showAdd: !this.state.showAdd})} className={`w-12 cursor-pointer h-12 mx-2 relative rounded-full bg-greenish`}>
+                    <div className={`addStudentBtn tw-transition-all tw-duration-200 tw-absolute tw-bottom-0 tw-mb-4 tw-flex tw-flex-row tw-justify-start tw-items-center`}>
+                        <div onClick={() => this.setState({ showAdd: !this.state.showAdd})} className={`tw-w-12 tw-cursor-pointer tw-h-12 tw-mx-2 tw-relative tw-rounded-full tw-bg-greenish`}>
                             {this.state.showAdd ?
-                                x('w-6 text-white centerize')
+                                x('tw-w-6 tw-text-white centerize')
                                 :
-                                plus('w-6 text-white centerize')
+                                plus('tw-w-6 tw-text-white centerize')
                             }
-                            <motion.div onClick={(e) => e.stopPropagation()} className="absolute left-0 bottom-0 mb-12 py-6 w-48 bg-black-blue"
+                            <motion.div onClick={(e) => e.stopPropagation()} className="tw-absolute tw-left-0 tw-bottom-0 tw-mb-12 tw-py-6 tw-w-48 tw-bg-black-blue"
                                         animate={this.state.showAdd ? 'open' : 'close'}
                                         transition="transition"
                                         variants={this.addVariant}
                             >
-                                <label htmlFor="excel" className="px-6 mb-4 cursor-pointer py-1 border-2 border-greenish text-greenish rounded-lg">
+                                <label htmlFor="excel" className="tw-px-6 tw-mb-4 tw-cursor-pointer tw-py-1 tw-border-2 tw-border-greenish tw-text-greenish tw-rounded-lg">
                                     {this.props.t('uploadExcel')}
                                 </label>
                                 <input
                                     onChange={(e) => this.handleExcel(e.target.files[0])}
                                     type="file"
                                     id="excel"
-                                    className="hidden"
+                                    className="tw-hidden"
                                     accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                                 />
 
-                        <button onClick={() => this.setState({addStudent : true})} className="w-5/6 cursor-pointer mt-4 py-1 border-2 border-purplish text-purplish rounded-lg">{this.props.t('addSingle')}</button>
+                        <button onClick={() => this.setState({addStudent : true})} className="tw-w-5/6 tw-cursor-pointer tw-mt-4 tw-py-1 tw-border-2 tw-border-purplish tw-text-purplish tw-rounded-lg">{this.props.t('addSingle')}</button>
                             </motion.div>
                         </div>
                     </div>
                 </div>
 
-                <div className="w-full rounded-lg min-h-90 p-4 lg:col-span-3 col-span-1 border-2 border-dark-blue mt-4">
-                    <div className="flex flex-row-reverse justify-between">
-                        <div className="flex flex-row-reverse justify-between">
+                <div className="tw-w-full tw-rounded-lg tw-min-h-90 tw-p-4 lg:tw-col-span-3 tw-col-span-1 tw-border-2 tw-border-dark-blue tw-mt-4">
+                    <div className="tw-flex tw-flex-row-reverse tw-justify-between">
+                        <div className="tw-flex tw-flex-row-reverse tw-justify-between">
                             {(this.state.classDetail ?
                             <PencilText 
                                 text={this.state.classDetail.className} 
-                                className="text-right text-white text-2xl" 
+                                className="tw-text-right tw-text-white tw-text-2xl" 
                                 show={this.state.showChangeName}
                                 showBox={() => this.setState({ showChangeName: true })}
                                 value={this.state.className}
@@ -243,21 +243,21 @@ class ClassInfo extends React.Component {
                             : null)}
                             {/*{(this.props.classDetail ?*/}
                             {/*    <React.Fragment>*/}
-                            {/*        <p className="text-right text-white text-2xl">{this.state.classDetail.className}</p>*/}
-                            {/*        <p onClick={() => this.showDelete(this.state.classDetail.id)} className="cursor-pointer">*/}
-                            {/*            {trash('w-6 text-white ')}*/}
+                            {/*        <p className="tw-text-right tw-text-white tw-text-2xl">{this.state.classDetail.className}</p>*/}
+                            {/*        <p onClick={() => this.showDelete(this.state.classDetail.id)} className="tw-cursor-pointer">*/}
+                            {/*            {trash('tw-w-6 tw-text-white ')}*/}
                             {/*        </p>*/}
                             {/*    </React.Fragment>*/}
                             {/*: null)}*/}
                         </div>
                         <div>
-                            {/*<Link className="px-6 py-1 rounded-lg border-2 border-grayish text-grayish" to="/m/bases">بازگشت</Link>*/}
-                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className="px-6 py-1 mx-0 mt-4 ml-0 rounded-lg border-2 border-redish text-redish">{this.state.classDetail.grade_Id == 0 ? this.props.t('deleteRoom') : this.props.t('deleteClass')} </button>
+                            {/*<Link className="tw-px-6 tw-py-1 tw-rounded-lg tw-border-2 tw-border-grayish tw-text-grayish" to="/m/bases">بازگشت</Link>*/}
+                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className="tw-px-6 tw-py-1 tw-mx-0 tw-mt-4 tw-ml-0 tw-rounded-lg tw-border-2 tw-border-redish tw-text-redish">{this.state.classDetail.grade_Id == 0 ? this.props.t('deleteRoom') : this.props.t('deleteClass')} </button>
                         </div>
                     </div>
-                    <div className="my-8">
-                        <button onClick={() => this.setState({ addLesson: true })} className="px-6 py-1 bg-greenish text-white rounded-lg mb-2"> {this.state.classDetail.grade_Id == 0 ? this.props.t('addFreeMeeting') : this.props.t('addLesson')} </button>
-                        <div ref={this.sc} className="border-2 border-dark-blue overflow-auto">
+                    <div className="tw-my-8">
+                        <button onClick={() => this.setState({ addLesson: true })} className="tw-px-6 tw-py-1 tw-bg-greenish tw-text-white tw-rounded-lg tw-mb-2"> {this.state.classDetail.grade_Id == 0 ? this.props.t('addFreeMeeting') : this.props.t('addLesson')} </button>
+                        <div ref={this.sc} className="tw-border-2 tw-border-dark-blue tw-overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
                                     isManager={true}
@@ -267,8 +267,8 @@ class ClassInfo extends React.Component {
                                     deleteSchedule={(id)  => this.deleteLesson(id)}
                                     rerenderIt={() => this.rerenderIt()}
                                     // lessons={[
-                                    //     {i: "1", name: "حسابان 1", teachername: "احمدی", c: "bg-redish cursor-pointer", x: 8, y: 1, w: 2, h: 1, static: true},
-                                    //     {i: "2", name: "هندسه 1", teachername: "باقری", c: "bg-purplish cursor-pointer", x: 6, y: 2, w: 3, h: 1, static: true},
+                                    //     {i: "1", name: "حسابان 1", teachername: "احمدی", c: "tw-bg-redish tw-cursor-pointer", x: 8, y: 1, w: 2, h: 1, static: true},
+                                    //     {i: "2", name: "هندسه 1", teachername: "باقری", c: "tw-bg-purplish tw-cursor-pointer", x: 6, y: 2, w: 3, h: 1, static: true},
                                     // ]}
                                 />
                                 :
