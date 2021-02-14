@@ -34,12 +34,7 @@ namespace lms_with_moodle.Helper
 
         //------------------------------
         //React Env Variables
-        public static string REACT_APP_RAHE_DOOR { get; set; }
-        public static string REACT_APP_VIRGOL_TEXT { get; set; }
-        public static string REACT_APP_RAHE_DOOR_TEXT { get; set; }
-        public static string REACT_APP_FAVICON_NAME { get; set; }
         public static string REACT_APP_MOODLE_URL { get; set; }
-        public static string REACT_APP_VERSION { get; set; }
 
 
         public static string ServerRootUrl { get; set; }
@@ -64,11 +59,6 @@ namespace lms_with_moodle.Helper
 
         public override string ToString()
         {
-            // return string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n{12}\n{13}\n{14}\n{15}" ,
-            //                         moddleCourseUrl , BaseUrl_moodle , Token_moodle ,
-            //                         FarazAPI_URL , FarazAPI_SendNumber , FarazAPI_Username , FarazAPI_Password , FarazAPI_ApiKey ,
-            //                         BBBBaseUrl , BBBSecret , JWTSecret , LDAPServer , LDAPPort , LDAPUserAdmin , LDAPPassword , ServerRootUrl);
-
             return string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n{12}\n{13}" ,
                                     moddleCourseUrl , BaseUrl_moodle , Token_moodle ,
                                     FarazAPI_URL , FarazAPI_SendNumber , FarazAPI_Username , FarazAPI_Password , FarazAPI_ApiKey

@@ -26,7 +26,7 @@ namespace lms_with_moodle.Helper
         {
             client = new HttpClient();   
 
-            BaseUrl = AppSettings.BaseUrl_moodle;
+            BaseUrl = AppSettings.BaseUrl_moodle + "/webservice/rest/server.php?moodlewsrestformat=json";
             token = AppSettings.Token_moodle;
         }
 

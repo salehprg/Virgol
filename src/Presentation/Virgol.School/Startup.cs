@@ -74,8 +74,8 @@ namespace lms_with_moodle
                 conStr = string.Format("Server={0};Port={1};Database={2};Username={3};Password={4}" , host ,port ,  name , userName ,password);
                 
                 AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
-                AppSettings.moddleCourseUrl = "Hava";
                 AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
+                AppSettings.moddleCourseUrl = AppSettings.BaseUrl_moodle + "/course/view.php?id=";
                 AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
                 AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
                 AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
@@ -89,15 +89,17 @@ namespace lms_with_moodle
                 AppSettings.LDAPPassword = Environment.GetEnvironmentVariable("VIRGOL_LDAP_PASSWORD");
                 AppSettings.ServerRootUrl = Environment.GetEnvironmentVariable("VIRGOL_SERVER_ROOT_URL");
 
-                AppSettings.REACT_APP_MOODLE_URL = Environment.GetEnvironmentVariable("REACT_APP_MOODLE_URL");
-                AppSettings.REACT_APP_VERSION = Environment.GetEnvironmentVariable("REACT_APP_VERSION");
+                AppSettings.REACT_APP_MOODLE_URL = AppSettings.BaseUrl_moodle + "/login/index.php";
 
             }
             else
             {
                 IConfigurationSection section = Configuration.GetSection("AppSettings");
-
                 section.Get<AppSettings>();
+
+                AppSettings.moddleCourseUrl = AppSettings.BaseUrl_moodle + "/course/view.php?id=";
+                AppSettings.REACT_APP_MOODLE_URL = AppSettings.BaseUrl_moodle + "/login/index.php";
+
                 
                 conStr = Configuration.GetConnectionString("BackupConnection");
             }
@@ -119,18 +121,9 @@ namespace lms_with_moodle
                 {
                     string text = File.ReadAllText(filename);
 
-                        text = text.Replace("REACT_APP_FAVICON_NAME:\"REACT_APP_FAVICON_NAME\"", "REACT_APP_FAVICON_NAME:\""+AppSettings.REACT_APP_FAVICON_NAME+"\"");
-
                         text = text.Replace("action:\"REACT_APP_MOODLE_URL\"", "action:\"" + AppSettings.REACT_APP_MOODLE_URL + "\"");
                         text = text.Replace("process.env.REACT_APP_MOODLE_URL", AppSettings.REACT_APP_MOODLE_URL);
                         text = text.Replace("REACT_APP_MOODLE_URL:\"REACT_APP_MOODLE_URL\"", "REACT_APP_MOODLE_URL:\""+AppSettings.REACT_APP_MOODLE_URL+"\"");
-
-                        text = text.Replace("REACT_APP_RAHE_DOOR:\"REACT_APP_RAHE_DOOR\"", "REACT_APP_RAHE_DOOR:\""+AppSettings.REACT_APP_RAHE_DOOR+"\"");
-                        text = text.Replace("process.env.REACT_APP_VERSION", AppSettings.REACT_APP_VERSION);
-                        text = text.Replace("REACT_APP_VERSION:\"REACT_APP_VERSION\"", "REACT_APP_VERSION:\"" +AppSettings.REACT_APP_VERSION +"\"");
-
-                        text = text.Replace("API_URL: 'https://panel.vir-gol.ir/api/'", "API_URL: '"+AppSettings.ServerRootUrl+"/api/'");
-                        text = text.Replace("API_URL:\"https://panel.vir-gol.ir/api/\"", "API_URL:\""+AppSettings.ServerRootUrl+"/api/\"");
 
                         File.WriteAllText(filename , text);
                 }
