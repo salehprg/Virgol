@@ -115,6 +115,8 @@ namespace lms_with_moodle.Controllers
                     managerInfo = new UserModel();
                 }
 
+                bases = bases.OrderBy(x => x.BaseName).ToList();
+
                 return Ok(new{
                     bases,
                     //studyFields,
@@ -446,7 +448,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Bases.ToList());
+                return Ok(appDbContext.Bases.OrderBy(x => x.BaseName).ToList());
             }
             catch(Exception ex)
             {
@@ -549,7 +551,7 @@ namespace lms_with_moodle.Controllers
                 {
                     int base_id = appDbContext.School_Bases.Where(x => x.Id == BaseId).FirstOrDefault().Base_Id;
 
-                    List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == base_id).ToList();
+                    List<StudyFieldModel> studies = appDbContext.StudyFields.Where(x => x.Base_Id == base_id).OrderBy(x => x.StudyFieldName).ToList();
                     return Ok(studies);
                 }
                 
@@ -602,7 +604,7 @@ namespace lms_with_moodle.Controllers
                         }
                     }
 
-                    return Ok(result);
+                    return Ok(result.OrderBy(x => x.StudyFieldName));
                 }
                 
                 return BadRequest();
@@ -708,7 +710,7 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                return Ok(appDbContext.Grades.Where(x => x.StudyField_Id == StudyFieldId).ToList().Take(15));
+                return Ok(appDbContext.Grades.Where(x => x.StudyField_Id == StudyFieldId).ToList().Take(15).OrderBy(x => x.GradeName));
             }
             catch(Exception ex)
             {
@@ -754,7 +756,7 @@ namespace lms_with_moodle.Controllers
                         }
                     }
 
-                    return Ok(result);
+                    return Ok(result.OrderBy(x => x.GradeName));
                 }
                 
                 return BadRequest();
@@ -859,7 +861,7 @@ namespace lms_with_moodle.Controllers
                     grades.Add(gradeVW);
                 }
 
-                return Ok(grades);
+                return Ok(grades.OrderBy(x => x.GradeName));
             }
             catch(Exception ex)
             {

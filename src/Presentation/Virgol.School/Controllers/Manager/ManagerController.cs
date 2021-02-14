@@ -92,12 +92,20 @@ namespace lms_with_moodle.Controllers
 
                 onlineClass = onlineClassList.Count;
 
+                List<School_Bases> bases = appDbContext.School_Bases.Where(x => x.School_Id == school.Id).ToList();
+
+                bool hasFreeMeeting = false;
+                
+                if(bases.Where(x => x.Base_Id == 28).FirstOrDefault() != null)
+                    hasFreeMeeting = true;
+
                 return Ok(new{
                     classCount,
                     studentsCount,
                     teacherCount,
                     onlineClass,
-                    school
+                    school,
+                    hasFreeMeeting
                 });
             }
             catch(Exception ex)
