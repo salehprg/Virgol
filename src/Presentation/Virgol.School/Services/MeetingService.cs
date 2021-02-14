@@ -314,6 +314,12 @@ public class MeetingService {
                 classId = school_Student.ClassId;
                 List<ClassScheduleView> teacherAsStudentSchedules = schedules.Where(x => x.ClassId == classId).ToList();
                 teacherAsStudentSchedules.ForEach(x => x.teacherAsStudent = true);
+                foreach (var teacherAsStdnts in teacherAsStudentSchedules)
+                {
+                    if(isTeacher && teacherAsStdnts.TeacherId == userId)
+                        teacherAsStdnts.teacherAsStudent = false;
+                }
+                
                 result.AddRange(teacherAsStudentSchedules);
             }
         }
@@ -339,6 +345,7 @@ public class MeetingService {
             }
         }
 
+        result.Distinct();
         return result;
     }
     private List<Meeting> getActiveMeeting(UserModel user)
