@@ -4,16 +4,16 @@ import {eye, eye_off} from "../../assets/icons";
 const Passish = ({ input, meta, type, dir, placeholder, extra, redCondition, visible, onChange }) => {
 
     return (
-        <div className={`relative mx-auto ${extra}`}>
+        <div className={`tw-relative tw-mx-auto ${extra}`}>
             <input
                 dir={dir}
-                className={`w-full px-4 py-2 text-white bg-transparent focus:outline-none focus:shadow-outline border-2 ${redCondition ? 'border-redish' : 'border-dark-blue'} rounded-lg`}
+                className={`tw-w-full tw-px-4 tw-py-2 tw-text-white tw-bg-transparent focus:tw-outline-none focus:tw-shadow-outline tw-border-2 ${redCondition ? 'tw-border-redish' : 'tw-border-dark-blue'} tw-rounded-lg`}
                 {...input}
                 type={type}
                 placeholder={placeholder}
             />
-            <div onClick={onChange} className={`absolute cursor-pointer toggle-pass-vis ${!meta.error ? 'block' : 'hidden'}`}>
-                {!visible ? eye('w-4 text-white') : eye_off('w-4 text-white')}
+            <div onClick={onChange} className={`tw-absolute tw-cursor-pointer toggle-pass-vis ${!meta.error ? 'tw-block' : 'tw-hidden'}`}>
+                {!visible ? eye('tw-w-4 tw-text-white') : eye_off('tw-w-4 tw-text-white')}
             </div>
         </div>
     );

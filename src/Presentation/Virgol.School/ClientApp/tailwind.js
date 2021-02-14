@@ -1,5 +1,6 @@
 module.exports = {
   purge: [],
+  prefix: 'tw-',
   theme: {
     extend: {
       fontFamily: {

@@ -20,7 +20,7 @@ import {styles} from '../../../../selectStyle'
 class Home extends React.Component {
 
     state = {loading : false, newPrivateModal: false, 
-            activeStream: { url: 'ewfewf' } , schoolOptions : [] , selectedSchool : {}}
+            activeStream: { url: 'ewfewf' } , schoolOptions : [] , selectedSchool : {} , privateName : ''}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
@@ -87,6 +87,8 @@ class Home extends React.Component {
     }
     
     createPrivateRoom = async () => {
+        console.log(this.state.privateName);
+        console.log(this.state.selectedSchool);
         await this.props.CreatePrivateRoom(this.state.privateName , this.state.selectedSchool.value)
         this.hidePrivateModal()
         this.setState({privateName : ""})
@@ -101,15 +103,15 @@ class Home extends React.Component {
     render() {
         if(this.state.loading) return this.props.t('loading')
         return (
-            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
+            <div className="tw-grid sm:tw-grid-cols-2 tw-grid-cols-1 tw-gap-4 tw-py-6">
                 {this.state.newPrivateModal ?
                     <Modal cancel={this.hidePrivateModal}>
-                        <div onClick={(e) => e.stopPropagation()} className="w-11/12 rounded-lg bg-bold-blue text-center max-w-500 p-8" style={{direction : "rtl"}}>
-                            <div className="w-full" style={{direction : "rtl"}} >
+                        <div onClick={(e) => e.stopPropagation()} className="tw-w-11/12 tw-rounded-lg tw-bg-bold-blue tw-text-center tw-max-w-500 tw-p-8" style={{direction : "rtl"}}>
+                            <div className="tw-w-full" style={{direction : "rtl"}} >
                                 <Select
                                     styles={styles}
                                     isMulti={false}
-                                    className="w-5/6 px-4 py-2 my-4"
+                                    className="tw-w-5/6 tw-px-4 tw-py-2 tw-my-4"
                                     value={this.state.selectedSchool}
                                     onChange={this.handleSchoolSelect}
                                     options={this.state.schoolOptions}
@@ -119,15 +121,15 @@ class Home extends React.Component {
                             <input
                                 value={this.state.privateName}
                                 onChange={(e) => this.setState({privateName : e.target.value})}
-                                className="w-5/6 px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue text-right text-white"
+                                className="tw-w-5/6 tw-px-4 tw-py-2 tw-rounded-lg tw-bg-transparent tw-border-2 tw-border-dark-blue tw-text-right tw-text-white"
                                 placeholder={this.props.t('privateClassName')}
                             />
-                            <button onClick={() => this.createPrivateRoom()} className="px-6 my-4 py-1 rounded-lg text-white bg-greenish">{this.props.t('createClass')}</button>
+                            <button onClick={() => this.createPrivateRoom()} className="tw-px-6 tw-my-4 tw-py-1 tw-rounded-lg tw-text-white tw-bg-greenish">{this.props.t('createClass')}</button>
                         </div>
                     </Modal>
                     :
                     null}
-                <div className="col-span-1 flex flex-col items-center justify-between">
+                <div className="tw-col-span-1 tw-flex tw-flex-col tw-items-center tw-justify-between">
                     <Hero userInfo={this.props.user.userInformation}
                           userDetail={this.props.user.userDetail}
                           ShowServiceType = {true}/>
@@ -140,7 +142,7 @@ class Home extends React.Component {
                         newBtn={false}
                         classes={this.props.recentClass}
                         title={this.props.t('comingClasses')}
-                        pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                        pos="tw-row-start-4 sm:tw-row-start-auto tw-col-span-2 tw-row-span-2"
                     />
                     <RecentClass
                         onJoinPrivate = {(bbbId) => this.copyPrivateUrl(bbbId)}
@@ -152,16 +154,16 @@ class Home extends React.Component {
                         btnAction={this.showPrivateModal}
                         classes={this.props.meetingList}
                         title={this.props.t('activeClasses')}
-                        pos="row-start-4 sm:row-start-auto col-span-2 row-span-2"
+                        pos="tw-row-start-4 sm:tw-row-start-auto col-span-2 tw-row-span-2"
                     />
                 </div>
                 <div>
                 <div>
                     {this.props.activeStream ? 
-                    <div className="mb-4 flex flex-row-reverse items-center justify-evenly">
-                        <p className="text-white">{this.props.activeStream.streamName}</p>
+                    <div className="tw-mb-4 tw-flex tw-flex-row-reverse tw-items-center tw-justify-evenly">
+                        <p className="tw-text-white">{this.props.activeStream.streamName}</p>
                         <Link 
-                            className="py-2 px-6 rounded-lg bg-greenish text-white" 
+                            className="tw-link tw-py-2 tw-px-6 tw-rounded-lg tw-bg-greenish tw-text-white" 
                             to={`/stream`}>
                             پیوستن به همایش
                         </Link>

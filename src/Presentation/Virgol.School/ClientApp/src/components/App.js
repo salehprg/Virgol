@@ -79,7 +79,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="font-vr overflow-x-hidden">
+            <div className="tw-font-vr tw-overflow-x-hidden">
                 {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
                 {this.props.worker.status ? <Working /> : null}
 

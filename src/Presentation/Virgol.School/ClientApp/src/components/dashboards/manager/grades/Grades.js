@@ -81,10 +81,10 @@ class Grades extends React.Component {
 
     render() {
         if(this.state.loading)
-            loading('w-10 text-grayish centerize')
+            loading('tw-w-10 tw-text-grayish centerize')
 
         return (
-            <div className="w-full mt-10 pb-10">
+            <div className="tw-w-full tw-mt-10 tw-pb-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title={this.props.t('deleteConfirm')}
@@ -96,8 +96,8 @@ class Grades extends React.Component {
                 }
 
                 {(!this.props.schoolLessonInfo ? this.props.t('loading') :
-                <div className="w-full rounded-lg min-h-90 lg:col-span-3 col-span-1">
-                    <div className="mt-8 overflow-auto">
+                <div className="tw-w-full tw-rounded-lg tw-min-h-90 lg:tw-col-span-3 tw-col-span-1">
+                    <div className="tw-mt-8 tw-overflow-auto">
                         <BaseManager
                             OnLockCall={(state) => this.OnLock(state)}
                             schoolId={this.props.match.params.id}
@@ -123,9 +123,9 @@ class Grades extends React.Component {
                             loadingClasses={this.state.loadingClasses}
                         />
                     </div>
-                    <div className="w-full mt-8 p-4 bg-dark-blue rounded-xl">
-                        <p className="text-right text-white"> {this.props.t('classList')} </p>
-                        <div dir="rtl" className="w-full   grid all-classes">
+                    <div className="tw-w-full tw-mt-8 tw-p-4 tw-bg-dark-blue tw-rounded-xl">
+                        <p className="tw-text-right tw-text-white"> {this.props.t('classList')} </p>
+                        <div dir="rtl" className="tw-w-full tw-grid all-classes">
                             {(this.props.allClass ?
                                     this.props.allClass.map(x => {
                                         return(

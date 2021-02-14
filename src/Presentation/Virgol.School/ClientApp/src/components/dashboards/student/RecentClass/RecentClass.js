@@ -23,16 +23,15 @@ class RecentClass extends React.Component {
         const { title, pos , joinList , classes} = this.props
 
         return (
-            <div className={`${pos} w-full h-full mt-4 px-6 py-4 text-right bg-dark-blue rounded-xl overflow-auto`}>
-                <p className="text-white">{title}</p>
+            <div className={`${pos} tw-w-full tw-h-full tw-mt-4 tw-px-6 tw-py-4 tw-text-right tw-bg-dark-blue tw-rounded-xl tw-overflow-auto`}>
+                <p className="tw-text-white">{title}</p>
                 {(classes ?
                     (
                         classes.length === 0 
                         ? 
-                    <span className="text-2xl text-grayish block text-center">{this.props.t('noClassAvailable')}</span> 
+                    <span className="tw-text-2xl tw-text-grayish tw-block tw-text-center">{this.props.t('noClassAvailable')}</span> 
                         :
                         classes.map(x => {
-                            console.log(x.serviceType);
                             return (
                                 (x.started ? 
                                     <RecentClassDetail
@@ -62,7 +61,7 @@ class RecentClass extends React.Component {
                         })
                     )
                     :
-                    <span className="text-2xl text-grayish block text-center">{this.props.t('noClassAvailable')}</span> 
+                    <span className="tw-text-2xl tw-text-grayish tw-block tw-text-center">{this.props.t('noClassAvailable')}</span> 
                 )
                 }
             

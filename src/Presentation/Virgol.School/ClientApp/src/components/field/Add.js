@@ -4,12 +4,12 @@ import {arrow_left} from "../../assets/icons";
 const Add = ({ onCancel, title, children , newsClassName , isNews}) => {
 
     return (
-        <div className="w-screen relative min-h-screen bg-bold-blue">
-            <div onClick={onCancel} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-6 ml-6 rounded-lg border-2 border-purplish">
-                {arrow_left('w-6 centerize text-purplish')}
+        <div className="tw-w-screen tw-relative tw-min-h-screen tw-bg-bold-blue">
+            <div onClick={onCancel} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-6 tw-ml-6 tw-rounded-lg tw-border-2 tw-border-purplish">
+                {arrow_left('tw-w-6 centerize tw-text-purplish')}
             </div>
-            <div className={(isNews ? newsClassName : "max-w-350 w-11/12 ") + " centerize"}>
-                <p className="text-center text-white mb-6 text-xl">{title}</p>
+            <div className={(isNews ? newsClassName : "tw-max-w-350 tw-w-11/12 ") + " centerize"}>
+                <p className="tw-text-center tw-text-white tw-mb-6 tw-text-xl">{title}</p>
                 {children}
             </div>
         </div>

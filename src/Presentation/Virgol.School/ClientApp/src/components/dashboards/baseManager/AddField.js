@@ -38,26 +38,26 @@ class AddField extends React.Component {
     render() {
         if (this.state.loading) return (
             <Modal cancel={this.props.cancel}>
-                <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
-                    {loading('w-8 text-white centerize')}
+                <div onClick={e => e.stopPropagation()} className="tw-w-5/6 tw-max-w-800 tw-bg-bold-blue tw-px-4 tw-py-16 tw-flex tw-flex-col tw-items-center">
+                    {loading('tw-w-8 tw-text-white centerize')}
                 </div>
             </Modal>
         );
         return (
             <Modal cancel={this.props.cancel}>
-                <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
+                <div onClick={e => e.stopPropagation()} className="tw-w-5/6 tw-max-w-800 tw-bg-bold-blue tw-px-4 tw-py-16 tw-flex tw-flex-col tw-items-center">
                     <Searchish
-                        className="mx-auto max-w-350"
+                        className="tw-mx-auto tw-max-w-350"
                         query={this.state.query}
                         changeQuery={(query) => this.setState({ query })}
                     />
-                    <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
+                    <div className="tw-w-11/12 tw-mt-4 tw-flex tw-flex-row-reverse tw-justify-center tw-flex-wrap">
                         {this.state.query.trim().length == 0 && this.props.newSchoolInfo.studyFields.length > 10 
                             ? 
                             this.props.newSchoolInfo.studyFields.slice(0 , 10).map(study => {
                                 return (
                                     <span onClick={() => this.setCat(study.id)}
-                                            className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                            className={`tw-px-6 tw-py-1 tw-mx-2 tw-my-2 tw-border tw-cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'tw-border-sky-blue tw-text-sky-blue' : 'tw-border-white tw-text-white'}`}
                                     >
                                     {study.studyFieldName} ({study.codeStudyField})
                                 </span>
@@ -68,7 +68,7 @@ class AddField extends React.Component {
                                 // if (this.props.newSchoolInfo.studyFields.length < 10 || study.studyFieldName.includes(this.state.query)) {
                                     return (
                                         <span onClick={() => this.setCat(study.id)}
-                                              className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                              className={`tw-px-6 tw-py-1 tw-mx-2 tw-my-2 tw-border tw-cursor-pointer ${this.state.selectedFields.some(el => el === study.id) ? 'tw-border-sky-blue tw-text-sky-blue' : 'tw-border-white tw-text-white'}`}
                                         >
                                         {study.studyFieldName} ({study.codeStudyField})
                                     </span>
@@ -76,11 +76,11 @@ class AddField extends React.Component {
                                 // }
                         })}
                     </div>
-                    <div className="flex mt-8 flex-row items-center">
-                        <button onClick={this.addFieldToSchool} className="px-6 py-1 mx-1 border-2 border-transparent rounded-lg bg-greenish text-white">
+                    <div className="tw-flex tw-mt-8 tw-flex-row tw-items-center">
+                        <button onClick={this.addFieldToSchool} className="tw-px-6 tw-py-1 tw-mx-1 tw-border-2 tw-border-transparent tw-rounded-lg tw-bg-greenish tw-text-white">
                             {this.props.t('save')}
                         </button>
-                        <button onClick={this.props.cancel} className="px-6 mx-1 py-1 rounded-lg border-2 border-grayish text-grayish">
+                        <button onClick={this.props.cancel} className="tw-px-6 tw-mx-1 tw-py-1 tw-rounded-lg tw-border-2 tw-border-grayish tw-text-grayish">
                             {this.props.t('cancel')}
                         </button>
                     </div>

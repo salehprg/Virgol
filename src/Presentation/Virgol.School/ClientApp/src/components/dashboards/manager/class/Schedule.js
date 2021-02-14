@@ -44,8 +44,6 @@ class Schedule extends React.Component {
     handleLessonLayout() {
         const lessons = [];
 
-        console.log("Hey", this.props.lessons);
-
         this.props.lessons.map(day => {
             if(day && day.length > 0)
             {
@@ -60,7 +58,7 @@ class Schedule extends React.Component {
                     }   
 
                     lessons.push({i: lesson.id + '', name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.lessonId)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: lessonY, w: (lesson.endHour - lesson.startHour) * 2,
+                    c: `tw-bg-${getColor(lesson.lessonId)} tw-border-none tw-cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: lessonY, w: (lesson.endHour - lesson.startHour) * 2,
                     h: (lesson.weekly != 0 ? 0.5 : 1) , lessonDetail : lesson , static: true})
                 }))
             }
@@ -121,8 +119,8 @@ class Schedule extends React.Component {
                 <GridLayout className="layout" layout={layout} cols={34} rowHeight={50} width={1800}>
                     {layout.map(x => {
                         return (
-                            <div ref={this.sc} onClick={() => this.showLessonInfo(x.i)} className={`pointer border border-white text-center text-white ${x.c}`} key={x.i}>
-                                <p className="text-center" style={{textOverflow : "ellipsis" , overflow : "hidden" , whiteSpace : "nowrap"}}>{x.name}</p>
+                            <div ref={this.sc} onClick={() => this.showLessonInfo(x.i)} className={`pointer border tw-border-white tw-text-center tw-text-white ${x.c}`} key={x.i}>
+                                <p className="tw-text-center" style={{textOverflow : "ellipsis" , overflow : "hidden" , whiteSpace : "nowrap"}}>{x.name}</p>
                             </div>
                         );
                     })}

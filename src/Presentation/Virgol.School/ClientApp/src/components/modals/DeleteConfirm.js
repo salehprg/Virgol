@@ -8,11 +8,11 @@ const DeleteConfirm = ({ cancel, confirm, title }) => {
 
     return(
         <Modal cancel={cancel}>
-            <div className="w-11/12 bg-white max-w-500 p-8">
-                <p dir="rtl" className="text-center text-xl mb-8">{title}</p>
-                <div className="flex justify-center flex-row items-center">
-                    <button onClick={confirm} className="px-6 py-1 rounded-lg border-2 border-transparent bg-redish text-white mx-2"> {t('confirm')} </button>
-                    <button onClick={cancel} className="px-6 py-1 rounded-lg border-2 border-redish text-redish mx-2"> {t('cancel')} </button>
+            <div className="tw-w-11/12 tw-bg-white tw-max-w-500 tw-p-8">
+                <p dir="rtl" className="tw-text-center tw-text-xl tw-mb-8">{title}</p>
+                <div className="tw-flex tw-justify-center tw-flex-row tw-items-center">
+                    <button onClick={confirm} className="tw-px-6 tw-py-1 tw-rounded-lg tw-border-2 tw-border-transparent tw-bg-redish tw-text-white tw-mx-2"> {t('confirm')} </button>
+                    <button onClick={cancel} className="tw-px-6 tw-py-1 tw-rounded-lg tw-border-2 tw-border-redish tw-text-redish tw-mx-2"> {t('cancel')} </button>
                 </div>
             </div>
         </Modal>

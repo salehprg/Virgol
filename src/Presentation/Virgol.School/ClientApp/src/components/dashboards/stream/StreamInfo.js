@@ -87,7 +87,7 @@ class StreamInfo extends React.Component {
 
     render() {
         return (
-            <div className="w-full overflow-y-auto mt-10 items-center justify-evenly">
+            <div className="tw-w-full tw-overflow-y-auto tw-mt-10 tw-items-center tw-justify-evenly">
                 {this.state.showDeleteModal ? 
                     <DeleteConfirm
                         title={this.props.t('deleteConfirm')}
@@ -99,12 +99,12 @@ class StreamInfo extends React.Component {
                 }
                 
                 <ul 
-                className="nav nav-tabs nav-fill flex-column flex-sm-row" 
+                className="nav nav-tabs nav-fill tw-flex-column tw-flex-sm-row" 
                 id="myTab" 
                 role="tablist">
                     <li className="nav-item">
                         <a  
-                        className="flex-sm-fill text-sm-center nav-link text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-greenish" 
                         id="goToFuture"
                         data-toggle="tab" 
                         role="tab" 
@@ -121,7 +121,7 @@ class StreamInfo extends React.Component {
                         role="tab" 
                         data-toggle="tab"
                         aria-controls="finishedConferences" 
-                        className="flex-sm-fill text-sm-center nav-link active text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link active tw-text-greenish" 
                         href="#finishedConferences"
                         aria-selected="true"
                         >{this.props.t('finishedConferences')}</a>
@@ -133,7 +133,7 @@ class StreamInfo extends React.Component {
                         role="tab" 
                         data-toggle="tab"
                         aria-controls="activeStream" 
-                        className="flex-sm-fill text-sm-center nav-link text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-greenish" 
                         href="#activeStream"
                         aria-selected="false"
                         >
@@ -147,23 +147,23 @@ class StreamInfo extends React.Component {
                 </ul>
 
                 <div className="tab-content">
-                    <div role="tabpanel" aria-labelledby="goToActive" id="activeStream" className="tab-pane fade rounded-lg flex flex-col items-center justify-center w-full max-w-350 h-80 my-4 mx-auto px-3 py-2">
+                    <div role="tabpanel" aria-labelledby="goToActive" id="activeStream" className="tab-pane fade tw-rounded-lg tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-max-w-350 tw-h-80 tw-my-4 tw-mx-auto tw-px-3 tw-py-2">
                         {this.props.currentStream ? 
                         <>
-                            <div className="w-full text-right py-4 px-4 text-white border-2 border-greenish rounded-lg">
-                                <p className="text-xl mb-4 text-center"> {this.props.t('activeStream')} </p>
+                            <div className="tw-w-full tw-text-right tw-py-4 tw-px-4 tw-text-white tw-border-2 tw-border-greenish tw-rounded-lg">
+                                <p className="tw-text-xl tw-mb-4 tw-text-center"> {this.props.t('activeStream')} </p>
                                 <p> {this.props.currentStream.streamName} </p>
-                                <div className="flex my-2 flex-row-reverse justify-between">
+                                <div className="tw-flex tw-my-2 tw-flex-row-reverse tw-justify-between">
                                     <p>{new Date(this.props.currentStream.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</p>
                                     <p>{this.props.currentStream.duration}'</p>
                                 </div>
                                 <div>
-                                    <p className="mb-2"> {this.props.t('streamUrl')} </p>
-                                    <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-sky-blue">{this.props.currentStream.obS_Link}</p>
+                                    <p className="tw-mb-2"> {this.props.t('streamUrl')} </p>
+                                    <p className="tw-text-left tw-border-2 tw-break-all tw-overflow-hidden tw-rounded-lg tw-px-2 tw-py-1 tw-border-sky-blue">{this.props.currentStream.obS_Link}</p>
                                 </div>
-                                <div className="mt-2">
-                                    <p className="mb-2"> {this.props.t('streamKey')} </p>
-                                    <p className="text-left border-2 break-all overflow-hidden rounded-lg px-2 py-1 border-purplish">{this.props.currentStream.obS_Key}</p>
+                                <div className="tw-mt-2">
+                                    <p className="tw-mb-2"> {this.props.t('streamKey')} </p>
+                                    <p className="tw-text-left tw-border-2 tw-break-all tw-overflow-hidden tw-rounded-lg tw-px-2 tw-py-1 tw-border-purplish">{this.props.currentStream.obS_Key}</p>
                                 </div>
                             </div>
                         </>
@@ -172,31 +172,31 @@ class StreamInfo extends React.Component {
                             <input
                                 value={this.state.streamName}
                                 onChange={(e) => this.setState({streamName : e.target.value})}
-                                className="w-full px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue text-right text-white"
+                                className="tw-w-full tw-px-4 tw-py-2 tw-rounded-lg tw-bg-transparent tw-border-2 tw-border-dark-blue tw-text-right tw-text-white"
                                 placeholder={this.props.t('streamName')}
                             />
-                            <div className="w-full my-8 flex flex-row-reverse items-center justify-around">
-                                <span className="text-white"> {this.props.t('startTime')} </span>
+                            <div className="tw-w-full tw-my-8 tw-flex tw-flex-row-reverse tw-items-center tw-justify-around">
+                                <span className="tw-text-white"> {this.props.t('startTime')} </span>
                                 <DatePicker 
-                                className="border-2 rounded border-dark-blue bg-transparent py-2 px-2 mb-4 text-white cursor-pointer"
+                                className="tw-border-2 tw-rounded tw-border-dark-blue tw-bg-transparent tw-py-2 tw-px-2 tw-mb-4 tw-text-white tw-cursor-pointer"
                                 value={this.state.startTime} 
                                 timePicker={true} 
                                 onClickSubmitButton={this.setStartTime}
                                 />
                             </div>
-                            <div className="flex flex-row-reverse items-center justify-start w-full">
-                                <span className="text-white ml-8"> {this.props.t('duration')} </span>
+                            <div className="tw-flex tw-flex-row-reverse tw-items-center tw-justify-start tw-w-full">
+                                <span className="tw-text-white tw-ml-8"> {this.props.t('duration')} </span>
                                 <input 
                                 value={this.state.duration} 
                                 onChange={this.setDuration} 
                                 type="number" 
-                                className="text-center w-1/3 mx-8 px-2 py-2 border-2 border-dark-blue rounded" 
+                                className="tw-text-center tw-w-1/3 tw-mx-8 tw-px-2 tw-py-2 tw-border-2 tw-border-dark-blue tw-rounded" 
                                 style={{backgroundColor : 'transparent' , color : 'white'}} />
-                                <span className="text-white mr-8"> {this.props.t("minute")} </span>
+                                <span className="tw-text-white tw-mr-8"> {this.props.t("minute")} </span>
                             </div>
                             <Select
                                     styles={styles}
-                                    className="w-full mx-auto my-8"
+                                    className="tw-w-full tw-mx-auto tw-my-8"
                                     value={this.state.selctedGuests}
                                     onChange={this.handleChangeGuests}
                                     options={this.state.guests}
@@ -204,29 +204,29 @@ class StreamInfo extends React.Component {
                                     isMulti
                                     isSearchable
                             />
-                            <button className="bg-greenish rounded-lg text-white w-full py-2" onClick={() => this.reserveStream()}> {this.props.t('editConference')} </button>
+                            <button className="tw-bg-greenish tw-rounded-lg tw-text-white tw-w-full tw-py-2" onClick={() => this.reserveStream()}> {this.props.t('editConference')} </button>
                         </> 
                         }
 
-                        {/* <button data-tip="افزودن همایش جدید" className="bg-greenish rounded-full w-10 text-white">{plus()}</button>
+                        {/* <button data-tip="افزودن همایش جدید" className="tw-bg-greenish tw-rounded-full tw-w-10 tw-text-white">{plus()}</button>
                         <ReactTooltip place="top" effect="float" type="success"/> */}
                     </div>
 
-                    <div role="tabpanel" aria-labelledby="goToFuture" id="futureConferences" className="tab-pane fade bg-dark-blue rounded-lg w-full h-80 my-4 px-3 py-2">
-                        {/* <p className="text-right text-white mb-4"> {this.props.t('futureConferences')} </p> */}
+                    <div role="tabpanel" aria-labelledby="goToFuture" id="futureConferences" className="tab-pane fade tw-bg-dark-blue tw-rounded-lg tw-w-full tw-h-80 tw-my-4 tw-px-3 tw-py-2">
+                        {/* <p className="tw-text-right tw-text-white tw-mb-4"> {this.props.t('futureConferences')} </p> */}
                         <Tablish 
                             headers={[this.props.t('name'), this.props.t('date')]}
                             body={() => {
                                 return this.props.futureStream.map(x => {
                                     return (
                                         <tr key={x.id}>
-                                            <td className="py-4 text-right"> {x.streamName} </td>
-                                            <td className="text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
-                                            <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
-                                                {trash('w-6 text-white ')}
+                                            <td className="tw-py-4 tw-text-right"> {x.streamName} </td>
+                                            <td className="tw-text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                            <td onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
+                                                {trash('tw-w-6 tw-text-white ')}
                                             </td>
-                                            <td onClick={() => history.push(`/editStream/${x.id}`)} className="cursor-pointer">
-                                                {edit('w-6 text-white ')}
+                                            <td onClick={() => history.push(`/editStream/${x.id}`)} className="tw-cursor-pointer">
+                                                {edit('tw-w-6 tw-text-white ')}
                                             </td>
                                         </tr>
                                     );
@@ -235,8 +235,8 @@ class StreamInfo extends React.Component {
                         />
                     </div>
 
-                    <div role="tabpanel" aria-labelledby="goToFinished" id="finishedConferences" className="tab-pane fade show active bg-dark-blue w-full rounded-lg  h-80 my-4 px-3 py-2">
-                        {/* <p className="text-right text-white mb-4"> {this.props.t('finishedConferences')} </p> */}
+                    <div role="tabpanel" aria-labelledby="goToFinished" id="finishedConferences" className="tab-pane fade show active tw-bg-dark-blue tw-w-full tw-rounded-lg  tw-h-80 tw-my-4 tw-px-3 tw-py-2">
+                        {/* <p className="tw-text-right tw-text-white tw-mb-4"> {this.props.t('finishedConferences')} </p> */}
                         
                         <Tablish 
                             headers={[this.props.t('name'), this.props.t('date')]}
@@ -244,10 +244,10 @@ class StreamInfo extends React.Component {
                                 return this.props.endedStream.map(x => {
                                     return (
                                         <tr key={x.id}>
-                                            <td className="py-4 text-right"> {x.streamName} </td>
-                                            <td className="text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
-                                            {/* <td onClick={() => this.showDelete(x.id)} className="cursor-pointer">
-                                                {trash('w-6 text-white ')}
+                                            <td className="tw-py-4 tw-text-right"> {x.streamName} </td>
+                                            <td className="tw-text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                            {/* <td onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
+                                                {trash('tw-w-6 tw-text-white ')}
                                             </td> */}
                                         </tr>
                                     );

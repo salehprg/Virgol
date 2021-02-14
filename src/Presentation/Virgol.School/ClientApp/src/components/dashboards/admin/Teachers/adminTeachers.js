@@ -40,9 +40,9 @@ class adminTeachers extends React.Component {
     }
 
     render() {
-        if(this.state.loading || !this.props.allTeachers) loading('w-10 text-grayish centerize')
+        if(this.state.loading || !this.props.allTeachers) loading('tw-w-10 tw-text-grayish centerize')
         return (
-            <div className="w-full mt-10">
+            <div className="tw-w-full tw-mt-10">
                 <PlusTable
                     title={this.props.t('teachersList')}
                     searchable
@@ -62,12 +62,12 @@ class adminTeachers extends React.Component {
                                     this.state.teachers.map(teacher => {
                                         return(
                                         <tr>
-                                            <td className="py-4 text-right">{teacher.firstName}</td>
-                                            <td className="text-right">{teacher.lastName}</td>
-                                            <td className="text-right">{teacher.melliCode}</td>
-                                            <td className="text-right">{teacher.phoneNumber}</td>
-                                            <td className="text-right">{teacher.personalIdNUmber}</td>
-                                            <td><span className="text-center">{teacher.latinFirstname && teacher.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
+                                            <td className="tw-py-4 tw-text-right">{teacher.firstName}</td>
+                                            <td className="tw-text-right">{teacher.lastName}</td>
+                                            <td className="tw-text-right">{teacher.melliCode}</td>
+                                            <td className="tw-text-right">{teacher.phoneNumber}</td>
+                                            <td className="tw-text-right">{teacher.personalIdNUmber}</td>
+                                            <td><span className="tw-text-center">{teacher.latinFirstname && teacher.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
                                         </tr>
                                         )
                                     })

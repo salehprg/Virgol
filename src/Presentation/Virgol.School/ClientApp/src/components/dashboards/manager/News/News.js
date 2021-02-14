@@ -34,9 +34,9 @@ class News extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return loading('w-10 text-grayish centerize')
+        if(this.state.loading) return loading('tw-w-10 tw-text-grayish centerize')
         return (
-            <div className="w-full mt-10">
+            <div className="tw-w-full tw-mt-10">
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
                     title={this.props.t('deleteConfirm')}
@@ -53,7 +53,7 @@ class News extends React.Component {
                     changeQuery={this.changeQuery}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/addNewsManager')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg"> {this.props.t('addNews')} </button>
+                            <button onClick={() => history.push('/addNewsManager')} className="tw-px-6 tw-py-1 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg"> {this.props.t('addNews')} </button>
                         );
                     }}
                     headers={[this.props.t('newsText'), this.props.t('tags'), this.props.t('newsDate')]}
@@ -66,20 +66,20 @@ class News extends React.Component {
                                         {
                                             return(
                                             <tr key={x.id}>
-                                                <td className="py-4 text-right">{x.message.split(" ").slice(0,3).map(x => x + " ")} ...</td>
-                                                <td className="text-right">{x.tags ?
+                                                <td className="tw-py-4 tw-text-right">{x.message.split(" ").slice(0,3).map(x => x + " ")} ...</td>
+                                                <td className="tw-text-right">{x.tags ?
                                                         x.tags.split(",").slice(0,5).map((tag,i) => {
                                                         return (
                                                         (i + 1 != x.tags.split(",").slice(0,5).length ? tag + " , " : tag)
                                                     )})
                                                 : null}
                                                 </td>
-                                                <td className="text-right">{new Date(x.createTime).toLocaleDateString('fa-IR')}</td>
-                                                <td className="cursor-pointer text-right" onClick={() => history.push(`/managerNews/${x.id}`)}>
-                                                    {edit('w-6 text-white')}
+                                                <td className="tw-text-right">{new Date(x.createTime).toLocaleDateString('fa-IR')}</td>
+                                                <td className="tw-cursor-pointer tw-text-right" onClick={() => history.push(`/managerNews/${x.id}`)}>
+                                                    {edit('tw-w-6 tw-text-white')}
                                                 </td>
-                                                <td className="text-right" onClick={() => this.showDelete(x.id)} className="cursor-pointer">
-                                                    {trash('w-6 text-white ')}
+                                                <td className="tw-text-right" onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
+                                                    {trash('tw-w-6 tw-text-white ')}
                                                 </td>
                                             </tr>
                                             )

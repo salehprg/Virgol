@@ -48,7 +48,7 @@ class Tracker extends React.Component {
                     }  
 
                     schedules.push({i: 'l' + lesson.id , name: lesson.orgLessonName, 
-                    c: `bg-${getColor(lesson.id)} border-none cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: index + offsetY, w: (lesson.endHour - lesson.startHour) * 2,
+                    c: `tw-bg-${getColor(lesson.id)} tw-border-none tw-cursor-pointer`, x: 32 - ((lesson.endHour - 7) * 2), y: index + offsetY, w: (lesson.endHour - lesson.startHour) * 2,
                     h: (lesson.weekly != 0 ? 0.5 : 1) , lessonDetail : lesson , static: true})
                 }))
             }
@@ -84,7 +84,7 @@ class Tracker extends React.Component {
 
     showOnGoing = (lessonDetail) => {
         if (lessonDetail) {
-            if (lessonDetail.meetingId) return <span className="w-full relative mt-2">{onGoing('w-6 centerize')}</span>
+            if (lessonDetail.meetingId) return <span className="tw-w-full tw-relative tw-mt-2">{onGoing('tw-w-6 centerize')}</span>
         }
         return null;
     }
@@ -105,13 +105,13 @@ class Tracker extends React.Component {
                 : 
                 null
                 }
-                <div className="w-full py-10">
-                    <div ref={this.sc} className="w-11/12 p-4 mx-auto rounded-lg min-h-70 border-2 border-dark-blue overflow-auto">
+                <div className="tw-w-full tw-py-10">
+                    <div ref={this.sc} className="tw-w-11/12 tw-p-4 tw-mx-auto tw-rounded-lg tw-min-h-70 tw-border-2 tw-border-dark-blue tw-overflow-auto">
                         <GridLayout className="layout" layout={layout} cols={34} rowHeight={50} width={1800}>
                             {layout.map(x => {
                                 return (
-                                    <div onClick={() => this.showLessonInfo(x.i)} className={`pointer overflow-hidden border flex flex-col justify-center border-white text-center text-white ${x.c}`} key={x.i}>
-                                        <p className="text-center">{x.name}</p>
+                                    <div onClick={() => this.showLessonInfo(x.i)} className={`pointer tw-overflow-hidden border tw-flex tw-flex-col tw-justify-center tw-border-white tw-text-center tw-text-white ${x.c}`} key={x.i}>
+                                        <p className="tw-text-center">{x.name}</p>
                                         {this.showOnGoing(x.lessonDetail)}
                                     </div>
                                 );

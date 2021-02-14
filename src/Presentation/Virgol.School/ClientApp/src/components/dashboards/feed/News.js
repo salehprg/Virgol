@@ -4,16 +4,16 @@ import getColor from "../../../assets/colors";
 const News = ({ text, tags, time }) => {
 
     return (
-        <div className="w-full py-2 mt-6 border-b border-grayish">
-            <p className="text-white mb-4" style={{direction : "rtl"}}>{text}</p>
-            <div className="w-full flex flex-row justify-between items-center">
-                <span className="text-grayish text-sm">{time}</span>
-                <div className="w-3/4 flex flex-wrap flex-row-reverse justify-start items-center">
+        <div className="tw-w-full tw-py-2 tw-mt-6 tw-border-b tw-border-grayish">
+            <p className="tw-text-white tw-mb-4" style={{direction : "rtl"}}>{text}</p>
+            <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">
+                <span className="tw-text-grayish tw-text-sm">{time}</span>
+                <div className="tw-w-3/4 tw-flex tw-flex-wrap tw-flex-row-reverse tw-justify-start tw-items-center">
                     {(tags 
                     ? 
                     tags.map((tag, i) => {
                         return (
-                            <div className={`px-6 py-1 ml-2 mb-2 rounded-full text-white bg-${getColor(i)}`}>
+                            <div className={`tw-px-6 tw-py-1 tw-ml-2 tw-mb-2 tw-rounded-full tw-text-white tw-bg-${getColor(i)}`}>
                                 {tag}
                             </div>
                         );

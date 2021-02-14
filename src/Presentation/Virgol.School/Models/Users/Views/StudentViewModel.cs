@@ -10,13 +10,14 @@ public class StudentViewModel {
     public string FatherPhoneNumber {get; set;}
     public string FatherMelliCode {get; set;}
     public string cityBirth {get; set;}
-    public int? BaseId {get; set;}
+    public string classsname {get; set;}
     public DateTime? BirthDate {get; set;}
     public string FirstName {get; set;}
     public string LastName {get; set;}
     public string LatinFirstname {get; set;}
     public string LatinLastname {get; set;}
     public string PhoneNumber {get; set;}
+    public string rolename {get; set;}
     public bool ConfirmedAcc {get; set;}
     public string MelliCode {get; set;}
     //0 = Girl , 1 = Boy
@@ -25,7 +26,7 @@ public class StudentViewModel {
     ///<summary>
     ///Get schoolType from SchoolType Class
     ///</summary>
-    public int SchoolType {get; set;}
+    public int? SchoolType {get; set;}
     public int schoolid {get; set;}
     public int? ClassId {get; set;}
 }

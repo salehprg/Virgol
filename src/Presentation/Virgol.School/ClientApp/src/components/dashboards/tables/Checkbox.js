@@ -9,7 +9,7 @@ class Checkbox extends React.Component {
 
     render() {
         return (
-            <button onClick={this.toggle} className={`w-5 h-5 flex justify-center items-center focus:outline-none rounded border-2 ${this.props.checked ? 'border-greenish bg-greenish' : 'border-grayish'}`}>
+            <button onClick={this.toggle} className={`tw-w-5 tw-h-5 tw-flex tw-justify-center tw-items-center focus:tw-outline-none tw-rounded tw-border-2 ${this.props.checked ? 'tw-border-greenish tw-bg-greenish' : 'tw-border-grayish'}`}>
             </button>
         );
     }

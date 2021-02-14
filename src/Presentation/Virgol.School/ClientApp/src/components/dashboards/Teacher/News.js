@@ -19,13 +19,13 @@ class News extends React.Component {
     }
     
     render() {
-        if(this.state.loading) loading('w-10 text-grayish centerize')
+        if(this.state.loading) loading('tw-w-10 tw-text-grayish centerize')
         return (
-            <div style={{direction : "rtl"}} className="grid sm:grid-cols-4 grid-cols-4 gap-4 py-6">
+            <div style={{direction : "rtl"}} className="tw-grid sm:tw-grid-cols-4 tw-grid-cols-4 tw-gap-4 tw-py-6">
                 <Feed
                     news={this.props.inNews}
                     title={this.props.t('studentsNews')}
-                    pos="row-start-4 sm:row-start-auto col-span-3 row-span-3"
+                    pos="tw-row-start-4 sm:tw-row-start-auto tw-col-span-3 tw-row-span-3"
                 />
             </div>
         );

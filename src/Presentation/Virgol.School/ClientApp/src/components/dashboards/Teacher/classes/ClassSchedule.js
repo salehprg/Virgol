@@ -34,12 +34,12 @@ class ClassSchedule extends React.Component {
     render() {
         if (this.state.loading || !this.state.schedules) return (
             <>
-                {loading('w-10 text-white centerize')}
+                {loading('tw-w-10 tw-text-white centerize')}
             </>
         );
         
         return (
-            <div ref={this.sc} className="overflow-auto">
+            <div ref={this.sc} className="tw-overflow-auto">
                 <Schedule
                     isTeacher={false}
                     editable={false}

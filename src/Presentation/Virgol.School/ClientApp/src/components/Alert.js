@@ -9,20 +9,20 @@ const Alert = ({ type, message, fade }) => {
     }, [])
 
     return (
-        <motion.div className="fixed z-50 top-0 w-screen mt-8"
+        <motion.div className="tw-fixed tw-z-50 tw-top-0 tw-w-screen tw-mt-8"
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.5, type: 'spring' }}
         >
-            <div className={`rounded-full mx-auto w-11/12 max-w-500 px-4 py-2 flex flex-row justify-between items-center ${type === 'alert-success' ? 'bg-greenish' : 'bg-redish'}`}>
+            <div className={`tw-rounded-full tw-mx-auto tw-w-11/12 tw-max-w-500 tw-px-4 tw-py-2 tw-flex tw-flex-row tw-justify-between tw-items-center ${type === 'alert-success' ? 'tw-bg-greenish' : 'tw-bg-redish'}`}>
                 {type === 'alert-error' ?
-                    alert_octagon('w-6 text-white')
+                    alert_octagon('tw-w-6 tw-text-white')
                     :
-                    check_circle('w-6 text-white')
+                    check_circle('tw-w-6 tw-text-white')
                 }
-                <p className="text-white px-2 text-center">{message}</p>
-                <div onClick={fade} className="cursor-pointer">
-                    {x('w-6 text-white')}
+                <p className="tw-text-white tw-px-2 tw-text-center">{message}</p>
+                <div onClick={fade} className="tw-cursor-pointer">
+                    {x('tw-w-6 tw-text-white')}
                 </div>
             </div>
         </motion.div>

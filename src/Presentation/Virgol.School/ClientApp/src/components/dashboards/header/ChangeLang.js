@@ -22,12 +22,12 @@ const ChangeLang = ({ showLang, setShowLang }) => {
 
     return (
         <div onClick={(e) => e.stopPropagation()}>
-            <div onClick={() => setShowLang(!showLang)} ref={setReferenceElement} className="relative mx-1">
-                {globe("w-6 text-white cursor-pointer")}
+            <div onClick={() => setShowLang(!showLang)} ref={setReferenceElement} className="tw-relative tw-mx-1">
+                {globe("tw-w-6 tw-text-white tw-cursor-pointer")}
             </div>
-            <div className={`bg-white px-4 py-2 rounded-lg z-50 ${showLang ? 'block' : 'hidden'}`} style={styles.popper} ref={setPopperElement} {...attributes.popper}>
-                <button onClick={() => whatLang('ar')} className="my-1 block">العربیه</button>
-                <button onClick={() => whatLang('fa')} className="my-1 block">فارسی</button>
+            <div className={`tw-bg-white tw-px-4 tw-py-2 tw-rounded-lg tw-z-50 ${showLang ? 'tw-block' : 'tw-hidden'}`} style={styles.popper} ref={setPopperElement} {...attributes.popper}>
+                <button onClick={() => whatLang('ar')} className="tw-my-1 tw-block">العربیه</button>
+                <button onClick={() => whatLang('fa')} className="tw-my-1 tw-block">فارسی</button>
             </div>
         </div>
     );

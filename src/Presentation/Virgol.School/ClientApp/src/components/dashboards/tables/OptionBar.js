@@ -7,13 +7,13 @@ const OptionBar = (props) => {
     const {t} = useTranslation();
 
     return (
-        <div className="w-full flex flex-row justify-center">
-            <div className="fixed flex md:flex-row-reverse flex-col justify-between items-center bottom-0 mb-16 mx-auto w-5/6 max-w-800 bg-black rounded-full px-4 py-4">
-    <span dir="rtl" className="text-white md:mb-0 mb-4">{props.selectedItems.length} {t('selected')}</span>
+        <div className="tw-w-full tw-flex tw-flex-row tw-justify-center">
+            <div className="tw-fixed tw-flex md:tw-flex-row-reverse tw-flex-col tw-justify-between tw-items-center tw-bottom-0 tw-mb-16 tw-mx-auto tw-w-5/6 tw-max-w-800 tw-bg-black tw-rounded-full tw-px-4 tw-py-4">
+    <span dir="rtl" className="tw-text-white md:tw-mb-0 tw-mb-4">{props.selectedItems.length} {t('selected')}</span>
 
-                <div className="flex flex-row justify-start items-center">
-                    <div onClick={props.clear} className="mx-2 cursor-pointer">
-                        {x("w-6 text-grayish")}
+                <div className="tw-flex tw-flex-row tw-justify-start tw-items-center">
+                    <div onClick={props.clear} className="tw-mx-2 tw-cursor-pointer">
+                        {x("tw-w-6 tw-text-grayish")}
                     </div>
                     {props.options()}
                 </div>

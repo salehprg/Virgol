@@ -650,7 +650,7 @@ namespace lms_with_moodle.Controllers
 
                 List<SchoolModel> schools = appDbContext.Schools.Where(x => x.SchoolType == schoolType).ToList();
 
-                List<StudentViewModel> result = appDbContext.StudentViews.Where(x => x.SchoolType == schoolType).ToList();
+                List<StudentViewModel> result = appDbContext.StudentViews.Where(x => x.SchoolType == schoolType && x.rolename == Roles.Student).ToList();
 
                 result = result.OrderBy(x => x.LastName).ToList();
                 return Ok(result);

@@ -45,12 +45,12 @@ class LogoutSSO extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen">
-                <div className="centerize flex flex-col text-center items-center">
-                    {chevrons('w-24 transform rotate-180 text-dark-blue')}
+            <div className="tw-w-screen tw-min-h-screen">
+                <div className="centerize tw-flex tw-flex-col tw-text-center tw-items-center">
+                    {chevrons('tw-w-24 tw-transform tw-rotate-180 tw-text-dark-blue')}
                     <p>درحال انتقال به پنل ویرگول ...</p>
                     <p>این عملیات ممکن است چند ثانیه طول بکشد</p>
-                    {loading('w-12 text-dark-blue')}
+                    {loading('tw-w-12 tw-text-dark-blue')}
                 </div>
             </div>
         );

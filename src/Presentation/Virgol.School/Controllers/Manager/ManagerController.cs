@@ -149,7 +149,7 @@ namespace lms_with_moodle.Controllers
                 string ManagerUserName = userManager.GetUserId(User);
                 int schoolId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().SchoolId;
 
-                List<StudentViewModel> AllStudent = appDbContext.StudentViews.Where(x => x.schoolid == schoolId).ToList();
+                List<StudentViewModel> AllStudent = appDbContext.StudentViews.Where(x => x.schoolid == schoolId && x.rolename == Roles.Student).ToList();
                 AllStudent = AllStudent.Distinct().ToList();
                 List<StudentViewModel> result = new List<StudentViewModel>();
 

@@ -31,7 +31,7 @@ class ExtraLessons extends React.Component {
 
     render() {
         return (
-            <div className="w-full mt-10">
+            <div className="tw-w-full tw-mt-10">
                 {this.state.showDeleteModal ? 
                     <DeleteConfirm
                         title={this.props.t('deleteConfirm')}
@@ -49,7 +49,7 @@ class ExtraLessons extends React.Component {
                     //changeQuery={this.changeQuery}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/addExtraLesson')} className="px-6 py-1 border-2 border-sky-blue text-sky-blue rounded-lg"> {this.props.t('addExtraLesson')} </button>
+                            <button onClick={() => history.push('/addExtraLesson')} className="tw-px-6 tw-py-1 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg"> {this.props.t('addExtraLesson')} </button>
                         );
                     }}
                     headers={[this.props.t('name'), this.props.t('className'), this.props.t('lesson'), '']}
@@ -61,11 +61,11 @@ class ExtraLessons extends React.Component {
                                     this.props.extraLessons.map(x => {
                                         return(
                                             <tr key={x.id}>
-                                                <td className="text-right">{`${x.firstName} ${x.lastName}`}</td>
-                                                <td className="py-4 text-right">{x.className}</td>
-                                                <td className="text-right">{x.lessonName}</td>
-                                                <td className="text-right" onClick={() => this.showDelete(x.id)} className="cursor-pointer">
-                                                    {trash('w-6 text-white ')}
+                                                <td className="tw-text-right">{`${x.firstName} ${x.lastName}`}</td>
+                                                <td className="tw-py-4 tw-text-right">{x.className}</td>
+                                                <td className="tw-text-right">{x.lessonName}</td>
+                                                <td className="tw-text-right" onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
+                                                    {trash('tw-w-6 tw-text-white ')}
                                                 </td>
                                             </tr>
                                             )

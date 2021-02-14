@@ -31,51 +31,51 @@ class Header extends React.Component {
 
     render() {
         return (
-            <div className="w-full flex md:flex-row-reverse flex-col justify-between items-center">
+            <div className="tw-w-full tw-flex md:tw-flex-row-reverse tw-flex-col tw-justify-between tw-items-center">
                 <ReactToolTip />
-                <div className="flex flex-row-reverse justify-start items-start">
+                <div className="tw-flex tw-flex-row-reverse tw-justify-start tw-items-start">
                     <Notification />
 
-                    {/*<div className="w-full flex flex-row-reverse justify-start items-center">*/}
-                    {/*    <span data-tip="به زودی" className="cursor-pointer text-white text-lg mx-4">زبان</span>*/}
-                    {/*    <a className="text-white text-lg mx-4" href="mailto:support@legace.ir">پشتیبانی</a>*/}
-                    {/*    <a className="text-white text-lg mx-4" href="https://webmail.legace.ir/" target="_blank" rel="noopener noreferrer">پست الکترونیکی</a>*/}
-                    {/*    <button onClick={this.props.logout} className="text-white text-lg mx-4">خروج</button>*/}
+                    {/*<div className="tw-w-full tw-flex tw-flex-row-reverse tw-justify-start tw-items-center">*/}
+                    {/*    <span data-tip="به زودی" className="tw-cursor-pointer tw-text-white tw-text-lg tw-mx-4">زبان</span>*/}
+                    {/*    <a className="tw-text-white tw-text-lg tw-mx-4" href="mailto:support@legace.ir">پشتیبانی</a>*/}
+                    {/*    <a className="tw-text-white tw-text-lg tw-mx-4" href="https://webmail.legace.ir/" target="_blank" rel="noopener noreferrer">پست الکترونیکی</a>*/}
+                    {/*    <button onClick={this.props.logout} className="tw-text-white tw-text-lg tw-mx-4">خروج</button>*/}
                     {/*</div>*/}
 
-                    <div className="mr-4 px-2 py-1 flex md:flex-row-reverse flex-col justify-between items-center border-2 rounded-lg border-dark-blue">
-                        <span className="text-white pt-1 text-right md:ml-4 ml-0 md:mb-0 mb-2">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</span>
-                        <div className="flex flex-row-reverse items-center">
-                            {/*<div data-tip="سامانه مودل" className="relative mx-1">*/}
-                            {/*    <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://moodle.legace.ir">*/}
+                    <div className="tw-mr-4 tw-px-2 tw-py-1 tw-flex md:tw-flex-row-reverse tw-flex-col tw-justify-between tw-items-center tw-border-2 tw-rounded-lg tw-border-dark-blue">
+                        <span className="tw-text-white tw-pt-1 tw-text-right md:tw-ml-4 tw-ml-0 md:tw-mb-0 tw-mb-2">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</span>
+                        <div className="tw-flex tw-flex-row-reverse tw-items-center">
+                            {/*<div data-tip="سامانه مودل" className="tw-relative tw-mx-1">*/}
+                            {/*    <a target="_blank" className="tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-left-0" href="https://moodle.legace.ir">*/}
                             {/*    </a>*/}
-                            {/*    {briefcase("w-6 text-white cursor-pointer")}*/}
+                            {/*    {briefcase("tw-w-6 tw-text-white tw-cursor-pointer")}*/}
                             {/*</div>*/}
-                            {/*<div data-tip="سامانه بیگ بلو" className="relative mx-1">*/}
-                            {/*    <a target="_blank" className="absolute top-0 bottom-0 right-0 left-0" href="https://bbb.legace.ir/b/ldap_signin">*/}
+                            {/*<div data-tip="سامانه بیگ بلو" className="tw-relative tw-mx-1">*/}
+                            {/*    <a target="_blank" className="tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-left-0" href="https://bbb.legace.ir/b/ldap_signin">*/}
                             {/*    </a>*/}
-                            {/*    {video("w-6 text-white cursor-pointer")}*/}
+                            {/*    {video("tw-w-6 tw-text-white tw-cursor-pointer")}*/}
                             {/*</div>*/}
                             <ChangeLang showLang={this.props.showLang} setShowLang={this.props.setShowLang} />
-                            {/* <span className={`mx-2 cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge != 'ar' ? 'text-greenish' : 'text-white'}`}>فارسی</span>
-                            <span onClick={() => this.props.i18n.changeLanguage('ar')} className={`mx-2 cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge == 'ar' ? 'text-greenish' : 'text-white'}`}>العربیه</span> */}
-                            <div data-tip={this.props.t('support')} className="relative mx-1">
-                                <a className="absolute top-0 bottom-0 right-0 left-0" href="mailto:support@vir-gol.ir">
+                            {/* <span className={`tw-mx-2 tw-cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge != 'ar' ? 'tw-text-greenish' : 'tw-text-white'}`}>فارسی</span>
+                            <span onClick={() => this.props.i18n.changeLanguage('ar')} className={`tw-mx-2 tw-cursor-pointer ${this.props.langVis ? '' : 'hidden'} ${this.props.i18n.langauge == 'ar' ? 'tw-text-greenish' : 'tw-text-white'}`}>العربیه</span> */}
+                            <div data-tip={this.props.t('support')} className="tw-relative tw-mx-1">
+                                <a className="tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-left-0" href="mailto:support@vir-gol.ir">
                                 </a>
-                                {headphones("w-6 text-white cursor-pointer")}
+                                {headphones("tw-w-6 tw-text-white tw-cursor-pointer")}
                             </div>
-                            <div data-tip={this.props.t('webmail')} className="relative mx-1">
-                                <a target="_blank" rel="noopener noreferrer" className="absolute top-0 bottom-0 right-0 left-0" href="https://webmail.vir-gol.ir/">
+                            <div data-tip={this.props.t('webmail')} className="tw-relative tw-mx-1">
+                                <a target="_blank" rel="noopener noreferrer" className="tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-left-0" href="https://webmail.vir-gol.ir/">
                                 </a>
-                                {mail("w-6 text-white cursor-pointer")}
+                                {mail("tw-w-6 tw-text-white tw-cursor-pointer")}
                             </div>
-                            <div data-tip={this.props.t('exit')} onClick={this.props.logout} className="relative mx-1">
-                                {log_out("w-6 text-white cursor-pointer")}
+                            <div data-tip={this.props.t('exit')} onClick={this.props.logout} className="tw-relative tw-mx-1">
+                                {log_out("tw-w-6 tw-text-white tw-cursor-pointer")}
                             </div>
                         </div>
                     </div>
                 </div>
-                <span className="flex-1 text-white md:mt-0 mt-4">&nbsp;&nbsp;{this.state.dateTime}</span>
+                <span className="tw-flex-1 tw-text-white md:tw-mt-0 tw-mt-4">&nbsp;&nbsp;{this.state.dateTime}</span>
             </div>
         );
     }
