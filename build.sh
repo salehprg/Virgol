@@ -16,12 +16,13 @@ sudo git stash
 sudo git pull origin master
 # sudo git pull origin Beta
 
-# docker image prune 
+# docker image prune
+sudo sed -i 's/process.env.REACT_APP_VERSION/'$IMAGE_TAG' نسخه/g' ./src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js
 sudo docker login
-sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest . --rm image
+sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest .
 cp src/Presentation/Virgol.School/ClientApp/public/index-dei.html src/Presentation/Virgol.School/ClientApp/public/index.html
 cp src/Presentation/Virgol.School/ClientApp/public/manifest-dei.json src/Presentation/Virgol.School/ClientApp/public/manifest.json 
-sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei . --rm image
+sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei .
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
