@@ -47,53 +47,6 @@ services:
     depends_on:
       - postgres
       - openldap
-  virgol-dei:
-    image: goldenstarc/virgol:latest-dei
-    restart: always
-    container_name: virgol_dei
-    volumes:
-      - virgolDeiData:/app/BulkData
-    # build:
-    #   context: .
-    environment:
-      - ASPNETCORE_URLS=http://+ # ;https://+
-      - ASPNETCORE_ENVIRONMENT=Production
-      - NODE_ENV=production
-      - VIRGOL_SERVER_ROOT_URL=https://dei.razaviedu.ir
-      - VIRGOL_DATABASE_HOST=postgres
-      - VIRGOL_DATABASE_PORT=5432
-      - VIRGOL_DATABASE_NAME=LMS_DEI
-      - VIRGOL_DATABASE_USER=postgres
-      - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
-      - VIRGOL_MOODLE_TOKEN=0e68f54e65aea7bbac176acd69b7378a
-      - VIRGOL_MOODLE_BASE_URL=http://m-dei.vir-gol.ir/webservice/rest/server.php?moodlewsrestformat=json
-      - VIRGOL_FARAZAPI_URL=http://rest.ippanel.com
-      - VIRGOL_FARAZAPI_SENDER_NUMBER=+98500010707
-      - VIRGOL_FARAZAPI_USERNAME=goldenstarc
-      - VIRGOL_FARAZAPI_PASSWORD=hektug-fakbAm-0vypje
-      - VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=
-      - VIRGOL_JWT_SECRET=Saleh Secret Key
-      - VIRGOL_LDAP_SERVER=openldap
-      - VIRGOL_LDAP_PORT=389
-      - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
-      - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
-      - REACT_APP_MOODLE_URL=https://m-dei.vir-gol.ir/login/index.php
-      - REACT_APP_VERSION=1.8.8
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.virgolDei.rule=Host(`dei.razaviedu.ir`)"
-      - "traefik.http.services.virgolDei.loadbalancer.server.port=80"
-      - "traefik.http.routers.virgolDei.entrypoints=secure"
-      - "traefik.http.routers.virgolDei.tls.certresolver=letsencrypt"
-      - "traefik.docker.network=web"
-      - "traefik.http.middlewares.virgol_compress.compress=true"
-      - "traefik.http.routers.virgolDei.middlewares=virgol_compress"
-    networks:
-      - virgol
-      - web
-    depends_on:
-      - postgres
-      - openldap
   postgres:
     image: postgres
     hostname: postgres.vir-gol.ir
@@ -197,6 +150,7 @@ services:
   #   networks:
   #     - virgol
   #     - web
+  # Username: cn=admin,dc=legace,dc=ir, Password: OpenLDAPpass.24
   openldap:
     image: goldenstarc/extended-openldap
     hostname: openldap.vir-gol.ir
@@ -211,9 +165,6 @@ services:
     networks:
       - virgol
       - web
-# Username and Password is hard-coded inside docker image
-# Username: cn=admin,dc=legace,dc=ir
-# Password: OpenLDAPpass.24
   # phpldapadmin:
   #   image: osixia/phpldapadmin
   #   hostname: phpldapadmin.vir-gol.ir 
