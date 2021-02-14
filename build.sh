@@ -27,8 +27,8 @@ sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei
 # docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG:latest
-docker-compose up -d
-docker image prune -f  --filter "until=12d"
+# docker-compose up -d
+docker image prune -f  --filter "until=288h"
 # docker image prune -a -f
 # docker exec -it virgol_dei grep -rl "dei.razaviedu.ir" .
 # docker exec -it virgol_dei  sed -i 's/panel.vir-gol.ir/dei.razaviedu.ir/g' ./ClientApp/build/static/js/main.7f756e2c.chunk.js.map
