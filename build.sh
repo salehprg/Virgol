@@ -12,8 +12,8 @@ TAG_REVISION=0
 # sudo git branch --track Beta origin/Beta
 # sudo git checkout Beta
 
-#sudo git stash
-#sudo git pull origin master
+sudo git stash
+sudo git pull origin master
 # sudo git pull origin Beta
 
 # docker image prune
