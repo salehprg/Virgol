@@ -50,8 +50,8 @@ class BaseManager extends React.Component {
 
     renderCats = () => {
         const {selectedCat, categories, loadingCats } = this.props
-        if (loadingCats) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (categories.length === 0) return <p className="text-grayish text-center centerize w-full">{this.props.t('noBase')}</p>
+        if (loadingCats) return <div className="centerize">{loading('tw-w-8 tw-text-grayish')}</div>
+        if (categories.length === 0) return <p className="tw-text-grayish tw-text-center centerize tw-w-full">{this.props.t('noBase')}</p>
         return categories.map(cat => {
                 return (
                     <SelectableCard
@@ -66,9 +66,9 @@ class BaseManager extends React.Component {
 
     renderFields = () => {
         const {selectedCat , selectField, selectedField, fields, loadingFields } = this.props
-        if (loadingFields) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedCat) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectBase')} </p>
-        if (fields.length === 0) return <p className="text-grayish text-center"> {this.props.t('noField')} </p>
+        if (loadingFields) return <div className="centerize">{loading('tw-w-8 tw-text-grayish')}</div>
+        if (!selectedCat) return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('selectBase')} </p>
+        if (fields.length === 0) return <p className="tw-text-grayish tw-text-center"> {this.props.t('noField')} </p>
         return fields.map(field => {
             return (
                 <SelectableCard
@@ -83,9 +83,9 @@ class BaseManager extends React.Component {
 
     renderGrades = () => {
         const {selectedField , selectGrade, selectedGrade, grades, loadingGrades } = this.props
-        if (loadingGrades) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedField) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectField')} </p>
-        if (grades.length === 0) return <p className="text-grayish text-center"> {this.props.t('noGrade')} </p>
+        if (loadingGrades) return <div className="centerize">{loading('tw-w-8 tw-text-grayish')}</div>
+        if (!selectedField) return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('selectField')} </p>
+        if (grades.length === 0) return <p className="tw-text-grayish tw-text-center"> {this.props.t('noGrade')} </p>
         return grades.map(grade => {
             return (
                 <SelectableCard
@@ -100,9 +100,11 @@ class BaseManager extends React.Component {
 
     renderCourses = () => {
         const {selectedGrade , selectCourse, selectedCourse, courses, loadingCourses } = this.props
-        if (loadingCourses) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedGrade) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectGrade')} </p>
-        if (courses.length === 0) return <p className="text-grayish text-center"> {this.props.t('noLesson')} </p>
+        if (loadingCourses) return <div className="centerize">{loading('tw-w-8 tw-text-grayish')}</div>
+        if (!selectedGrade) return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('selectGrade')} </p>
+        if (courses.length === 0) return <p className="tw-text-grayish tw-text-center"> {this.props.t('noLesson')} </p>
+
+
         return courses.map(course => {
             return (
                 <SelectableCard
@@ -117,10 +119,12 @@ class BaseManager extends React.Component {
 
     renderClasses = () => {
         const {selectedGrade , selectClass, selectedClass, classes, loadingClasses } = this.props
-        if (loadingClasses) return <div className="centerize">{loading('w-8 text-grayish')}</div>
-        if (!selectedGrade && !this.state.locked) return <p className="text-grayish text-center centerize w-full"> {this.props.t('selectGrade')} </p>
-        if (classes.length === 0 && !this.state.locked) return <p className="text-grayish text-center"> {this.props.t('noClass')} </p>
+        if (loadingClasses) return <div className="centerize">{loading('tw-w-8 tw-text-grayish')}</div>
+        if (!selectedGrade && !this.state.locked) return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('selectGrade')} </p>
+        if (classes.length === 0 && !this.state.locked) return <p className="tw-text-grayish tw-text-center"> {this.props.t('noClass')} </p>
         return classes.map(kelas => {
+
+
             return (
                 <SelectableCard
                     id={kelas.id}
@@ -134,8 +138,10 @@ class BaseManager extends React.Component {
 
     render() {
         const {editable, classable, classes, onEdit, selectedClass, categories, deleteCat, deleteField, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
+        // console.log(this.props.classes);
+
         return (
-            <div className="w-full grid grid-cols-4 gap-6 min-w-900">
+            <div className="tw-w-full tw-grid tw-grid-cols-4 tw-gap-6 tw-min-w-900">
                 {this.state.addStatus === 'category' ? <AddCategory onAddBase={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
                 {this.state.addStatus === 'field' ? <AddField selectedBaseId={selectedCat} onAddField={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
                 {this.state.addStatus === 'class' ? <AddClass onAddClass={(data) => this.onAddData(data)} cancel={this.onCancel} /> : null}

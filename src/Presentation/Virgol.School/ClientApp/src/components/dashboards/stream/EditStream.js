@@ -82,26 +82,26 @@ class EditStream extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen relative bg-black-blue">
-                <div className="w-5/6 max-w-350 centerize rounded-lg flex flex-col items-center justify-center px-3 py-2">
+            <div className="tw-w-screen tw-min-h-screen tw-relative tw-bg-black-blue">
+                <div className="tw-w-5/6 tw-max-w-350 centerize tw-rounded-lg tw-flex tw-flex-col tw-items-center tw-justify-center tw-px-3 tw-py-2">
                 <input
                     value={this.state.streamName}
                     onChange={(e) => this.setState({streamName : e.target.value})}
-                    className="w-5/6 px-4 py-2 rounded-lg bg-transparent border-2 border-dark-blue text-right text-white"
+                    className="tw-w-5/6 tw-px-4 tw-py-2 tw-rounded-lg tw-bg-transparent tw-border-2 tw-border-dark-blue tw-text-right tw-text-white"
                     placeholder={this.props.t('streamName')}
                 />
-                <div className="w-5/6 my-8 flex flex-row-reverse items-center justify-around">
-                    <span className="text-white"> {this.props.t('startTime')} </span>
+                <div className="tw-w-5/6 tw-my-8 tw-flex tw-flex-row-reverse tw-items-center tw-justify-around">
+                    <span className="tw-text-white"> {this.props.t('startTime')} </span>
                     <DatePicker value={this.state.startTime} timePicker={true} onClickSubmitButton={this.setStartTime} />
                 </div>
-                <div className="flex flex-row-reverse items-center justify-start w-5/6">
-                    <span className="text-white"> {this.props.t('duration')} </span>
-                    <input value={this.state.duration} onChange={this.setDuration} type="number" className="text-center w-1/3 mx-2" />
-                    <span className="text-white"> {this.props.t("minute")} </span>
+                <div className="tw-flex tw-flex-row-reverse tw-items-center tw-justify-start tw-w-5/6">
+                    <span className="tw-text-white"> {this.props.t('duration')} </span>
+                    <input value={this.state.duration} onChange={this.setDuration} type="number" className="tw-text-center tw-w-1/3 tw-mx-2" />
+                    <span className="tw-text-white"> {this.props.t("minute")} </span>
                 </div>
                 <Select
                     styles={styles}
-                    className="w-5/6 mx-auto my-8"
+                    className="tw-w-5/6 tw-mx-auto tw-my-8"
                     value={this.state.selctedGuests}
                     onChange={this.handleChangeGuests}
                     options={this.state.guests}
@@ -109,7 +109,7 @@ class EditStream extends React.Component {
                     isMulti
                     isSearchable
                 />
-                <button className="bg-greenish rounded-lg text-white w-5/6 py-2" onClick={() => this.editStream()}> {this.props.t('editConference')} </button>    
+                <button className="tw-bg-greenish tw-rounded-lg tw-text-white tw-w-5/6 tw-py-2" onClick={() => this.editStream()}> {this.props.t('editConference')} </button>    
                 </div>    
             </div>
         );

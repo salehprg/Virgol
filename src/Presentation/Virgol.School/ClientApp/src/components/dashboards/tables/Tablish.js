@@ -3,12 +3,12 @@ import React from "react";
 const Tablish = ({ headers, body }) => {
 
     return (
-        <div dir="rtl" className="w-full overflow-auto">
-            <table dir="rtl" className="w-full table-auto text-white">
-                <thead className="border-b-2 border-grayish">
+        <div dir="rtl" className="tw-w-full tw-overflow-auto">
+            <table dir="rtl" className="tw-w-full tw-table-auto tw-text-white">
+                <thead className="tw-border-b-2 tw-border-grayish">
                     <tr>
                     {headers.map(header => {
-                        return <th key={header} className="text-right pb-4">{header}</th>
+                        return <th key={header} className="tw-text-right tw-pb-4">{header}</th>
                     })}
                     </tr>
                 </thead>

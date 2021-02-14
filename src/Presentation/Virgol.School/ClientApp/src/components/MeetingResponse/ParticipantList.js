@@ -50,24 +50,24 @@ class ParticipantList extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return loading('w-10 text-grayish centerize')
+        if(this.state.loading) return loading('tw-w-10 tw-text-grayish centerize')
         return (
-            <div className="w-screen min-h-screen py-16 lg:px-10 px-1 relative bg-bold-blue flex lg:flex-row flex-col">
-                <div className="lg:w-1/2 w-full h-85 text-center">
-                    <img className="w-2/3 mx-auto" src="/time.svg" alt="time illustartion" />
-                    <p className="md:w-2/3 w-5/6 mt-6 mx-auto text-white text-center"> {this.props.t('participantsListInfo')} </p>
-                    <p className="md:w-2/3 w-5/6 mb-6 mx-auto text-redish text-center"> {this.props.t('submitParticipantsWarning')} </p>
-                    <button onClick={(e) => this.handleSubmit(e)} className="px-12 py-2 rounded-lg bg-greenish text-white">
+            <div className="tw-w-screen tw-min-h-screen tw-py-16 lg:tw-px-10 tw-px-1 tw-relative tw-bg-bold-blue tw-flex lg:tw-flex-row tw-flex-col">
+                <div className="lg:tw-w-1/2 tw-w-full tw-h-85 tw-text-center">
+                    <img className="w-2/3 tw-mx-auto" src="/time.svg" alt="time illustartion" />
+                    <p className="md:w-2/3 tw-w-5/6 tw-mt-6 tw-mx-auto tw-text-white tw-text-center"> {this.props.t('participantsListInfo')} </p>
+                    <p className="md:w-2/3 tw-w-5/6 tw-mb-6 tw-mx-auto tw-text-redish tw-text-center"> {this.props.t('submitParticipantsWarning')} </p>
+                    <button onClick={(e) => this.handleSubmit(e)} className="tw-px-12 tw-py-2 tw-rounded-lg tw-bg-greenish tw-text-white">
                         ثبت
                     </button>
                 </div>
 
-                <div className="lg:w-1/2 w-full h-85">
-                    <div className="w-full flex flex-row-reverse justify-between items-center">
-                        <p className="text-white">{this.state.participants[0] ? this.state.participants[0].meetingName : ''}</p>
-                        <p className="text-white"> {this.props.t('classDuration')} {this.state.participants[0] ? this.state.participants[0].checkCount * 5 : ''} {this.props.t('minute')} </p>
+                <div className="lg:tw-w-1/2 tw-w-full tw-h-85">
+                    <div className="tw-w-full tw-flex tw-flex-row-reverse tw-justify-between tw-items-center">
+                        <p className="tw-text-white">{this.state.participants[0] ? this.state.participants[0].meetingName : ''}</p>
+                        <p className="tw-text-white"> {this.props.t('classDuration')} {this.state.participants[0] ? this.state.participants[0].checkCount * 5 : ''} {this.props.t('minute')} </p>
                     </div>
-                    <div className="mt-2 overflow-auto h-full">
+                    <div className="tw-mt-2 tw-overflow-auto tw-h-full">
                         {(this.state.participants ?
                             <>
                                 <PlusTable
@@ -86,11 +86,11 @@ class ParticipantList extends React.Component {
                                                     this.state.participants.map(x => {
                                                         return(
                                                             <tr key={x.id}>
-                                                                <td className="py-4 text-right">{x.firstName} {x.lastName}</td>
-                                                                <td className="py-4 text-right">{x.presentCount * 5} {this.props.t('minute')} </td>
-                                                                {/* <td className="py-4">{x.checkCount * 5} دقیقه</td> */}
-                                                                <td className="py-4 text-right">{
-                                                                    <div style={{direction : "rtl"}} className="text-white">
+                                                                <td className="tw-py-4 tw-text-right">{x.firstName} {x.lastName}</td>
+                                                                <td className="tw-py-4 tw-text-right">{x.presentCount * 5} {this.props.t('minute')} </td>
+                                                                {/* <td className="tw-py-4">{x.checkCount * 5} دقیقه</td> */}
+                                                                <td className="tw-py-4 tw-text-right">{
+                                                                    <div style={{direction : "rtl"}} className="tw-text-white">
                                                                         <input
                                                                             type="radio"
                                                                             value="Present"
@@ -100,7 +100,7 @@ class ParticipantList extends React.Component {
                                                                         /> {this.props.t('present')}
 
                                                                         <input
-                                                                            className="mr-4"
+                                                                            className="tw-mr-4"
                                                                             checked={!x.isPresent}
                                                                             onChange={(e) => this.handleStatusChanged(x.id , false , e)}
                                                                             type="radio"
@@ -140,11 +140,11 @@ class ParticipantList extends React.Component {
                 {/*                            this.state.participants.map(x => {*/}
                 {/*                                return(*/}
                 {/*                                <tr key={x.id}>*/}
-                {/*                                    <td className="py-4">{x.firstName} {x.lastName}</td>*/}
-                {/*                                    <td className="py-4">{x.presentCount * 5} دقیقه</td>*/}
-                {/*                                    <td className="py-4">{x.checkCount * 5} دقیقه</td>*/}
-                {/*                                    <td className="py-4">{*/}
-                {/*                                        <div style={{direction : "rtl"}} className="text-white">*/}
+                {/*                                    <td className="tw-py-4">{x.firstName} {x.lastName}</td>*/}
+                {/*                                    <td className="tw-py-4">{x.presentCount * 5} دقیقه</td>*/}
+                {/*                                    <td className="tw-py-4">{x.checkCount * 5} دقیقه</td>*/}
+                {/*                                    <td className="tw-py-4">{*/}
+                {/*                                        <div style={{direction : "rtl"}} className="tw-text-white">*/}
                 {/*                                            <input */}
                 {/*                                                type="radio" */}
                 {/*                                                value="Present" */}
@@ -154,7 +154,7 @@ class ParticipantList extends React.Component {
                 {/*                                            /> حاضر*/}
                 {/*                */}
                 {/*                                            <input */}
-                {/*                                                className="mr-4" */}
+                {/*                                                className="tw-mr-4" */}
                 {/*                                                checked={!x.isPresent}*/}
                 {/*                                                onChange={(e) => this.handleStatusChanged(x.id , false , e)} */}
                 {/*                                                type="radio" */}
@@ -173,7 +173,7 @@ class ParticipantList extends React.Component {
                 {/*            }}*/}
                 {/*        />*/}
 
-                {/*        <button onClick={(e) => this.handleSubmit(e)} className="text-white bg-greenish w-40 rounded-full">ثبت</button>*/}
+                {/*        <button onClick={(e) => this.handleSubmit(e)} className="tw-text-white tw-bg-greenish tw-w-40 tw-rounded-full">ثبت</button>*/}
                 {/*    </>*/}
                 {/*: null )}*/}
             </div>

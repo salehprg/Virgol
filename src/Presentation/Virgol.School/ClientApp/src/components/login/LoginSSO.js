@@ -24,7 +24,6 @@ class LoginSSO extends React.Component {
         const result = await this.props.MoodleSSO(this.props.user.token , this.props.match.params.schedulId , localStorage.getItem('userPassword'))
         var bodyFormData = new FormData();
         
-        console.log(result)
         if(result)
         {
             this.formRef.current.submit()
@@ -37,14 +36,14 @@ class LoginSSO extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen">
-                <div className="centerize flex flex-col text-center items-center">
-                    {chevrons('w-24 transform rotate-180 text-dark-blue')}
+            <div className="tw-w-screen tw-min-h-screen">
+                <div className="centerize tw-flex tw-flex-col tw-text-center tw-items-center">
+                    {chevrons('tw-w-24 tw-transform tw-rotate-180 tw-text-dark-blue')}
                     <p>در حال فرستادن شما به صفحه فعالیت های درس هستیم</p>
                     <p>این عملیات ممکن است چند ثانیه طول بکشد</p>
-                    {loading('w-12 text-dark-blue')}
+                    {loading('tw-w-12 tw-text-dark-blue')}
                 </div>
-                <form ref={this.formRef} className="text-center" action={process.env.REACT_APP_MOODLE_URL} method="POST"  >
+                <form ref={this.formRef} className="tw-text-center" action={process.env.REACT_APP_MOODLE_URL} method="POST"  >
                 <input
                     hidden={true}
                     name="username"

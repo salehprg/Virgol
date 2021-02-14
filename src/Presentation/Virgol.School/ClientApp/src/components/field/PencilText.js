@@ -8,25 +8,25 @@ const PencilText = ({ text , className, show, showBox, value, changeValue, submi
     const { t }= useTranslation();
 
     return (
-        <div onClick={e => e.stopPropagation()} className="relative flex flex-row-reverse items-center">
+        <div onClick={e => e.stopPropagation()} className="tw-relative tw-flex tw-flex-row-reverse tw-items-center">
             <ReactTooltip />
             <p className={className}>{text}</p>
 
             {(schoolData ?
-                <p className={"mx-3 " + className}>#{schoolCode}</p>
+                <p className={"tw-mx-3 " + className}>#{schoolCode}</p>
             : null)}
 
-            <div data-tip={t('edit')} onClick={showBox} className="mx-2">
-                {edit('w-6 z-20 text-white cursor-pointer')}
+            <div data-tip={t('edit')} onClick={showBox} className="tw-mx-2">
+                {edit('tw-w-6 tw-z-20 tw-text-white tw-cursor-pointer')}
             </div>
-            <div className={`absolute text-center z-30 w-48 py-4 px-2 bg-black-blue bottomize ${show ? 'block' : 'hidden'}`}>
+            <div className={`tw-absolute tw-text-center tw-z-30 tw-w-48 tw-py-4 tw-px-2 tw-bg-black-blue bottomize ${show ? 'tw-block' : 'tw-hidden'}`}>
                 <input 
                     value={value}
                     onChange={(e) => changeValue(e.target.value)}
                     type="text"
                     dir="rtl"
                     placeholder={t('newName')}
-                    className={`w-11/12 px-4 py-2 text-white bg-transparent focus:outline-none focus:shadow-outline border-2 border-dark-blue rounded-lg`}
+                    className={`tw-w-11/12 tw-px-4 tw-py-2 tw-text-white tw-bg-transparent focus:tw-outline-none focus:tw-shadow-outline tw-border-2 tw-border-dark-blue tw-rounded-lg`}
                 />
 
                 {(schoolData ? 
@@ -36,12 +36,12 @@ const PencilText = ({ text , className, show, showBox, value, changeValue, submi
                     type="text"
                     dir="rtl"
                     placeholder={t('newCode')}
-                    className={`w-11/12 px-4 py-2 text-white bg-transparent focus:outline-none focus:shadow-outline border-2 border-dark-blue rounded-lg`}
+                    className={`tw-w-11/12 tw-px-4 tw-py-2 tw-text-white tw-bg-transparent focus:tw-outline-none focus:tw-shadow-outline tw-border-2 tw-border-dark-blue tw-rounded-lg`}
                 />
                 :
                 null)}
 
-                <button onClick={submit} className={`w-11/12 mt-4 py-2 text-white bg-greenish focus:outline-none focus:shadow-outline rounded-lg`}>
+                <button onClick={submit} className={`tw-w-11/12 tw-mt-4 tw-py-2 tw-text-white tw-bg-greenish focus:tw-outline-none focus:tw-shadow-outline tw-rounded-lg`}>
                     {t('save')}
                 </button>
             </div>

@@ -114,30 +114,30 @@ class LessonInfoModal extends React.Component {
                     //write EditLesson Component here
                 }
                 <Modal cancel={this.props.cancel}>
-                    <div onClick={(e) => e.stopPropagation()} className="w-11/12 max-w-500 rounded-lg bg-dark-blue px-4 py-6">
+                    <div onClick={(e) => e.stopPropagation()} className="tw-w-11/12 tw-max-w-500 tw-rounded-lg tw-bg-dark-blue tw-px-4 tw-py-6">
                         <div>
-                            <h2 className="text-center text-white my-4 text-2xl"> {this.props.t('lessonInfo')} </h2>
+                            <h2 className="tw-text-center tw-text-white tw-my-4 tw-text-2xl"> {this.props.t('lessonInfo')} </h2>
                         </div>
                       
-                        <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.orgLessonName}</p>
-                        {(!this.props.isTeacher || this.props.isManager ? <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.firstName + " " + this.props.lessonInfo.lessonDetail.lastName}</p> : null )}
-                        {(!this.props.isTeacher ? <p className="text-center text-white my-4">{this.props.t('absents')} : {this.props.lessonInfo.lessonDetail.absenceCount}</p>  
+                        <p className="tw-text-center tw-text-white tw-my-4">{this.props.lessonInfo.lessonDetail.orgLessonName}</p>
+                        {(!this.props.isTeacher || this.props.isManager ? <p className="tw-text-center tw-text-white tw-my-4">{this.props.lessonInfo.lessonDetail.firstName + " " + this.props.lessonInfo.lessonDetail.lastName}</p> : null )}
+                        {(!this.props.isTeacher ? <p className="tw-text-center tw-text-white tw-my-4">{this.props.t('absents')} : {this.props.lessonInfo.lessonDetail.absenceCount}</p>  
                         : 
-                        (!this.props.isManager ? <p className="text-center text-white my-4">{this.props.t('school')} {this.props.lessonInfo.lessonDetail.schoolName} ({this.props.t('class')} {this.props.lessonInfo.lessonDetail.className})</p> : null)
+                        (!this.props.isManager ? <p className="tw-text-center tw-text-white tw-my-4">{this.props.t('school')} {this.props.lessonInfo.lessonDetail.schoolName} ({this.props.t('class')} {this.props.lessonInfo.lessonDetail.className})</p> : null)
                         )}
 
-                        {(this.props.isManager ? <p className="text-center text-white my-4">({this.props.t('class')} {this.props.lessonInfo.lessonDetail.className})</p> : null)}
+                        {(this.props.isManager ? <p className="tw-text-center tw-text-white tw-my-4">({this.props.t('class')} {this.props.lessonInfo.lessonDetail.className})</p> : null)}
 
                         {(this.state.times.length > 0 ?
-                        <p className="text-center text-white my-4">
+                        <p className="tw-text-center tw-text-white tw-my-4">
                             {`${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.props.lessonInfo.lessonDetail.weekly == 2 ? this.props.t('oddWeeks') : this.props.lessonInfo.lessonDetail.weekly == 1 ? this.props.t('evenWeeks') : this.props.t('weekly')} ${this.options.find(x => x.value === this.props.lessonInfo.lessonDetail.dayType).label} ${this.props.t('fromTime')} ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} ${this.props.t('toTime')} `}
                         </p>
                         : null)}
 
-                        <div className="w-full flex sm:flex-row flex-col-reverse items-center justify-center">
+                        <div className="tw-w-full tw-flex sm:tw-flex-row tw-flex-col-reverse tw-items-center tw-justify-center">
                             {(this.props.canEdit ?
-                                    <div onClick={() => this.showDelete()} className="w-12 h-12 relative mx-1 bg-redish rounded-full cursor-pointer">
-                                        {trash('w-6 text-white centerize')}
+                                    <div onClick={() => this.showDelete()} className="tw-w-12 tw-h-12 tw-relative tw-mx-1 tw-bg-redish tw-rounded-full tw-cursor-pointer">
+                                        {trash('tw-w-6 tw-text-white centerize')}
                                     </div>
                                     :
                                     null
@@ -145,28 +145,28 @@ class LessonInfoModal extends React.Component {
 
 
                             {(this.props.canEdit ?
-                                    <div onClick={() => this.showEdit()} className="w-12 h-12 relative mx-1 bg-greenish rounded-full cursor-pointer">
-                                        {edit('w-6 text-white centerize')}
+                                    <div onClick={() => this.showEdit()} className="tw-w-12 tw-h-12 tw-relative tw-mx-1 tw-bg-greenish tw-rounded-full tw-cursor-pointer">
+                                        {edit('tw-w-6 tw-text-white centerize')}
                                     </div>
                                     :
                                     null
                             )}
-                            {/* <button onClick={() => history.push("/SSO/" + this.props.lessonInfo.lessonDetail.id)} className="relative bg-greenish rounded-full text-white cursor-pointer px-3 py-2 mx-2 sm:my-0 my-2">
+                            {/* <button onClick={() => history.push("/SSO/" + this.props.lessonInfo.lessonDetail.id)} className="tw-relative tw-bg-greenish tw-rounded-full tw-text-white tw-cursor-pointer tw-px-3 tw-py-2 tw-mx-2 sm:tw-my-0 tw-my-2">
                                 {this.props.t('enterLessonActivities')}
                             </button> */}
 
                             {(this.props.isTeacher ?
-                                <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="relative text-white bg-purplish rounded-full cursor-pointer px-3 py-2">
+                                <a onClick={() => history.push("/session/" + this.props.lessonInfo.lessonDetail.id)} className="tw-relative tw-text-white tw-bg-purplish tw-rounded-full tw-cursor-pointer tw-px-3 tw-py-2">
                                     {this.props.t('showClassInfo')}
                                 </a>
                                 : null )}
                         </div>
 
-                        <p className="text-center text-white my-4">
-                            {/* <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="relative w-full bg-greenish rounded-full cursor-pointer p-2">
+                        <p className="tw-text-center tw-text-white tw-my-4">
+                            {/* <a href={this.props.lessonInfo.lessonDetail.moodleUrl} target="_blank" className="tw-relative tw-w-full tw-bg-greenish tw-rounded-full tw-cursor-pointer p-2">
                                ورود به فعالیت های درسی
                             </a> */}
-                            {/* <form className="text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
+                            {/* <form className="tw-text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
                                 <input
                                     hidden="true"
                                     name="username"

@@ -17,9 +17,9 @@ class AllPayments extends React.Component {
 
     render() {
         return (
-            <div className="w-full mt-10">
-                <div className="w-full relative rounded-xl bg-dark-blue px-6 py-2 min-h-70">
-                    <p className="text-right text-white mt-2 mb-6">{this.props.t('payments')}</p>
+            <div className="tw-w-full tw-mt-10">
+                <div className="tw-w-full tw-relative tw-rounded-xl tw-bg-dark-blue tw-px-6 tw-py-2 tw-min-h-70">
+                    <p className="tw-text-right tw-text-white tw-mt-2 tw-mb-6">{this.props.t('payments')}</p>
                     <Tablish
                         headers={[this.props.t('serviceName') , this.props.t('paymentCost'), this.props.t('paymentDate'), this.props.t('userCount') , this.props.t('paymentStatus'), this.props.t('paymentMsg'), this.props.t('paymentReqId')]}
                         body={() => {
@@ -27,14 +27,14 @@ class AllPayments extends React.Component {
                                 (this.props.payments ? 
                                 this.props.payments.map(x => {
                                     return(
-                                        <tr key={x.id} className="p-2">
-                                            <td className="text-right">{x.serviceName}</td>
-                                            <td className="text-right">{x.amount.toLocaleString()}</td>
-                                            <td className="text-right">{new Date(x.payTime).toLocaleDateString('fa-IR')}</td>
-                                            <td className="text-right">{x.userCount}</td>
-                                            <td className="text-right">{(x.status == "pending" ? "در جریان" : (x.status == "success" ? "موفقیت آمیز" :"خطا"))}</td>
-                                            <td className="text-right">{x.statusMessage}</td>
-                                            <td className="text-right">{(x.status == "success" ? x.reqId : x.refId)}</td>
+                                        <tr key={x.id} className="tw-p-2">
+                                            <td className="tw-text-right">{x.serviceName}</td>
+                                            <td className="tw-text-right">{x.amount.toLocaleString()}</td>
+                                            <td className="tw-text-right">{new Date(x.payTime).toLocaleDateString('fa-IR')}</td>
+                                            <td className="tw-text-right">{x.userCount}</td>
+                                            <td className="tw-text-right">{(x.status == "pending" ? "در جریان" : (x.status == "success" ? "موفقیت آمیز" :"خطا"))}</td>
+                                            <td className="tw-text-right">{x.statusMessage}</td>
+                                            <td className="tw-text-right">{(x.status == "success" ? x.reqId : x.refId)}</td>
                                         </tr>
                                     )
                                 })

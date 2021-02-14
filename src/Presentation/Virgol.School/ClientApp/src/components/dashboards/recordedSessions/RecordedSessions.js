@@ -23,15 +23,15 @@ class RecorededSession extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen bg-black-blue md:px-16 px-4 pb-6 md:pt-6 pt-24">
-                <div onClick={() => this.props.history.goBack()} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-6 ml-6 rounded-lg border-2 border-purplish">
-                    {arrow_left('w-6 centerize text-purplish')}
+            <div className="tw-w-screen tw-min-h-screen tw-bg-black-blue md:tw-px-16 tw-px-4 tw-pb-6 md:tw-pt-6 tw-pt-24">
+                <div onClick={() => this.props.history.goBack()} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-6 tw-ml-6 tw-rounded-lg tw-border-2 tw-border-purplish">
+                    {arrow_left('tw-w-6 centerize tw-text-purplish')}
                 </div>
-                <div className="w-full min-h-85 flex mt-6 md:flex-row flex-col items-center">
-                {/* <div className="md:w-1/2 w-full md:mb-0 mb-8">
-                    <img className="md:w-5/6 w-full" src="/recorded.svg" alt="recorded svg" />
+                <div className="tw-w-full tw-min-h-85 tw-flex tw-mt-6 md:tw-flex-row tw-flex-col tw-items-center">
+                {/* <div className="md:tw-w-1/2 tw-w-full md:tw-mb-0 tw-mb-8">
+                    <img className="md:tw-w-5/6 tw-w-full" src="/recorded.svg" alt="recorded svg" />
                 </div> */}
-                <div className="w-full h-85 overflow-auto">
+                <div className="tw-w-full tw-h-85 tw-overflow-auto">
                 <PlusTable
                     title={this.props.t('recordedSessions')}
                     isLoading={false}
@@ -46,32 +46,32 @@ class RecorededSession extends React.Component {
                             (this.props.recordingsList ?
                                 (this.props.recordingsList.length === 0 ?
                                     <tr>
-                                        <td className="py-4 text-right">{this.props.t('noRecordedSession')}</td>
+                                        <td className="tw-py-4 tw-text-right">{this.props.t('noRecordedSession')}</td>
                                     </tr>
                                 :
                                 this.props.recordingsList.map((x,index) => {
                                     return (
                                         <tr>
-                                            <td className="py-4 text-right">{index + 1}</td>
-                                            <td className="py-4 text-right d-flex flex-wrap">
-                                                <div className="ml-2 pt-2">{x.name} - {this.props.t('session')} {index + 1}</div>
-                                                <div data-tip={this.props.t('edit')}> {edit('text-white w-10 bg-greenish rounded-lg p-2')}</div>
+                                            <td className="tw-py-4 tw-text-right">{index + 1}</td>
+                                            <td className="tw-py-4 tw-text-right d-tw-flex tw-flex-wrap">
+                                                <div className="tw-ml-2 tw-pt-2">{x.meeting.meetingName.split('-')[1]} - {this.props.t('session')} {index + 1}</div>
+                                                <div data-tip={this.props.t('edit')}> {edit('tw-text-white tw-w-10 tw-bg-greenish tw-rounded-lg tw-p-2')}</div>
                                                 <ReactTooltip type="dark" effect="float" place="top"/>
                                             </td>
-                                            <td className="py-4 text-right">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
-                                            <td className="py-4 text-right">
-                                            <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
-                                            <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
+                                            <td className="tw-py-4 tw-text-right">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
+                                            <td className="tw-py-4 tw-text-right">
+                                            <button className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
+                                            <button onClick={() => window.open(x.url , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
                                             </td>
-                                            <td className="text-right" onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
-                                                {users('w-8 cursor-pointer text-white')}
+                                            <td className="tw-text-right" onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
+                                                {users('tw-w-8 tw-cursor-pointer tw-text-white')}
                                             </td>
                                         </tr>
                                     )
                                 }))
                             :
                             <tr>
-                                <td className="py-4">{this.props.t('loading')}</td>
+                                <td className="tw-py-4">{this.props.t('loading')}</td>
                             </tr>
                             )
                         );

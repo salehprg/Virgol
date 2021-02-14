@@ -6,8 +6,8 @@ import { connect } from "react-redux";
 class Streamer extends React.Component {
     render () {
       return (
-        <div className="w-screen relative min-h-screen meteor-bg bg-cover">
-          <div className="centerize w-5/6 max-w-800">
+        <div className="tw-w-screen tw-relative tw-min-h-screen meteor-tw-bg tw-bg-cover">
+          <div className="centerize tw-w-5/6 tw-max-w-800">
             <ReactPlayer
               width="100%"
               height="100%"

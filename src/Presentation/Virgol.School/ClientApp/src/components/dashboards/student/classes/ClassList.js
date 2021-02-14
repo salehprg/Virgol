@@ -29,7 +29,7 @@ class ClassList extends React.Component {
 
     render() {
         return (
-            <div className="grid my-8 teacher-classes-cards">
+            <div className="tw-grid tw-my-8 teacher-classes-cards">
                 {(this.state.classesLists ? 
                 this.props.groupedSchedule.map(x => {
                     return(

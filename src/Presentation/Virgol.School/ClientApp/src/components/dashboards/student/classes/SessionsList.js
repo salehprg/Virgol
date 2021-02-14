@@ -22,15 +22,15 @@ class RecorededSession extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen bg-black-blue md:px-16 px-4 pb-6 md:pt-6 pt-24">
-                <div onClick={() => this.props.history.goBack()} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-6 ml-6 rounded-lg border-2 border-purplish">
-                    {arrow_left('w-6 centerize text-purplish')}
+            <div className="tw-w-screen tw-min-h-screen tw-bg-black-blue md:tw-px-16 tw-px-4 tw-pb-6 md:tw-pt-6 tw-pt-24">
+                <div onClick={() => this.props.history.goBack()} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-6 tw-ml-6 tw-rounded-lg tw-border-2 tw-border-purplish">
+                    {arrow_left('tw-w-6 centerize tw-text-purplish')}
                 </div>
-                <div className="w-full min-h-85 flex md:flex-row flex-col items-center">
-                {/* <div className="md:w-1/2 w-full md:mb-0 mb-8">
-                    <img className="md:w-5/6 w-full" src="/recorded.svg" alt="recorded svg" />
+                <div className="tw-w-full tw-min-h-85 tw-flex md:tw-flex-row tw-flex-col tw-items-center">
+                {/* <div className="md:tw-w-1/2 tw-w-full md:tw-mb-0 tw-mb-8">
+                    <img className="md:tw-w-5/6 tw-w-full" src="/recorded.svg" alt="recorded svg" />
                 </div> */}
-                <div className="w-full h-85 overflow-auto">
+                <div className="tw-w-full tw-h-85 tw-overflow-auto">
                 <PlusTable
                     title={this.props.t('recordedSessions')}
                     isLoading={false}
@@ -45,30 +45,30 @@ class RecorededSession extends React.Component {
                             (this.props.recordingsList ?
                                 (this.props.recordingsList.length === 0 ?
                                     <tr>
-                                        <td className="py-4 text-right">{this.props.t('noRecordedSession')}</td>
+                                        <td className="tw-py-4 tw-text-right">{this.props.t('noRecordedSession')}</td>
                                     </tr>
                                 :
                                 this.props.recordingsList.map((x,index) => {
                                     return (
                                         <tr>
-                                            <td className="py-4 text-right">{index + 1}</td>
-                                            <td className="py-4 text-right">{x.meeting.meetingName} - {this.props.t('session')} {index + 1}</td>
-                                            <td className="py-4 text-right">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
-                                            <td className="py-4 text-right">
+                                            <td className="tw-py-4 tw-text-right">{index + 1}</td>
+                                            <td className="tw-py-4 tw-text-right">{x.meeting.meetingName} - {this.props.t('session')} {index + 1}</td>
+                                            <td className="tw-py-4 tw-text-right">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
+                                            <td className="tw-py-4 tw-text-right">
                                             {(x.recordsInfo ?
                                                 <>
-                                                    <button className="px-8 py-1 m-1 rounded-lg bg-greenish">{this.props.t('download')}</button>
-                                                    <button onClick={() => window.open(x.url , "_blank")} className="px-8 py-1 m-1 rounded-lg bg-purplish">{this.props.t('view')}</button>
+                                                    <button className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
+                                                    <button onClick={() => window.open(x.url , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
                                                 </>
                                             : null )}
                                             </td>
-                                            <td className="py-4 text-right">{x.participant === null || !x.participant.isPresent ? "غایب" : "حاضر"}</td>
+                                            <td className="tw-py-4 tw-text-right">{x.participant === null || !x.participant.isPresent ? "غایب" : "حاضر"}</td>
                                         </tr>
                                     )
                                 }))
                             :
                             <tr>
-                                <td className="py-4">{this.props.t('loading')}</td>
+                                <td className="tw-py-4">{this.props.t('loading')}</td>
                             </tr>
                             )
                         );

@@ -19,12 +19,12 @@ class Classes extends React.Component {
     render() {
         if (this.state.loading) return (
             <>
-                {loading('w-10 text-white centerize')}
+                {loading('tw-w-10 tw-text-white centerize')}
             </>
         );
         return (
             <>
-            {/* <form ref={this.formRef} className="text-center" action="https://vs.legace.ir/login/index.php" method="POST"  >
+            {/* <form ref={this.formRef} className="tw-text-center" action="https://vs.legace.ir/login/index.php" method="POST"  >
                 <input
                     name="username"
                     type="text"
@@ -35,11 +35,11 @@ class Classes extends React.Component {
                     type="text"
                     placeholder="رمز عبور"
                 />
-                <button className={`w-5/6 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white`}>
+                <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
                 ورود
                 </button>
             </form> */}
-            <div ref={this.sc} className="overflow-auto">
+            <div ref={this.sc} className="tw-overflow-auto">
                 <Schedule
                     isTeacher={false}
                     editable={false}

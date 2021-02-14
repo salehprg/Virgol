@@ -30,14 +30,14 @@ const SelectLang = ({ showLang, setShowLang }) => {
 
     return (
         <React.Fragment>
-            <div onClick={show} ref={setReferenceElement} className="flex mt-2 z-50 cursor-pointer flex-row justify-between items-center mx-auto w-1/3">
-                {translate('w-6 text-white')}
-                <span className="text-white">{currentLang}</span>
-                {chevron('w-6 transform -rotate-90 text-white')}
+            <div onClick={show} ref={setReferenceElement} className="tw-flex tw-mt-2 tw-z-50 tw-cursor-pointer tw-flex-row tw-justify-between tw-items-center tw-mx-auto tw-w-1/3">
+                {translate('tw-w-6 tw-text-white')}
+                <span className="tw-text-white">{currentLang}</span>
+                {chevron('tw-w-6 tw-transform tw-rotate-90 tw-text-white')}
             </div>
-            <div className={`bg-white z-50 px-4 py-2 rounded-lg z-50 ${showLang ? '' : 'invisible'}`} style={styles.popper} ref={setPopperElement} {...attributes.popper}>
-                <button onClick={() => whatLang('fa')} className="my-1 block">فارسی</button>
-                <button  onClick={() => whatLang('ar')} className="my-1 block">العربیه</button>
+            <div className={`tw-bg-white tw-z-50 tw-px-4 tw-py-2 tw-rounded-lg tw-z-50 ${showLang ? '' : 'tw-invisible'}`} style={styles.popper} ref={setPopperElement} {...attributes.popper}>
+                <button onClick={() => whatLang('fa')} className="tw-my-1 tw-block">فارسی</button>
+                <button  onClick={() => whatLang('ar')} className="tw-my-1 tw-block">العربیه</button>
             </div>
         </React.Fragment>
     );

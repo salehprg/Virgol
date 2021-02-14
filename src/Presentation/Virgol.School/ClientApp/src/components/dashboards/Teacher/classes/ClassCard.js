@@ -16,17 +16,17 @@ class ClassCard extends React.Component {
     render() {
         const { lessonId , scheduleId, title, school, nameOfClass } = this.props;
         return (
-            <div className={`py-6 relative mx-2 my-4 rounded-lg bg-${getColor(lessonId)}`}>
-                <p onClick={() => this.ssoLogin()} className="text-center cursor-pointer text-white text-2xl font-vb">{title}</p>
-                <p className="text-white text-center">{school + " - " + nameOfClass}</p>
-                <div onClick={(e) => e.stopPropagation()} className="flex flex-row justify-evenly mt-6">
-                <Link className="w-5/12 py-1 text-center text-white" to={`/session/${scheduleId}`}>{this.props.t('lessonInfoBook')}</Link>
-                <Link className="w-5/12 py-1 text-center text-white" to={`/recordedSessions/${scheduleId}`}>{this.props.t('sessionList')}</Link>
+            <div className={`tw-py-6 tw-relative tw-mx-2 tw-my-4 tw-rounded-lg tw-bg-${getColor(lessonId)}`}>
+                <p onClick={() => this.ssoLogin()} className="tw-text-center tw-cursor-pointer tw-text-white tw-text-2xl tw-font-vb">{title}</p>
+                <p className="tw-text-white tw-text-center">{school + " - " + nameOfClass}</p>
+                <div onClick={(e) => e.stopPropagation()} className="tw-flex tw-flex-row tw-justify-evenly tw-mt-6">
+                <Link className="tw-link tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/session/${scheduleId}`}>{this.props.t('lessonInfoBook')}</Link>
+                <Link className="tw-link tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/recordedSessions/${scheduleId}`}>{this.props.t('sessionList')}</Link>
                 </div>
-                <div className="text-center my-1">
-                    <Link className="w-5/12 py-1 text-center text-white" to={`/SSO/${scheduleId}`} rel="noopener noreferrer" >{this.props.t('activities')}</Link>
+                <div className="tw-text-center tw-my-1">
+                    <Link className="tw-link tw-w-5/12 tw-py-1 tw-text-center tw-text-white" to={`/SSO/${scheduleId}`} rel="noopener noreferrer" >{this.props.t('activities')}</Link>
                 </div>
-                {/* <form ref={this.formRef} className="text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
+                {/* <form ref={this.formRef} className="tw-text-center" action="http://vs.legace.ir/login/index.php" method="POST"  >
                     <input
                         hidden="true"
                         name="username"

@@ -95,30 +95,30 @@ class TrackerLessonInfo extends React.Component {
                 null
                 }
                 <Modal cancel={this.props.cancel}>
-                    <div onClick={(e) => e.stopPropagation()} className="w-11/12 max-w-500 rounded-lg bg-dark-blue px-4 py-6">
+                    <div onClick={(e) => e.stopPropagation()} className="tw-w-11/12 tw-max-w-500 tw-rounded-lg tw-bg-dark-blue tw-px-4 tw-py-6">
                         <div>
-                            <h2 className="text-center text-white my-4 text-2xl">{this.props.t('lessonInfo')}</h2>
+                            <h2 className="tw-text-center tw-text-white tw-my-4 tw-text-2xl">{this.props.t('lessonInfo')}</h2>
                         </div>
                       
-                        <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.orgLessonName}</p>
-                        <p className="text-center text-white my-4">{this.props.lessonInfo.lessonDetail.firstName + " " + this.props.lessonInfo.lessonDetail.lastName}</p>
+                        <p className="tw-text-center tw-text-white tw-my-4">{this.props.lessonInfo.lessonDetail.orgLessonName}</p>
+                        <p className="tw-text-center tw-text-white tw-my-4">{this.props.lessonInfo.lessonDetail.firstName + " " + this.props.lessonInfo.lessonDetail.lastName}</p>
 
                         {(this.state.times.length > 0 ?
-                        <p className="text-center text-white my-4">
+                        <p className="tw-text-center tw-text-white tw-my-4">
                             {` ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.endHour).label} ${this.props.lessonInfo.lessonDetail.weekly == 2 ? this.props.t('oddWeeks') : this.props.lessonInfo.lessonDetail.weekly == 1 ? this.props.t('evenWeeks') : this.props.t('weekly')} ${this.options.find(x => x.value === this.props.lessonInfo.lessonDetail.dayType).label} ${this.props.t('fromTime')} ${this.state.times.find(x => x.value == this.props.lessonInfo.lessonDetail.startHour).label} ${this.props.t('toTime')} `}
                         </p>
                         : null)}
 
                         {(this.props.lessonInfo.lessonDetail.meetingId ? 
                             <>
-                                <p className="text-center text-greenish text-xl my-4 rounded-full">{this.props.t('loading')}</p>
-                                <button className="w-1/2 mx-auto flex justify-center rounded-lg py-2 focus:outline-none focus:shadow-outline my-8 bg-purplish text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.meetingId)} >{this.props.t('enterOnlineClass')}</button>
+                                <p className="tw-text-center tw-text-greenish tw-text-xl tw-my-4 tw-rounded-full">{this.props.t('loading')}</p>
+                                <button className="tw-w-1/2 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white" onClick={() => this.joinMeeting(this.props.lessonInfo.lessonDetail.meetingId)} >{this.props.t('enterOnlineClass')}</button>
                             </>
                         : 
                         null
                         )}
 
-                        <p className="text-center text-white my-4">{this.props.t('class')} {this.props.lessonInfo.lessonDetail.className}</p>
+                        <p className="tw-text-center tw-text-white tw-my-4">{this.props.t('class')} {this.props.lessonInfo.lessonDetail.className}</p>
 
                     </div>
                 </Modal>        

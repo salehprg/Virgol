@@ -35,7 +35,7 @@ class TeacherInfo extends React.Component {
                 type={type}
                 dir="rtl"
                 placeholder={placeholder}
-                extra="w-full my-4"
+                extra="tw-w-full tw-my-4"
             />
         );
     }
@@ -61,8 +61,8 @@ class TeacherInfo extends React.Component {
                     onCancel={() => this.emptyData()}
                     title={this.props.t('teacherInfo')}
                 >
-                    <form className="w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
-                        {/*<div className="text-white">*/}
+                    <form className="tw-w-full" style={{direction : "rtl"}}  onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                        {/*<div className="tw-text-white">*/}
                         {/*    <input checked="true" */}
                         {/*        type="radio" */}
                         {/*        value="Female" */}
@@ -72,7 +72,7 @@ class TeacherInfo extends React.Component {
                         {/*    /> زن*/}
 
                         {/*    <input */}
-                        {/*        className="mr-4" */}
+                        {/*        className="tw-mr-4" */}
                         {/*        checked={this.state.selectedOption === "Male"}*/}
                         {/*        onChange={this.handleRadioBtnChng} */}
                         {/*        type="radio" */}
@@ -111,12 +111,12 @@ class TeacherInfo extends React.Component {
                             component={this.renderInputs}
                         />
 
-                        <div className="w-full my-4 flex justify-between items-center">
-                            <span className="text-white">{this.props.t('gender')}</span>
-                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Female' ? 'border-redish text-redish' : 'border-grayish text-grayish'}`}>{this.props.t('female')}</span>
-                            <span onClick={() => this.handleRadioBtnChng("Male")} className={`w-1/3 text-center py-2 cursor-pointer border-2 ${this.state.selectedOption === 'Male' ? 'border-sky-blue text-sky-blue' : 'border-grayish text-grayish'}`}>{this.props.t('male')}</span>
+                        <div className="tw-w-full tw-my-4 tw-flex tw-justify-between tw-items-center">
+                            <span className="tw-text-white">{this.props.t('gender')}</span>
+                            <span onClick={() => this.handleRadioBtnChng("Female")} className={`tw-w-1/3 tw-text-center tw-py-2 tw-cursor-pointer tw-border-2 ${this.state.selectedOption === 'Female' ? 'tw-border-redish tw-text-redish' : 'tw-border-grayish tw-text-grayish'}`}>{this.props.t('female')}</span>
+                            <span onClick={() => this.handleRadioBtnChng("Male")} className={`tw-w-1/3 tw-text-center tw-py-2 tw-cursor-pointer tw-border-2 ${this.state.selectedOption === 'Male' ? 'tw-border-sky-blue tw-text-sky-blue' : 'tw-border-grayish tw-text-grayish'}`}>{this.props.t('male')}</span>
                         </div>
-                        <button type="submit" className="w-full py-2 mt-4 text-white bg-purplish rounded-lg">{this.props.t('save')}</button>
+                        <button type="submit" className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg">{this.props.t('save')}</button>
                     </form>
                 </Add>
             </div>

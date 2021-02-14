@@ -25,21 +25,21 @@ class Home extends React.Component {
     }
     
     render() {
-        if(this.state.loading) return loading('w-10 text-grayish centerize')
+        if(this.state.loading) return loading('tw-w-10 tw-text-grayish centerize')
         
         return (
-            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 py-6">
+            <div className="tw-grid sm:tw-grid-cols-2 tw-grid-cols-1 tw-gap-4 tw-py-6">
                 {(this.props.myNews.length === 0 ?
                         <Feed
                             news={[]}
                             title={this.props.t('adminNewsHeader')}
-                            pos="sm:row-start-1 row-start-2"
+                            pos="sm:tw-row-start-1 tw-row-start-2"
                         />
                         :
                         <Feed
                             news={this.props.myNews}
                             title={this.props.t('adminNewsHeader')}
-                            pos="sm:row-start-1 row-start-2"
+                            pos="sm:tw-row-start-1 tw-row-start-2"
                         />
                 )}
                 <div className="">
@@ -52,35 +52,35 @@ class Home extends React.Component {
                             <Hero userInfo={this.props.t('loading')}
                                   title={this.props.t('loading')} />
                     )}
-                    <div className="mt-8">
+                    <div className="tw-mt-8">
                         <CounterCard
                             title={this.props.t('schools')}
                             icon={home}
                             number={this.props.dashboardInfo.schoolCount}
-                            bg="bg-sky-blue"
+                            bg="tw-bg-sky-blue"
                         />
 
                         <CounterCard
                             title={this.props.t('maxSchools')}
                             icon={key}
                             number={this.props.dashboardInfo.keyCount}
-                            bg="bg-greenish"
-                            pos="row-start-3"
+                            bg="tw-bg-greenish"
+                            pos="tw-row-start-3"
                         />
 
                         <CounterCard
                             title={this.props.t('teachers')}
                             icon={user}
                             number={this.props.dashboardInfo.teacherCount}
-                            bg="bg-purplish"
+                            bg="tw-bg-purplish"
                         />
 
                         <CounterCard
                             title={this.props.t('students')}
                             icon={users}
                             number={this.props.dashboardInfo.studentsCount}
-                            bg="bg-redish"
-                            pos="row-start-3"
+                            bg="tw-bg-redish"
+                            pos="tw-row-start-3"
                         />
                     </div>
                 </div>

@@ -11,31 +11,26 @@ class PaymentDetail extends React.Component {
 
     componentDidMount = async () =>
     {
-        console.log("w");
         await this.props.GetPaymentDetail(this.props.user.token , this.props.match.params.paymentId)
-    }
-
-    componentDidUpdate() {
-        console.log(this.props.paymentDetail);
     }
 
     render() {
         return (
-            <div className="w-screen min-h-screen bg-dark-blue">
-                <div className="w-11/12 max-w-500 px-2 py-12 centerize bg-white rounded-xl text-center">
-                    <p className={`text-2xl font-vb ${this.props.paymentDetail.status === 'success' ? 'text-greenish' : 'text-redish'}`}>{this.props.paymentDetail.status === 'success' ? 'پرداخت موفق' : 'پرداخت ناموفق'}</p>
+            <div className="tw-w-screen tw-min-h-screen tw-bg-dark-blue">
+                <div className="tw-w-11/12 tw-max-w-500 tw-px-2 tw-py-12 centerize tw-bg-white tw-rounded-xl tw-text-center">
+                    <p className={`tw-text-2xl tw-font-vb ${this.props.paymentDetail.status === 'success' ? 'tw-text-greenish' : 'tw-text-redish'}`}>{this.props.paymentDetail.status === 'success' ? 'پرداخت موفق' : 'پرداخت ناموفق'}</p>
                     {this.props.paymentDetail.status === 'success' ? 
                     <>
-                        <p className="text-lg my-4">مبلغ: {this.props.paymentDetail.amount} تومان</p>
-                        <p className="text-lg my-4">کد رهگیری: {this.props.paymentDetail.reqId}</p>
-                        <p className="text-lg mt-4 mb-8">تعداد دانش آموزان پرداختی: {this.props.paymentDetail.userCount}</p>
+                        <p className="tw-text-lg tw-my-4">مبلغ: {this.props.paymentDetail.amount} تومان</p>
+                        <p className="tw-text-lg tw-my-4">کد رهگیری: {this.props.paymentDetail.reqId}</p>
+                        <p className="tw-text-lg tw-mt-4 tw-mb-8">تعداد دانش آموزان پرداختی: {this.props.paymentDetail.userCount}</p>
                     </>
                     : 
                     <>
-                        <p className="my-8 text-xl">{this.props.paymentDetail.statusMessage}</p>
+                        <p className="tw-my-8 tw-text-xl">{this.props.paymentDetail.statusMessage}</p>
                     </>
                     }
-                    <Link className="px-6 rounded-lg py-2 text-white bg-purplish" to="/m/dashboard">بازگشت</Link>
+                    <Link className="tw-link tw-px-6 tw-rounded-lg tw-py-2 tw-text-white tw-bg-purplish" to="/m/dashboard">بازگشت</Link>
                 </div>
             </div>
         );

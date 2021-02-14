@@ -75,10 +75,10 @@ class AddExtraLesson extends React.Component {
                 onCancel={() => history.push('/m/extraLesson')}
                 title={this.props.t('addExtraLesson')}
             >
-                <div className="w-full" style={{direction : "rtl"}} >
+                <div className="tw-w-full" style={{direction : "rtl"}} >
                     <Select
                         styles={styles}
-                        className="w-full mx-auto my-4"
+                        className="tw-w-full tw-mx-auto tw-my-4"
                         value={this.state.selectedClass}
                         onChange={this.handleChangeClass}
                         options={this.state.classes}
@@ -86,7 +86,7 @@ class AddExtraLesson extends React.Component {
                     />
                     <Select
                         styles={styles}
-                        className="w-full mx-auto my-4"
+                        className="tw-w-full tw-mx-auto tw-my-4"
                         value={this.state.selectedLesson}
                         onChange={this.handleChangeLesson}
                         options={this.state.lessons}
@@ -94,14 +94,14 @@ class AddExtraLesson extends React.Component {
                     />
                     <Select
                         styles={styles}
-                        className="w-full mx-auto my-4"
+                        className="tw-w-full tw-mx-auto tw-my-4"
                         value={this.state.selectedStudent}
                         onChange={this.handleChangeStudent}
                         options={this.state.students}
                         placeholder={this.props.t('student')}
                     />
                     
-                    <button onClick={() => this.onSubmit()} className="w-full py-2 mt-4 text-white bg-purplish rounded-lg"> {this.props.t('save')} </button>
+                    <button onClick={() => this.onSubmit()} className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg"> {this.props.t('save')} </button>
                 </div>
             </Add>
         );

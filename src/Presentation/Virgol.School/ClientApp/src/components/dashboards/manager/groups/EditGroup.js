@@ -98,11 +98,11 @@ class EditGroup extends React.Component {
                 onCancel={() => history.push('/m/groups')}
                 title={this.props.t('newGroup')}
             >
-                <div className="w-full" style={{direction : "rtl"}} >
+                <div className="tw-w-full" style={{direction : "rtl"}} >
                     <Select
                         styles={styles}
                         isMulti={true}
-                        className="w-full mx-auto my-4"
+                        className="tw-w-full tw-mx-auto tw-my-4"
                         value={this.state.selectedClasses}
                         onChange={this.handleChangeClass}
                         options={this.state.classes}
@@ -110,7 +110,7 @@ class EditGroup extends React.Component {
                     />
                     <Select
                         styles={styles}
-                        className="w-full mx-auto my-4"
+                        className="tw-w-full tw-mx-auto tw-my-4"
                         value={this.state.selectedLesson}
                         onChange={this.handleChangeLesson}
                         options={this.state.lessons}
@@ -118,7 +118,7 @@ class EditGroup extends React.Component {
                     />
                     <Select
                         styles={styles}
-                        className="w-full mx-auto my-4"
+                        className="tw-w-full tw-mx-auto tw-my-4"
                         value={this.state.selectedTeacher}
                         onChange={this.handleChangeTeacher}
                         options={this.state.teachers}
@@ -126,7 +126,7 @@ class EditGroup extends React.Component {
                     />
                     <Select
                         styles={styles}
-                        className="w-full mx-auto my-4"
+                        className="tw-w-full tw-mx-auto tw-my-4"
                         value={this.state.selectedDay}
                         onChange={this.handleChangeDay}
                         options={this.state.days}
@@ -134,7 +134,7 @@ class EditGroup extends React.Component {
                     />
                     <Select
                         styles={styles}
-                        className="w-full mx-auto my-4"
+                        className="tw-w-full tw-mx-auto tw-my-4"
                         value={this.state.selectedStartTime}
                         onChange={this.handleChangeStart}
                         options={this.state.times}
@@ -143,7 +143,7 @@ class EditGroup extends React.Component {
                     {this.state.selectedStartTime ?
                         <Select
                             styles={styles}
-                            className="w-full mx-auto my-4"
+                            className="tw-w-full tw-mx-auto tw-my-4"
                             value={this.state.selectedEndTime}
                             onChange={this.handleChangeEnd}
                             options={this.state.times.filter(el => el.value > this.state.selectedStartTime.value)}
@@ -152,7 +152,7 @@ class EditGroup extends React.Component {
                         :
                         null
                     }
-                    <button onClick={() => this.onSubmit()} className="w-full py-2 mt-4 text-white bg-purplish rounded-lg"> {this.props.t('save')} </button>
+                    <button onClick={() => this.onSubmit()} className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg"> {this.props.t('save')} </button>
                 </div>
             </Add>
         );

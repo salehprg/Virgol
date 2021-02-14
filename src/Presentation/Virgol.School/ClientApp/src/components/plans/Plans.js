@@ -34,38 +34,38 @@ class Plans extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen bg-dark-blue">
-                <div className="w-11/12 max-w-500 px-2 py-12 centerize bg-white rounded-xl text-center">
+            <div className="tw-w-screen tw-min-h-screen tw-bg-dark-blue">
+                <div className="tw-w-11/12 tw-max-w-500 tw-px-2 tw-py-12 centerize tw-bg-white tw-rounded-xl tw-text-center">
                     {this.state.selectedPlan ? 
                     <>
-                        <p className="text-black-blue text-xl">پرداخت آسان و مطمئن با <span className="text-sky-blue">پی پینگ</span></p>
-                        <div className="w-full my-6 flex md:flex-row flex-col justify-evenly items-center">
-                            <div className="flex flex-col items-center md:mb-0 mb-6">
-                                <span className="my-1">هزینه هر دانش آموز </span>
-                                <span dir="rtl" className="font-vb">{this.state.selectedPlan.pricePerUser.toLocaleString()} تومان</span>
+                        <p className="tw-text-black-blue tw-text-xl">پرداخت آسان و مطمئن با <span className="tw-text-sky-blue">پی پینگ</span></p>
+                        <div className="tw-w-full tw-my-6 tw-flex md:tw-flex-row tw-flex-col tw-justify-evenly tw-items-center">
+                            <div className="tw-flex tw-flex-col tw-items-center md:tw-mb-0 tw-mb-6">
+                                <span className="tw-my-1">هزینه هر دانش آموز </span>
+                                <span dir="rtl" className="tw-font-vb">{this.state.selectedPlan.pricePerUser.toLocaleString()} تومان</span>
                             </div>
-                            <div className="flex flex-col items-center">
-                                <span className="my-1">مدت قرارداد (روز)</span>
-                                <span className="font-vb">{parseInt(this.state.selectedPlan.option) * 30}</span>
+                            <div className="tw-flex tw-flex-col tw-items-center">
+                                <span className="tw-my-1">مدت قرارداد (روز)</span>
+                                <span className="tw-font-vb">{parseInt(this.state.selectedPlan.option) * 30}</span>
                             </div>
-                            <div className="flex flex-col items-center">
-                                <span className="my-1">تعداد دانش آموزان</span>
-                                <span className="font-vb">{this.state.userCount}</span>
+                            <div className="tw-flex tw-flex-col tw-items-center">
+                                <span className="tw-my-1">تعداد دانش آموزان</span>
+                                <span className="tw-font-vb">{this.state.userCount}</span>
                             </div>
                         </div>
-                        <div className="flex flex-col justify-right pb-2">
-                            <p className="text-lg font-vb mb-2">مبلغ کل</p>
+                        <div className="tw-flex tw-flex-col tw-justify-right tw-pb-2">
+                            <p className="tw-text-lg tw-font-vb tw-mb-2">مبلغ کل</p>
                             <p>{(+this.props.newUsers.length * +this.state.selectedPlan.pricePerUser).toLocaleString()}</p>
                         </div>
-                        <div className="flex flex-col justify-right pb-2">
-                            <p className="text-lg font-vb mb-2">کسر از قرارداد فعلی</p>
+                        <div className="tw-flex tw-flex-col tw-justify-right tw-pb-2">
+                            <p className="tw-text-lg tw-font-vb tw-mb-2">کسر از قرارداد فعلی</p>
                             <p>{(+this.props.newUsers.length * +this.state.selectedPlan.pricePerUser - +this.state.amount).toLocaleString()}</p>
                         </div>
                         <div>
-                            <p className="text-xl font-vb mb-2">( تومان ) هزینه نهایی</p>
-                            <p className="text-xl">{this.state.amount.toLocaleString()}</p>
+                            <p className="tw-text-xl tw-font-vb tw-mb-2">( تومان ) هزینه نهایی</p>
+                            <p className="tw-text-xl">{this.state.amount.toLocaleString()}</p>
                         </div>
-                        <button className="py-2 w-2/3 mt-6 rounded-lg mx-auto bg-greenish text-white" onClick={(e) => this.OnPayment()}>پرداخت</button>
+                        <button className="tw-py-2 w-2/3 tw-mt-6 tw-rounded-lg tw-mx-auto tw-bg-greenish tw-text-white" onClick={(e) => this.OnPayment()}>پرداخت</button>
                     </>
                     : null}
                 </div>

@@ -49,9 +49,9 @@ spec:
     - name: VIRGOL_JWT_SECRET
       value: Saleh Secret Key
     - name: VIRGOL_LDAP_SERVER
-      value: ldap.vir-gol.ir
+      value: m-dei.vir-gol.ir
     - name: VIRGOL_LDAP_PORT
-      value: 390
+      value: 389
     - name: VIRGOL_LDAP_USER_ADMIN
       value: cn=admin,dc=legace,dc=ir
     - name: VIRGOL_LDAP_PASSWORD
@@ -61,4 +61,4 @@ spec:
     - name : REACT_APP_MOODLE_URL
       value : https://moodle.vir-gol.ir/login/index.php
     - name : REACT_APP_VERSION
-      value : 1.8.6-Beta
+      value : 1.8.8-Beta

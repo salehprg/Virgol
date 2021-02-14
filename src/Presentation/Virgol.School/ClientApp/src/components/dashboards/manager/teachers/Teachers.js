@@ -84,9 +84,9 @@ class Teachers extends React.Component {
     }
 
     render() {
-        if(this.state.loading) loading('w-10 text-grayish centerize')
+        if(this.state.loading) loading('tw-w-10 tw-text-grayish centerize')
         return (
-            <div className="w-full mt-10">
+            <div className="tw-w-full tw-mt-10">
                 <ReactTooltip />
                 {this.state.showDeleteModal ? 
                 <DeleteConfirm
@@ -108,7 +108,7 @@ class Teachers extends React.Component {
                     currentPage={this.state.currentPage}
                     button={() => {
                         return (
-                        <button onClick={() => history.push('/newTeacher')} className="px-6 py-1 ml-4 mb-4 border-2 border-sky-blue text-sky-blue rounded-lg">{this.props.t('newTeacher')}</button>
+                        <button onClick={() => history.push('/newTeacher')} className="tw-px-6 tw-py-1 tw-ml-4 tw-mb-4 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg">{this.props.t('newTeacher')}</button>
                         );
                     }}
                     sample={this.props.t('downloadTeachersExcelSample')}
@@ -124,22 +124,22 @@ class Teachers extends React.Component {
                                         return(
                                         <tr>
                                             {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectTeacher}></input></td>*/}
-                                            <td className="py-4 text-right">
-                                                <div className="flex justify-center items-center">
+                                            <td className="tw-py-4 tw-text-right">
+                                                <div className="tw-flex tw-justify-center tw-items-center">
                                                     <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
                                                 </div>
                                             </td>
-                                            <td className="py-4 text-right">{x.firstName}</td>
-                                            <td className="text-right">{x.lastName}</td>
-                                            <td className="text-right">{x.melliCode}</td>
-                                            <td className="text-right">{x.phoneNumber}</td>
-                                            <td className="text-right">{x.personalIdNUmber}</td>
-                                            <td className="text-right"><span className="text-center">{x.latinFirstname && x.latinLastname ? check_circle('w-8 text-greenish') : null}</span></td>
-                                            <td className="text-right" data-tip={this.props.t('edit')} className="cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
-                                                {edit('w-6 text-white')}
+                                            <td className="tw-py-4 tw-text-right">{x.firstName}</td>
+                                            <td className="tw-text-right">{x.lastName}</td>
+                                            <td className="tw-text-right">{x.melliCode}</td>
+                                            <td className="tw-text-right">{x.phoneNumber}</td>
+                                            <td className="tw-text-right">{x.personalIdNUmber}</td>
+                                            <td className="tw-text-right"><span className="tw-text-center">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td className="tw-text-right" data-tip={this.props.t('edit')} className="tw-cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
+                                                {edit('tw-w-6 tw-text-white')}
                                             </td>           
-                                            {/*<td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="cursor-pointer">*/}
-                                            {/*    {trash('w-6 text-white ')}*/}
+                                            {/*<td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">*/}
+                                            {/*    {trash('tw-w-6 tw-text-white ')}*/}
                                             {/*</td> */}
                                         </tr>
                                         )
@@ -153,14 +153,14 @@ class Teachers extends React.Component {
                     options={() => {
                         return (
                             <React.Fragment>
-                                <div onClick={() => this.setState({ showDeleteModal: true })} className="flex justify-between mx-1 cursor-pointer items-center bg-red-700 rounded-full md:px-6 px-3 py-1">
-                                    {trash("w-6 mx-1 text-white")}
-                                    <span className="font-vb mx-1 text-white">{this.props.t('delete')}</span>
+                                <div onClick={() => this.setState({ showDeleteModal: true })} className="tw-flex tw-justify-between tw-mx-1 tw-cursor-pointer tw-items-center tw-bg-red-700 tw-rounded-full md:tw-px-6 tw-px-3 tw-py-1">
+                                    {trash("tw-w-6 tw-mx-1 tw-text-white")}
+                                    <span className="tw-font-vb tw-mx-1 tw-text-white">{this.props.t('delete')}</span>
                                 </div>
                                 {/*{this.state.selected.length === 1 ?*/}
-                                {/*    <div onClick={() => history.push(`/teacher/${this.state.selectedItems[0]}`)} className="flex justify-between items-center mx-1 cursor-pointer bg-grayish rounded-full md:px-6 px-3 py-1">*/}
-                                {/*        {edit("w-6 mx-1 text-white")}*/}
-                                {/*        <span className="font-vb mx-1 text-white">ویرایش</span>*/}
+                                {/*    <div onClick={() => history.push(`/teacher/${this.state.selectedItems[0]}`)} className="tw-flex tw-justify-between tw-items-center tw-mx-1 tw-cursor-pointer tw-bg-grayish tw-rounded-full md:tw-px-6 tw-px-3 tw-py-1">*/}
+                                {/*        {edit("tw-w-6 tw-mx-1 tw-text-white")}*/}
+                                {/*        <span className="tw-font-vb tw-mx-1 tw-text-white">ویرایش</span>*/}
                                 {/*    </div>*/}
                                 {/*    :*/}
                                 {/*    null*/}

@@ -21,7 +21,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/Teacher/RecentClass/RecentClass.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/Teacher/RecentClass/RecentClass.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/sidebar/Sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/sidebar/Sidebar.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +61,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../purephp" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2020.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -107,6 +108,12 @@
       <workItem from="1612980189666" duration="192000" />
       <workItem from="1613038967201" duration="494000" />
       <workItem from="1613048230000" duration="1050000" />
+      <workItem from="1613123401731" duration="340000" />
+      <workItem from="1613134949503" duration="31000" />
+      <workItem from="1613135054973" duration="25000" />
+      <workItem from="1613142848190" duration="1818000" />
+      <workItem from="1613200534827" duration="1132000" />
+      <workItem from="1613212266365" duration="794000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -178,7 +185,28 @@
       <option name="project" value="LOCAL" />
       <updated>1613048519441</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="edit lesson modal redesigned&#10;edit session button added&#10;some style added to landing page">
+      <created>1613123428130</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1613123428130</updated>
+    </task>
+    <task id="LOCAL-00012" summary="some change into recorded sessions">
+      <created>1613143811676</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1613143811676</updated>
+    </task>
+    <task id="LOCAL-00013" summary="side bar changed&#10;crisp commented">
+      <created>1613208349537</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1613208349537</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -210,6 +238,9 @@
     <MESSAGE value="some bug fixed &#10;&#10;sidebar cards now in one line &#10;all tables data is in right line" />
     <MESSAGE value="stream tab styles added" />
     <MESSAGE value="button bugs fixed&#10;all tables in right align right now" />
-    <option name="LAST_COMMIT_MESSAGE" value="button bugs fixed&#10;all tables in right align right now" />
+    <MESSAGE value="edit lesson modal redesigned&#10;edit session button added&#10;some style added to landing page" />
+    <MESSAGE value="some change into recorded sessions" />
+    <MESSAGE value="side bar changed&#10;crisp commented" />
+    <option name="LAST_COMMIT_MESSAGE" value="side bar changed&#10;crisp commented" />
   </component>
 </project>

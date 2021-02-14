@@ -36,19 +36,19 @@ class AddCategory extends React.Component {
     render() {
         return (
             <Modal cancel={this.props.cancel}>
-                <div onClick={e => e.stopPropagation()} className="w-5/6 max-w-800 bg-bold-blue px-4 py-16 flex flex-col items-center">
+                <div onClick={e => e.stopPropagation()} className="tw-w-5/6 tw-max-w-800 tw-bg-bold-blue tw-px-4 tw-py-16 tw-flex tw-flex-col tw-items-center">
                     <Searchish
-                        className="mx-auto max-w-350"
+                        className="tw-mx-auto tw-max-w-350"
                         query={this.state.query}
                         changeQuery={this.changeQuery}
                     />
-                    <div className="w-11/12 mt-4 flex flex-row-reverse justify-center flex-wrap">
+                    <div className="tw-w-11/12 tw-mt-4 tw-flex tw-flex-row-reverse tw-justify-center tw-flex-wrap">
                         {(this.props.newSchoolInfo.bases ? 
                             this.props.newSchoolInfo.bases.map(cat => {
                                 if (cat.baseName.includes(this.state.query)) {
                                     return (
                                         <span onClick={() => this.setCat(cat.id)}
-                                              className={`px-6 py-1 mx-2 my-2 border cursor-pointer ${this.state.selectedCats.some(el => el === cat.id) ? 'border-sky-blue text-sky-blue' : 'border-white text-white'}`}
+                                              className={`tw-px-6 tw-py-1 tw-mx-2 tw-my-2 tw-border tw-cursor-pointer ${this.state.selectedCats.some(el => el === cat.id) ? 'tw-border-sky-blue tw-text-sky-blue' : 'tw-border-white tw-text-white'}`}
                                         >
                                         {cat.baseName}
                                     </span>
@@ -58,11 +58,11 @@ class AddCategory extends React.Component {
                            : this.props.t('loading')
                         )}
                     </div>
-                    <div className="flex mt-8 flex-row items-center">
-                        <button onClick={this.addBaseToSchool} className="px-6 py-1 mx-1 border-2 border-transparent rounded-lg bg-greenish text-white">
+                    <div className="tw-flex tw-mt-8 tw-flex-row tw-items-center">
+                        <button onClick={this.addBaseToSchool} className="tw-px-6 tw-py-1 tw-mx-1 tw-border-2 tw-border-transparent tw-rounded-lg tw-bg-greenish tw-text-white">
                             {this.props.t('save')}
                         </button>
-                        <button onClick={this.props.cancel} className="px-6 mx-1 py-1 rounded-lg border-2 border-grayish text-grayish">
+                        <button onClick={this.props.cancel} className="tw-px-6 tw-mx-1 tw-py-1 tw-rounded-lg tw-border-2 tw-border-grayish tw-text-grayish">
                             {this.props.t('cancel')}
                         </button>
                     </div>

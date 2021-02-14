@@ -28,32 +28,32 @@ class SessionInfo extends React.Component {
 
     render() {
         return (
-            <div className="w-screen min-h-screen py-4 bg-black-blue">
-                <div className="lg:w-11/12 w-full lg:px-8 px-4 py-16 relative min-h-90 mx-auto lg:border-2 border-0 rounded-lg border-dark-blue">
-                    <div onClick={() => this.props.history.goBack()} className="w-10 h-10 cursor-pointer absolute top-0 left-0 mt-4 ml-8 rounded-lg border-2 border-purplish">
-                        {arrow_left('w-6 centerize text-purplish')}
+            <div className="tw-w-screen tw-min-h-screen tw-py-4 tw-bg-black-blue">
+                <div className="lg:tw-w-11/12 tw-w-full lg:tw-px-8 tw-px-4 tw-py-16 tw-relative tw-min-h-90 tw-mx-auto lg:tw-border-2 tw-border-0 tw-rounded-lg tw-border-dark-blue">
+                    <div onClick={() => this.props.history.goBack()} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-8 tw-rounded-lg tw-border-2 tw-border-purplish">
+                        {arrow_left('tw-w-6 centerize tw-text-purplish')}
                     </div>
-                    <p className="text-right text-xl text-white">{this.props.lessonDetail ? `${this.props.lessonDetail.orgLessonName} - ${this.props.t('school')} ${this.props.lessonDetail.schoolName} - ${this.props.t('class')} ${this.props.lessonDetail.className}` : null}</p>
+                    <p className="tw-text-right tw-text-xl tw-text-white">{this.props.lessonDetail ? `${this.props.lessonDetail.orgLessonName} - ${this.props.t('school')} ${this.props.lessonDetail.schoolName} - ${this.props.t('class')} ${this.props.lessonDetail.className}` : null}</p>
                     {(this.props.classBookData ?
-                    <div className="mx-auto rounded-lg bg-dark-blue mt-4 py-4 px-8">
+                    <div className="tw-mx-auto tw-rounded-lg tw-bg-dark-blue tw-mt-4 tw-py-4 tw-px-8">
                         <Tablish
                             headers={[this.props.t('name'), this.props.t('nationCode'), this.props.t('email'), this.props.t('absents'), this.props.t('point')]}
                             body={() => {
                                 return (
                                     this.props.classBookData.map(x =>
                                         <tr>
-                                            <td className="py-4 text-right">{x.firstName} {x.lastName}</td>
-                                            <td className="text-right">{x.melliCode}</td>
-                                            <td className="text-right">{x.email ? x.email : this.props.t('notAvailable')}</td>
-                                            <td className="text-right">{x.absentCount}</td>
-                                            <td className="text-right">{x.score}</td>
+                                            <td className="tw-py-4 tw-text-right">{x.firstName} {x.lastName}</td>
+                                            <td className="tw-text-right">{x.melliCode}</td>
+                                            <td className="tw-text-right">{x.email ? x.email : this.props.t('notAvailable')}</td>
+                                            <td className="tw-text-right">{x.absentCount}</td>
+                                            <td className="tw-text-right">{x.score}</td>
                                         </tr>
                                     )
                                 );
                             }}
                         />
                     </div>
-                    : <p className="text-right text-white">{this.props.t('loading')}</p> )}
+                    : <p className="tw-text-right tw-text-white">{this.props.t('loading')}</p> )}
                 </div>
             </div>
         );

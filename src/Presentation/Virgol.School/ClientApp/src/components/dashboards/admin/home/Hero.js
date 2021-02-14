@@ -22,27 +22,27 @@ class Hero extends React.Component {
         const props = this.props;
 
         return (
-            <div className="relative w-full text-center rounded-xl py-4 px-6">
-                {/*<Particles className="absolute top-0 bottom-0 right-0 left-0" params={particles} />*/}
-                <p className="text-3xl text-white my-2">{props.userInfo.firstName} {props.userInfo.lastName}</p>
-                <p className="text-md text-white my-2" style={{color : "#60b5ff"}}>{props.userInfo.melliCode}</p>
+            <div className="tw-relative tw-w-full tw-text-center tw-rounded-xl tw-py-4 tw-px-6">
+                {/*<Particles className="tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-left-0" params={particles} />*/}
+                <p className="tw-text-3xl tw-text-white tw-my-2">{props.userInfo.firstName} {props.userInfo.lastName}</p>
+                <p className="tw-text-md tw-text-white tw-my-2" style={{color : "#60b5ff"}}>{props.userInfo.melliCode}</p>
                 {(props.adminTitle ?
-                    <p className="text-white my-2">{props.adminTitle}</p>
+                    <p className="tw-text-white tw-my-2">{props.adminTitle}</p>
                 : ""
                 )}
 
                 {(props.managerTitle ?
-                    <p className="text-white my-2">{props.managerTitle}</p> : "")}
+                    <p className="tw-text-white tw-my-2">{props.managerTitle}</p> : "")}
 
                 {(props.userTitle ?
                     <>
-                        <p className="text-white my-2">{` مدرسه ${props.userTitle} ${props.userDetail.userDetail.school.schoolName}`}</p> 
+                        <p className="tw-text-white tw-my-2">{` مدرسه ${props.userTitle} ${props.userDetail.userDetail.school.schoolName}`}</p> 
                     </>
                     : "")}
                 {(this.props.ShowServiceType ?
-                <div className="flex flex-row items-center my-2 w-full justify-center">
-                    <span onClick={() => this.changeService('bbb')} className={`mx-2 cursor-pointer px-3 py-1 border-2 rounded-md ${this.state.serviceType === 'bbb' ? 'border-blue-500 text-blue-500' : 'border-grayish text-grayish'}`}>BigBlueButton</span>
-                    <span onClick={() => this.changeService('adobe')} className={`mx-2 cursor-pointer px-3 py-1 border-2 rounded-md ${this.state.serviceType === 'adobe' ? 'border-greenish text-greenish' : 'border-grayish text-grayish'}`}>Adobe Connect</span>
+                <div className="tw-flex tw-flex-row tw-items-center tw-my-2 tw-w-full tw-justify-center">
+                    <span onClick={() => this.changeService('bbb')} className={`tw-mx-2 tw-cursor-pointer tw-px-3 tw-py-1 tw-border-2 tw-rounded-md ${this.state.serviceType === 'bbb' ? 'tw-border-blue-500 tw-text-blue-500' : 'tw-border-grayish tw-text-grayish'}`}>BigBlueButton</span>
+                    <span onClick={() => this.changeService('adobe')} className={`tw-mx-2 tw-cursor-pointer tw-px-3 tw-py-1 tw-border-2 tw-rounded-md ${this.state.serviceType === 'adobe' ? 'tw-border-greenish tw-text-greenish' : 'tw-border-grayish tw-text-grayish'}`}>Adobe Connect</span>
                 </div>
                 : null)}
             </div>

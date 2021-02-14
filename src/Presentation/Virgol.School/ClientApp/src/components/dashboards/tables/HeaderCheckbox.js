@@ -11,13 +11,13 @@ class HeaderCheckbox extends React.Component {
     renderBox = () => {
         if (this.props.selected.length === 0) {
             return (
-                <button onClick={this.masterClick} className="w-5 h-5 focus:outline-none rounded border-2 border-grayish">
+                <button onClick={this.masterClick} className="tw-w-5 tw-h-5 focus:tw-outline-none tw-rounded tw-border-2 tw-border-grayish">
                 </button>
             );
         } else {
             return (
-                <button onClick={this.masterClick} className="w-5 h-5 flex justify-center items-center focus:outline-none rounded bg-greenish border-2 border-greenish">
-                    {chevron("w-2/3 text-white")}
+                <button onClick={this.masterClick} className="tw-w-5 tw-h-5 tw-flex tw-justify-center tw-items-center focus:tw-outline-none tw-rounded tw-bg-greenish tw-border-2 tw-border-greenish">
+                    {chevron("w-2/3 tw-text-white")}
                 </button>
             );
         }

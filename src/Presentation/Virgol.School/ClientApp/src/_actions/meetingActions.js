@@ -186,6 +186,8 @@ export const CreatePrivateRoom = (token , roomName , schoolId = 0) => async disp
             }
         });
 
+        console.log(response);
+
         dispatch({ type: STOP })
         dispatch(alert.success("کلاس خصوصی با موفقیت ایجاد شد"))
         dispatch({ type: Type.StartMeeting, payload: response.data })
@@ -193,7 +195,6 @@ export const CreatePrivateRoom = (token , roomName , schoolId = 0) => async disp
         return true
 
     } catch (e) {
-
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
 

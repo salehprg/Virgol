@@ -27,17 +27,17 @@ class ManagerDashboard extends React.Component {
         this.setState({ active: this.props.location.pathname.split('/')[2] })
         if (window.innerWidth < 1024) this.setState({ sidebar: false })
 
-        window.$crisp = [];
-        window.CRISP_WEBSITE_ID = "4ede6290-1f82-45d7-81ff-1ea74b2afc00";
+        // window.$crisp = [];
+        // window.CRISP_WEBSITE_ID = "4ede6290-1f82-45d7-81ff-1ea74b2afc00";
 
-        (function() {
-            var d = document;
-            var s = d.createElement("script");
+        // (function() {
+        //     var d = document;
+        //     var s = d.createElement("script");
 
-            s.src = "https://client.crisp.chat/l.js";
-            s.async = 1;
-            d.getElementsByTagName("head")[0].appendChild(s);
-        })();
+        //     s.src = "https://client.crisp.chat/l.js";
+        //     s.async = 1;
+        //     d.getElementsByTagName("head")[0].appendChild(s);
+        // })();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -64,7 +64,7 @@ class ManagerDashboard extends React.Component {
     render() {
         if (this.state.loading) return this.props.t('loading')
         return (
-            <div onClick={() => this.setState({ showLang: false })} className="w-screen min-h-screen">
+            <div onClick={() => this.setState({ showLang: false })} className="tw-w-screen tw-min-h-screen">
                 <Sidebar
                     show={this.state.sidebar}
                     toggle={this.toggleSidebar}
@@ -113,16 +113,16 @@ class ManagerDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
-                        code="teachers"
-                        title={this.props.t('teachers')}
-                        icon={users}
+                        code="conference"
+                        title={this.props.t('conference')}
+                        icon={video}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
-                        code="conference"
-                        title={this.props.t('conference')}
-                        icon={video}
+                        code="teachers"
+                        title={this.props.t('teachers')}
+                        icon={users}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
@@ -152,7 +152,7 @@ class ManagerDashboard extends React.Component {
                     }
                 </Sidebar>
 
-                <div className="lg:w-4/5 px-6 w-full min-h-screen bg-bold-blue">
+                <div className="lg:tw-w-5/6 tw-px-6 tw-w-full tw-min-h-screen tw-bg-bold-blue">
                     <Header showLang={this.state.showLang} setShowLang={this.setShowLang} />
 
                     <Switch>
