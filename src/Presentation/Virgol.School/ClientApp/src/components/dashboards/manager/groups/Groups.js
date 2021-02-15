@@ -6,6 +6,7 @@ import {edit, external_link, loading, trash} from "../../../../assets/icons";
 import {GetMixedSchedules , DeleteMixedClassSchedule} from "../../../../_actions/classScheduleActions";
 import history from "../../../../history";
 import DeleteConfirm from '../../../modals/DeleteConfirm';
+import {pagingItems} from '../../../Search/Seaarch'
 
 class Groups extends React.Component {
 
@@ -13,7 +14,10 @@ class Groups extends React.Component {
         loading: false, 
         times : [],
         query: '', 
-        groups: [{ id: 1, classes: ['الف', 'ب', 'جیم'], lesson: 'حسابان 2', teacher: 'مصطفی', time: 'سه شنبه 8 - 10' }]
+        // groups: [{ id: 1, classes: ['الف', 'ب', 'جیم'], lesson: 'حسابان 2', teacher: 'مصطفی', time: 'سه شنبه 8 - 10' }]
+        groups : [],
+        itemsPerPage: 40, currentPage: 1 , totalCard : 0
+    
     }
 
     componentDidMount = async () => {
@@ -35,6 +39,20 @@ class Groups extends React.Component {
 
         await this.props.GetMixedSchedules(this.props.user.token);
 
+
+    }
+
+    setPaginate = (currentPage = -1) => {
+        const itemsPerPage = pagingItems(this.props.mixedSchedules , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+
+        this.setState({groups : itemsPerPage})
+        this.setState({totalCard : this.props.mixedSchedules.length})
+
+    }
+
+    paginate = (num) => {
+        this.setState({ currentPage: num })
+        this.setPaginate(num)
     }
 
     options = [
@@ -79,7 +97,11 @@ class Groups extends React.Component {
                     null
                 }
                 <PlusTable
-                    isPaginate={false}
+                    isPaginate={true}
+                    cardsPerPage={this.state.itemsPerPage}
+                    totalCards={this.state.totalCard}
+                    paginate={this.paginate}
+                    currentPage={this.state.currentPage}
                     title={this.props.t('groupsList')}
                     isLoading={this.state.loading}
                     query={this.state.query}
