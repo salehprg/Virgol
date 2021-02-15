@@ -44,7 +44,7 @@ class Header extends React.Component {
                     {/*</div>*/}
 
                     <div className="tw-mr-4 tw-px-2 tw-py-1 tw-flex md:tw-flex-row-reverse tw-flex-col tw-justify-between tw-items-center tw-border-2 tw-rounded-lg tw-border-dark-blue">
-                        <span className="tw-text-white tw-pt-1 tw-text-right md:tw-ml-4 tw-ml-0 md:tw-mb-0 tw-mb-2">{this.props.user.userInformation.firstName} {this.props.user.userInformation.lastName}</span>
+                        <span className="tw-text-white tw-pt-1 tw-text-right md:tw-ml-4 tw-ml-0 md:tw-mb-0 tw-mb-2">{this.props.user.userInformation.melliCode}</span>
                         <div className="tw-flex tw-flex-row-reverse tw-items-center">
                             {/*<div data-tip="سامانه مودل" className="tw-relative tw-mx-1">*/}
                             {/*    <a target="_blank" className="tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-left-0" href="https://moodle.legace.ir">*/}

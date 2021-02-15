@@ -74051,11 +74051,3 @@ video {
     animation: bounce 1s infinite;
   }
 }
-
-.tw-link{
-  text-decoration:none;
-}
-
-.tw-link:hover{
-  color : white;
-}
