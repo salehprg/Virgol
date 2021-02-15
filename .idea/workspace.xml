@@ -19,9 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -114,6 +112,7 @@
       <workItem from="1613212266365" duration="2738000" />
       <workItem from="1613238621027" duration="27000" />
       <workItem from="1613377425742" duration="251000" />
+      <workItem from="1613387170102" duration="252000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -213,7 +212,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613223907391</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="manage session added&#10;paginate added for groups page">
+      <created>1613387389527</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1613387389527</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -249,6 +255,7 @@
     <MESSAGE value="some change into recorded sessions" />
     <MESSAGE value="side bar changed&#10;crisp commented" />
     <MESSAGE value="some style changed" />
-    <option name="LAST_COMMIT_MESSAGE" value="some style changed" />
+    <MESSAGE value="manage session added&#10;paginate added for groups page" />
+    <option name="LAST_COMMIT_MESSAGE" value="manage session added&#10;paginate added for groups page" />
   </component>
 </project>
