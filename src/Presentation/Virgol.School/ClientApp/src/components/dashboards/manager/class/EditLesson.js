@@ -55,6 +55,7 @@ class EditLesson extends React.Component {
 
         this.setState({times})
 
+
     }
 
     handleChangeTeacher = selectedTeacher => {
@@ -115,7 +116,12 @@ class EditLesson extends React.Component {
         return ( 
             <Modal cancel={this.props.cancel}>
                 <div onClick={e => e.stopPropagation()} className='tw-rounded h-3/4 tw-w-11/12 tw-bg-dark-blue tw-max-w-500 tw-px-4 tw-py-6'>
-                    <p className='tw-text-center tw-text-white '>{this.props.t('editClassSchedule')}</p>
+                    <p className='tw-text-center tw-text-white '>{
+                        this.props.classLessons[0].grade_Id === 0 ?
+                        this.props.t('editSessionSchedule')
+                        :
+                        this.props.t('editClassSchedule')
+                    }</p>
 
                     {this.state.loading ? this.props.t('loading')  :
 
@@ -127,7 +133,7 @@ class EditLesson extends React.Component {
                                 value={this.state.selectedTeacher}
                                 onChange={this.handleChangeTeacher}
                                 options={this.state.teachers}
-                                placeholder={this.props.t('teacher')}
+                                placeholder={this.props.classLessons[0].grade_Id === 0 ? this.props.t('host') : this.props.t('teacher')}
                             />
                             <Select
                                 styles={styles}

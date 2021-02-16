@@ -18,6 +18,7 @@ import Groups from "./groups/Groups";
 import StreamInfo from "../stream/StreamInfo";
 import Payments from "../../payments/AllPayments"
 import ExtraLessons from "./ExtraLesson/ExtraLessons"
+import Sessions from './sessions/Sessions'
 
 class ManagerDashboard extends React.Component {
 
@@ -39,7 +40,6 @@ class ManagerDashboard extends React.Component {
         //     d.getElementsByTagName("head")[0].appendChild(s);
         // })();
 
-        console.log(this.props);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -78,14 +78,7 @@ class ManagerDashboard extends React.Component {
                         ${this.props.dashboardInfo.school.schoolName}`
                     : null)}
                 >
-
-                    <SidebarCard
-                        active={this.state.active}
-                        code="sessions"
-                        title={this.props.t('manageSessions')}
-                        icon={bell}
-                        changeActive={this.changeActive}
-                    />
+                    
                     <SidebarCard
                         active={this.state.active}
                         code="dashboard"
@@ -100,6 +93,18 @@ class ManagerDashboard extends React.Component {
                         icon={bell}
                         changeActive={this.changeActive}
                     />
+
+                    {this.props.dashboardInfo.hasFreeMeeting ?
+                        <SidebarCard
+                        active={this.state.active}
+                        code="sessions"
+                        title={this.props.t('manageSessions')}
+                        icon={bell}
+                        changeActive={this.changeActive}
+                        />
+                        :
+                        null
+                    }
                     <SidebarCard
                         active={this.state.active}
                         code="groups"
@@ -169,7 +174,7 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/teachers"} component={Teachers}/>
                         <Route path={this.props.match.url + "/bases"} component={Grades}/>
-                        <Route path={this.props.match.url + "/sessions"} component={Grades}/>
+                        <Route path={this.props.match.url + "/sessions"} component={Sessions}/>
                         <Route path={this.props.match.url + "/groups"} component={Groups}/>
                         <Route path={this.props.match.url + "/students"} component={Students}/>
                         <Route path={this.props.match.url + "/conference"} component={StreamInfo}/>

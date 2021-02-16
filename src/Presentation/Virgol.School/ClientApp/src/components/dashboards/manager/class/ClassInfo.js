@@ -129,7 +129,7 @@ class ClassInfo extends React.Component {
     render() {
         return (
             <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="tw-w-screen tw-min-h-screen tw-py-16 lg:tw-px-10 tw-px-1 tw-relative tw-bg-bold-blue tw-grid lg:tw-grid-cols-4 tw-grid-cols-1 lg:tw-col-tw-gap-4 xl:tw-col-tw-gap-10 tw-col-tw-gap-10 tw-row-tw-gap-10">
-                <div onClick={() => history.push('/m/bases')} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-4 tw-rounded-lg tw-border-2 tw-border-purplish">
+                <div onClick={() => history.goBack()} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-4 tw-rounded-lg tw-border-2 tw-border-purplish">
                     {arrow_left('tw-w-6 centerize tw-text-purplish')}
                 </div>
                 {this.state.addStudent ? 
