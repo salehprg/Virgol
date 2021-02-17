@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Schedule from './Schedule'
 import {AddClassSchedule , DeleteClassSchedule , getClassSchedule} from '../../../../_actions/classScheduleActions'
 import {getStudentsClass , UnAssignUserFromClass , AssignUserToClass , AssignUserListToClass } from '../../../../_actions/managerActions'
-import {deleteClass , editClass} from '../../../../_actions/schoolActions'
+import {deleteClass , editClass , getAllClass} from '../../../../_actions/schoolActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
 import {arrow_left, plus, x} from "../../../../assets/icons";
@@ -40,11 +40,13 @@ class ClassInfo extends React.Component {
         this.setState({loading : true})
         await this.props.getClassSchedule(this.props.user.token , this.props.match.params.id)
         await this.props.getStudentsClass(this.props.user.token , this.props.match.params.id)
+        await this.props.getAllClass(this.props.user.token)
         this.setState({loading : false})
 
         const classDetail = this.props.allClass.filter(x => x.id == parseInt(this.props.match.params.id))
-
         this.setState({classDetail : classDetail[0]})
+    
+
 
         this.sc.current.scrollLeft = this.sc.current.clientWidth
         
@@ -291,6 +293,6 @@ const authWrapped = protectedManager(ClassInfo)
 
 const cwrapped = connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
     DeleteClassSchedule , getClassSchedule , UnAssignUserFromClass ,
-    AssignUserToClass , AssignUserListToClass , deleteClass , editClass})(authWrapped);
+    AssignUserToClass , AssignUserListToClass , deleteClass , editClass , getAllClass})(authWrapped);
 
 export default withTranslation()(cwrapped);

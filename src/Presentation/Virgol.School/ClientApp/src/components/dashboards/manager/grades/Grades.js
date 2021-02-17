@@ -21,6 +21,7 @@ class Grades extends React.Component {
         await this.props.GetSchoolInfo(this.props.user.token);
         await this.props.getAllClass(this.props.user.token);
         this.setState({ loading: false })
+        console.log(this.props);
     }
 
     onAdd = async (status , data) => {
@@ -105,7 +106,7 @@ class Grades extends React.Component {
                             classable={true}
                             onAdd={this.onAdd}
                             onEdit={(id) => history.push(`/class/${id}`)}
-                            categories={this.props.schoolLessonInfo.bases}
+                            categories={this.props.schoolLessonInfo.bases.filter( base => base.baseName !== 'جلسات')}
                             selectedCat={this.state.selectedCat}
                             selectCat={this.selectCat}
                             loadingCats={this.state.loadingCats}
