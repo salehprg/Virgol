@@ -126,6 +126,8 @@ push:
     # - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
     # - docker build --pull --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
     # - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - echo $CI_COMMIT_SHORT_SHA
+    - sed -i 's/process.env.REACT_APP_VERSION/Commit S-SHA:\ '$CI_COMMIT_SHORT_SHA'/g' ./src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build --pull -t $IMAGE_URL:$TAG .
     - docker push $IMAGE_URL:$TAG
@@ -138,6 +140,7 @@ deploy:
   variables:
     COLLECT_ERROR: 1
   script:
+    - export IMAGE_TAG=1.8.9.2
     - pip install fandogh_cli --upgrade
     - fandogh login --username $FAN_USR --password $FAN_PASS
     - cd deployment/scripts
