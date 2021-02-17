@@ -60,6 +60,7 @@ class Sessions extends React.Component{
                 {
                     this.state.showCreateModal ?
                     <AddClass
+                    title={this.props.t('sessionName')}
                     cancel={this.onCancel}
                     onAddClass={this.onAddSession}/>
                     :
@@ -71,10 +72,10 @@ class Sessions extends React.Component{
                     isLoading={this.state.loading}
                     button={() => {
                         return(
-                            <button onClick={() => this.setState({showCreateModal : true})} className="tw-px-6 tw-py-1 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg">{this.props.t('newSession')}</button>
+                            <button onClick={() => this.setState({showCreateModal : true})} className="tw-px-6 tw-py-1 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg">{this.props.t('newSessionRoom')}</button>
                         )
                     }}
-                    headers={[this.props.t('session') ]}
+                    headers={[this.props.t('sessionRoom') ]}
                     body={() => {
                         return(
                             <React.Fragment>

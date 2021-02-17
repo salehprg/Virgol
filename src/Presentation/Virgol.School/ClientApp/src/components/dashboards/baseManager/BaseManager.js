@@ -145,7 +145,7 @@ class BaseManager extends React.Component {
             <div className="tw-w-full tw-grid tw-grid-cols-4 tw-gap-6 tw-min-w-900">
                 {this.state.addStatus === 'category' ? <AddCategory onAddBase={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
                 {this.state.addStatus === 'field' ? <AddField selectedBaseId={selectedCat} onAddField={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
-                {this.state.addStatus === 'class' ? <AddClass onAddClass={(data) => this.onAddData(data)} cancel={this.onCancel} /> : null}
+                {this.state.addStatus === 'class' ? <AddClass title={this.props.t('className')} onAddClass={(data) => this.onAddData(data)} cancel={this.onCancel} /> : null}
                 {!classable ? 
                     <BMCard
                         title={this.props.t('lessons')}
