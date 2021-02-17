@@ -19,10 +19,18 @@ import StreamInfo from "../stream/StreamInfo";
 import Payments from "../../payments/AllPayments"
 import ExtraLessons from "./ExtraLesson/ExtraLessons"
 import Sessions from './sessions/Sessions'
+import {GetSchoolInfo} from '../../../_actions/schoolActions'
 
 class ManagerDashboard extends React.Component {
 
-    state = {loading : false, sidebar: true, active: 'dashboard', showLang: false }
+    state = {
+        loading : false, 
+        sidebar: true, 
+        active: 'dashboard', 
+        showLang: false ,
+        justSchool : false ,
+        justCompany : false
+    }
 
     componentDidMount = async () => {
         this.setState({ active: this.props.location.pathname.split('/')[2] })
@@ -40,6 +48,19 @@ class ManagerDashboard extends React.Component {
         //     d.getElementsByTagName("head")[0].appendChild(s);
         // })();
 
+        this.setState({loading : true})
+        await this.props.GetSchoolInfo(this.props.user.token)
+        this.setState({loading : false})
+        // console.log(this.props);
+
+        if(this.props.schoolLessonInfo.bases.length === 1 && this.props.schoolLessonInfo.bases[0].baseName === 'جلسات'){
+            this.setState({justCompany : true})
+        }
+        const meet = this.props.schoolLessonInfo.bases.filter(base => base.baseName === 'جلسات')
+        
+        if(meet.length === 0){
+            this.setState({justSchool : true})
+        }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -86,15 +107,20 @@ class ManagerDashboard extends React.Component {
                         icon={layout}
                         changeActive={this.changeActive}
                     />
-                    <SidebarCard
+                    {
+                        (this.state.justSchool || !this.state.justCompany) ?
+                        <SidebarCard
                         active={this.state.active}
                         code="bases"
                         title={this.props.t('manageClasses')}
                         icon={bell}
                         changeActive={this.changeActive}
-                    />
+                        />
+                        :
+                        null
+                    }
 
-                    {this.props.dashboardInfo.hasFreeMeeting ?
+                    {this.state.justCompany || (!this.state.justCompany && !this.state.justSchool) ?
                         <SidebarCard
                         active={this.state.active}
                         code="sessions"
@@ -105,27 +131,46 @@ class ManagerDashboard extends React.Component {
                         :
                         null
                     }
-                    <SidebarCard
-                        active={this.state.active}
-                        code="groups"
-                        title={this.props.t('manageGroups')}
-                        icon={bell}
-                        changeActive={this.changeActive}
-                    />
-                    <SidebarCard
-                        active={this.state.active}
-                        code="extraLesson"
-                        title={this.props.t('additionallessons')}
-                        icon={open_book}
-                        changeActive={this.changeActive}
-                    />
-                    <SidebarCard
-                        active={this.state.active}
-                        code="tracker"
-                        title={this.props.t('virtualClasses')}
-                        icon={open_book}
-                        changeActive={this.changeActive}
-                    />
+                    {
+                        (this.state.justSchool || !this.state.justCompany) ?
+                            <SidebarCard
+                            active={this.state.active}
+                            code="groups"
+                            title={this.props.t('manageGroups')}
+                            icon={bell}
+                            changeActive={this.changeActive}
+                            />
+                        :
+                            null
+                    }
+                    
+                    {
+                        (this.state.justSchool || !this.state.justCompany) ?
+                            <SidebarCard
+                            active={this.state.active}
+                            code="extraLesson"
+                            title={this.props.t('additionallessons')}
+                            icon={open_book}
+                            changeActive={this.changeActive}
+                            />
+                        :
+                        null
+                    }
+
+                    {
+                        (this.state.justSchool || !this.state.justCompany)?
+                            <SidebarCard
+                            active={this.state.active}
+                            code="tracker"
+                            title={this.props.t('virtualClasses')}
+                            icon={open_book}
+                            changeActive={this.changeActive}
+                            />
+                        :
+                        null
+                    }
+                    
+                    
                     <SidebarCard
                         active={this.state.active}
                         code="conference"
@@ -133,17 +178,18 @@ class ManagerDashboard extends React.Component {
                         icon={video}
                         changeActive={this.changeActive}
                     />
+
                     <SidebarCard
                         active={this.state.active}
                         code="teachers"
-                        title={this.props.t('teachers')}
+                        title={this.state.justCompany ? this.props.t('host') : this.props.t('teacher')}
                         icon={users}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="students"
-                        title={this.props.t('students')}
+                        title={this.state.justCompany ? this.props.t('participants') : this.props.t('students')}
                         icon={users}
                         changeActive={this.changeActive}
                     />
@@ -193,9 +239,10 @@ class ManagerDashboard extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.auth.userInfo , dashboardInfo : state.managerData.dashboardInfo}
+    return {user: state.auth.userInfo , dashboardInfo : state.managerData.dashboardInfo ,
+        schoolLessonInfo: state.schoolData.schoolLessonInfo}
 }
 
-const cwrapped = connect(mapStateToProps)(protectedManager(ManagerDashboard))
+const cwrapped = connect(mapStateToProps , {GetSchoolInfo})(protectedManager(ManagerDashboard))
 
 export default withTranslation()(cwrapped);
