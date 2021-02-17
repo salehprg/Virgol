@@ -211,6 +211,7 @@
     "paymentMsg": "رسالة النظام",
     "paymentReqId": "شفرة التتبع",
     "host": "مزود",
+    "hosts" : "الموفرون" ,
     "meetingName": "اسم الاجتماع",
     "addFreeMeeting": "أضف وقت الاجتماع",
     "additionallessons ": "دروس إضافية",

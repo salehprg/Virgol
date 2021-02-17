@@ -233,6 +233,7 @@
     "paymentReqId": "کد رهگیری",
     "serviceName": "نام سرویس",
     "host": "ارائه دهنده",
+    "hosts" : "ارائه دهندگان" ,
     "meetingName": "نام جلسه",
     "addFreeMeeting": "افزودن ساعت جلسه",
     "viewerList": "لیست افراد حاضر",
