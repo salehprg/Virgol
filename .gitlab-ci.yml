@@ -138,7 +138,9 @@ deploy:
   variables:
     COLLECT_ERROR: 1
   script:
+    - export IMAGE_TAG=1.8.9.2
     - pip install fandogh_cli --upgrade
     - fandogh login --username $FAN_USR --password $FAN_PASS
+    - sed -i 's/process.env.REACT_APP_VERSION/'$IMAGE_TAG' نسخه/g' ./src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js
     - cd deployment/scripts
     - bash deploy-to-fandogh.sh
