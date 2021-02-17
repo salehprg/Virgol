@@ -8,7 +8,7 @@ import DeleteConfirm from "../../../modals/DeleteConfirm";
 import ReactTooltip from "react-tooltip";
 import Checkbox from "../../tables/Checkbox";
 import MonsterTable from "../../tables/MonsterTable";
-import { fullNameSerach , pagingItems } from "../../../Search/Seaarch";
+import { querySearch , pagingItems } from "../../../Search/Seaarch";
 
 class Teachers extends React.Component {
 
@@ -45,7 +45,7 @@ class Teachers extends React.Component {
     }
 
     queriedTeachers = (query , currentPage = -1) => {
-        const serachedItems = fullNameSerach(this.props.teachers , query , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+        const serachedItems = querySearch(this.props.teachers , query , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
         const pagedItems = pagingItems(serachedItems , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
 
         this.setState({teachers :  pagedItems})

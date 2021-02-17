@@ -87,8 +87,8 @@ class Home extends React.Component {
     }
     
     createPrivateRoom = async () => {
-        console.log(this.state.privateName);
-        console.log(this.state.selectedSchool);
+        // console.log(this.state.privateName);
+        // console.log(this.state.selectedSchool);
         await this.props.CreatePrivateRoom(this.state.privateName , this.state.selectedSchool.value)
         this.hidePrivateModal()
         this.setState({privateName : ""})

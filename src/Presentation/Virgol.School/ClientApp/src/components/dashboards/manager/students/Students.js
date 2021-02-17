@@ -8,7 +8,7 @@ import {getAllStudents , addBulkUser , DeleteStudents} from "../../../../_action
 import DeleteConfirm from "../../../modals/DeleteConfirm";
 import MonsterTable from "../../tables/MonsterTable";
 import Checkbox from "../../tables/Checkbox";
-import { fullNameSerach, pagingItems } from "../../../Search/Seaarch";
+import { querySearch, pagingItems } from "../../../Search/Seaarch";
 
 class Students extends React.Component {
 
@@ -66,7 +66,7 @@ class Students extends React.Component {
     }
 
     queriedStudents = (query , currentPage = -1) => {
-        const serachedItems = fullNameSerach(this.props.students , query , (currentPage != -1 ? currentPage : this.state.currentPage)  , this.state.itemsPerPage)
+        const serachedItems = querySearch(this.props.students , query , (currentPage != -1 ? currentPage : this.state.currentPage)  , this.state.itemsPerPage)
         const pagedItems = pagingItems(serachedItems , (currentPage != -1 ? currentPage : this.state.currentPage)  , this.state.itemsPerPage)
 
         this.setState({students :  pagedItems})
