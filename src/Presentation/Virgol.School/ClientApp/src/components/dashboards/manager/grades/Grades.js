@@ -21,7 +21,7 @@ class Grades extends React.Component {
         await this.props.GetSchoolInfo(this.props.user.token);
         await this.props.getAllClass(this.props.user.token);
         this.setState({ loading: false })
-        console.log(this.props);
+        // console.log(this.props);
     }
 
     onAdd = async (status , data) => {

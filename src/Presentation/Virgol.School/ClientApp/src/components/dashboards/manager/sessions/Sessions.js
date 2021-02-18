@@ -24,8 +24,6 @@ class Sessions extends React.Component{
 
 
         this.setState({loading : false})
-
-        console.log(this.props);
         
     }
 

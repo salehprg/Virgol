@@ -42,7 +42,7 @@ const LandingHome = () => {
     
 
     return(
-        <div dir="rtl" style={{backgroundColor : `${MyBabyPowder}`}} className="App container mx-0 my-3">
+        <div dir="rtl" style={{backgroundColor : `${MyBabyPowder}`}} className="px-3 my-4">
             <div>
                 
                 <MenuBar section="ajza"/>

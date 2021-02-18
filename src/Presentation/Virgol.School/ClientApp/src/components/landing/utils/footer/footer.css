@@ -1,9 +1,0 @@
-.link{
-    color: #ffffff;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.link:hover{
-    border-bottom: 2px double blue;
-}
