@@ -688,6 +688,10 @@ video {
   transform: translate(-50%, -50%);
 }
 
+.my-text{
+  font-size: 111%;
+}
+
 .bottomize {
   top: 100%;
 }
