@@ -13,9 +13,9 @@ class BaseManager extends React.Component {
 
     UpdateLockState (Id) {
         
-        var freeBase = this.props.categories.find(x => x.id == Id);
+        var freeBase = this.props.categories.find(x => x.id === Id);
 
-        if(freeBase && freeBase.baseName == "جلسات")
+        if(freeBase && freeBase.baseName === "جلسات")
         {
             this.setState({locked : true})
             this.props.OnLockCall(true)
@@ -65,12 +65,11 @@ class BaseManager extends React.Component {
     }
 
     renderFields = () => {
-        const {selectedCat , selectField, selectedField, fields, loadingFields ,loadingGrades } = this.props
+        const {selectedCat , selectField, selectedField, fields, loadingFields  } = this.props
         if (loadingFields) return <div className="centerize">{loading('tw-w-8 tw-text-grayish')}</div>
         if (!selectedCat) return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('selectBase')} </p>
-        if (fields.length === 0) {
-            return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('noField')} </p>
-        }
+        if (fields && fields.length === 0)  return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('noField')} </p>
+        
         return fields.map(field => {
             return (
                 <SelectableCard
@@ -146,7 +145,7 @@ class BaseManager extends React.Component {
             <div className="tw-w-full tw-grid tw-grid-cols-4 tw-gap-6 tw-min-w-900">
                 {this.state.addStatus === 'category' ? <AddCategory onAddBase={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
                 {this.state.addStatus === 'field' ? <AddField selectedBaseId={selectedCat} onAddField={(dataIds) => this.onAddData(dataIds)} cancel={this.onCancel} /> : null}
-                {this.state.addStatus === 'class' ? <AddClass onAddClass={(data) => this.onAddData(data)} cancel={this.onCancel} /> : null}
+                {this.state.addStatus === 'class' ? <AddClass title={this.props.t('className')} onAddClass={(data) => this.onAddData(data)} cancel={this.onCancel} /> : null}
                 {!classable ? 
                     <BMCard
                         title={this.props.t('lessons')}

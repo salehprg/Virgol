@@ -43,8 +43,7 @@ class MenuBar extends React.Component{
 
         this.listener = document.addEventListener("scroll" , e => {
             var scrolled = window.scrollY;
-            console.log(scrolled);
-            console.log(this.state.menu);
+            
 
             if(scrolled >= 300){
                 if(this.state.status !== 'unTop'){

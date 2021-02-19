@@ -122,7 +122,7 @@ class AddLesson extends React.Component {
                     <React.Fragment>
                         {this.props.IsFreeClass ?
                             <div className="tw-w-1/2 tw-mx-auto tw-my-4">
-                                <input dir="rtl" placeholder={this.props.t('meetingName')} className="tw-px-4 tw-py-2 tw-text-black focus:tw-outline-none focus:tw-shadow-outline tw-border-2 tw-border-dark-blue tw-rounded-lg" onChange={(e) => this.handleChangeCourse(e.target.value)} value={this.state.selectedCourse} />
+                                <input dir="rtl" placeholder={this.props.t('meetingName')} className="tw-px-4 tw-py-2 tw-text-black focus:tw-outline-none focus:tw-shadow-outline tw-bg-transparent tw-border-2 tw-border-purplish tw-rounded-lg" onChange={(e) => this.handleChangeCourse(e.target.value)} value={this.state.selectedCourse} />
                             </div>
                         :
                             <Select

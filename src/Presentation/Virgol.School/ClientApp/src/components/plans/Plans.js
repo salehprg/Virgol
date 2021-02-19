@@ -4,6 +4,8 @@ import {GetServices , CalculateAmount , MakePay} from '../../_actions/paymensAct
 import {getNewUsers} from '../../_actions/managerActions'
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
+import { arrow_left } from '../../assets/icons';
+import history from '../../history';
 
 class Plans extends React.Component {
     
@@ -35,7 +37,8 @@ class Plans extends React.Component {
     render() {
         return (
             <div className="tw-w-screen tw-min-h-screen tw-bg-dark-blue">
-                <div className="tw-w-11/12 tw-max-w-500 tw-px-2 tw-py-12 centerize tw-bg-white tw-rounded-xl tw-text-center">
+                <button onClick={() => history.goBack()} className=" tw-border-2 tw-border-light-blue tw-rounded tw-p-2 tw-mx-2 tw-my-2">{arrow_left('tw-centerize tw-text-purplish tw-w-6 tw-cursor-pointer')}</button>
+                <div className="tw-w-11/12 tw-max-w-500 tw-px-2 tw-py-12 centerize tw-bg-purplish  tw-border-2 tw-border-greenish tw-rounded-xl tw-text-center">
                     {this.state.selectedPlan ? 
                     <>
                         <p className="tw-text-black-blue tw-text-xl">پرداخت آسان و مطمئن با <span className="tw-text-sky-blue">پی پینگ</span></p>
@@ -65,7 +68,7 @@ class Plans extends React.Component {
                             <p className="tw-text-xl tw-font-vb tw-mb-2">( تومان ) هزینه نهایی</p>
                             <p className="tw-text-xl">{this.state.amount.toLocaleString()}</p>
                         </div>
-                        <button className="tw-py-2 w-2/3 tw-mt-6 tw-rounded-lg tw-mx-auto tw-bg-greenish tw-text-white" onClick={(e) => this.OnPayment()}>پرداخت</button>
+                        <button className="tw-py-2 w-2/3 tw-mt-6 tw-px-4 tw-rounded-lg tw-mx-auto tw-bg-greenish tw-text-white" onClick={(e) => this.OnPayment()}>پرداخت</button>
                     </>
                     : null}
                 </div>

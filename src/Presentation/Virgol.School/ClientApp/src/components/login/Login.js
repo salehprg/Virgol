@@ -60,7 +60,6 @@ class Login extends React.Component {
             this.setState({logingin: true})
 
             const success = await this.props.login(formValues)
-
             if (!success) this.setState({ logingin: false })
         }
     }
@@ -103,6 +102,14 @@ class Login extends React.Component {
                         <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
                             {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('enter')}
                         </button>
+                        {
+                            this.props.effort >= 3 ?
+                            <div>
+                                <div>slam</div>
+                            </div>
+                            :
+                            null
+                        }
                     </form>
                     <button onClick={() => this.setState({ panel: 'sendcode' })} className={`tw-w-5/6 tw-mx-auto tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none tw-mt-8 tw-text-white`}>
                         {this.props.t('forgotPassword')}
@@ -197,7 +204,7 @@ class Login extends React.Component {
                         <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} />
                     </div>
                 </div>
-                <span style={{position : "fixed" , bottom : 0 }} class="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
+                <span style={{position : "fixed" , bottom : 0 }} className="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
             </>
         );
     }
@@ -219,6 +226,10 @@ const formWrapped = reduxForm({
     validate
 })(Login);
 
-const cwrapped = connect(null, { login, logout, sendVerificationCode, forgotPassword , ChangePassword })(formWrapped)
+const mapStateToProps = state => {
+    return {effort: state.auth.loginEffort }
+}
+
+const cwrapped = connect(mapStateToProps, { login, logout, sendVerificationCode, forgotPassword , ChangePassword })(formWrapped)
 
 export default withTranslation()(cwrapped)

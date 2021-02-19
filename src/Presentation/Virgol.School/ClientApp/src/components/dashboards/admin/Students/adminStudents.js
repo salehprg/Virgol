@@ -5,7 +5,7 @@ import {edit, loading,check_circle, trash} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {GetAllStudents} from "../../../../_actions/adminActions"
-import { fullNameSerach , pagingItems } from "../../../Search/Seaarch";
+import { querySearch , pagingItems } from "../../../Search/Seaarch";
 
 
 class adminStudents extends React.Component {
@@ -27,7 +27,7 @@ class adminStudents extends React.Component {
     }
 
     queriedStudent = (query , currentPage = -1) => {
-        const serachedItems = fullNameSerach(this.props.allStudents , query , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+        const serachedItems = querySearch(this.props.allStudents , query , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
         const pagedItems = pagingItems(serachedItems , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
 
         this.setState({students :  pagedItems})

@@ -81,6 +81,7 @@ class CompleteProfile extends React.Component {
                         />
                         <p className="tw-text-right tw-text-white tw-mb-4 tw-text-xl">{this.props.t('birthDate')} :</p>
                         <DatePicker
+                            className="tw-bg-transparent tw-text-white  tw-border-2 tw-border-dark-blue tw-rounded-lg tw-p-2 tw-mr-2 cursor-pointer"
                             timePicker={false}
                             isGregorian={false}
                             value={this.state.birthDate}

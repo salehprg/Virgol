@@ -5,19 +5,19 @@ import Fade from 'react-reveal/Fade'
 const SchoolManagement = () => {
 
     return(
-        <div className="row my-5">
+        <div className="row tw-my-5">
 
             <Fade right cascade>
                 <div className="col-lg-6 col-sm-12 col-md-12">
-                    <div className="text-right my-4" style={{fontWeight : 'bold' , fontSize : '25px'}}>سیستم مدیریت مدرسه</div>
-                    <div className="text-right my-4">این بخش از سامانه به منظور مدیریت مدارس و کلاس‌های آنلاین طراحی شده است.
+                    <div className="text-right tw-my-4" style={{fontWeight : 'bold' , fontSize : '25px'}}>سیستم مدیریت مدرسه</div>
+                    <div className="text-right tw-my-4">این بخش از سامانه به منظور مدیریت مدارس و کلاس‌های آنلاین طراحی شده است.
                         مدیر مدرسه در این بخش از سامانه به تدوین و زمان بندی کلاس‌ها میپردازد. دانش آموزان و دبیران زمان کلاس‌های خود را
                         مشاهده می‌کنند و می‌توانند مستقیما وارد کلاس مجازی شوند.
                     </div>
                     <br/>
-                    <button className="btn my-4" style={{backgroundColor : `${MyViolet}` ,color : 'white' ,borderRadius:20}}>ادامه</button>
-                    <div className="text-right my-4" style={{fontWeight : 'bold' , fontSize : '25px'}}>سیستم مدیریت دروس</div>
-                    <div className="text-right my-4">
+                    <button className="btn tw-my-4" style={{backgroundColor : `${MyViolet}` ,color : 'white' ,borderRadius:20}}>ادامه</button>
+                    <div className="text-right tw-my-4" style={{fontWeight : 'bold' , fontSize : '25px'}}>سیستم مدیریت دروس</div>
+                    <div className="text-right tw-my-4">
                         فعالیت‌های درسی دانش آموزان نیازمند زمان بندی و نظارت دبیران است.
                         بنابراین دانش آموزان پس از ثبت نام، مسیر مشخصی را طی می‌کنند.
                         دبیران اهداف آموزشی خود را پیاده می‌کنند. این بخش دارای امکاناتی از جمله بارگذاری فایل درسی،
@@ -27,7 +27,7 @@ const SchoolManagement = () => {
             </Fade>
 
             <Fade left>
-                <div className="col-lg-6 col-sm-12 col-md-12 my-5 text-center">
+                <div className="col-lg-6 col-sm-12 col-md-12 tw-my-5 text-center">
                     <img src="./pic/schoolManaging.png" width="90%" alt="مدیریت مدارس"/>
                 </div>
             </Fade>

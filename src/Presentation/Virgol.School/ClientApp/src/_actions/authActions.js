@@ -1,4 +1,3 @@
-import { startsWith } from "lodash";
 import lms from "../apis/lms";
 import history from "../history";
 import { alert } from "./alertActions";
@@ -52,6 +51,7 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
             }
         }
 
+
         return true
 
     } catch(e) {
@@ -62,18 +62,23 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
                 
                 case 423:
                     dispatch(alert.error(e.response.data))
+                    dispatch({type : Type.INCREASE_EFFORT , payload : 1})
                     break;
 
                 case 401:
+                    dispatch({type : Type.INCREASE_EFFORT , payload : 1})
                     dispatch(alert.error("نام کاربری یا گذرواژه اشتباه است"))
+
                     break;
 
                 default:
+                    dispatch({type : Type.INCREASE_EFFORT , payload : 1})
                     dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
             }
         }
         else
         {
+            dispatch({type : Type.INCREASE_EFFORT , payload : 1})
             dispatch(alert.error("خطایی در برقراری اتصال رخ داد"))
         }
 

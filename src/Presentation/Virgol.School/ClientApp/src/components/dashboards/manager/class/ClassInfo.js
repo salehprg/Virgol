@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Schedule from './Schedule'
 import {AddClassSchedule , DeleteClassSchedule , getClassSchedule} from '../../../../_actions/classScheduleActions'
 import {getStudentsClass , UnAssignUserFromClass , AssignUserToClass , AssignUserListToClass } from '../../../../_actions/managerActions'
-import {deleteClass , editClass} from '../../../../_actions/schoolActions'
+import {deleteClass , editClass , getAllClass} from '../../../../_actions/schoolActions'
 import { connect } from 'react-redux';
 import AddLesson from './AddLesson';
 import {arrow_left, plus, x} from "../../../../assets/icons";
@@ -40,11 +40,12 @@ class ClassInfo extends React.Component {
         this.setState({loading : true})
         await this.props.getClassSchedule(this.props.user.token , this.props.match.params.id)
         await this.props.getStudentsClass(this.props.user.token , this.props.match.params.id)
+        await this.props.getAllClass(this.props.user.token)
         this.setState({loading : false})
 
         const classDetail = this.props.allClass.filter(x => x.id == parseInt(this.props.match.params.id))
-
         this.setState({classDetail : classDetail[0]})
+    
 
         this.sc.current.scrollLeft = this.sc.current.clientWidth
         
@@ -129,7 +130,7 @@ class ClassInfo extends React.Component {
     render() {
         return (
             <div onClick={() => this.setState({ showChangeName: false , addStudent : false})} className="tw-w-screen tw-min-h-screen tw-py-16 lg:tw-px-10 tw-px-1 tw-relative tw-bg-bold-blue tw-grid lg:tw-grid-cols-4 tw-grid-cols-1 lg:tw-col-tw-gap-4 xl:tw-col-tw-gap-10 tw-col-tw-gap-10 tw-row-tw-gap-10">
-                <div onClick={() => history.push('/m/bases')} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-4 tw-rounded-lg tw-border-2 tw-border-purplish">
+                <div onClick={() => history.goBack()} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-4 tw-rounded-lg tw-border-2 tw-border-purplish">
                     {arrow_left('tw-w-6 centerize tw-text-purplish')}
                 </div>
                 {this.state.addStudent ? 
@@ -291,6 +292,6 @@ const authWrapped = protectedManager(ClassInfo)
 
 const cwrapped = connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
     DeleteClassSchedule , getClassSchedule , UnAssignUserFromClass ,
-    AssignUserToClass , AssignUserListToClass , deleteClass , editClass})(authWrapped);
+    AssignUserToClass , AssignUserListToClass , deleteClass , editClass , getAllClass})(authWrapped);
 
 export default withTranslation()(cwrapped);

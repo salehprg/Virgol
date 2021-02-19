@@ -44,6 +44,8 @@ class Schedule extends React.Component {
     handleLessonLayout() {
         const lessons = [];
 
+        // console.log(this.props);
+
         this.props.lessons.map(day => {
             if(day && day.length > 0)
             {

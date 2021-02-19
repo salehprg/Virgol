@@ -71,6 +71,7 @@
     "uploadSchoolsExcel": "تحميل مدارس Excel" ,
     "downloadSchoolsExcelSample": "تنزيل نموذج Excel للمدرسة" ,
     "manager": "المدير",
+    "newSession" : "اجتماع جديد" ,
     "type": "نوع المدرسة",
     "code": "كود" ,
     "schoolName": "اسم المدرسة" ,
@@ -182,7 +183,11 @@
     "noClassAvailable": "لا توجد فئة" ,
     "birthDate": "تاريخ الميلاد",
     "lessonInfoBook": "دفتر التقديرات",
-    "sessionList": "Session List",
+    "sessionList": "قائمة غرف الاجتماعات",
+    "sessionRoom" : "قاعة الاجتماعات" ,
+    "newSessionRoom" : "غرفة اجتماعات جديدة" ,
+    "sessionName" : "اسم الاجتماع" ,
+    "editSessionSchedule" : "تغيير جدول الاجتماع" ,
     "email": "البريد الإلكتروني" ,
     "point": "النتيجة",
     "notAvailable": "بلا" ,
@@ -206,10 +211,12 @@
     "paymentMsg": "رسالة النظام",
     "paymentReqId": "شفرة التتبع",
     "host": "مزود",
+    "hosts" : "الموفرون" ,
     "meetingName": "اسم الاجتماع",
     "addFreeMeeting": "أضف وقت الاجتماع",
     "additionallessons ": "دروس إضافية",
     "extraLessonList" : "قائمة دروس الطلاب الإضافية",
-    "addExtraLesson" : "أضف الدروس للطالب"
+    "addExtraLesson" : "أضف الدروس للطالب",
+    "participants" : "المشاركين والمساهمين"
 
 }

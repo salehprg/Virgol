@@ -8,7 +8,7 @@ import {getAllStudents , addBulkUser , DeleteStudents} from "../../../../_action
 import DeleteConfirm from "../../../modals/DeleteConfirm";
 import MonsterTable from "../../tables/MonsterTable";
 import Checkbox from "../../tables/Checkbox";
-import { fullNameSerach, pagingItems } from "../../../Search/Seaarch";
+import { querySearch, pagingItems } from "../../../Search/Seaarch";
 
 class Students extends React.Component {
 
@@ -27,7 +27,7 @@ class Students extends React.Component {
         this.setState({ loading: true })
         await this.props.getAllStudents(this.props.user.token);
         this.setState({ loading: false })
-        
+                
         this.queriedStudents('')
     }
 
@@ -66,7 +66,7 @@ class Students extends React.Component {
     }
 
     queriedStudents = (query , currentPage = -1) => {
-        const serachedItems = fullNameSerach(this.props.students , query , (currentPage != -1 ? currentPage : this.state.currentPage)  , this.state.itemsPerPage)
+        const serachedItems = querySearch(this.props.students , query , (currentPage != -1 ? currentPage : this.state.currentPage)  , this.state.itemsPerPage)
         const pagedItems = pagingItems(serachedItems , (currentPage != -1 ? currentPage : this.state.currentPage)  , this.state.itemsPerPage)
 
         this.setState({students :  pagedItems})
@@ -128,7 +128,7 @@ class Students extends React.Component {
                     handleExcel={this.submitExcel}
                     // headers={[ '' ,'نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده', '' ]}
                     headers={['نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی', 'تلفن ولی', 'حساب تکمیل شده', '']}
-                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('phoneNumber'), this.props.t('nationCode'), this.props.t('fatherName'), this.props.t('fatherPhoneNumber'),this.props.t('completedAccount'), '']}
+                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('phoneNumber'), this.props.t('nationCode'), this.props.t('fatherName'), this.props.t('fatherPhoneNumber'),this.props.t('completedAccount'), this.props.t('className') , '']}
                     body={() => {
 
                         return (
@@ -139,20 +139,22 @@ class Students extends React.Component {
                                         <tr>
                                             {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>*/}
                                             <td className="tw-py-4 tw-text-right">
-                                                <div className="tw-flex tw-justify-center tw-items-center">
+                                                <div className="tw-flex tw-justify-center tw-items-center tw-ml-2">
                                                     <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
                                                 </div>
                                             </td>
                                             <td className="tw-py-4 tw-text-right">{x.firstName}</td>
-                                            <td className="tw-text-right">{x.lastName}</td>
-                                            <td className="tw-text-right">{x.phoneNumber}</td>
-                                            <td className="tw-text-right">{x.melliCode}</td>
-                                            <td className="tw-text-right">{x.fatherName}</td>
-                                            <td className="tw-text-right">{x.fatherPhoneNumber}</td>
+                                            <td className="tw-text-right tw-px-2">{x.lastName}</td>
+                                            <td className="tw-text-right tw-px-2">{x.phoneNumber}</td>
+                                            <td className="tw-text-right tw-px-2">{x.melliCode}</td>
+                                            <td className="tw-text-right tw-px-2">{x.fatherName}</td>
+                                            <td className="tw-text-right tw-px-2">{x.fatherPhoneNumber}</td>
                                             <td><span className="tw-text-center">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td className="tw-text-right tw-px-2">{x.classsname}</td>
                                             <td className="tw-cursor-pointer tw-text-right" onClick={() => history.push(`/student/${x.id}`)}>
                                                 {edit('tw-w-6 tw-text-white')}
-                                            </td>            
+                                            </td>  
+                                                      
                                             {/*<td onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">*/}
                                             {/*    {trash('tw-w-6 tw-text-white ')}*/}
                                             {/*</td>*/}

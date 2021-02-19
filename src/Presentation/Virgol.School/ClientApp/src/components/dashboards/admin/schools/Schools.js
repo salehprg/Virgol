@@ -9,7 +9,7 @@ import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
 import { connect } from "react-redux";
 import DeleteConfirm from "../../../modals/DeleteConfirm";
 import ReactTooltip from "react-tooltip";
-import { fullNameSerach , pagingItems } from "../../../Search/Seaarch";
+import { querySearch , pagingItems } from "../../../Search/Seaarch";
 
 class Schools extends React.Component {
 
@@ -54,7 +54,7 @@ class Schools extends React.Component {
     queriedSchools = (query , currentPage = -1) => {
         var serachedItems = []
 
-        serachedItems = this.props.schools.filter(x => x.schoolName.includes(query))
+        serachedItems = this.props.schools.filter(x => (x.schoolName.includes(query) || x.firstName.includes(query) || x.lastName.includes(query) || x.schoolIdNumber.includes(query) || x.schoolTypeName.includes(query)))
 
         const pagedItems = pagingItems(serachedItems ,  (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
 

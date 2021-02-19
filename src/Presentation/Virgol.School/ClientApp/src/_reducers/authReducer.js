@@ -5,7 +5,8 @@ const INITIAL_STATE = {
     'authed': false,
     'userType': -1,
     'userInfo': null,
-    'status': false
+    'status': false ,
+    'loginEffort' : 0
 }
 
 export default ( state = INITIAL_STATE, action ) => {
@@ -23,6 +24,9 @@ export default ( state = INITIAL_STATE, action ) => {
 
         case SetMeetingService:
             return { ...state, userInfo: { ...state.userInfo, userDetail: { ...state.userInfo.userDetail, userDetail: { ...state.userInfo.userDetail.userDetail, meetingService: action.payload } } } }
+
+        case Type.INCREASE_EFFORT:
+            return{ ...state , loginEffort : state.loginEffort+action.payload}
             
         default: return state
 

@@ -486,7 +486,7 @@ export const deleteClass = (token, classId) => async dispatch => {
         });
 
         dispatch({ type: STOP })
-        history.push("/m/bases")
+        history.goBack()
         dispatch(alert.success("کلاس با موفقیت حذف گردید"))
         dispatch({ type: Type.DeleteClass, payload: classId})
 
