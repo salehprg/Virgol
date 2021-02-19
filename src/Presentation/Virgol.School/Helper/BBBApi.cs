@@ -8,6 +8,7 @@ using System.Web;
 using System.Net;
 using Models;
 using System.Linq;
+using Models.User;
 
 namespace lms_with_moodle.Helper
 {
@@ -15,6 +16,8 @@ namespace lms_with_moodle.Helper
         static HttpClient client;
         string bbbUrl = "";
         string bbbSecret = "";
+        string attendeePassword = "";
+        string moderatePassword = "";
         AppDbContext appDbContext;
 
         public BBBApi(AppDbContext _appDbContext , int scheduleId = 0)
@@ -196,8 +199,8 @@ namespace lms_with_moodle.Helper
                 string notifyEncoded = WebUtility.UrlEncode(notify);
                 string urlEncoded = WebUtility.UrlEncode(callbackUrl);
 
-                string FunctionName = string.Format("create?allowStartStopRecording=true&record=true&attendeePW=ap&meetingID={1}&moderatorPW=mp&name={0}&duration={2}&logoutURL={3}&welcome={4}"
-                                                     , name , meetingId , duration.ToString(), urlEncoded , notifyEncoded );
+                string FunctionName = string.Format("create?allowStartStopRecording=true&record=true&attendeePW={5}&meetingID={1}&moderatorPW={6}&name={0}&duration={2}&logoutURL={3}&welcome={4}"
+                                                     , name , meetingId , duration.ToString(), urlEncoded , notifyEncoded , attendeePassword , moderatePassword );
                 
                 string data = FunctionName;
 
@@ -226,7 +229,7 @@ namespace lms_with_moodle.Helper
         {
             try
             {
-                string password = (teacher ? "password=mp" : "password=ap");
+                string password = "password=" + (teacher ? moderatePassword : attendeePassword);
                 fullname = HttpUtility.UrlEncode(fullname).ToUpper();
 
                 string FunctionName = string.Format("join?meetingID={0}&{1}&fullName={2}&redirect=true&userID={3}" , meetingId , password , fullname , userId);
@@ -251,7 +254,7 @@ namespace lms_with_moodle.Helper
         {
             try
             {
-                string FunctionName = string.Format("end?meetingID={0}&password=mp" , meetingId);
+                string FunctionName = string.Format("end?meetingID={0}&password={1}" , meetingId , moderatePassword);
                 string data = FunctionName;
 
                 string response = await sendData(data);
@@ -273,10 +276,13 @@ namespace lms_with_moodle.Helper
         
 #endregion
 
-        public void SetConnectionInfo(string _bbbUrl , string _bbbSecret)
+        public void SetConnectionInfo(string _bbbUrl , string _bbbSecret , UserModel manager)
         {
             bbbUrl = _bbbUrl;
             bbbSecret = _bbbSecret;
+            attendeePassword = manager.UserName;
+            moderatePassword = manager.SecurityStamp.Substring(0 , 8);
+            
         }
     
 
@@ -288,12 +294,17 @@ namespace lms_with_moodle.Helper
                 int schoolId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().School_Id;
 
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
+                    
                 SchoolService schoolService = new SchoolService(appDbContext);
 
                 ServicesModel servicesModel = schoolService.GetSchoolMeetingServices(school.Id).Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
 
                 bbbUrl = servicesModel.Service_URL;
                 bbbSecret = servicesModel.Service_Key;
+                attendeePassword = manager.UserName;
+                moderatePassword = manager.SecurityStamp.Substring(0 , 8);
+
             }
         }
     

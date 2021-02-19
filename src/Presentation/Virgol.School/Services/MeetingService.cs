@@ -104,7 +104,9 @@ public class MeetingService {
         if(serviceType == ServiceType.BBB)
         {
             BBBApi bbbApi = new BBBApi(appDbContext);
-            bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
+            UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
+            bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key , manager);
+
             Console.WriteLine("Set Connection");
             Console.WriteLine("URL: " + serviceModel.Service_URL + " Secret : " + serviceModel.Service_Key);
 
@@ -521,7 +523,8 @@ public class MeetingService {
             BBBApi bbbApi = new BBBApi(appDbContext);
             if(meeting.Private)
             {
-                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
+                UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
+                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key , manager);
             }
             else
             {
@@ -592,7 +595,8 @@ public class MeetingService {
             BBBApi bbbApi = new BBBApi(appDbContext);
             if(meeting.Private)
             {
-                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
+                UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
+                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key , manager);
             }
             else
             {

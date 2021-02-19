@@ -62,7 +62,9 @@ namespace Schedule
 
                             if(bbbServiceModel != null)
                             {
-                                bBBApi.SetConnectionInfo(bbbServiceModel.Service_URL , bbbServiceModel.Service_Key);
+                                UserModel manager = dbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
+                                bBBApi.SetConnectionInfo(bbbServiceModel.Service_URL , bbbServiceModel.Service_Key , manager);
+
                                 bool bbbResponse = bBBApi.CheckStatus().Result;
 
                                 if(!bbbResponse)

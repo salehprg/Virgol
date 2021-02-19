@@ -48,7 +48,9 @@ namespace Schedule
 
                             if(serviceModel != null)
                             {
-                                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
+                                UserModel manager = dbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
+                                bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key , manager);
+
                                 MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
                                 List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
 
