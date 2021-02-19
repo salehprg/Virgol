@@ -9,7 +9,6 @@ import {layout , bell , open_book} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Classes from "./classes/ClassSchedule";
-import News from "./News";
 import MyNews from "./News/News";
 import ClassList from "./classes/ClassList";
 
@@ -32,6 +31,7 @@ class TeacherDashboard extends React.Component {
         //     s.async = 1;
         //     d.getElementsByTagName("head")[0].appendChild(s);
         // })();
+
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

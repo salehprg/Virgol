@@ -1,4 +1,3 @@
-import { startsWith } from "lodash";
 import lms from "../apis/lms";
 import history from "../history";
 import { alert } from "./alertActions";

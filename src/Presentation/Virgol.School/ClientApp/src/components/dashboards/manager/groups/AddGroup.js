@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 import {getAllClass , GetClassesCommonLessons} from "../../../../_actions/schoolActions"
 import {getAllTeachers} from "../../../../_actions/managerActions"
 import {AddMixedClassSchedule} from "../../../../_actions/classScheduleActions"
-import Fieldish from '../../../field/Fieldish';
 import {styles} from '../../../../selectStyle'
 
 class AddGroup extends React.Component {
@@ -42,7 +41,7 @@ class AddGroup extends React.Component {
 
         for(var i = startTime ;i <= endTime ;i += step){
             var labelHour = (i < 10 ? '0' + Math.trunc(i) : '' + Math.trunc(i))
-            var labelMin = ((i - Math.trunc(i)) == 0 ? '00' : (i - Math.trunc(i)) * 60);
+            var labelMin = ((i - Math.trunc(i)) === 0 ? '00' : (i - Math.trunc(i)) * 60);
             
             times.push({
                  value: i , label: labelHour + ':' + labelMin 

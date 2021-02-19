@@ -204,7 +204,7 @@ class Login extends React.Component {
                         <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} />
                     </div>
                 </div>
-                <span style={{position : "fixed" , bottom : 0 }} class="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
+                <span style={{position : "fixed" , bottom : 0 }} className="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
             </>
         );
     }

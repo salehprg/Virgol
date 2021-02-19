@@ -13,9 +13,9 @@ class BaseManager extends React.Component {
 
     UpdateLockState (Id) {
         
-        var freeBase = this.props.categories.find(x => x.id == Id);
+        var freeBase = this.props.categories.find(x => x.id === Id);
 
-        if(freeBase && freeBase.baseName == "جلسات")
+        if(freeBase && freeBase.baseName === "جلسات")
         {
             this.setState({locked : true})
             this.props.OnLockCall(true)
@@ -65,7 +65,7 @@ class BaseManager extends React.Component {
     }
 
     renderFields = () => {
-        const {selectedCat , selectField, selectedField, fields, loadingFields ,loadingGrades } = this.props
+        const {selectedCat , selectField, selectedField, fields, loadingFields  } = this.props
         if (loadingFields) return <div className="centerize">{loading('tw-w-8 tw-text-grayish')}</div>
         if (!selectedCat) return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('selectBase')} </p>
         if (fields && fields.length === 0)  return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('noField')} </p>

@@ -10,7 +10,7 @@ class RecentClassDetail extends React.Component {
         return (
             <div className="tw-w-full tw-py-2 tw-mt-6 tw-border-b tw-border-grayish">
                 <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">
-                    <span className="tw-w-1/3 tw-text-white tw-mb-4">{weekly == 2 ? this.props.t('oddWeek') : weekly == 1 ? this.props.t('evenWeek') : this.props.t('everyWeek')} {day} {this.props.t('from')} {startTime} {this.props.t('till')} {endTime}</span>
+                    <span className="tw-w-1/3 tw-text-white tw-mb-4">{weekly === 2 ? this.props.t('oddWeek') : weekly === 1 ? this.props.t('evenWeek') : this.props.t('everyWeek')} {day} {this.props.t('from')} {startTime} {this.props.t('till')} {endTime}</span>
                     <span className="tw-w-3/4 tw-text-white tw-mb-4">{text}</span>
                 </div>
                 <div className="tw-w-full tw-flex tw-flex-row tw-justify-between tw-items-center">

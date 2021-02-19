@@ -17,7 +17,7 @@ class ClassSchedule extends React.Component {
         this.props.schedules.map(day => {
             const temp = [];
             day.map(lesson => {
-                if (!temp.filter(e => e.mixedId === lesson.mixedId ).length > 0 || lesson.mixedId == 0) {
+                if (!temp.filter(e => e.mixedId === lesson.mixedId ).length > 0 || lesson.mixedId === 0) {
                     temp.push(lesson);
                 }
             })

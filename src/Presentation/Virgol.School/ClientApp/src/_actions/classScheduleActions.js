@@ -1,8 +1,6 @@
-import history from "../history";
 import lms from "../apis/lms";
 import { alert } from "./alertActions";
 import * as Type from './classScheduleTypes'
-import { worker } from "./workerActions";
 import {START, STOP} from "./workerTypes";
 
 export const getClassSchedule = (token, classId) => async dispatch => {

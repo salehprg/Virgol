@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React  from "react";
 import { connect } from "react-redux";
 import {SetMeetingService}  from '../../../../_actions/teacherActions'
 
@@ -9,8 +9,10 @@ class Hero extends React.Component {
     componentDidMount = () => {
         if(this.props.ShowServiceType)
         {
-            this.setState({serviceType : this.props.service})
+            this.setState({serviceType : this.props.user.userDetail.userDetail.meetingService})
         }
+
+
     }
 
     changeService = async (service) => {

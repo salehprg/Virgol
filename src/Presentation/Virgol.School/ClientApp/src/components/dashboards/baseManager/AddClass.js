@@ -26,7 +26,6 @@ class AddClass extends React.Component {
     }
 
     componentDidMount(){
-        console.log(this.props);
         this.setState({title : this.props.title})
 
     }

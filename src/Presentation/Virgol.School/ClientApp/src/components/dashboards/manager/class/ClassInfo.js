@@ -46,7 +46,6 @@ class ClassInfo extends React.Component {
         const classDetail = this.props.allClass.filter(x => x.id == parseInt(this.props.match.params.id))
         this.setState({classDetail : classDetail[0]})
     
-        console.log(this.props.match.params);
 
         this.sc.current.scrollLeft = this.sc.current.clientWidth
         

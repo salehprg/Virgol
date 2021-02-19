@@ -123,6 +123,7 @@
       <workItem from="1613590961873" duration="1007000" />
       <workItem from="1613631243042" duration="103000" />
       <workItem from="1613648860446" duration="259000" />
+      <workItem from="1613650187850" duration="685000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -299,7 +300,21 @@
       <option name="project" value="LOCAL" />
       <updated>1613649112970</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="try for debugging on server">
+      <created>1613650222320</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1613650222320</updated>
+    </task>
+    <task id="LOCAL-00027" summary="landing page improved&#10;react presist commented">
+      <created>1613657107201</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1613657107201</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -343,6 +358,8 @@
     <MESSAGE value="menubar improved" />
     <MESSAGE value="translation updated" />
     <MESSAGE value="some change in side bar" />
-    <option name="LAST_COMMIT_MESSAGE" value="some change in side bar" />
+    <MESSAGE value="try for debugging on server" />
+    <MESSAGE value="landing page improved&#10;react presist commented" />
+    <option name="LAST_COMMIT_MESSAGE" value="landing page improved&#10;react presist commented" />
   </component>
 </project>
