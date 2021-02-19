@@ -16,17 +16,21 @@ namespace lms_with_moodle.Helper
         HttpClient client;
 
         string URL = "";
-        public AdobeApi(string _url)
+        string UserAdmin = "";
+        string AdminPassword = "";
+        public AdobeApi(string _url , string _UserAdmin , string _UserPassword)
         {
             client = new HttpClient();
             //client.Timeout = new TimeSpan(0 , 0 , 20);
             URL = _url;
+            UserAdmin = _UserAdmin;
+            AdminPassword = _UserPassword;
         }
 
 
         public bool CheckStatus()
         {
-            if(Login("admin@legace.ir" , "Connectpass.24"))
+            if(Login(UserAdmin , AdminPassword))
             {
                 return true;
             }
@@ -34,11 +38,22 @@ namespace lms_with_moodle.Helper
             return false;
         }
         
-        public bool Login(string Username , string Password)
+        public bool Login(string Username , string Password , HttpClient _client = null)
         {
             try
-            {
-                client = new HttpClient();
+            {     
+                HttpClient connection = null;
+
+                if(_client == null)
+                {
+                    client = new HttpClient();
+                    connection = client;
+                }
+                else
+                {
+                    connection = _client;
+                }
+                    
                 //client.Timeout = new TimeSpan(0 , 0 , 20);
                 
                 Uri uriLogin = new Uri (string.Format(URL + "/api/xml?action=login&login={0}&password={1}" , Username , Password));
@@ -101,13 +116,15 @@ namespace lms_with_moodle.Helper
             return result;
         }
 
-        CommonInfo GetCommonInfo()
+        CommonInfo GetCommonInfo(HttpClient _client)
         {
             Uri uri = new Uri (URL + "/api/xml?action=common-info");
-            HttpResponseMessage response = client.GetAsync(uri).Result;
+            HttpResponseMessage response = _client.GetAsync(uri).Result;
 
             XmlSerializer serializer = new XmlSerializer(typeof(CommonInfo));
             CommonInfo result = (CommonInfo)serializer.Deserialize(response.Content.ReadAsStreamAsync().Result);
+
+            string responseStr = response.Content.ReadAsStringAsync().Result;
 
             return result;
         }
@@ -127,7 +144,7 @@ namespace lms_with_moodle.Helper
         {
             try
             {
-                if(Login("admin@legace.ir" , "Connectpass.24"))
+                if(Login(UserAdmin , AdminPassword))
                 {
                     MeetingInfoResponse meetingResponse = CreateRoom(RoomName);
                     if(meetingResponse.status.code == "ok")
@@ -158,11 +175,10 @@ namespace lms_with_moodle.Helper
         {
             try
             {
-                
                 Login(Username , Password);
-                CommonInfo common = GetCommonInfo();
+                CommonInfo common = GetCommonInfo(client);
 
-                if(Login("admin@legace.ir" , "Connectpass.24"))
+                if(Login(UserAdmin , AdminPassword))
                 {
                     if(common.status.code == "ok")
                     {

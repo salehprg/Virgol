@@ -118,7 +118,7 @@ public class MeetingService {
         }
         else if(serviceType == ServiceType.AdobeConnect)
         {
-            AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL);
+            AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
             adobe_MeetingInfo = adobeApi.StartMeeting(meeting.MeetingName);
             
             if(adobe_MeetingInfo == null)
@@ -200,7 +200,7 @@ public class MeetingService {
             {
                 ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
 
-                AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL);
+                AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
 
                 string scoId = "";
                 try{scoId =  mainAdobeMeeting.MeetingId.Split("|")[0];}catch{}
@@ -509,7 +509,7 @@ public class MeetingService {
 
         if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
-            AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL);
+            AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
             string scoId = (meeting.Private ? meeting.MeetingId.Split("|")[1] : meeting.MeetingId.Split("|")[0]);
 
             //await UserService.SyncUserData(new List<UserModel> {user});

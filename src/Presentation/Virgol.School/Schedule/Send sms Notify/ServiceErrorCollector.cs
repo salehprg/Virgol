@@ -76,7 +76,7 @@ namespace Schedule
 
                             if(adobeServiceModel != null)
                             {
-                                AdobeApi adobeApi = new AdobeApi(adobeServiceModel.Service_URL);
+                                AdobeApi adobeApi = new AdobeApi(adobeServiceModel.Service_URL , adobeServiceModel.Service_Login , adobeServiceModel.Service_Key);
                                 bool adobeResult = adobeApi.CheckStatus();
 
                                 if(!adobeResult)
