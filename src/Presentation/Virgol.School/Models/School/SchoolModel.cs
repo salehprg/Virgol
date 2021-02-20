@@ -7,6 +7,8 @@ public class SchoolModel {
     public int RegionId {get; set;}
     public int Moodle_Id {get; set;}
     public int ManagerId {get; set;}
+    public int Balance {get; set;}
+    public int ActiveContract {get; set;}
     public string SchoolName {get; set;}
     public string SchoolAddress {get; set;}
     public string PhoneNumber {get; set;}

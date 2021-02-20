@@ -208,14 +208,24 @@ namespace lms_with_moodle.Controllers
                 string userNameManager = userManager.GetUserId(User);
                 int userId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().Id;
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == userId).FirstOrDefault();
+                
 
                 student.SchoolId = school.Id;
                 student.UserName = student.MelliCode;
                 student.ConfirmedAcc = false;
 
+                ServicePrice servicePrice = appDbContext.ServicePrices.Where(x => x.Id == school.ActiveContract).FirstOrDefault();
                 if(school.Free)
                 {
                     student.ConfirmedAcc = true;
+                }
+                else if(servicePrice != null && (school.Balance - servicePrice.pricePerUser) >= 0)
+                {
+                    student.ConfirmedAcc = true;
+                    school.Balance -= servicePrice.pricePerUser;
+
+                    appDbContext.Schools.Update(school);
+                    await appDbContext.SaveChangesAsync();
                 }
                 
                 if(UserService.CheckMelliCodeInterupt(student.MelliCode , 0))
@@ -340,9 +350,21 @@ namespace lms_with_moodle.Controllers
             {
                 UserService UserService = new UserService(userManager , appDbContext);
 
+                UserModel manager = UserService.GetUserModel(User);
+                SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
+                ServicePrice servicePrice = appDbContext.ServicePrices.Where(x => x.Id == school.ActiveContract).FirstOrDefault();
+
                 foreach (int studentId in studentIds)
                 {
                     UserModel student = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
+
+                    if(servicePrice != null)
+                    {
+                        school.Balance += servicePrice.pricePerUser;
+
+                        appDbContext.Schools.Update(school);
+                        await appDbContext.SaveChangesAsync();
+                    }
 
                     await UserService.DeleteUser(student);
                     
@@ -1125,7 +1147,10 @@ namespace lms_with_moodle.Controllers
                 //2 - Check valid data
                 //3 - Add user to Database
                 //3.1 - don't add duplicate username 
-                int sexuality = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault().sexuality;
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                ServicePrice servicePrice = appDbContext.ServicePrices.Where(x => x.Id == school.ActiveContract).FirstOrDefault();
+
+                int sexuality = school.sexuality;
 
                 List<UserDataModel> excelUsers = FileController.excelReader_Users(fileName , (userType == Roles.Teacher)).usersData;
                 List<UserDataModel> newUsers = new List<UserDataModel>();
@@ -1139,7 +1164,21 @@ namespace lms_with_moodle.Controllers
                 {
                     try
                     {
-                        selectedUser.ConfirmedAcc = (userType == Roles.Student ? false : true);
+                        selectedUser.ConfirmedAcc = false;
+
+                        if(school.Free)
+                        {
+                            selectedUser.ConfirmedAcc = true;
+                        }
+                        if(servicePrice != null && (school.Balance - servicePrice.pricePerUser) >= 0)
+                        {
+                            selectedUser.ConfirmedAcc = true;
+                            school.Balance -= servicePrice.pricePerUser;
+
+                            appDbContext.Schools.Update(school);
+                            await appDbContext.SaveChangesAsync();
+                        }
+
                         selectedUser.UserName = selectedUser.MelliCode;
                         //selectedUser.UserType = userType;
                         selectedUser.SchoolId = schoolId;

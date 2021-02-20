@@ -165,8 +165,10 @@ public class PaymentService {
             {
                 newUser.ConfirmedAcc = true;
             }
-
             appDbContext.Users.UpdateRange(newUsers);
+
+            school.Balance = payments.amount - (newUsers.Count * serviceModel.pricePerUser);
+            school.ActiveContract = payments.serviceId;
             await appDbContext.SaveChangesAsync();
             
             return true;

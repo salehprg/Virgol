@@ -185,6 +185,7 @@ namespace lms_with_moodle.Controllers
                     password = model.MelliCode;
                 }
 
+                AdminDetail lastSchoolType = appDbContext.AdminDetails.OrderBy(x => x.SchoolsType).FirstOrDefault();
                 //newAdmin.UserType = Roles.Admin;
                 newAdmin.ConfirmedAcc = true;
                 IdentityResult result = await userManager.CreateAsync(newAdmin , password);
@@ -193,11 +194,14 @@ namespace lms_with_moodle.Controllers
                 {
                     newAdmin.Id = (await userManager.FindByNameAsync(newAdmin.UserName)).Id;
                     await userManager.AddToRolesAsync(newAdmin , new string[]{"User" , "Admin"});
-                    
+
+                    int adminCatId = await moodleApi.CreateCategory(model.SchoolTypeName);
+
                     AdminDetail adminDetail = new AdminDetail();
                     adminDetail.UserId = newAdmin.Id;
                     adminDetail.SchoolsType = model.schoolType;
                     adminDetail.SchoolLimit = model.schoolLimit;
+                    adminDetail.orgMoodleId = adminCatId;
 
                     await appDbContext.AdminDetails.AddAsync(adminDetail);
                     await appDbContext.SaveChangesAsync();
@@ -265,12 +269,15 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
-                await userManager.DeleteAsync(appDbContext.Users.Where(x => x.Id == adminId).FirstOrDefault());
-
                 AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == adminId).FirstOrDefault();
 
-                appDbContext.AdminDetails.Remove(adminDetail);
+                await moodleApi.DeleteCategory(adminDetail.orgMoodleId);
+
+                appDbContext.Schools.RemoveRange(appDbContext.Schools.Where(x => x.SchoolType == adminDetail.SchoolsType).ToList());
                 await appDbContext.SaveChangesAsync();
+
+                await userManager.DeleteAsync(appDbContext.Users.Where(x => x.Id == adminId).FirstOrDefault());
+
 
                 return Ok(true);
             }
