@@ -51,8 +51,10 @@ import PaymentDetail from './plans/PaymentDetail'
 import { localizer } from '../assets/localizer';
 import  AddExtraLesson from './dashboards/manager/ExtraLesson/AddExtraLesson'
 
+import CacheBuster from './CacheBuster'
 class App extends React.Component {
 
+    
     componentDidMount() {
         history.listen((location, action) => {
             this.props.dispatch({ type: CLEAR });
@@ -78,65 +80,77 @@ class App extends React.Component {
     }
 
     render() {
-        return (
-            <div className="tw-font-vr tw-overflow-x-hidden">
-                {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
-                {this.props.worker.status ? <Working /> : null}
+        return(
+            
+            <CacheBuster>
+                {({ loading, isLatestVersion, refreshCacheAndReload }) => {
+                    if (loading) return null;
+                    if (!loading && !isLatestVersion) 
+                    {
+                        // You can decide how and when you want to force reload
+                        refreshCacheAndReload();
+                    }
+                    return (
+                        <div className="tw-font-vr tw-overflow-x-hidden">
+                            {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
+                            {this.props.worker.status ? <Working /> : null}
 
-                {/*<Copyright />*/}
-                <Router history={history}>
-                    <Switch>
-                        <Route path="/landing" exact component={LandingHome}/>
+                            <Router history={history}>
+                                <Switch>
+                                    <Route path="/landing" exact component={LandingHome}/>
 
-                        <Route path="/" exact component={Login} />
-                        <Route path="/SSO" exact component={LogoutSSO} />
-                        <Route path="/SSO/:schedulId" exact component={LoginSSO} />
-                        <Route path="/PrivateClass/:id" exact component={PrivateLogin} />
+                                    <Route path="/" exact component={Login} />
+                                    <Route path="/SSO" exact component={LogoutSSO} />
+                                    <Route path="/SSO/:schedulId" exact component={LoginSSO} />
+                                    <Route path="/PrivateClass/:id" exact component={PrivateLogin} />
 
-                        <Route path="/a" component={AdminDashboard} />  
-                        <Route path="/addNews" component={AddNews} />
-                        <Route path="/news/:id" component={NewsInfo} />
-                        <Route path="/newSchool" component={AddSchool} />
-                        <Route path="/school/:id" component={SchoolInfo} />
+                                    <Route path="/a" component={AdminDashboard} />  
+                                    <Route path="/addNews" component={AddNews} />
+                                    <Route path="/news/:id" component={NewsInfo} />
+                                    <Route path="/newSchool" component={AddSchool} />
+                                    <Route path="/school/:id" component={SchoolInfo} />
 
-                        <Route path="/class/:id" component={ClassInfo} />
-                        
-                        <Route path="/m" component={ManagerDashboard} />
-                        <Route path="/addNewsManager" component={AddNewsManager} />
-                        <Route path="/managerNews/:id" component={ManagerNewsInfo} />
-                        <Route path="/teacher/:id" component={TeacherInfo} />
-                        <Route path="/newTeacher" component={AddTeacher} />
-                        <Route path="/student/:id" component={StudentInfo} />
-                        <Route path="/newStudent" component={AddStudent} />
-                        <Route path="/newGroup" component={AddGroup} />
-                        <Route path="/addExtraLesson" component={AddExtraLesson} />
+                                    <Route path="/class/:id" component={ClassInfo} />
+                                    
+                                    <Route path="/m" component={ManagerDashboard} />
+                                    <Route path="/addNewsManager" component={AddNewsManager} />
+                                    <Route path="/managerNews/:id" component={ManagerNewsInfo} />
+                                    <Route path="/teacher/:id" component={TeacherInfo} />
+                                    <Route path="/newTeacher" component={AddTeacher} />
+                                    <Route path="/student/:id" component={StudentInfo} />
+                                    <Route path="/newStudent" component={AddStudent} />
+                                    <Route path="/newGroup" component={AddGroup} />
+                                    <Route path="/addExtraLesson" component={AddExtraLesson} />
 
-                        <Route path="/editGroup/:id" component={EditGroup} />
-                        <Route path="/plans" component={Plans} />
-                        <Route path="/paymentDetail/:paymentId" component={PaymentDetail} />
-                        
-                        <Route path="/s" component={StudentDashboard} />
-                        <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
-                        <Route path="/sessionsList/:id" component={SessionsList} />
+                                    <Route path="/editGroup/:id" component={EditGroup} />
+                                    <Route path="/plans" component={Plans} />
+                                    <Route path="/paymentDetail/:paymentId" component={PaymentDetail} />
+                                    
+                                    <Route path="/s" component={StudentDashboard} />
+                                    <Route path="/studentCompleteProfile" component={StudentCompleteProfile} />
+                                    <Route path="/sessionsList/:id" component={SessionsList} />
 
-                        <Route path="/recordedSessions/:id" component={RecorededSession} />
+                                    <Route path="/recordedSessions/:id" component={RecorededSession} />
 
-                        <Route path="/t" component={TeacherDashboard} />
-                        <Route path="/addNewsTeacher" component={AddNewsTeacher} />
-                        <Route path="/teacherNews/:id" component={TeacherNewsInfo} />
-                        <Route path="/teacherCompleteProfile" component={TeacherCompleteProfile} />
-                        <Route path="/session/:id" component={SessionInfo} />
+                                    <Route path="/t" component={TeacherDashboard} />
+                                    <Route path="/addNewsTeacher" component={AddNewsTeacher} />
+                                    <Route path="/teacherNews/:id" component={TeacherNewsInfo} />
+                                    <Route path="/teacherCompleteProfile" component={TeacherCompleteProfile} />
+                                    <Route path="/session/:id" component={SessionInfo} />
 
-                        <Route path="/meetingResponse/:id" component={MeetingResponse} />
-                        <Route path="/ParticipantInfo/:id" component={ParticipantList} />
+                                    <Route path="/meetingResponse/:id" component={MeetingResponse} />
+                                    <Route path="/ParticipantInfo/:id" component={ParticipantList} />
 
-                        <Route path="/stream" component={Streamer} />   
-                        <Route path="/editStream/:id" component={EditStream} />
-                        <Route path="" component={NoFound} />
-                    </Switch>
-                </Router>
-            </div>
-        );
+                                    <Route path="/stream" component={Streamer} />   
+                                    <Route path="/editStream/:id" component={EditStream} />
+                                    <Route path="" component={NoFound} />
+                                </Switch>
+                            </Router>
+                        </div>       
+                    );
+                }}
+            </CacheBuster>
+        )
     }
 
 }

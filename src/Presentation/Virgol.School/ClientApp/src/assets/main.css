@@ -1935,7 +1935,6 @@ video {
 
 .tw-appearance-none {
   -webkit-appearance: none;
-     -moz-appearance: none;
           appearance: none;
 }
 
@@ -16605,7 +16604,6 @@ video {
 
   .sm\:tw-appearance-none {
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
   }
 
@@ -31276,7 +31274,6 @@ video {
 
   .md\:tw-appearance-none {
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
   }
 
@@ -45947,7 +45944,6 @@ video {
 
   .lg\:tw-appearance-none {
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
   }
 
@@ -60618,7 +60614,6 @@ video {
 
   .xl\:tw-appearance-none {
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
   }
 
