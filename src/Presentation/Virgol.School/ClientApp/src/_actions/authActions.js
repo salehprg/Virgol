@@ -5,7 +5,6 @@ import * as Type from './authTypes'
 import { START , STOP } from "./workerTypes";
 
 export const login = (formValues , autoRedirect = true) => async dispatch => {
-
     try {
 
         const response = await lms.post('/Users/LoginUser', formValues)
