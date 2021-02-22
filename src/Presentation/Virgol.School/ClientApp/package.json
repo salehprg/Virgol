@@ -1,6 +1,6 @@
 {
   "name": "ygwufd",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "private": true,
   "dependencies": {
     "@fullhuman/postcss-purgecss": "^3.0.0",
