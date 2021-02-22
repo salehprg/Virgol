@@ -16,7 +16,7 @@ import * as serviceWorker from './serviceWorker';
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: [ 'form', 'alert', 'worker' ]
+    whitelist: ['auth']
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers);
