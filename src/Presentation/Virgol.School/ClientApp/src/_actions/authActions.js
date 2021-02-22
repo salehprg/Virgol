@@ -90,6 +90,7 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
 
 export const logout = () => {
     history.push('/')
+    localStorage.clear()
     return { type: Type.LOGOUT }
 }
 

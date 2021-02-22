@@ -248,6 +248,9 @@ export const RedirectAdmin = (token , schoolId) => async dispatch => {
             }
         }
 
+        localStorage.setItem('userToken', response.data.token)
+        localStorage.setItem('userType', response.data.userType)      
+
         dispatch({ type: authType.LOGIN, payload: response.data })
 
         return true
@@ -262,5 +265,6 @@ export const RedirectAdmin = (token , schoolId) => async dispatch => {
 
 export const logout = () => {
     history.push('/')
+    localStorage.clear()
     return { type: authType.LOGOUT }
 }
