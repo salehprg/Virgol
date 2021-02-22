@@ -3,7 +3,7 @@ var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.spli
 
 const prod = {
     url: {
-        API_URL: baseUrl
+        API_URL: baseUrl + 'api/'
     }
 }
 
