@@ -1,6 +1,9 @@
+var getUrl = window.location;
+var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+
 const prod = {
     url: {
-        API_URL: window.location.href + 'api/'
+        API_URL: baseUrl
     }
 }
 
