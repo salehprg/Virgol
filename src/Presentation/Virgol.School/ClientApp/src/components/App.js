@@ -56,6 +56,16 @@ class App extends React.Component {
 
     
     componentDidMount() {
+        const ele = document.getElementById('ipl-progress-indicator')
+      if(ele){
+        // fade out
+        ele.classList.add('available')
+        setTimeout(() => {
+          // remove from DOM
+          ele.outerHTML = ''
+        }, 2000)
+      }
+      
         history.listen((location, action) => {
             this.props.dispatch({ type: CLEAR });
         });
