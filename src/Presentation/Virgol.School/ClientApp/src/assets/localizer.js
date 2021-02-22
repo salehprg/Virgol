@@ -30,8 +30,14 @@ const setFavIcon = (type) => {
     link.href = url;
 }
 
+const getUrl = () => {
+    const url = window.location.href;
+    if (url.includes('beta')) return 'http://'
+}
+
 export const localizer = {
     getLogo,
     getTitle,
-    setFavIcon
+    setFavIcon,
+    getUrl
 }
