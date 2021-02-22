@@ -16,7 +16,7 @@ import * as serviceWorker from './serviceWorker';
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: [ 'form', 'alert', 'worker' ]
+    blacklist: ['form', 'worker', 'alert']
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -30,9 +30,9 @@ let persistor = persistStore(store)
 
 ReactDOM.render(
     <Provider store={store}>
-        {/* <PersistGate loading={<Working />} persistor={persistor}> */}
+        <PersistGate loading={<Working />} persistor={persistor}>
             <App />
-        {/* </PersistGate> */}
+        </PersistGate>
     </Provider>,
     document.getElementById('root')
 );
