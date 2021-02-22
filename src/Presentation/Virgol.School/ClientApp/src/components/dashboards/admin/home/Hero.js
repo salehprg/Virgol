@@ -34,7 +34,7 @@ class Hero extends React.Component {
                 )}
 
                 {(props.managerTitle ?
-                    <p className="tw-text-white tw-my-2">{props.managerTitle}</p> : "")}
+                    <p className="tw-text-white tw-my-2" dir="rtl">{props.managerTitle}</p> : "")}
 
                 {(props.userTitle ?
                     <>

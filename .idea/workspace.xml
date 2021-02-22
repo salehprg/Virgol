@@ -19,7 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="" />
+    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -124,6 +127,12 @@
       <workItem from="1613631243042" duration="103000" />
       <workItem from="1613648860446" duration="259000" />
       <workItem from="1613650187850" duration="685000" />
+      <workItem from="1613718314806" duration="143000" />
+      <workItem from="1613733365520" duration="19000" />
+      <workItem from="1613912937891" duration="56000" />
+      <workItem from="1613927520544" duration="59000" />
+      <workItem from="1613986130270" duration="1388000" />
+      <workItem from="1613996870329" duration="1099000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -314,7 +323,35 @@
       <option name="project" value="LOCAL" />
       <updated>1613657107201</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="some minor bug fixed&#10;default teacher meeting service selected">
+      <created>1613718427171</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1613718427171</updated>
+    </task>
+    <task id="LOCAL-00029" summary="some small changes">
+      <created>1613986161190</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1613986161190</updated>
+    </task>
+    <task id="LOCAL-00030" summary="some small changes">
+      <created>1613986339713</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1613986339713</updated>
+    </task>
+    <task id="LOCAL-00031" summary="scroll behavior transferred">
+      <created>1613997195479</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1613997195479</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -336,9 +373,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="test" />
-    <MESSAGE value="a test commit" />
-    <MESSAGE value="landing page optimized" />
     <MESSAGE value="select background changed" />
     <MESSAGE value="text align for table records changed to right" />
     <MESSAGE value="stream info page re-designed" />
@@ -360,6 +394,10 @@
     <MESSAGE value="some change in side bar" />
     <MESSAGE value="try for debugging on server" />
     <MESSAGE value="landing page improved&#10;react presist commented" />
-    <option name="LAST_COMMIT_MESSAGE" value="landing page improved&#10;react presist commented" />
+    <MESSAGE value="some minor bug fixed&#10;default teacher meeting service selected" />
+    <MESSAGE value="some small changes" />
+    <MESSAGE value="scroll behavior transferred" />
+    <MESSAGE value="anchor tag style updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="anchor tag style updated" />
   </component>
 </project>

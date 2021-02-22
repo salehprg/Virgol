@@ -7,11 +7,16 @@ import AddClass from '../../baseManager/AddClass';
 import { edit, loading } from '../../../../assets/icons';
 import history from '../../../../history';
 import SelectableCard from '../../baseManager/SelectableCard';
+import {pagingItems} from '../../../Search/Seaarch'
 
 class Sessions extends React.Component{
     state={
         loading : false ,
-        showCreateModal : false
+        showCreateModal : false ,
+        sessions : [] ,
+        itemsPerPage : 40 ,
+        currentPage : 1 ,
+        totalCard : 0
     }
 
     async componentDidMount(){
@@ -24,7 +29,8 @@ class Sessions extends React.Component{
 
 
         this.setState({loading : false})
-        
+
+        this.setState({totalCard : this.props.classes.length})
     }
 
     onCancel = () => {
@@ -45,6 +51,17 @@ class Sessions extends React.Component{
         // console.log(id);
         history.push(`/class/${id}`)
     }
+
+    setSessionsPagination = (currentPage = -1) => {
+        const pagedItems = pagingItems(this.props.classes , (currentPage != -1 ? currentPage : this.state.currentPage) , this.state.itemsPerPage)
+        this.setState({sessions : pagedItems})
+    }
+
+    paginate = (num) =>{
+        this.setState({ currentPage: num })
+    }
+
+
     render() {
         return (
             
@@ -65,7 +82,11 @@ class Sessions extends React.Component{
                     null
                 }   
                 <PlusTable
-                    isPaginate={false}
+                    isPaginate={true}
+                    cardsPerPage={this.state.itemsPerPage}
+                    totalCards={this.state.sessions}
+                    paginate={this.paginate}
+                    currentPage={this.state.currentPage}
                     title={this.props.t('sessionList')}
                     isLoading={this.state.loading}
                     button={() => {
