@@ -110,6 +110,7 @@ class Schools extends React.Component {
                                                 <td data-tip={this.props.t('enterAsManager')} onClick={() => this.redirect(x.id)} className="tw-cursor-pointer">
                                                     {external_link('tw-w-6 tw-text-white ')}
                                                 </td>
+                                                <ReactTooltip type="dark" effect="float" place="top"/>
                                                 <td className="tw-text-right" data-tip={this.props.t('edit')} className="tw-cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
                                                     {edit('tw-w-6 tw-text-white')}
                                                 </td>

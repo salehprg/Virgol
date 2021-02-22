@@ -21,6 +21,8 @@ class Teachers extends React.Component {
         this.setState({ loading: false })
 
         this.queriedTeachers('')
+
+        // console.log(this.props);
     }
 
     checkAll = () => {
