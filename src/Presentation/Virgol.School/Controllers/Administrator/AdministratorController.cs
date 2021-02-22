@@ -322,6 +322,69 @@ namespace lms_with_moodle.Controllers
             }
         }
 
+
+        [HttpPost]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> AddBulkLessons([FromForm]IFormCollection Files )
+        {
+            try
+            {
+                //Username and password Default is MelliCode
+
+                //1 - Read data from excel
+                //2 - Check valid data
+                //3 - Add user to Database
+                //3.1 - don't add duplicate username 
+
+                bool FileOk = await UploadFile(Files.Files[0] , "BulkLessons.xlsx");
+
+                if(FileOk)
+                {
+                    System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+                    using (var stream = System.IO.File.Open("BulkData\\BulkLessons.xlsx", FileMode.Open, FileAccess.Read))
+                    {
+                        using (var excelData = ExcelReaderFactory.CreateReader(stream))
+                        {
+                            excelData.Read(); //Ignore column header name
+
+                            List<LessonModel> excelLessons = new List<LessonModel>();
+
+                            while (excelData.Read()) //Each row of the file
+                            {
+                                try
+                                {
+                                    LessonModel currentLesson = new LessonModel
+                                    {
+                                        LessonName = excelData.GetValue(0).ToString(),
+                                        OrgLessonName = excelData.GetValue(1).ToString(),
+                                        Vahed = int.Parse(excelData.GetValue(2).ToString()),
+                                        LessonCode = excelData.GetValue(3).ToString(),
+                                        Grade_Id = int.Parse(excelData.GetValue(4).ToString())
+                                    };
+
+                                    excelLessons.Add(currentLesson);
+                                }
+                                catch(Exception ex){}
+                            }
+
+                            appDbContext.Lessons.AddRange(excelLessons);
+                            await appDbContext.SaveChangesAsync();
+                        }
+                    }
+                    return Ok(true);
+                }
+
+                return BadRequest("آپلود فایل با مشکل مواجه شد");
+                
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 #endregion
 
 #region Bases

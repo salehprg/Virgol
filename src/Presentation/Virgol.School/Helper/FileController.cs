@@ -215,19 +215,19 @@ public class FileController {
 
                         if(value != null)
                         {
-                            if(((string)value).Trim() == "نام")
+                            if(((string)value).Trim() == "نام" || ((string)value).Trim() == "firstname")
                             {
                                 firstNameId = i;
                             }
-                            if(((string)value).Trim() == "نام خانوادگی".Trim())
+                            if(((string)value).Trim() == "نام خانوادگی".Trim() || ((string)value).Trim() == "lastname")
                             {
                                 lastNameId = i;
                             }
-                            if(((string)value).Contains("تلفن همراه") || ((string)value).Contains("شماره موبایل") || ((string)value).Contains("شماره تماس"))
+                            if(((string)value).Contains("تلفن همراه") || ((string)value).Contains("شماره موبایل") || ((string)value).Contains("شماره تماس") || ((string)value).Trim().Contains("mobile"))
                             {
                                 phoneNumberId = i;
                             }
-                            if(((string)value).Contains("کد ملی") || ((string)value).Contains("کدملی"))
+                            if(((string)value).Trim().Contains("کد ملی") || ((string)value).Trim().Contains("national_code"))
                             {
                                 melliCodeId = i;
                             }
