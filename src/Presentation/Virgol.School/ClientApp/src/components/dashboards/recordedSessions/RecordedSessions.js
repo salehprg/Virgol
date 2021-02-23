@@ -52,18 +52,18 @@ class RecorededSession extends React.Component {
                                 this.props.recordingsList.map((x,index) => {
                                     return (
                                         <tr>
-                                            <td className="tw-py-4 tw-text-right">{index + 1}</td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{index + 1}</td>
                                             <td className="tw-py-4 tw-text-right d-tw-flex tw-flex-wrap">
-                                                <div className="tw-ml-2 tw-pt-2">{x.meeting.meetingName.split('-')[1]} - {this.props.t('session')} {index + 1}</div>
+                                                <div className="tw-ml-2 tw-pt-2 tw-px-4">{x.meeting.meetingName.split('-')[1]} - {this.props.t('session')} {index + 1}</div>
                                                 <div data-tip={this.props.t('edit')}> {edit('tw-text-white tw-w-10 tw-bg-greenish tw-rounded-lg tw-p-2')}</div>
                                                 <ReactTooltip type="dark" effect="float" place="top"/>
                                             </td>
-                                            <td className="tw-py-4 tw-text-right">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
-                                            <td className="tw-py-4 tw-text-right">
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">
                                             <button className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
                                             <button onClick={() => window.open(x.url , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
                                             </td>
-                                            <td className="tw-text-right" onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
+                                            <td className="tw-text-right tw-px-4 tw-py-4" onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
                                                 {users('tw-w-8 tw-cursor-pointer tw-text-white')}
                                             </td>
                                         </tr>

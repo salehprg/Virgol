@@ -220,12 +220,12 @@ class StreamInfo extends React.Component {
                                 return this.props.futureStream.map(x => {
                                     return (
                                         <tr key={x.id}>
-                                            <td className="tw-py-4 tw-text-right"> {x.streamName} </td>
-                                            <td className="tw-text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4"> {x.streamName} </td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
                                             <td onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
                                                 {trash('tw-w-6 tw-text-white ')}
                                             </td>
-                                            <td onClick={() => history.push(`/editStream/${x.id}`)} className="tw-cursor-pointer">
+                                            <td onClick={() => history.push(`/editStream/${x.id}`)} className="tw-cursor-pointer tw-px-4 tw-py-4">
                                                 {edit('tw-w-6 tw-text-white ')}
                                             </td>
                                         </tr>

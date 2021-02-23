@@ -138,20 +138,20 @@ class Students extends React.Component {
                                         return(
                                         <tr>
                                             {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>*/}
-                                            <td className="tw-py-4 tw-text-right">
+                                            <td className="tw-py-4 tw-text-right tw-px-4">
                                                 <div className="tw-flex tw-justify-center tw-items-center tw-ml-2">
                                                     <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
                                                 </div>
                                             </td>
-                                            <td className="tw-py-4 tw-text-right">{x.firstName}</td>
-                                            <td className="tw-text-right tw-px-2">{x.lastName}</td>
-                                            <td className="tw-text-right tw-px-2">{x.phoneNumber}</td>
-                                            <td className="tw-text-right tw-px-2">{x.melliCode}</td>
-                                            <td className="tw-text-right tw-px-2">{x.fatherName}</td>
-                                            <td className="tw-text-right tw-px-2">{x.fatherPhoneNumber}</td>
-                                            <td><span className="tw-text-center">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
-                                            <td className="tw-text-right tw-px-2">{x.classsname}</td>
-                                            <td className="tw-cursor-pointer tw-text-right" onClick={() => history.push(`/student/${x.id}`)}>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{x.firstName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.lastName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.phoneNumber}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.melliCode}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.fatherName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.fatherPhoneNumber}</td>
+                                            <td><span className="tw-text-center tw-px-4 tw-py-4">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.classsname}</td>
+                                            <td className="tw-cursor-pointer tw-text-right tw-px-4 tw-py-4" onClick={() => history.push(`/student/${x.id}`)}>
                                                 {edit('tw-w-6 tw-text-white')}
                                             </td>  
                                                       

@@ -62,12 +62,12 @@ class adminTeachers extends React.Component {
                                     this.state.teachers.map(teacher => {
                                         return(
                                         <tr>
-                                            <td className="tw-py-4 tw-text-right">{teacher.firstName}</td>
-                                            <td className="tw-text-right">{teacher.lastName}</td>
-                                            <td className="tw-text-right">{teacher.melliCode}</td>
-                                            <td className="tw-text-right">{teacher.phoneNumber}</td>
-                                            <td className="tw-text-right">{teacher.personalIdNUmber}</td>
-                                            <td><span className="tw-text-center">{teacher.latinFirstname && teacher.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{teacher.firstName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{teacher.lastName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{teacher.melliCode}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{teacher.phoneNumber}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{teacher.personalIdNUmber}</td>
+                                            <td><span className="tw-text-center tw-px-4 tw-py-4">{teacher.latinFirstname && teacher.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
                                         </tr>
                                         )
                                     })

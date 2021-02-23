@@ -11,7 +11,7 @@ const CheckTable = ({ headers, body, options, checkAll, clearItems, selected }) 
                 <thead className="tw-border-b-2 tw-border-grayish">
                 <tr>
                     <th>
-                        <div className="tw-flex tw-justify-center tw-items-center">
+                        <div className="tw-flex tw-justify-center tw-items-center tw-px-4">
                             <HeaderCheckbox
                                 selected={selected}
                                 selectAll={checkAll}

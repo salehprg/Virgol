@@ -120,14 +120,14 @@ class Groups extends React.Component {
                                         this.props.mixedSchedules.map(x => {
                                             return(
                                                 <tr key={x.id}>
-                                                    <td className="tw-py-4 tw-text-right">{x.className}</td>
-                                                    <td className="tw-text-right">{x.orgLessonName}</td>
-                                                    <td className="tw-text-right">{`${x.firstName} ${x.lastName}`}</td>
-                                                    <td className="tw-text-right">{`${x.weekly == 2 ? this.props.t('oddWeeks') : x.weekly == 1 ? this.props.t('evenWeeks') : this.props.t('weekly')} ${this.getDayName(x.dayType)} از ${this.state.times.find(y => y.value == x.startHour).label} تا ${this.state.times.find(time => time.value == x.endHour).label}` }</td>
-                                                    <td className="tw-cursor-pointer tw-text-right" onClick={() => history.push(`/editGroup/${x.id}`)}>
+                                                    <td className="tw-py-4 tw-text-right tw-px-4">{x.className}</td>
+                                                    <td className="tw-text-right tw-px-4 tw-py-4">{x.orgLessonName}</td>
+                                                    <td className="tw-text-right tw-px-4 tw-py-4">{`${x.firstName} ${x.lastName}`}</td>
+                                                    <td className="tw-text-right tw-px-4 tw-py-4">{`${x.weekly == 2 ? this.props.t('oddWeeks') : x.weekly == 1 ? this.props.t('evenWeeks') : this.props.t('weekly')} ${this.getDayName(x.dayType)} از ${this.state.times.find(y => y.value == x.startHour).label} تا ${this.state.times.find(time => time.value == x.endHour).label}` }</td>
+                                                    <td className="tw-cursor-pointer tw-text-right tw-px-4" onClick={() => history.push(`/editGroup/${x.id}`)}>
                                                         {edit('tw-w-6 tw-text-white')}
                                                     </td>
-                                                    <td className="tw-text-right" onClick={() => this.showDelete(x.mixedId)} className="tw-cursor-pointer">
+                                                    <td className="tw-text-right tw-px-4 tw-py-4" onClick={() => this.showDelete(x.mixedId)} className="tw-cursor-pointer">
                                                         {trash('tw-w-6 tw-text-white ')}
                                                     </td>
                                                 </tr>

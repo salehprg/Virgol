@@ -102,7 +102,7 @@ class Sessions extends React.Component{
                                     this.props.classes.map(kelass => {
                                         return(
                                             <tr>
-                                                <td className="tw-text-right tw-py-4">
+                                                <td className="tw-text-right tw-py-4 tw-px-4">
                                                     {/* {kelass.className} */}
                                                     <SelectableCard
                                                     id={kelass.id}

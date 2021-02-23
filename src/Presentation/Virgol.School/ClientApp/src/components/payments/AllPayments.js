@@ -28,13 +28,13 @@ class AllPayments extends React.Component {
                                 this.props.payments.map(x => {
                                     return(
                                         <tr key={x.id} className="tw-p-2">
-                                            <td className="tw-text-right">{x.serviceName}</td>
-                                            <td className="tw-text-right">{x.amount.toLocaleString()}</td>
-                                            <td className="tw-text-right">{new Date(x.payTime).toLocaleDateString('fa-IR')}</td>
-                                            <td className="tw-text-right">{x.userCount}</td>
-                                            <td className="tw-text-right">{(x.status == "pending" ? "در جریان" : (x.status == "success" ? "موفقیت آمیز" :"خطا"))}</td>
-                                            <td className="tw-text-right">{x.statusMessage}</td>
-                                            <td className="tw-text-right">{(x.status == "success" ? x.reqId : x.refId)}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.serviceName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.amount.toLocaleString()}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{new Date(x.payTime).toLocaleDateString('fa-IR')}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.userCount}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{(x.status == "pending" ? "در جریان" : (x.status == "success" ? "موفقیت آمیز" :"خطا"))}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.statusMessage}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{(x.status == "success" ? x.reqId : x.refId)}</td>
                                         </tr>
                                     )
                                 })

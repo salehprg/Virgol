@@ -67,19 +67,19 @@ class News extends React.Component {
                                         {
                                             return(
                                             <tr key={x.id}>
-                                                <td className="tw-py-4 tw-text-right">{x.message.split(" ").slice(0,3).map(x => x + " ")} ...</td>
-                                                <td className="tw-text-right">{x.tags ?
+                                                <td className="tw-py-4 tw-text-right tw-px-4">{x.message.split(" ").slice(0,3).map(x => x + " ")} ...</td>
+                                                <td className="tw-text-right tw-px-4">{x.tags ?
                                                         x.tags.split(",").slice(0,5).map((tag,i) => {
                                                         return (
                                                         (i + 1 != x.tags.split(",").slice(0,5).length ? tag + " , " : tag)
                                                     )})
                                                 : null}
                                                 </td>
-                                                <td className="tw-text-right">{new Date(x.createTime).toLocaleDateString('fa-IR')}</td>
-                                                <td className="tw-cursor-pointer tw-text-right" onClick={() => history.push(`/news/${x.id}`)}>
+                                                <td className="tw-text-right tw-px-4">{new Date(x.createTime).toLocaleDateString('fa-IR')}</td>
+                                                <td className="tw-cursor-pointer tw-text-right tw-px-4" onClick={() => history.push(`/news/${x.id}`)}>
                                                     {edit('tw-w-6 tw-text-white')}
                                                 </td>
-                                                <td className="tw-text-right" onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
+                                                <td className="tw-text-right tw-px-4" onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
                                                     {trash('tw-w-6 tw-text-white ')}
                                                 </td>
                                             </tr>
