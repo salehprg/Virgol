@@ -492,7 +492,7 @@ namespace lms_with_moodle.Controllers
                         }
                     }
                 }
-            
+                
                 recentClasses = recentClasses.OrderBy(x => x.DayType).ToList();
 
                 var groupedMeetings = recentClasses

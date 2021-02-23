@@ -320,9 +320,15 @@ public class MeetingService {
                 {
                     if(isTeacher && teacherAsStdnts.TeacherId == userId)
                         teacherAsStdnts.teacherAsStudent = false;
+
+                    if(result.Where(x => x.Id == teacherAsStdnts.Id).FirstOrDefault() == null)
+                    {
+                        result.Add(teacherAsStdnts);
+                    }
+
                 }
                 
-                result.AddRange(teacherAsStudentSchedules);
+                
             }
         }
         else

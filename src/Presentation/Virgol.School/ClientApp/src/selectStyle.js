@@ -7,5 +7,10 @@ export const styles = {
     singleValue : (css) => ({
         ...css , 
         color : 'white'
+    }) ,
+
+    Input : (css) => ({
+        ...css ,
+        color : 'white'
     })
 }
