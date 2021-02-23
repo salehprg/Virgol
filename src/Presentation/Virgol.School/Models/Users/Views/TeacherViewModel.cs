@@ -15,6 +15,7 @@ namespace Models.Users.Teacher
         public string LatinLastname {get; set;}
         public string MelliCode {get; set;}    
         public string PhoneNumber {get; set;}    
+        public bool ConfirmedAcc {get; set;}    
         public string SchoolsId {get;set;}
         public string personalIdNUmber {get;set;}
         //0 = Girl , 1 = Boy
