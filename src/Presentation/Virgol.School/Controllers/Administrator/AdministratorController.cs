@@ -1099,6 +1099,37 @@ namespace lms_with_moodle.Controllers
         }
     }
     
+    [HttpPost]
+    public async Task<IActionResult> FixMultipleStudent(int classId = 0)
+    {
+        try
+        {
+            List<School_studentClass> studentClasses = appDbContext.School_StudentClasses.ToList();
+
+            if(classId != 0)
+                studentClasses = studentClasses.Where(x => x.ClassId == classId).ToList();
+
+            var groupedStudent = studentClasses.GroupBy(x => x.UserId).Select(x => x.ToList());
+            groupedStudent = groupedStudent.Where(x => x.Count > 1);
+
+            foreach (var duplicates in groupedStudent)
+            {
+                var firstResult = duplicates.FirstOrDefault();
+
+                var duplicateList = duplicates.Where(x => x.Id != firstResult.Id).ToList();
+
+                appDbContext.School_StudentClasses.RemoveRange(duplicateList);
+            }
+
+            await appDbContext.SaveChangesAsync();
+            return Ok(groupedStudent);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+            throw;
+        }
+    }
 
     [HttpPost]
     public async Task<IActionResult> OptimizeDatabase()
