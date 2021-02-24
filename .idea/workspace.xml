@@ -19,9 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
+    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="padding added to tables">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/students/Students.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/students/Students.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/teachers/Teachers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/teachers/Teachers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/tables/CheckTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/tables/CheckTable.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,6 +136,8 @@
       <workItem from="1613986130270" duration="1388000" />
       <workItem from="1613996870329" duration="1852000" />
       <workItem from="1614095903456" duration="100000" />
+      <workItem from="1614098606196" duration="505000" />
+      <workItem from="1614108645495" duration="622000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -366,7 +370,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613998898974</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="padding added to tables">
+      <created>1614099077203</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1614099077203</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -388,7 +399,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="text align for table records changed to right" />
     <MESSAGE value="stream info page re-designed" />
     <MESSAGE value="the national code replaced the email" />
     <MESSAGE value="some bug fixed &#10;&#10;sidebar cards now in one line &#10;all tables data is in right line" />
@@ -413,6 +423,7 @@
     <MESSAGE value="scroll behavior transferred" />
     <MESSAGE value="anchor tag style updated" />
     <MESSAGE value="update versioning" />
-    <option name="LAST_COMMIT_MESSAGE" value="update versioning" />
+    <MESSAGE value="padding added to tables" />
+    <option name="LAST_COMMIT_MESSAGE" value="padding added to tables" />
   </component>
 </project>

@@ -3,6 +3,10 @@ module.exports = {
   prefix: 'tw-',
   theme: {
     extend: {
+      backgroundImage: theme => ({
+
+        'vst': "url('./videoBack.jpg')"
+       }),
       fontFamily: {
         'vr': ['VazirRegular'],
         'vm': ['VazirMedium'],

@@ -1,6 +1,6 @@
 import React from "react";
 import { withTranslation } from 'react-i18next';
-import {edit, loading, trash, check_circle, x} from "../../../../assets/icons";
+import {edit, loading, trash, check_circle} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {getAllTeachers , addBulkTeacher , deleteTeacher} from "../../../../_actions/managerActions"
@@ -22,7 +22,7 @@ class Teachers extends React.Component {
 
         this.queriedTeachers('')
 
-        // console.log(this.props);
+        console.log(this.props);
     }
 
     checkAll = () => {

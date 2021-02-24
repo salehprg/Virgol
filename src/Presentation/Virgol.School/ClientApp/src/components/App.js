@@ -52,6 +52,7 @@ import { localizer } from '../assets/localizer';
 import  AddExtraLesson from './dashboards/manager/ExtraLesson/AddExtraLesson'
 
 import CacheBuster from './CacheBuster'
+import PrincipalGuide from './dashboards/videos/PrincipalGuide';
 class App extends React.Component {
 
     
@@ -121,6 +122,8 @@ class App extends React.Component {
                                     <Route path="/school/:id" component={SchoolInfo} />
 
                                     <Route path="/class/:id" component={ClassInfo} />
+
+                                    <Route path="/video/principal-guide-pr" component={PrincipalGuide}/>
                                     
                                     <Route path="/m" component={ManagerDashboard} />
                                     <Route path="/addNewsManager" component={AddNewsManager} />

@@ -138,7 +138,7 @@ class Students extends React.Component {
                                         return(
                                         <tr>
                                             {/*<td><input type="checkbox" value={x.id} onChange={this.handleSelectStudent}></input></td>*/}
-                                            <td className="tw-py-4 tw-text-right tw-px-4">
+                                            <td className="tw-py-4 tw-text-right">
                                                 <div className="tw-flex tw-justify-center tw-items-center tw-ml-2">
                                                     <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
                                                 </div>

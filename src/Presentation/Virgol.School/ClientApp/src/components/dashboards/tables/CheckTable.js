@@ -11,7 +11,7 @@ const CheckTable = ({ headers, body, options, checkAll, clearItems, selected }) 
                 <thead className="tw-border-b-2 tw-border-grayish">
                 <tr>
                     <th>
-                        <div className="tw-flex tw-justify-center tw-items-center tw-px-4">
+                        <div className="tw-flex tw-justify-center tw-items-center">
                             <HeaderCheckbox
                                 selected={selected}
                                 selectAll={checkAll}
@@ -20,7 +20,7 @@ const CheckTable = ({ headers, body, options, checkAll, clearItems, selected }) 
                         </div>
                     </th>
                     {headers.map(header => {
-                        return <th className="tw-text-right tw-px-2 tw-pb-4">{header}</th>
+                        return <th className="tw-text-right tw-px-4 tw-pb-4">{header}</th>
                     })}
                 </tr>
                 </thead>
