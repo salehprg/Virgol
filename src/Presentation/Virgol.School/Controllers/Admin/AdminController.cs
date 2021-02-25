@@ -627,6 +627,7 @@ namespace lms_with_moodle.Controllers
                     }
                 }
                 
+                result = result.Distinct().ToList();
                 result = result.OrderBy(x => x.LastName).ToList();
                 return Ok(result);
             }

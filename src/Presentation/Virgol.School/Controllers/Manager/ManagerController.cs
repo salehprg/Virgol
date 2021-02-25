@@ -945,7 +945,7 @@ namespace lms_with_moodle.Controllers
                 foreach(var studentId in studentIds)
                 {
                     UserModel studentModel = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
-                    if(studentModel != null)
+                    if(studentModel != null && result.Where(x => x.Id != studentModel.Id).FirstOrDefault() == null)
                     {
                         result.Add(studentModel);
                     }
@@ -990,7 +990,9 @@ namespace lms_with_moodle.Controllers
                 {
                     var serialized = JsonConvert.SerializeObject(user);
                     UserModel userModel = JsonConvert.DeserializeObject<UserModel>(serialized);
-                    userModels.Add(userModel);
+
+                    if(userModels.Where(x => x.Id == userModel.Id).FirstOrDefault() == null)
+                        userModels.Add(userModel);
                 }
 
                 await managerService.AssignUsersToClass(userModels , classId);
