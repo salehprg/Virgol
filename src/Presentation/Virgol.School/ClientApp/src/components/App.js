@@ -53,6 +53,8 @@ import  AddExtraLesson from './dashboards/manager/ExtraLesson/AddExtraLesson'
 
 import CacheBuster from './CacheBuster'
 import PrincipalGuide from './dashboards/videos/PrincipalGuide';
+import TeacherGuide from './dashboards/videos/TeacherGuide';
+import StudentGuide from './dashboards/videos/StudentGuide';
 class App extends React.Component {
 
     
@@ -124,6 +126,8 @@ class App extends React.Component {
                                     <Route path="/class/:id" component={ClassInfo} />
 
                                     <Route path="/video/principal-guide-pr" component={PrincipalGuide}/>
+                                    <Route path="/video/teacher-guide-pr" component={TeacherGuide}/>
+                                    <Route path="/video/student-guide-pr" component={StudentGuide}/>
                                     
                                     <Route path="/m" component={ManagerDashboard} />
                                     <Route path="/addNewsManager" component={AddNewsManager} />
