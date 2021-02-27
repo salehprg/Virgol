@@ -945,7 +945,7 @@ namespace lms_with_moodle.Controllers
                 foreach(var studentId in studentIds)
                 {
                     UserModel studentModel = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
-                    if(studentModel != null && result.Where(x => x.Id != studentModel.Id).FirstOrDefault() == null)
+                    if(studentModel != null && result.Where(x => x.Id == studentModel.Id).FirstOrDefault() == null)
                     {
                         result.Add(studentModel);
                     }
