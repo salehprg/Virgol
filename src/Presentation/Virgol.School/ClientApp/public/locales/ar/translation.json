@@ -19,6 +19,7 @@
     "sentCode": "الرمز المرسل" ,
     "newPassword": "كلمة مرور جديدة",
     "ConfirmPassword": "اعد كلمة السر" ,
+    "confirmedAccount" : "حساب مؤكد" ,
     "confirm": "تأكيد" ,
     "cancel": "إلغاء",
     "edit": "تحرير" ,

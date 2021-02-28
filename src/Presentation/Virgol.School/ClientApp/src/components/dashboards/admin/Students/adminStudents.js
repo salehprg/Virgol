@@ -50,7 +50,7 @@ class adminStudents extends React.Component {
                     searchable
                     query={this.state.query}
                     changeQuery={this.changeQuery}
-                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('schoolName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('fatherPhoneNumber'), this.props.t('completedAccount')]}
+                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('schoolName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('fatherPhoneNumber'), this.props.t('completedAccount') , this.props.t('confirmedAccount')]}
                     cardsPerPage={this.state.itemsPerPage}
                     totalCards={this.state.totalCard}
                     paginate={this.paginate}
@@ -70,6 +70,7 @@ class adminStudents extends React.Component {
                                             <td className="tw-text-right tw-px-4 tw-py-4">{x.phoneNumber}</td>
                                             <td className="tw-text-right tw-px-4 tw-py-4">{x.fatherPhoneNumber}</td>
                                             <td><span className="tw-text-center tw-px-4 tw-py-4">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td><span className="tw-text-center tw-px-4 tw-py-4">{x.confirmedAcc ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
                                         </tr>
                                         )
                                     })

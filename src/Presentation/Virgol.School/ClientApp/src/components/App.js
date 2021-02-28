@@ -59,7 +59,7 @@ class App extends React.Component {
 
     
     componentDidMount() {
-        const ele = document.getElementById('ipl-progress-indicator')
+        const ele = document.getElementById('loading')
       if(ele){
         // fade out
         ele.classList.add('available')
