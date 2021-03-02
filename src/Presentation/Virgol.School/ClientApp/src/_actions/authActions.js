@@ -89,7 +89,11 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
 
 export const logout = () => {
     history.push('/')
+    const pass = localStorage.getItem('userPassword')
+    const lang = localStorage.getItem('prefLang')
     localStorage.clear()
+    localStorage.setItem('userPassword' , pass)
+    localStorage.setItem('prefLang' , lang)
     return { type: Type.LOGOUT }
 }
 

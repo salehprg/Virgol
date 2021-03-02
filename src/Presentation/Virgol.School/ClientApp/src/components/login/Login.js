@@ -24,6 +24,17 @@ class Login extends React.Component {
 
     componentDidMount() {
         this.props.logout()
+
+        // localStorage.getItem
+        if(this.props.user){
+            this.setState({logingin: true})
+
+            // console.log(this.props.user.userInformation.userName);
+            // console.log(localStorage.getItem('userPassword'))
+            this.onLogin({username : this.props.user.userInformation.userName ,
+                        password: localStorage.getItem('userPassword')})
+
+        }
     }
 
     renderInputs = ({ input, meta, type, placeholder }) => {
@@ -105,7 +116,7 @@ class Login extends React.Component {
                         {
                             this.props.effort >= 3 ?
                             <div>
-                                <div>slam</div>
+                                <div>Captcha</div>
                             </div>
                             :
                             null
@@ -180,33 +191,40 @@ class Login extends React.Component {
     }
 
     render() {
-        return (
-            <>
-                <div onClick={() => this.setShowLang(false)} className="tw-w-screen tw-min-h-screen tw-bg-black-blue tw-pt-16">
-                    <div className="tw-w-full tw-max-w-350 tw-mx-auto">
-                        <div className="tw-text-center tw-mb-8">
-                            {/* <img className="tw-w-24 tw-mx-auto tw-mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} alt="logo" /> */}
-                            <img className="tw-w-24 tw-mx-auto tw-mb-3" src={localizer.getLogo(window.location.href)} alt="logo" />
-                            {/* {logo('tw-w-16 tw-mb-3 tw-text-purplish tw-mx-auto')}
-                            {process.env.REACT_APP_RAHE_DOOR === "true" ?
-                                <img className="tw-w-24 tw-mx-auto tw-mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
-                                :
-                                logo('tw-w-24 tw-mx-auto tw-mb-3 tw-text-purplish')
-                            } */}
-                            <span className="tw-text-xl tw-text-white">
-                                {/* {process.env.REACT_APP_ENTER_TEXT} */}
-                                {localizer.getTitle(window.location.href)}
-                            </span>
+        if(!this.props.user){
+            return (
+                <>
+                    <div onClick={() => this.setShowLang(false)} className="tw-w-screen tw-min-h-screen tw-bg-black-blue tw-pt-16">
+                        <div className="tw-w-full tw-max-w-350 tw-mx-auto">
+                            <div className="tw-text-center tw-mb-8">
+                                {/* <img className="tw-w-24 tw-mx-auto tw-mb-3" src={`${process.env.PUBLIC_URL}/icons/Logo.png`} alt="logo" /> */}
+                                <img className="tw-w-24 tw-mx-auto tw-mb-3" src={localizer.getLogo(window.location.href)} alt="logo" />
+                                {/* {logo('tw-w-16 tw-mb-3 tw-text-purplish tw-mx-auto')}
+                                {process.env.REACT_APP_RAHE_DOOR === "true" ?
+                                    <img className="tw-w-24 tw-mx-auto tw-mb-3" src={`${process.env.PUBLIC_URL}/icons/RD.png`} alt="logo" />
+                                    :
+                                    logo('tw-w-24 tw-mx-auto tw-mb-3 tw-text-purplish')
+                                } */}
+                                <span className="tw-text-xl tw-text-white">
+                                    {/* {process.env.REACT_APP_ENTER_TEXT} */}
+                                    {localizer.getTitle(window.location.href)}
+                                </span>
+                            </div>
+                            <div className="tw-w-full tw-py-16 tw-text-center sm:tw-border-2 sm:tw-border-dark-blue tw-rounded-lg">
+                                {this.renderPanel()}
+                            </div>
+                            <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} />
                         </div>
-                        <div className="tw-w-full tw-py-16 tw-text-center sm:tw-border-2 sm:tw-border-dark-blue tw-rounded-lg">
-                            {this.renderPanel()}
-                        </div>
-                        <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} />
                     </div>
-                </div>
-                <span style={{position : "fixed" , bottom : 0 }} className="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
-            </>
-        );
+                    <span style={{position : "fixed" , bottom : 0 }} className="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
+                </>
+            );
+        }
+        else{
+            return(
+                <div>{this.props.t('loading')}</div>
+            )
+        }
     }
 
 }
@@ -227,8 +245,9 @@ const formWrapped = reduxForm({
 })(Login);
 
 const mapStateToProps = state => {
-    return {effort: state.auth.loginEffort }
+    return {effort: state.auth.loginEffort , user : state.auth.userInfo }
 }
+
 
 const cwrapped = connect(mapStateToProps, { login, logout, sendVerificationCode, forgotPassword , ChangePassword })(formWrapped)
 
