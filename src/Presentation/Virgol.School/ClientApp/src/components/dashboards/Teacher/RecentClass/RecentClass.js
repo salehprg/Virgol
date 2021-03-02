@@ -17,7 +17,11 @@ class RecentClass extends React.Component {
     ];
 
     getDayName = (dayType) => {
-        return this.options.find(x => x.value === dayType).label
+        var day = this.options.find(x => x.value == dayType)
+        if(day)
+            return day.label
+
+        return ''
     }
 
     render() {
