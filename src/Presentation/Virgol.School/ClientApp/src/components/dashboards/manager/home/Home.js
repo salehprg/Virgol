@@ -93,7 +93,7 @@ class Home extends React.Component {
 
                         <CounterCard
                             title={this.props.t('onlineClasses')}
-                            icon={user}
+                            icon={key}
                             number={this.props.dashboardInfo.onlineClass}
                             bg="tw-bg-purplish"
                             link="tracker"
@@ -102,7 +102,7 @@ class Home extends React.Component {
 
                         <CounterCard
                             title={this.props.t('teachers')}
-                            icon={users}
+                            icon={user}
                             number={this.props.dashboardInfo.teacherCount}
                             bg="tw-bg-redish"
                             pos="tw-row-start-3"
@@ -112,7 +112,7 @@ class Home extends React.Component {
 
                         <CounterCard
                             title={this.props.t('students')}
-                            icon={key}
+                            icon={users}
                             number={this.props.dashboardInfo.studentsCount}
                             bg="tw-bg-greenish"
                             pos="tw-row-start-3"

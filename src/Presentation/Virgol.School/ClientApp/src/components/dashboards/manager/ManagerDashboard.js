@@ -5,7 +5,7 @@ import history from "../../../history";
 import protectedManager from "../../protectedRoutes/protectedManager";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, loading, open_book , users , bell, video} from "../../../assets/icons";
+import {layout, loading, open_book , users , user , bell, video} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Teachers from "./teachers/Teachers";
@@ -183,7 +183,7 @@ class ManagerDashboard extends React.Component {
                         active={this.state.active}
                         code="teachers"
                         title={this.state.justCompany ? this.props.t('hosts') : this.props.t('teacher')}
-                        icon={users}
+                        icon={user}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
