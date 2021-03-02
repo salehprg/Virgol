@@ -413,6 +413,9 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                if(classSchedule.DayType == 0 || classSchedule.DayType > 6)
+                    return BadRequest("روز مناسبی برای برگزاری کلاس انتخاب نشده است");
+
                 if(classSchedule.EndHour <= classSchedule.StartHour)
                     return BadRequest("ساعت درس به درستی انتخاب نشده است");
                     
