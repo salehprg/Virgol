@@ -19,9 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="padding added to tables">
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/package.json" afterDir="false" />
-    </list>
+    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="padding added to tables" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -59,7 +57,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Vue/piaf/Piaf_Vuejs_v5.2.0_Vuejs_Admin_Template_Downloadly.ir/Piaf Vuejs v5.2.0 Vuejs Admin Template/Vue-Version/Source/piaf-vue" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2020.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -140,7 +138,7 @@
       <workItem from="1614537440538" duration="324000" />
       <workItem from="1614623299679" duration="580000" />
       <workItem from="1614671813355" duration="811000" />
-      <workItem from="1614686790297" duration="91000" />
+      <workItem from="1614686790297" duration="192000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -422,7 +420,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614686862795</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="auto login">
+      <created>1614686908017</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1614686908017</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -461,13 +466,13 @@
     <MESSAGE value="some small changes" />
     <MESSAGE value="scroll behavior transferred" />
     <MESSAGE value="anchor tag style updated" />
-    <MESSAGE value="update versioning" />
     <MESSAGE value="padding added to tables" />
     <MESSAGE value="guide pages added" />
     <MESSAGE value="guide pages added part2" />
     <MESSAGE value="some uncommited files" />
     <MESSAGE value="cleanup code" />
     <MESSAGE value="counter card icon changed" />
+    <MESSAGE value="update versioning" />
     <MESSAGE value="auto login" />
     <option name="LAST_COMMIT_MESSAGE" value="auto login" />
   </component>

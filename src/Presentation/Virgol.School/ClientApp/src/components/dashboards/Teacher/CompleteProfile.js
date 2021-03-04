@@ -61,7 +61,7 @@ class CompleteProfile extends React.Component {
                         <Field
                             name="latinLastname"
                             type="text"
-                            placeholder={this.props.t('latinLastname')}
+                            placeholder={this.props.t('latinLastName')}
                             component={this.renderInputs}
                             extra={"tw-w-40 tw-my-4"}
                         />

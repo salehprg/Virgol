@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       backgroundImage: theme => ({
 
-        'vst': "url('./videoBack.jpg')"
+        'vst': "url('./videoBack.svg')"
        }),
       fontFamily: {
         'vr': ['VazirRegular'],

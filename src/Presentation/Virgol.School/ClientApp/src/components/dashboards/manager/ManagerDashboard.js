@@ -5,7 +5,7 @@ import history from "../../../history";
 import protectedManager from "../../protectedRoutes/protectedManager";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, loading, open_book , users , user , bell, video} from "../../../assets/icons";
+import {layout, loading, open_book , users , user , bell, video, layers, grid, plus_square, airplay, message, briefcase} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Teachers from "./teachers/Teachers";
@@ -113,7 +113,7 @@ class ManagerDashboard extends React.Component {
                         active={this.state.active}
                         code="bases"
                         title={this.props.t('manageClasses')}
-                        icon={bell}
+                        icon={layers}
                         changeActive={this.changeActive}
                         />
                         :
@@ -137,7 +137,7 @@ class ManagerDashboard extends React.Component {
                             active={this.state.active}
                             code="groups"
                             title={this.props.t('manageGroups')}
-                            icon={bell}
+                            icon={grid}
                             changeActive={this.changeActive}
                             />
                         :
@@ -150,7 +150,7 @@ class ManagerDashboard extends React.Component {
                             active={this.state.active}
                             code="extraLesson"
                             title={this.props.t('additionallessons')}
-                            icon={open_book}
+                            icon={plus_square}
                             changeActive={this.changeActive}
                             />
                         :
@@ -163,7 +163,7 @@ class ManagerDashboard extends React.Component {
                             active={this.state.active}
                             code="tracker"
                             title={this.props.t('virtualClasses')}
-                            icon={open_book}
+                            icon={video}
                             changeActive={this.changeActive}
                             />
                         :
@@ -175,7 +175,7 @@ class ManagerDashboard extends React.Component {
                         active={this.state.active}
                         code="conference"
                         title={this.props.t('conference')}
-                        icon={video}
+                        icon={airplay}
                         changeActive={this.changeActive}
                     />
 
@@ -197,7 +197,7 @@ class ManagerDashboard extends React.Component {
                         active={this.state.active}
                         code="news"
                         title={this.props.t('news')}
-                        icon={open_book}
+                        icon={message}
                         changeActive={this.changeActive}
                     />
                     {!window.location.href.includes('dei') ? 
@@ -205,7 +205,7 @@ class ManagerDashboard extends React.Component {
                     active={this.state.active}
                     code="payments"
                     title={this.props.t('payments')}
-                    icon={open_book}
+                    icon={briefcase}
                     changeActive={this.changeActive}
                 /> 
                     : 

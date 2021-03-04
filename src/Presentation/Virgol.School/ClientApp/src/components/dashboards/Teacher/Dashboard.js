@@ -5,7 +5,7 @@ import history from "../../../history";
 import protectedTeacher from "../../protectedRoutes/protectedTeacher";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout , bell , open_book} from "../../../assets/icons";
+import {layout , bell , open_book, calendar, message} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Classes from "./classes/ClassSchedule";
@@ -75,14 +75,14 @@ class TeacherDashboard extends React.Component {
                         active={this.state.active}
                         code="schedule"
                         title={this.props.t('schedule')}
-                        icon={bell}
+                        icon={calendar}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="classes"
                         title={this.props.t('classes')}
-                        icon={bell}
+                        icon={open_book}
                         changeActive={this.changeActive}
                     />
                     {/*<SidebarCard*/}
@@ -96,7 +96,7 @@ class TeacherDashboard extends React.Component {
                         active={this.state.active}
                         code="myNews"
                         title={this.props.t('studentNews')}
-                        icon={open_book}
+                        icon={message}
                         changeActive={this.changeActive}
                     />
                 </Sidebar>

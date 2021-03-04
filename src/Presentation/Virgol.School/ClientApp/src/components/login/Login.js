@@ -209,11 +209,13 @@ class Login extends React.Component {
                                     {/* {process.env.REACT_APP_ENTER_TEXT} */}
                                     {localizer.getTitle(window.location.href)}
                                 </span>
+                                <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} className="tw-pt-4" />
+
                             </div>
                             <div className="tw-w-full tw-py-16 tw-text-center sm:tw-border-2 sm:tw-border-dark-blue tw-rounded-lg">
                                 {this.renderPanel()}
                             </div>
-                            <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} />
+                            
                         </div>
                     </div>
                     <span style={{position : "fixed" , bottom : 0 }} className="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
