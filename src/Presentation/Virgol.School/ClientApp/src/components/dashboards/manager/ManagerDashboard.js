@@ -5,7 +5,7 @@ import history from "../../../history";
 import protectedManager from "../../protectedRoutes/protectedManager";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, loading, open_book , users , user , bell, video, layers, grid, plus_square, airplay, message, briefcase} from "../../../assets/icons";
+import {layout, loading, open_book , users , user , bell, video, layers, grid, plus_square, airplay, message, briefcase, working} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Teachers from "./teachers/Teachers";
@@ -85,7 +85,7 @@ class ManagerDashboard extends React.Component {
     }
 
     render() {
-        if (this.state.loading) return this.props.t('loading')
+        if (this.state.loading) return (<div className="tw-text-center tw-bg-dark-blue tw-w-full tw-h-screen">{working('centerize tw-w-12')}</div>)
         return (
             <div onClick={() => this.setState({ showLang: false })} className="tw-w-screen tw-min-h-screen">
                 <Sidebar

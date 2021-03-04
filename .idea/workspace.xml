@@ -57,7 +57,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Vue/piaf/Piaf_Vuejs_v5.2.0_Vuejs_Admin_Template_Downloadly.ir/Piaf Vuejs v5.2.0 Vuejs Admin Template/Vue-Version/Source/piaf-vue" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2020.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -139,6 +139,7 @@
       <workItem from="1614623299679" duration="580000" />
       <workItem from="1614671813355" duration="811000" />
       <workItem from="1614686790297" duration="192000" />
+      <workItem from="1614869997582" duration="465000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -427,7 +428,28 @@
       <option name="project" value="LOCAL" />
       <updated>1614686908017</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="guide pages redesigned&#10;some translations updated">
+      <created>1614870059228</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1614870059228</updated>
+    </task>
+    <task id="LOCAL-00043" summary="guide pages redesigned&#10;some translations updated">
+      <created>1614870077920</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1614870077920</updated>
+    </task>
+    <task id="LOCAL-00044" summary="update versioning">
+      <created>1614870112962</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1614870112962</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -449,7 +471,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="some change into recorded sessions" />
     <MESSAGE value="side bar changed&#10;crisp commented" />
     <MESSAGE value="some style changed" />
     <MESSAGE value="manage session added&#10;paginate added for groups page" />
@@ -472,8 +493,9 @@
     <MESSAGE value="some uncommited files" />
     <MESSAGE value="cleanup code" />
     <MESSAGE value="counter card icon changed" />
-    <MESSAGE value="update versioning" />
     <MESSAGE value="auto login" />
-    <option name="LAST_COMMIT_MESSAGE" value="auto login" />
+    <MESSAGE value="guide pages redesigned&#10;some translations updated" />
+    <MESSAGE value="update versioning" />
+    <option name="LAST_COMMIT_MESSAGE" value="update versioning" />
   </component>
 </project>

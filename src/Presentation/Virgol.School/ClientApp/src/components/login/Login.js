@@ -19,20 +19,18 @@ class Login extends React.Component {
         sendingCode: false,
         reseting: false,
         IdNumer: null,
-        showLang: false
+        showLang: false,
     }
 
     componentDidMount() {
         this.props.logout()
-
-        // localStorage.getItem
         if(this.props.user){
             this.setState({logingin: true})
 
             // console.log(this.props.user.userInformation.userName);
-            // console.log(localStorage.getItem('userPassword'))
+            // console.log(localStorage.getItem('VirgoolBetaVersion'))
             this.onLogin({username : this.props.user.userInformation.userName ,
-                        password: localStorage.getItem('userPassword')})
+                        password: localStorage.getItem('VirgoolBetaVersion')})
 
         }
     }
@@ -95,6 +93,7 @@ class Login extends React.Component {
 
     renderPanel = () => {
         if (this.state.panel === 'login') {
+            const {check} = this.state
             return (
                 <>
                     <form className="tw-text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
@@ -110,6 +109,10 @@ class Login extends React.Component {
                             placeholder={this.props.t('password')}
                             component={this.renderPassword}
                         />
+                        <div>
+                            <label className="tw-text-white" for="remember">{this.props.t('remember')}</label>
+                            <input type="checkbox"  id="remember" className="tw-ml-4"/>
+                        </div>
                         <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
                             {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('enter')}
                         </button>
@@ -191,7 +194,6 @@ class Login extends React.Component {
     }
 
     render() {
-        if(!this.props.user){
             return (
                 <>
                     <div onClick={() => this.setShowLang(false)} className="tw-w-screen tw-min-h-screen tw-bg-black-blue tw-pt-16">
@@ -221,12 +223,7 @@ class Login extends React.Component {
                     <span style={{position : "fixed" , bottom : 0 }} className="tw-text-white tw-mb-2 tw-ml-3">process.env.REACT_APP_VERSION</span>
                 </>
             );
-        }
-        else{
-            return(
-                <div>{this.props.t('loading')}</div>
-            )
-        }
+        
     }
 
 }

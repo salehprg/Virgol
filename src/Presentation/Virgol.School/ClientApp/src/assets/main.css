@@ -3841,10 +3841,6 @@ video {
 
 .tw-bg-vst {
   background-image: url('./videoBack.svg');
-    background-size:     cover;                      
-    background-repeat:   no-repeat;
-    background-position: center center;
-
 }
 
 .tw-from-transparent {
@@ -23701,9 +23697,6 @@ video {
 
   .sm\:tw-bg-vst {
     background-image: url('./videoBack.svg');
-    background-size:     cover;                      
-    background-repeat:   no-repeat;
-    background-position: center center;
   }
 
   .sm\:tw-from-transparent {
@@ -43530,10 +43523,6 @@ video {
 
   .md\:tw-bg-vst {
     background-image: url('./videoBack.svg');
-    background-size:     cover;                      
-    background-repeat:   no-repeat;
-    background-position: center center;
-
   }
 
   .md\:tw-from-transparent {
@@ -63360,10 +63349,6 @@ video {
 
   .lg\:tw-bg-vst {
     background-image: url('./videoBack.svg');
-    background-size:     cover;                      
-    background-repeat:   no-repeat;
-    background-position: center center;
-
   }
 
   .lg\:tw-from-transparent {
@@ -83190,9 +83175,6 @@ video {
 
   .xl\:tw-bg-vst {
     background-image: url('./videoBack.svg');
-    background-size:     cover;                      /* <------ */
-    background-repeat:   no-repeat;
-    background-position: center center;
   }
 
   .xl\:tw-from-transparent {

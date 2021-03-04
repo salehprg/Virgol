@@ -142,10 +142,10 @@ export const DeleteClassSchedule = (token, scheduleId) => async dispatch => {
 }
 
 
-export const MoodleSSO = (token, scheduleId , userPassword) => async dispatch => {
+export const MoodleSSO = (token, scheduleId , VirgoolBetaVersion) => async dispatch => {
 
     try {
-        const response = await lms.post(`/ClassSchedule/MoodleSSO?scheduleId=${scheduleId}&userPassword=${userPassword}`, null ,{
+        const response = await lms.post(`/ClassSchedule/MoodleSSO?scheduleId=${scheduleId}&VirgoolBetaVersion=${VirgoolBetaVersion}`, null ,{
             headers: {
                 authorization: `Bearer ${token}`
             }

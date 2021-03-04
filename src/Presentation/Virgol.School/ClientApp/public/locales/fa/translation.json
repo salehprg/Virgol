@@ -6,6 +6,7 @@
     "username": "نام کاربری",
     "password": "رمز عبور",
     "nationCode": "کد ملی",
+    "remember" : "مرا به خاطر بسپار" ,
     "personelCode": "شماره پرسنلی",
     "phoneNumber": "شماره همراه",
     "fatherPhoneNumber": "شماره همراه ولی",
