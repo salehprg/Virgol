@@ -1,4 +1,4 @@
-namespace lms_with_moodle.FarazSms
+namespace Virgol.FarazSms
 {
     public class SendPatternModel<T> {
         public string pattern_code { get; set; }

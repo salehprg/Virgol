@@ -15,7 +15,7 @@ using System.Text;
 
 using Models;
 using Models.User;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Schedule;
 
 using Quartz.Spi;
@@ -28,7 +28,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
-namespace lms_with_moodle
+namespace Virgol
 {
     public class Startup
     {

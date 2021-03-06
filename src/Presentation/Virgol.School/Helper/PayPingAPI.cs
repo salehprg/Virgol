@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Microsoft.AspNetCore.Http;
 using Models;
 using Newtonsoft.Json;

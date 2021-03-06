@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 
 using Models;
 using Models.User;
 using Microsoft.AspNetCore.Http;
 using Models.Users.Roles;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     
     [ApiController]

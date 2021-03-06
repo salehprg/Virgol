@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models;
 
-namespace lms_with_moodle.Helper
+namespace Virgol.Helper
 {
     public class AppSettings
     {

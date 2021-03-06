@@ -15,31 +15,23 @@ using Virgol.Helper;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Virgol.FarazSms;
+using Virgol.School.Models;
 
 namespace Virgol.Helper
 {
-    public class FarazSmsApi {
-
-        public enum SocialType
-        {
-            Telegram,
-            Viber
-        }
-
+    public class NeginAPI {
         
         private string Username;
         private string Password;
-        private string ApiKey;
         private string BaseUrl;
         private string FromNumber;
 
-        public FarazSmsApi()
+        public NeginAPI(string APIUrl , string _Username , string _Password , string _FromNumber)
         {
-            BaseUrl = AppSettings.FarazAPI_URL;
-            Username = AppSettings.FarazAPI_Username;
-            Password = AppSettings.FarazAPI_Password;
-            ApiKey = AppSettings.FarazAPI_ApiKey;
-            FromNumber = AppSettings.FarazAPI_SendNumber;
+            BaseUrl = APIUrl;
+            Username = _Username;
+            Password = _Password;
+            FromNumber = _FromNumber;
         }   
 
         bool SendData(string JsonData , string Method)
@@ -48,12 +40,12 @@ namespace Virgol.Helper
 
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("AccessKey" , ApiKey);
-                
                 HttpResponseMessage responseMessage = client.PostAsync(BaseUrl + Method, 
                     new StringContent(JsonData, Encoding.UTF8, "application/json")).Result;
                     
-                result = responseMessage.IsSuccessStatusCode;
+                NeginSMS neginSMS = JsonConvert.DeserializeObject<NeginSMS>(responseMessage.Content.ReadAsStringAsync().Result);
+
+                result = neginSMS.status == "-1";
             }
 
             return result;

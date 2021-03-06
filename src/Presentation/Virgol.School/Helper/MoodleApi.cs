@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Models;
 using Models.User;
 using Models.MoodleApiResponse;
@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using Models.MoodleApiResponse.Activity_Grade_Info;
 using Models.Users;
 
-namespace lms_with_moodle.Helper
+namespace Virgol.Helper
 {
     public class MoodleApi {
         

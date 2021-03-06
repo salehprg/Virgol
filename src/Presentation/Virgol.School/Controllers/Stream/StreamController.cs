@@ -10,7 +10,7 @@ using Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Models.Users.Roles;
 
-namespace lms_with_moodle.Controllers.Stream
+namespace Virgol.Controllers.Stream
 {
     [ApiController]
     [Route("api/[controller]/[action]")]

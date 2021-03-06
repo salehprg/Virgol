@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.InputModel;

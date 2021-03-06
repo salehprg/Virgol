@@ -10,7 +10,7 @@ using Models;
 using System.Linq;
 using Models.User;
 
-namespace lms_with_moodle.Helper
+namespace Virgol.Helper
 {
     public class BBBApi {
         static HttpClient client;
