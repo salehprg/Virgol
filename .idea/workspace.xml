@@ -140,6 +140,7 @@
       <workItem from="1614671813355" duration="811000" />
       <workItem from="1614686790297" duration="192000" />
       <workItem from="1614869997582" duration="465000" />
+      <workItem from="1614876792899" duration="51000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1611421261059</created>
@@ -449,7 +450,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614870112962</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="create remember me option but not works ,&#10;improve security :)">
+      <created>1614876822478</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1614876822478</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -471,7 +479,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="side bar changed&#10;crisp commented" />
     <MESSAGE value="some style changed" />
     <MESSAGE value="manage session added&#10;paginate added for groups page" />
     <MESSAGE value="base manager improved" />
@@ -496,6 +503,7 @@
     <MESSAGE value="auto login" />
     <MESSAGE value="guide pages redesigned&#10;some translations updated" />
     <MESSAGE value="update versioning" />
-    <option name="LAST_COMMIT_MESSAGE" value="update versioning" />
+    <MESSAGE value="create remember me option but not works ,&#10;improve security :)" />
+    <option name="LAST_COMMIT_MESSAGE" value="create remember me option but not works ,&#10;improve security :)" />
   </component>
 </project>

@@ -109,10 +109,10 @@ class Login extends React.Component {
                             placeholder={this.props.t('password')}
                             component={this.renderPassword}
                         />
-                        <div>
+                        {/* <div>
                             <label className="tw-text-white" for="remember">{this.props.t('remember')}</label>
                             <input type="checkbox"  id="remember" className="tw-ml-4"/>
-                        </div>
+                        </div> */}
                         <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
                             {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('enter')}
                         </button>
@@ -211,10 +211,11 @@ class Login extends React.Component {
                                     {/* {process.env.REACT_APP_ENTER_TEXT} */}
                                     {localizer.getTitle(window.location.href)}
                                 </span>
-                                <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} className="tw-pt-4" />
+                                
 
                             </div>
-                            <div className="tw-w-full tw-py-16 tw-text-center sm:tw-border-2 sm:tw-border-dark-blue tw-rounded-lg">
+                            <div className="tw-w-full tw-py-12 tw-text-center sm:tw-border-2 sm:tw-border-dark-blue tw-rounded-lg">
+                                <SelectLang showLang={this.state.showLang} setShowLang={this.setShowLang} className="tw-pb-6" />
                                 {this.renderPanel()}
                             </div>
                             
