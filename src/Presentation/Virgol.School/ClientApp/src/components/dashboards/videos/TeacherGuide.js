@@ -9,7 +9,7 @@ class TeacherGuide extends React.Component{
         return(
             <div className="tw-w-full tw-h-screen tw-bg-vst tw-grid tw-grid-rows-4 md:tw-grid-cols-2">
                 <div>
-                <div className="tw-m-4" onClick={()=> history.goBack()}>{arrow_left('tw-w-12 tw-border-2 tw-text-purplish tw-border-purplish tw-rounded-lg tw-cursor-pointer tw-mx-2 tw-p-2')}</div>
+                <div className="tw-m-4" onClick={()=> history.push('/video/guide-pr')}>{arrow_left('tw-w-12 tw-border-2 tw-text-purplish tw-border-purplish tw-rounded-lg tw-cursor-pointer tw-mx-2 tw-p-2')}</div>
                     <div className="tw-text-white tw-mx-auto tw-w-1/2 tw-text-center tw-py-4 tw-border-4 tw-text-sm lg:tw-text-lg tw-border-purplish tw-rounded-lg">راهنمای سامانه ویرگول مخصوص معلمان</div>  
                 </div>
                 <div className="tw-rows-span-3">

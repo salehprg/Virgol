@@ -9,7 +9,7 @@ import history from '../../../history';
 const GuideMenu = () => {
     return(
         <div className="tw-bg-dark-blue">  
-            <div className="tw-p-4 tw-cursor-pointer" onClick={() => history.goBack()}>{arrow_left('tw-border-2 tw-cursor-pointer tw-border-purplish tw-p-2 tw-rounded-lg tw-text-purplish tw-w-12')}</div>
+            <div className="tw-p-4 tw-cursor-pointer" onClick={() => history.push('/')}>{arrow_left('tw-border-2 tw-cursor-pointer tw-border-purplish tw-p-2 tw-rounded-lg tw-text-purplish tw-w-12')}</div>
             <div className="tw-text-center">
                 <div className="tw-text-white tw-py-12 tw-text-xl">یکی از گزینه های زیر را انتخاب کنید</div>
                 <div className="tw-grid tw-grid-rows-3 tw-gap-4 lg:tw-mx-48 md:tw-mx-24 tw-mx-12 md:tw-grid-cols-3">

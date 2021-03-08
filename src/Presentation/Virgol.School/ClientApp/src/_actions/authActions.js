@@ -90,15 +90,24 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
 
 export const logout = () => {
     history.push('/')
-    console.log(localStorage)
+    // console.log(localStorage.getItem('remember'))
     const pass = localStorage.getItem('VirgoolBetaVersion')
     const lang = localStorage.getItem('prefLang')
+    const remember = localStorage.getItem('remember')
+
+    console.log(remember);
+    console.log(pass);
+
     localStorage.clear()
     
-    localStorage.setItem('VirgoolBetaVersion' , pass)
-    
+    localStorage.setItem('remember' , remember)
+
+    if(localStorage.getItem('remember') === 'true'){
+        localStorage.setItem('VirgoolBetaVersion' , pass)
+    }
 
     localStorage.setItem('prefLang' , lang)
+
     return { type: Type.LOGOUT }
 }
 

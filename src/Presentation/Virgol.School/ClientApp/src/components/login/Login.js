@@ -20,6 +20,7 @@ class Login extends React.Component {
         reseting: false,
         IdNumer: null,
         showLang: false,
+        check: false
     }
 
     componentDidMount() {
@@ -68,6 +69,13 @@ class Login extends React.Component {
         if (!this.state.logingin) {
             this.setState({logingin: true})
 
+            if(this.state.check){
+                localStorage.setItem('remember' , this.state.check)
+            }
+            else{
+                localStorage.setItem('remember' , false)
+            }
+
             const success = await this.props.login(formValues)
             if (!success) this.setState({ logingin: false })
         }
@@ -93,7 +101,9 @@ class Login extends React.Component {
 
     renderPanel = () => {
         if (this.state.panel === 'login') {
-            const {check} = this.state
+            const changeVal = () =>{
+                this.setState({check : !this.state.check})
+            }
             return (
                 <>
                     <form className="tw-text-center" onSubmit={this.props.handleSubmit(this.onLogin)} >
@@ -109,10 +119,10 @@ class Login extends React.Component {
                             placeholder={this.props.t('password')}
                             component={this.renderPassword}
                         />
-                        {/* <div>
+                        <div>
                             <label className="tw-text-white" for="remember">{this.props.t('remember')}</label>
-                            <input type="checkbox"  id="remember" className="tw-ml-4"/>
-                        </div> */}
+                            <input type="checkbox"  id="remember" onClick={changeVal} value={this.state.check}  className="tw-ml-4"/>
+                        </div>
                         <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
                             {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('enter')}
                         </button>
