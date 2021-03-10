@@ -13,6 +13,8 @@ import history from '../../../history';
 import {styles} from '../../../selectStyle'
 import ReactTooltip from 'react-tooltip';
 import './styles.css';
+import ScrollBar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class StreamInfo extends React.Component {
 
@@ -87,7 +89,7 @@ class StreamInfo extends React.Component {
 
     render() {
         return (
-            <div className="tw-w-full tw-overflow-y-auto tw-mt-10 tw-items-center tw-justify-evenly">
+            <ScrollBar className="tw-w-full tw-overflow-y-auto tw-mt-10 tw-items-center tw-justify-evenly">
                 {this.state.showDeleteModal ? 
                     <DeleteConfirm
                         title={this.props.t('deleteConfirm')}
@@ -258,7 +260,7 @@ class StreamInfo extends React.Component {
 
                 </div>
                 
-            </div>
+            </ScrollBar>
         );
     }
 

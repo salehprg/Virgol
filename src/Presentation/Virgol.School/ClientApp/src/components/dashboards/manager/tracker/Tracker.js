@@ -7,6 +7,8 @@ import {GetAllActiveMeeting} from '../../../../_actions/meetingActions'
 import getColor from "../../../../assets/colors";
 import TrackerLessonInfo from "./TrackerLessonInfo";
 import {onGoing} from "../../../../assets/icons";
+import ScrollBar from "react-perfect-scrollbar";
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class Tracker extends React.Component {
 
@@ -106,7 +108,7 @@ class Tracker extends React.Component {
                 null
                 }
                 <div className="tw-w-full tw-py-10">
-                    <div ref={this.sc} className="tw-w-11/12 tw-p-4 tw-mx-auto tw-rounded-lg tw-min-h-70 tw-border-2 tw-border-dark-blue tw-overflow-auto">
+                    <ScrollBar ref={this.sc} className="tw-w-11/12 tw-p-4 tw-mx-auto tw-rounded-lg tw-min-h-70 tw-border-2 tw-border-dark-blue tw-overflow-auto">
                         <GridLayout className="layout" layout={layout} cols={34} rowHeight={50} width={1800}>
                             {layout.map(x => {
                                 return (
@@ -117,7 +119,7 @@ class Tracker extends React.Component {
                                 );
                             })}
                         </GridLayout>
-                    </div>
+                    </ScrollBar>
                 </div>
             </>
         );

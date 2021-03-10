@@ -23,6 +23,7 @@ module.exports = {
         'greenish': '#41CD7D',
         'pinkish': '#E25B84',
         'grayish': '#707070',
+        
       },
       maxWidth: {
         '250': '250px',

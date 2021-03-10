@@ -1,9 +1,11 @@
 import React from "react";
+import ScrollBar from "react-perfect-scrollbar";
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const Tablish = ({ headers, body }) => {
 
     return (
-        <div dir="rtl" className="tw-w-full tw-overflow-auto">
+        <ScrollBar dir="rtl" className="tw-w-full tw-overflow-auto">
             <table dir="rtl" className="tw-w-full tw-table-auto tw-text-white">
                 <thead className="tw-border-b-2 tw-border-grayish">
                     <tr>
@@ -16,7 +18,7 @@ const Tablish = ({ headers, body }) => {
                     {body()}
                 </tbody>
             </table>
-        </div>
+        </ScrollBar>
     );
 
 }

@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import {GetRecordList} from '../../../_actions/meetingActions'
 import history from "../../../history";
 import ReactTooltip from 'react-tooltip';
+import ScrollBar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class RecorededSession extends React.Component {
 
@@ -31,7 +33,7 @@ class RecorededSession extends React.Component {
                 {/* <div className="md:tw-w-1/2 tw-w-full md:tw-mb-0 tw-mb-8">
                     <img className="md:tw-w-5/6 tw-w-full" src="/recorded.svg" alt="recorded svg" />
                 </div> */}
-                <div className="tw-w-full tw-h-85 tw-overflow-auto">
+                <ScrollBar className="tw-w-full tw-h-85 tw-overflow-auto">
                 <PlusTable
                     title={this.props.t('recordedSessions')}
                     isLoading={false}
@@ -77,7 +79,7 @@ class RecorededSession extends React.Component {
                         );
                     }}
                 />
-                </div>
+                </ScrollBar>
                 </div>
             </div>
         );

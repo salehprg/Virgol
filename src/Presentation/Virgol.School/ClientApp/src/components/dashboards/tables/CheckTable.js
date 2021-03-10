@@ -1,11 +1,13 @@
 import React from "react";
 import OptionBar from "./OptionBar";
 import HeaderCheckbox from "./HeaderCheckbox";
+import ScrollBar from "react-perfect-scrollbar";
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const CheckTable = ({ headers, body, options, checkAll, clearItems, selected }) => {
 
     return (
-        <div dir="rtl" className="tw-w-full tw-overflow-auto">
+        <ScrollBar dir="rtl" className="tw-w-full tw-overflow-auto">
             {selected.length !== 0 ? <OptionBar options={options} clear={clearItems} selectedItems={selected} /> : null}
             <table dir="rtl" className="tw-w-full tw-table-auto tw-text-white tw-min-w-700">
                 <thead className="tw-border-b-2 tw-border-grayish">
@@ -28,7 +30,7 @@ const CheckTable = ({ headers, body, options, checkAll, clearItems, selected }) 
                 {body()}
                 </tbody>
             </table>
-        </div>
+        </ScrollBar>
     );
 
 }

@@ -16,6 +16,8 @@ import { validator } from "../../../../assets/validator";
 import protectedAdmin from "../../../protectedRoutes/protectedAdmin";
 import history from "../../../../history";
 
+import Scrollbar from 'react-perfect-scrollbar'
+import 'react-perfect-scrollbar/dist/css/styles.css'
 class SchoolInfo extends React.Component {
 
     state = {
@@ -322,7 +324,7 @@ class SchoolInfo extends React.Component {
                             <button onClick={this.redirect} className="tw-px-6 tw-py-1 lg:tw-mx-2 tw-mx-0 tw-mt-4 tw-rounded-lg tw-border-2 tw-border-greenish tw-text-greenish"> {this.props.t('enterAsManager')} </button>
                         </div>
                     </div>
-                    <div className="tw-mt-8 tw-overflow-auto">
+                    <Scrollbar className="tw-mt-8 tw-overflow-auto">
                         
                         <BaseManager
                             schoolId={this.props.match.params.id}
@@ -349,7 +351,7 @@ class SchoolInfo extends React.Component {
                             OnLockCall={(e) => this.setState({lock : e})}
                         />
                         
-                    </div>
+                    </Scrollbar>
                 </div>
                 )}
             </div>

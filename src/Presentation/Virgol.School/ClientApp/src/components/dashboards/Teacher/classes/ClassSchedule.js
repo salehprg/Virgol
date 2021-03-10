@@ -3,6 +3,8 @@ import Schedule from '../../manager/class/Schedule'
 import {getTeacherSchedule } from '../../../../_actions/classScheduleActions'
 import { connect } from 'react-redux';
 import { loading } from '../../../../assets/icons'
+import ScrollBar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class ClassSchedule extends React.Component {
 
@@ -39,14 +41,14 @@ class ClassSchedule extends React.Component {
         );
         
         return (
-            <div ref={this.sc} className="tw-overflow-auto">
+            <ScrollBar ref={this.sc} className="tw-overflow-auto">
                 <Schedule
                     isTeacher={false}
                     editable={false}
                     // lessons={this.props.schedules}
                     lessons={this.state.schedules}           
                 />
-            </div>
+            </ScrollBar>
         );
     }
 
