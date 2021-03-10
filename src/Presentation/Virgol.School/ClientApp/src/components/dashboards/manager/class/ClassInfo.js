@@ -14,8 +14,6 @@ import PencilText from '../../../field/PencilText';
 import AddStudent from './AddStudent'
 import protectedManager from "../../../protectedRoutes/protectedManager";
 import history from "../../../../history";
-import ScrollBar from 'react-perfect-scrollbar';
-import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class ClassInfo extends React.Component {
 
@@ -260,7 +258,7 @@ class ClassInfo extends React.Component {
                     </div>
                     <div className="tw-my-8">
                         <button onClick={() => this.setState({ addLesson: true })} className="tw-px-6 tw-py-1 tw-bg-greenish tw-text-white tw-rounded-lg tw-mb-2"> {this.state.classDetail.grade_Id == 0 ? this.props.t('addFreeMeeting') : this.props.t('addLesson')} </button>
-                        <ScrollBar ref={this.sc} className="tw-border-2 tw-border-dark-blue tw-overflow-auto">
+                        <div ref={this.sc} className="tw-border-2 tw-border-dark-blue tw-overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
                                     isManager={true}
@@ -277,7 +275,7 @@ class ClassInfo extends React.Component {
                                 :
                                 "loading"
                             }
-                        </ScrollBar>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -21,9 +21,6 @@ import ExtraLessons from "./ExtraLesson/ExtraLessons"
 import Sessions from './sessions/Sessions'
 import {GetSchoolInfo} from '../../../_actions/schoolActions'
 
-import 'react-perfect-scrollbar/dist/css/styles.css'
-import Scrollbar from 'react-perfect-scrollbar'
-
 class ManagerDashboard extends React.Component {
 
     state = {

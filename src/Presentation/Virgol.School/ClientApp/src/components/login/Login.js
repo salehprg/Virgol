@@ -9,7 +9,6 @@ import Fieldish from "../field/Fieldish";
 import Passish from "../field/Passish";
 import SelectLang from "./SelectLang";
 import { localizer } from '../../assets/localizer'
-import ScrollBar from "react-perfect-scrollbar";
 
 class Login extends React.Component {
 

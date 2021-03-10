@@ -12,10 +12,6 @@ import history from "../../../../history";
 import { Link } from "react-router-dom";
 import SelectableCard from "../../baseManager/SelectableCard";
 
-import ScrollBar from "react-perfect-scrollbar";
-import 'react-perfect-scrollbar/dist/css/styles.css'
-
-
 class Grades extends React.Component {
 
     state = { loading: false, query: '' }
@@ -102,7 +98,7 @@ class Grades extends React.Component {
 
                 {(!this.props.schoolLessonInfo ? this.props.t('loading') :
                 <div className="tw-w-full tw-rounded-lg tw-min-h-90 lg:tw-col-span-3 tw-col-span-1">
-                    <ScrollBar className="tw-mt-8 tw-overflow-auto">
+                    <div className="tw-mt-8 tw-overflow-auto">
                         <BaseManager
                             OnLockCall={(state) => this.OnLock(state)}
                             schoolId={this.props.match.params.id}
@@ -127,7 +123,7 @@ class Grades extends React.Component {
                             selectClass={this.selectClass}
                             loadingClasses={this.state.loadingClasses}
                         />
-                    </ScrollBar>
+                    </div>
                     <div className="tw-w-full tw-mt-8 tw-p-4 tw-bg-dark-blue tw-rounded-xl">
                         <p className="tw-text-right tw-text-white"> {this.props.t('classList')} </p>
                         <div dir="rtl" className="tw-w-full tw-grid all-classes">

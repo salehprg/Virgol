@@ -12,8 +12,6 @@ import App from './components/App';
 import reducers from "./_reducers";
 import Working from "./components/Working";
 import * as serviceWorker from './serviceWorker';
-import ScrollBar from 'react-perfect-scrollbar';
-import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const persistConfig = {
     key: 'root',
@@ -33,9 +31,7 @@ let persistor = persistStore(store)
 ReactDOM.render(
     <Provider store={store}>
         <PersistGate loading={<Working />} persistor={persistor}>
-            {/* <ScrollBar onScrollY={() =>console.log('salam')}> */}
-                <App />
-            {/* </ScrollBar> */}
+            <App />
         </PersistGate>
     </Provider>,
     document.getElementById('root')

@@ -5,8 +5,6 @@ import {edit, external_link, loading, trash} from "../../assets/icons";
 import history from "../../history";
 import {GetParticipantList , SetPresentStatus } from "../../_actions/meetingActions"
 import { connect } from "react-redux";
-import ScrollBar from "react-perfect-scrollbar";
-import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class ParticipantList extends React.Component {
 
@@ -69,7 +67,7 @@ class ParticipantList extends React.Component {
                         <p className="tw-text-white">{this.state.participants[0] ? this.state.participants[0].meetingName : ''}</p>
                         <p className="tw-text-white"> {this.props.t('classDuration')} {this.state.participants[0] ? this.state.participants[0].checkCount * 5 : ''} {this.props.t('minute')} </p>
                     </div>
-                    <ScrollBar className="tw-mt-2 tw-overflow-auto tw-h-full">
+                    <div className="tw-mt-2 tw-overflow-auto tw-h-full">
                         {(this.state.participants ?
                             <>
                                 <PlusTable
@@ -122,7 +120,7 @@ class ParticipantList extends React.Component {
                                 />
                                 </>
                             : null )}
-                    </ScrollBar>
+                    </div>
 
                 </div>
                 {/*{(this.state.participants ? */}

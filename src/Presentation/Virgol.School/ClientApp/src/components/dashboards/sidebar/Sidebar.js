@@ -3,11 +3,6 @@ import { motion } from "framer-motion";
 import {logo, menu, x} from "../../../assets/icons";
 import { localizer } from '../../../assets/localizer';
 
-import 'react-perfect-scrollbar/dist/css/styles.css'
-import Scrollbar from 'react-perfect-scrollbar'
-// import 'react-perfect-scrollbar/styles.scss';
-
-
 const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, children }) => {
 
     const sidebarVar = {
@@ -66,10 +61,10 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
             } */}
 
             <img className="tw-w-24 tw-mx-auto tw-my-3" src={localizer.getLogo(window.location.href)} />
-            <Scrollbar 
-            className="tw-w-full tw-mt-10 tw-max-h-75 tw-overflow-y-auto">
+            <div className="tw-w-full tw-mt-10 tw-max-h-75 tw-overflow-y-auto">
                 {children}
-            </Scrollbar>
+            </div>
+            
         </motion.div>
         
     );

@@ -2,8 +2,6 @@ import React from "react";
 import { withTranslation } from 'react-i18next';
 import RecentClassDetail from "./ClassDetail";
 import { connect } from "react-redux";
-import ScrollBar from "react-perfect-scrollbar";
-import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class RecentClass extends React.Component {
 
@@ -25,7 +23,7 @@ class RecentClass extends React.Component {
         const { title, pos , joinList , classes} = this.props
 
         return (
-            <ScrollBar className={`${pos} tw-w-full tw-h-full tw-mt-4 tw-px-6 tw-py-4 tw-text-right tw-bg-dark-blue tw-rounded-xl tw-overflow-auto`}>
+            <div className={`${pos} tw-w-full tw-h-full tw-mt-4 tw-px-6 tw-py-4 tw-text-right tw-bg-dark-blue tw-rounded-xl tw-overflow-auto`}>
                 <p className="tw-text-white">{title}</p>
                 {(classes ?
                     (
@@ -67,7 +65,7 @@ class RecentClass extends React.Component {
                 )
                 }
             
-            </ScrollBar>
+            </div>
         );
     }
 
