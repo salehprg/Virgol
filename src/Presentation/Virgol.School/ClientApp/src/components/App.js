@@ -64,10 +64,11 @@ class App extends React.Component {
       if(ele){
         // fade out
         ele.classList.add('available')
-        setTimeout(() => {
-          // remove from DOM
-          ele.outerHTML = ''
-        }, 2000)
+        ele.outerHTML = ''
+        // setTimeout(() => {
+        //   // remove from DOM
+        //   ele.outerHTML = ''
+        // }, 2000)
       }
       
         history.listen((location, action) => {
