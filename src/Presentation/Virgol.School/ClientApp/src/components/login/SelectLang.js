@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePopper } from 'react-popper';
 import { useTranslation } from 'react-i18next';
 import {chevron, translate} from "../../assets/icons";
@@ -6,7 +6,7 @@ import {chevron, translate} from "../../assets/icons";
 const SelectLang = ({ showLang, setShowLang }) => {
 
     const {i18n} = useTranslation();
-    const [currentLang, setCurrentLang] = useState(localStorage.getItem('lang') || 'fa');
+    const [currentLang, setCurrentLang] = useState(localStorage.getItem('prefLang') || 'fa');
     const [referenceElement, setReferenceElement] = useState(null);
     const [popperElement, setPopperElement] = useState(null);
     const { styles, attributes } = usePopper(referenceElement, popperElement, {
@@ -15,6 +15,13 @@ const SelectLang = ({ showLang, setShowLang }) => {
             { name: 'offset', options: { offset: [0, 8] } }
         ],
     });
+
+    // useEffect(() =>{
+    //     if(!localStorage.getItem('prefLang')){
+    //         localStorage.setItem('prefLang' , 'fa')
+    //         this.currentLang
+    //     }
+    // })
 
     const whatLang = (lang) => {
         localStorage.setItem('prefLang', lang);

@@ -16,8 +16,8 @@ class StudentGuide extends React.Component{
                 </div>
                 <div className="tw-text-center">
                     <img className="tw-w-24 tw-mx-auto tw-mb-8" src={"/logo.svg"} alt="logo" />
-                    <p className="tw-text-white tw-text-2xl">ویرگول، سامانه آموزش مجازی</p>
-                    <p className="tw-text-white tw-py-6 tw-text-lg">ویدیو معرفی سامانه آموزش مجازی ویرگول، بخش مخصوص معلمان</p>
+                    <p className="tw-text-white tw-text-2xl">{this.props.t('virgoolVirtualLearning')}</p>
+                    <p className="tw-text-white tw-py-6 tw-text-lg">{this.props.t('studentsGuideVideo')}</p>
                     <form method="get" action="https://goldenstarc.arvanvod.com/0WobRajx6K/wLp0lD0DAZ/origin_tK7e4lKVQq9RzzQJKJUDMTYAHlvtbi4i5WQn9nrW.mp4" className="tw-text-center">
                         <input className="tw-px-6 tw-cursor-pointer tw-bg-transparent tw-py-1 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg tw-mx-auto" value={this.props.t('download')} type="submit"/>
                     </form>

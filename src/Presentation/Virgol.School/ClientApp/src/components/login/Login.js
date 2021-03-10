@@ -9,6 +9,7 @@ import Fieldish from "../field/Fieldish";
 import Passish from "../field/Passish";
 import SelectLang from "./SelectLang";
 import { localizer } from '../../assets/localizer'
+import ScrollBar from "react-perfect-scrollbar";
 
 class Login extends React.Component {
 
@@ -25,6 +26,11 @@ class Login extends React.Component {
 
     componentDidMount() {
         this.props.logout()
+
+        if(!localStorage.getItem('prefLang')){
+            localStorage.setItem('prefLang' , 'fa')
+        }
+
         if(this.props.user){
             this.setState({logingin: true})
 

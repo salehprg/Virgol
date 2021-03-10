@@ -59,6 +59,8 @@ import GuideMenu from './dashboards/videos/GuideMenu';
 
 import ScrollBar from 'react-perfect-scrollbar';
 import 'react-perfect-scrollbar/dist/css/styles.css'
+
+import PerfectScrollbar from 'react-perfect-scrollbar'
 class App extends React.Component {
 
     
@@ -109,7 +111,7 @@ class App extends React.Component {
                         refreshCacheAndReload();
                     }
                     return (
-                        <ScrollBar className="tw-font-vr tw-overflow-x-hidden">
+                        <PerfectScrollbar className="tw-font-vr tw-overflow-x-hidden">
                             {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
                             {this.props.worker.status ? <Working /> : null}
 
@@ -169,7 +171,7 @@ class App extends React.Component {
                                     <Route path="" component={NoFound} />
                                 </Switch>
                             </Router>
-                        </ScrollBar>       
+                        </PerfectScrollbar>       
                     );
                 }}
             </CacheBuster>

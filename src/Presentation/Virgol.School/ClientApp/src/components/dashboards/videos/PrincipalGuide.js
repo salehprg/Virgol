@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player'
 import { arrow_left } from '../../../assets/icons';
 import history from '../../../history';
 class PrincipalGuide extends React.Component{ 
+
     render(){    
         const url = 'https://goldenstarc.arvanvod.com/0WobRajx6K/pZq3EW9vdj/h_,144_200,240_400,360_502,480_502,720_502,1080_502,k.mp4.list/master.m3u8'
         return(
@@ -16,8 +17,8 @@ class PrincipalGuide extends React.Component{
                 </div>
                 <div className="tw-text-center">
                     <img className="tw-w-24 tw-mx-auto tw-mb-8" src={"/logo.svg"} alt="logo" />
-                    <p className="tw-text-white tw-text-2xl">ویرگول، سامانه آموزش مجازی</p>
-                    <p className="tw-text-white tw-py-6 tw-text-lg">ویدیو معرفی سامانه آموزش مجازی ویرگول، بخش مخصوص معلمان</p>
+                    <p className="tw-text-white tw-text-2xl">{this.props.t('virgoolVirtualLearning')}</p>
+                    <p className="tw-text-white tw-py-6 tw-text-lg">{this.props.t('principalsGuideVideo')}</p>
                     <form method="get" action="https://goldenstarc.arvanvod.com/0WobRajx6K/pZq3EW9vdj/origin_FjJsk5SRrvgYje8m395IVK6hkEQOJWiI3iSBTTrM.mp4" className="tw-text-center">
                         <input className="tw-px-6 tw-cursor-pointer tw-bg-transparent tw-py-1 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg tw-mx-auto" value={this.props.t('download')} type="submit"/>
                     </form>
