@@ -191,7 +191,7 @@ namespace Virgol.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
 
-                Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == roomGUID).FirstOrDefault();
+                Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == roomGUID || x.MeetingId.Contains(roomGUID + "|")).FirstOrDefault();
 
                 if(meeting != null)
                 {

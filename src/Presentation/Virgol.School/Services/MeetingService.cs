@@ -49,6 +49,9 @@ public class MeetingService {
             if(meetingName == "")
                 meetingName = displayName ;
 
+            Meeting meeting = new Meeting();
+            meeting.nameWithoutCounter = meetingName;
+
             //Display meeting name Without number Just for main adobe meeting
             if(serviceType == ServiceType.AdobeConnect && newMeetingNo != 1)
             {
@@ -59,8 +62,6 @@ public class MeetingService {
                 meetingName += " جلسه " + newMeetingNo;
             }
                 
-
-            Meeting meeting = new Meeting();
             meeting.MeetingName = meetingName;
             meeting.StartTime = timeNow;
             meeting.ScheduleId = scheduleId;
@@ -90,7 +91,7 @@ public class MeetingService {
         duration += (duration != 0 ? 5 : 0); // add 5 minutes Additional to the end of class
         //duration = 0; // add 5 minutes Additional to the end of class
 
-        MeetingsResponse bbb_response = new MeetingsResponse();
+        bool result = false;
         MeetingInfoResponse adobe_MeetingInfo = new MeetingInfoResponse();
         List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
 
@@ -110,18 +111,22 @@ public class MeetingService {
             Console.WriteLine("Set Connection");
             Console.WriteLine("URL: " + serviceModel.Service_URL + " Secret : " + serviceModel.Service_Key);
 
-            bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
+            MeetingsResponse bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
 
             Console.WriteLine("Room in BBB Created");
             if(bbb_response == null)
             {
+                result = false;
                 return false;
             }
+
+            result = true;
         }
-        else if(serviceType == ServiceType.AdobeConnect)
+
+        if(serviceType == ServiceType.AdobeConnect)
         {
             AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
-            adobe_MeetingInfo = adobeApi.StartMeeting(meeting.MeetingName);
+            adobe_MeetingInfo = adobeApi.StartMeeting(meeting.nameWithoutCounter);
             
             if(adobe_MeetingInfo == null)
             {
@@ -130,13 +135,13 @@ public class MeetingService {
 
             if(adobe_MeetingInfo.status.code == "ok")
             {
-                bbb_response.returncode = "SUCCEED";
-                meeting.MeetingId = adobe_MeetingInfo.scoInfo.scoId + "|" + ServiceType.AdobeConnect;
+                result = true;
+                meeting.MeetingId = adobe_MeetingInfo.scoInfo.scoId;
             }
         }
 
 
-        if(bbb_response.returncode != "FAILED" && !meeting.Private)
+        if(result = true && !meeting.Private)
         {
             if(serviceType == ServiceType.BBB)
             {
@@ -149,11 +154,11 @@ public class MeetingService {
 
             return true;
         }
-        else if(bbb_response.returncode != "FAILED" && meeting.Private)
+        else if(result = true && meeting.Private)
         {
             if(serviceType == ServiceType.AdobeConnect)
             {
-                meeting.MeetingId = customMeetingId + "|" + adobe_MeetingInfo.scoInfo.scoId + "|" + ServiceType.AdobeConnect;
+                meeting.MeetingId = customMeetingId + "|" + adobe_MeetingInfo.scoInfo.scoId;
             }
 
             appDbContext.Meetings.Update(meeting);
@@ -168,7 +173,6 @@ public class MeetingService {
     {
         try
         {
-            Meeting mainAdobeMeeting = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id && x.TeacherId == teacherId).FirstOrDefault();
 
             Console.WriteLine("Make Meeting in Db");
             Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
@@ -197,6 +201,8 @@ public class MeetingService {
 
             bool result = false , createRoom = true;
 
+            List<Meeting> adobeMeetings = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id && x.TeacherId == teacherId && x.ServiceType == serviceType && x.MeetingId != null).ToList();
+            Meeting mainAdobeMeeting = adobeMeetings.FirstOrDefault();
             //Just for Optimizing Meeting
             if(mainAdobeMeeting != null && serviceType == ServiceType.AdobeConnect)
             {
@@ -204,10 +210,9 @@ public class MeetingService {
 
                 AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
 
-                string scoId = "";
-                try{scoId =  mainAdobeMeeting.MeetingId.Split("|")[0];}catch{}
+                string scoId = mainAdobeMeeting.MeetingId;
 
-                if(adobeApi.Login("admin@legace.ir" , "Connectpass.24"))
+                if(adobeApi.Login(serviceModel.Service_Login , serviceModel.Service_Key))
                 {
                     MeetingInfoResponse response = adobeApi.FindScoInfo(scoId);
 
@@ -215,16 +220,17 @@ public class MeetingService {
                     {
                         meeting.MeetingId = mainAdobeMeeting.MeetingId;
 
-                        appDbContext.Meetings.Update(meeting);
-                        await appDbContext.SaveChangesAsync();
-
                         result = true;
                         createRoom = false;
                     }
                     else
                     {
+                        adobeMeetings.ForEach(x => x.MeetingId = null);
                         createRoom = true;
                     }
+
+                    appDbContext.Meetings.Update(meeting);
+                    await appDbContext.SaveChangesAsync();
                 }
             }
 

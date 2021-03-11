@@ -1384,6 +1384,33 @@ namespace Virgol.Controllers
         }
     }
 
+    public async Task<IActionResult> FixMeetingId()
+    {
+        try
+        {
+            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.MeetingId.Contains("|adobe")).ToList();
+            foreach (var meeting in meetings)
+            {
+                try
+                {
+                    string id = meeting.MeetingId.Split("|adobe")[0];
+                    meeting.MeetingId = id;
+                }
+                catch(Exception)
+                {}
+            }
+
+            appDbContext.UpdateRange(meetings);
+            await appDbContext.SaveChangesAsync();
+
+            return Ok(true);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+            throw;
+        }
+    }
 #endregion
 
 #region Payments
