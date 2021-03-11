@@ -20,16 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="padding added to tables">
-      <change afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/login/rememberStyles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/authActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/authActions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/stream/StreamInfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/stream/StreamInfo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/stream/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/stream/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/tailwind.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/tailwind.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,13 +149,7 @@
       <workItem from="1615375074787" duration="2902000" />
       <workItem from="1615449459099" duration="2594000" />
       <workItem from="1615466205985" duration="220000" />
-    </task>
-    <task id="LOCAL-00002" summary="a test commit">
-      <created>1611421734193</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1611421734193</updated>
+      <workItem from="1615466462285" duration="518000" />
     </task>
     <task id="LOCAL-00003" summary="landing page optimized">
       <created>1612779975970</created>
@@ -502,7 +487,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615397565984</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="login redesigned &#10;stream info color changed">
+      <created>1615467035467</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1615467035467</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -524,7 +516,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="translation updated" />
     <MESSAGE value="some change in side bar" />
     <MESSAGE value="try for debugging on server" />
     <MESSAGE value="landing page improved&#10;react presist commented" />
@@ -549,6 +540,7 @@
     <MESSAGE value="guide page translation completed" />
     <MESSAGE value="stream info color changed &#10;login page redesigned" />
     <MESSAGE value="login page redesigned &#10;stream info color changed" />
-    <option name="LAST_COMMIT_MESSAGE" value="login page redesigned &#10;stream info color changed" />
+    <MESSAGE value="login redesigned &#10;stream info color changed" />
+    <option name="LAST_COMMIT_MESSAGE" value="login redesigned &#10;stream info color changed" />
   </component>
 </project>
