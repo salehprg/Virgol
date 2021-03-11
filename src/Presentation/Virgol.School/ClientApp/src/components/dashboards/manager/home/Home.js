@@ -23,9 +23,8 @@ class Home extends React.Component {
             await this.props.getManagerDashboardInfo(this.props.user.token);
             await this.props.GetIncommingNews(this.props.user.token);
             await this.props.GetMyNews(this.props.user.token);
-            this.setState({loading: false})
 
-            // console.log(this.props.match.url.substring(1,2) );
+            this.setState({loading: false})
             this.setState({userType : this.props.match.url.substring(1,2)})
     }
 

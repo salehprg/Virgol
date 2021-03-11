@@ -95,18 +95,23 @@ export const logout = () => {
     const lang = localStorage.getItem('prefLang')
     const remember = localStorage.getItem('remember')
 
-    console.log(remember);
-    console.log(pass);
-
     localStorage.clear()
     
     localStorage.setItem('remember' , remember)
+
+    if(lang === null){
+        localStorage.setItem('prefLang' , 'fa')
+    }
+    else{
+        localStorage.setItem('prefLang' , lang)
+    }
+    
 
     if(localStorage.getItem('remember') === 'true'){
         localStorage.setItem('VirgoolBetaVersion' , pass)
     }
 
-    localStorage.setItem('prefLang' , lang)
+    
 
     return { type: Type.LOGOUT }
 }

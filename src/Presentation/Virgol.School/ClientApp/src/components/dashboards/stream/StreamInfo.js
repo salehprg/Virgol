@@ -104,7 +104,7 @@ class StreamInfo extends React.Component {
                 role="tablist">
                     <li className="nav-item">
                         <a  
-                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-white" 
                         id="goToFuture"
                         data-toggle="tab" 
                         role="tab" 
@@ -121,7 +121,7 @@ class StreamInfo extends React.Component {
                         role="tab" 
                         data-toggle="tab"
                         aria-controls="finishedConferences" 
-                        className="tw-flex-sm-fill tw-text-sm-center nav-link active tw-text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link active tw-text-white" 
                         href="#finishedConferences"
                         aria-selected="true"
                         >{this.props.t('finishedConferences')}</a>
@@ -133,7 +133,7 @@ class StreamInfo extends React.Component {
                         role="tab" 
                         data-toggle="tab"
                         aria-controls="activeStream" 
-                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-white" 
                         href="#activeStream"
                         aria-selected="false"
                         >
