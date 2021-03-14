@@ -109,7 +109,7 @@ class App extends React.Component {
                     return (
                         <div className="tw-font-vr tw-overflow-x-hidden">
                             {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
-                            {this.props.worker.status ? <Working /> : null}
+                            {/* {this.props.worker.status ? <Working /> : null} */}
 
                             <Router history={history}>
                                 <Switch>

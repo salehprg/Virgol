@@ -7,7 +7,7 @@ import Fieldish from '../../field/Fieldish';
 import Tablish from '../tables/Tablish';
 import {GetEndedStreams , GetFutureStreams , GetCurrentStream 
         , GetRoles , ReserveStream , RemoveStream} from '../../../_actions/streamActions';
-import { edit, plus, trash } from '../../../assets/icons';
+import { edit, loading, plus, trash } from '../../../assets/icons';
 import DeleteConfirm from '../../modals/DeleteConfirm';
 import history from '../../../history';
 import {styles} from '../../../selectStyle'
@@ -24,18 +24,21 @@ class StreamInfo extends React.Component {
         startTime: new Date(),
         selectedGuests: [],
         duration: 90,
-        guests: [{ value: 'students', label: 'دانش آموزان' }, { value: 'teachers', label: 'معلمان' }]
+        guests: [{ value: 'students', label: 'دانش آموزان' }, { value: 'teachers', label: 'معلمان' }],
+        loading : false
         
     }
 
     componentDidMount = async () => {
-        
+        this.setState({loading : true})
         await this.props.GetCurrentStream(this.props.user.token);
         await this.props.GetEndedStreams(this.props.user.token);
         await this.props.GetFutureStreams(this.props.user.token);
         await this.props.GetRoles(this.props.user.token);
 
         this.initializeRoles()
+
+        this.setState({loading: false})
     }
 
     initializeRoles = () =>{
@@ -86,6 +89,7 @@ class StreamInfo extends React.Component {
     }
 
     render() {
+        if(this.state.loading) return loading('tw-w-10 tw-text-grayish centerize')
         return (
             <div className="tw-w-full tw-overflow-y-auto tw-mt-10 tw-items-center tw-justify-evenly">
                 {this.state.showDeleteModal ? 

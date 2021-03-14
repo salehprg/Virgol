@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import Hero from "../../admin/home/Hero";
 import CounterCard from "../../admin/home/CounterCard";
-import {home, key, user, users} from "../../../../assets/icons";
+import {loading} from "../../../../assets/icons";
 import Feed from "../../feed/Feed";
 import RecentClass from "../RecentClass/RecentClass";
 import { connect } from "react-redux";
@@ -103,7 +103,7 @@ class Home extends React.Component {
     }
 
     render() {
-        if(this.state.loading) return this.props.t('loading')
+        if(this.state.loading) return (<div className="tw-text-center tw-bg-dark-blue tw-w-full tw-h-screen">{loading('centerize tw-text-grayish tw-w-12')}</div>)
         return (
             <div className="tw-grid sm:tw-grid-cols-2 tw-grid-cols-1 tw-gap-4 tw-py-6">
                 {this.state.newPrivateModal ?

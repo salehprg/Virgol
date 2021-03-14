@@ -3,6 +3,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from "react-redux";
 import {GetGroupedSchedule } from '../../../../_actions/classScheduleActions'
 import ClassCard from "./ClassCard";
+import {loading} from '../../../../assets/icons'
 
 class ClassList extends React.Component {
 
@@ -28,6 +29,7 @@ class ClassList extends React.Component {
     }
 
     render() {
+        if(this.state.loading) return (<div className="tw-text-center tw-bg-dark-blue tw-w-full tw-h-screen">{loading('centerize tw-text-grayish tw-w-12')}</div>)
         return (
             <div className="tw-grid tw-my-8 teacher-classes-cards">
                 {(this.state.classesLists ? 

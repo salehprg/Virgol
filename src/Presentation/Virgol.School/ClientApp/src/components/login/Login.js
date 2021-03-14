@@ -118,9 +118,9 @@ class Login extends React.Component {
                             component={this.renderInputs}
                         />
 
-                        <button onClick={() => this.setState({ panel: 'sendcode' })} className={`tw-w-5/6  tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-ml-20 tw-pb-0 focus:tw-outline-none tw-mt-8 tw-text-white tw-text-right`}>
-                            {this.props.t('forgotPassword')}
-                        </button>
+                        <a onClick={() => this.setState({ panel: 'sendcode' })} className={`tw-w-5/6 tw-cursor-pointer hover:tw-no-underline  tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-ml-20 tw-pb-0 focus:tw-outline-none tw-mt-4 tw-text-white tw-text-right`}>
+                            {this.props.t('forgotPassword')} 
+                        </a>
 
                         <Field
                             name="password"
@@ -172,7 +172,7 @@ class Login extends React.Component {
                             placeholder={this.props.t('username')}
                             component={this.renderInputs}
                         />
-                        <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
+                        <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-4 tw-bg-purplish tw-text-white`}>
                             {this.state.sendingCode ? loading('tw-w-6 tw-text-white') : this.props.t('sendVerificationCode')}
                         </button>
                     </form>
