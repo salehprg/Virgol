@@ -26,8 +26,7 @@ class Login extends React.Component {
 
     componentDidMount() {
         this.props.logout()
-
-        if(this.props.user){
+        if(localStorage.getItem('remember') !== 'false'){
             this.setState({logingin: true})
 
             if(localStorage.getItem('prefLang') === null){
@@ -35,7 +34,7 @@ class Login extends React.Component {
             }
 
             this.onLogin({username : this.props.user.userInformation.userName ,
-                        password: localStorage.getItem('VirgoolBetaVersion')})
+                        password: this.props.user.userSituation.split('@').join('')})
 
         }
     }
