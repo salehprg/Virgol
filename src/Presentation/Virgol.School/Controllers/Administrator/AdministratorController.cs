@@ -56,7 +56,7 @@ namespace Virgol.Controllers
             appDbContextBackup = _appDBBackup;
 
             SMSApi = new FarazSmsApi();
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
 
             schoolService = new SchoolService(appDbContext);
             
@@ -892,7 +892,7 @@ namespace Virgol.Controllers
 
             AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.SchoolsType == schoolType).FirstOrDefault();
 
-            MoodleApi moodleApi = new MoodleApi();
+            MoodleApi moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             List<EnrolUser> enrolsData = new List<EnrolUser>();
 
             List<UserModel> usersData = new List<UserModel>();

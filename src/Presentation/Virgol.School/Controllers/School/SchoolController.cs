@@ -42,7 +42,7 @@ namespace Virgol.Controllers
             signInManager =_signinManager;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             SMSApi = new FarazSmsApi();
             ldap = new LDAP_db(appDbContext);
             UserService = new UserService(userManager , appDbContext);

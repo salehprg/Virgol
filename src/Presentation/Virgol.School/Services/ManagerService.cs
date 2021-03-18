@@ -16,7 +16,7 @@ public class ManagerService {
     public ManagerService(AppDbContext _appDbContext , UserManager<UserModel> userManager = null)
     {
         appDbContext = _appDbContext;
-        moodleApi = new MoodleApi();
+        moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
 
         if(userManager != null)
             userService = new UserService(userManager , appDbContext);

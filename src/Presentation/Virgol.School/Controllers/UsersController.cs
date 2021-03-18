@@ -48,7 +48,7 @@ namespace Virgol.Controllers
 
 
             ldap = new LDAP_db(appDbContext);
-            //moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             SMSApi = new FarazSmsApi();
             UserService = new UserService(userManager , appDbContext);
         }

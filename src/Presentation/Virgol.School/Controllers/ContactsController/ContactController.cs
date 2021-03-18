@@ -45,7 +45,7 @@ namespace Virgol.Controllers
             roleManager = _roleManager;
             appSettings = _appsetting.Value;
 
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             ldap = new LDAP_db(appDbContext);
 
             UserService = new UserService(userManager , appDbContext);

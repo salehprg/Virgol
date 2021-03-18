@@ -22,12 +22,12 @@ namespace Virgol.Helper
         static HttpClient client;
         string BaseUrl;
         string token;
-        public MoodleApi()
+        public MoodleApi(string Token)
         {
             client = new HttpClient();   
 
             BaseUrl = AppSettings.BaseUrl_moodle + "/webservice/rest/server.php?moodlewsrestformat=json";
-            token = AppSettings.Token_moodle;
+            token = Token;
         }
 
         async Task<HttpResponseModel> sendData (string data)

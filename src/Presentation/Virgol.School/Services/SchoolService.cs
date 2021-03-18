@@ -15,7 +15,7 @@ public class SchoolService
     {
         appDbContext = _appdbContext;
 
-        moodleApi = new MoodleApi();
+        moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
     }
 
     public class CreateSchoolResult

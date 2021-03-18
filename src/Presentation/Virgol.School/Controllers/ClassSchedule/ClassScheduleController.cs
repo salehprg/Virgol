@@ -39,7 +39,7 @@ namespace Virgol.Controllers
             signInManager =_signinManager;
             roleManager = _roleManager;
 
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(dbContext , "Token_moodle"));
 
             classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
             //classScheduleService = new ClassScheduleService(appDbContext);
@@ -595,7 +595,7 @@ namespace Virgol.Controllers
             UserModel userModel = userService.GetUserModel(User);
 
             //LDAP_db ldap = new LDAP_db(appDbContext);
-            MoodleApi moodle = new MoodleApi();
+            MoodleApi moodle = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             ClassScheduleView scheduleVW = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
 
             bool isTeacher = userService.HasRole(userModel , Roles.Teacher);

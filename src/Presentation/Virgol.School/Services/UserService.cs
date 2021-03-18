@@ -26,7 +26,7 @@ public class UserService {
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
-        moodleApi = new MoodleApi();
+        moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
         ldap = new LDAP_db(_appDbContext);
     }
 

@@ -31,7 +31,7 @@ namespace Virgol.Controllers.Stream
             userManager = _userManager;
             appDbContext = dbContext;
 
-            //moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
 
             //classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
             streamService = new StreamService(userManager , appDbContext);
