@@ -34,7 +34,7 @@ class ClassSchedule extends React.Component {
     render() {
         if (this.state.loading || !this.state.schedules) return (
             <>
-                {loading('tw-w-10 tw-text-white centerize')}
+                {loading('tw-w-10 tw-text-grayish centerize')}
             </>
         );
         

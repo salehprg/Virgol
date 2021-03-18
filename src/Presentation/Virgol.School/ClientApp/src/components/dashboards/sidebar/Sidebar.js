@@ -30,6 +30,7 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
     }
 
     return (
+        
         <motion.div className="lg:tw-w-1/6 tw-z-40  lg:tw-max-w-full tw-max-w-250 tw-h-screen tw-fixed tw-top-0 tw-right-0 tw-bg-black-blue"
             animate={show ? 'open' : 'close'}
             transition="transition"
@@ -60,11 +61,12 @@ const Sidebar = ({ show, toggle,title , logoTitle, active, changeActive, childre
             } */}
 
             <img className="tw-w-24 tw-mx-auto tw-my-3" src={localizer.getLogo(window.location.href)} />
-
             <div className="tw-w-full tw-mt-10 tw-max-h-75 tw-overflow-y-auto">
                 {children}
             </div>
+            
         </motion.div>
+        
     );
 
 }

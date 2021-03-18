@@ -11,7 +11,7 @@ import {GetMyNews} from "../../../../_actions/newsActions"
 
 class Home extends React.Component {
 
-    state = {loading : false}
+    state = {loading : false , userType : ''}
 
     componentDidMount = async () =>{
         if (this.props.history.action === 'POP' || this.props.dashboardInfo.length == 0 || this.props.myNews.length == 0 ) {
@@ -20,7 +20,8 @@ class Home extends React.Component {
             await this.props.getDashboardInfo(this.props.user.token);
             await this.props.GetMyNews(this.props.user.token);
             this.setState({loading: false})
-
+            // console.log(this.props.match.url.substring(1,2));
+            this.setState({userType : this.props.match.url.substring(1,2)})
         }
     }
     
@@ -58,6 +59,8 @@ class Home extends React.Component {
                             icon={home}
                             number={this.props.dashboardInfo.schoolCount}
                             bg="tw-bg-sky-blue"
+                            link="schools"
+                            userType={this.state.userType}
                         />
 
                         <CounterCard
@@ -73,6 +76,8 @@ class Home extends React.Component {
                             icon={user}
                             number={this.props.dashboardInfo.teacherCount}
                             bg="tw-bg-purplish"
+                            link="teachers"
+                            userType={this.state.userType}
                         />
 
                         <CounterCard
@@ -81,6 +86,8 @@ class Home extends React.Component {
                             number={this.props.dashboardInfo.studentsCount}
                             bg="tw-bg-redish"
                             pos="tw-row-start-3"
+                            link="students"
+                            userType={this.state.userType}
                         />
                     </div>
                 </div>

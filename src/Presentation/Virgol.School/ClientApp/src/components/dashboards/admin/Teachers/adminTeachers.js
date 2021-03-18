@@ -50,7 +50,7 @@ class adminTeachers extends React.Component {
                     button={() => {}}
                     query={this.state.query}
                     changeQuery={this.changeQuery}
-                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('personelCode'), this.props.t('completedAccount')]}
+                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('personelCode'), this.props.t('completedAccount') , this.props.t('confirmedAccount')]}
                     cardsPerPage={this.state.itemsPerPage}
                     totalCards={this.state.totalCard}
                     paginate={this.paginate}
@@ -62,12 +62,13 @@ class adminTeachers extends React.Component {
                                     this.state.teachers.map(teacher => {
                                         return(
                                         <tr>
-                                            <td className="tw-py-4 tw-text-right">{teacher.firstName}</td>
-                                            <td className="tw-text-right">{teacher.lastName}</td>
-                                            <td className="tw-text-right">{teacher.melliCode}</td>
-                                            <td className="tw-text-right">{teacher.phoneNumber}</td>
-                                            <td className="tw-text-right">{teacher.personalIdNUmber}</td>
-                                            <td><span className="tw-text-center">{teacher.latinFirstname && teacher.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{teacher.firstName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{teacher.lastName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{teacher.melliCode}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{teacher.phoneNumber}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{teacher.personalIdNUmber}</td>
+                                            <td><span className="tw-text-center tw-px-4 tw-py-4">{teacher.latinFirstname && teacher.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td><span className="tw-text-center tw-px-4 tw-py-4">{teacher.confirmedAcc ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
                                         </tr>
                                         )
                                     })

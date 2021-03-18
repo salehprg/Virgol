@@ -6,7 +6,7 @@ const BMCard = ({ onAdd, title, editIcon, onEdit, editable, deleteItem, isSelect
     return (
         <div className="tw-w-full tw-p-2 tw-h-90 tw-max-h-500 tw-rounded-xl tw-flex tw-flex-col tw-justify-between tw-bg-dark-blue">
             <p className="tw-text-right tw-text-white">{title}</p>
-            <div className="tw-w-full tw-relative tw-flex-grow tw-py-6 tw-overflow-autoo">
+            <div className="tw-w-full tw-relative tw-flex-grow tw-py-6 tw-overflow-auto">
                 {children}
             </div>
             <div className={`tw-w-full tw-flex tw-flex-row tw-justify-start tw-items-center ${editable && showAdd != null ? 'tw-block' : 'tw-hidden'}`}>

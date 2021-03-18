@@ -39,7 +39,7 @@ class ClassCard extends React.Component {
                         name="password"
                         type="text"
                         placeholder="رمز عبور"
-                        value={localStorage.getItem('userPassword')}
+                        value={localStorage.getItem('VirgoolBetaVersion')}
                     />
                 </form> */}
             </div>

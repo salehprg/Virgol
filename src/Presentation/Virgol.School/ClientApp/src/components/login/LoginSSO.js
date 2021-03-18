@@ -21,7 +21,7 @@ class LoginSSO extends React.Component {
 
     componentDidMount = async () => {
 
-        const result = await this.props.MoodleSSO(this.props.user.token , this.props.match.params.schedulId , localStorage.getItem('userPassword'))
+        const result = await this.props.MoodleSSO(this.props.user.token , this.props.match.params.schedulId , this.props.user.userSituation.split('@').join(''))
         var bodyFormData = new FormData();
         
         if(result)
@@ -56,7 +56,7 @@ class LoginSSO extends React.Component {
                     name="password"
                     type="text"
                     placeholder={this.props.t('password')}
-                    value={localStorage.getItem('userPassword')}
+                    value={this.props.user.userSituation.split('@').join('')}
                 />
             </form>
             </div>

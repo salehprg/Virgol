@@ -20,7 +20,7 @@ const CheckTable = ({ headers, body, options, checkAll, clearItems, selected }) 
                         </div>
                     </th>
                     {headers.map(header => {
-                        return <th className="tw-text-right tw-px-2 tw-pb-4">{header}</th>
+                        return <th className="tw-text-right tw-px-4 tw-pb-4">{header}</th>
                     })}
                 </tr>
                 </thead>

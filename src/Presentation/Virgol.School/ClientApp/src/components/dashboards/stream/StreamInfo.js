@@ -7,7 +7,7 @@ import Fieldish from '../../field/Fieldish';
 import Tablish from '../tables/Tablish';
 import {GetEndedStreams , GetFutureStreams , GetCurrentStream 
         , GetRoles , ReserveStream , RemoveStream} from '../../../_actions/streamActions';
-import { edit, plus, trash } from '../../../assets/icons';
+import { edit, loading, plus, trash } from '../../../assets/icons';
 import DeleteConfirm from '../../modals/DeleteConfirm';
 import history from '../../../history';
 import {styles} from '../../../selectStyle'
@@ -24,18 +24,21 @@ class StreamInfo extends React.Component {
         startTime: new Date(),
         selectedGuests: [],
         duration: 90,
-        guests: [{ value: 'students', label: 'دانش آموزان' }, { value: 'teachers', label: 'معلمان' }]
+        guests: [{ value: 'students', label: 'دانش آموزان' }, { value: 'teachers', label: 'معلمان' }],
+        loading : false
         
     }
 
     componentDidMount = async () => {
-        
+        this.setState({loading : true})
         await this.props.GetCurrentStream(this.props.user.token);
         await this.props.GetEndedStreams(this.props.user.token);
         await this.props.GetFutureStreams(this.props.user.token);
         await this.props.GetRoles(this.props.user.token);
 
         this.initializeRoles()
+
+        this.setState({loading: false})
     }
 
     initializeRoles = () =>{
@@ -86,6 +89,7 @@ class StreamInfo extends React.Component {
     }
 
     render() {
+        if(this.state.loading) return loading('tw-w-10 tw-text-grayish centerize')
         return (
             <div className="tw-w-full tw-overflow-y-auto tw-mt-10 tw-items-center tw-justify-evenly">
                 {this.state.showDeleteModal ? 
@@ -104,7 +108,7 @@ class StreamInfo extends React.Component {
                 role="tablist">
                     <li className="nav-item">
                         <a  
-                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-white" 
                         id="goToFuture"
                         data-toggle="tab" 
                         role="tab" 
@@ -121,7 +125,7 @@ class StreamInfo extends React.Component {
                         role="tab" 
                         data-toggle="tab"
                         aria-controls="finishedConferences" 
-                        className="tw-flex-sm-fill tw-text-sm-center nav-link active tw-text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link active tw-text-white" 
                         href="#finishedConferences"
                         aria-selected="true"
                         >{this.props.t('finishedConferences')}</a>
@@ -133,7 +137,7 @@ class StreamInfo extends React.Component {
                         role="tab" 
                         data-toggle="tab"
                         aria-controls="activeStream" 
-                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-greenish" 
+                        className="tw-flex-sm-fill tw-text-sm-center nav-link tw-text-white" 
                         href="#activeStream"
                         aria-selected="false"
                         >
@@ -220,12 +224,12 @@ class StreamInfo extends React.Component {
                                 return this.props.futureStream.map(x => {
                                     return (
                                         <tr key={x.id}>
-                                            <td className="tw-py-4 tw-text-right"> {x.streamName} </td>
-                                            <td className="tw-text-right"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4"> {x.streamName} </td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4"> {new Date(x.startTime).toLocaleString('fa-IR').replace('،' , ' - ')} </td>
                                             <td onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
                                                 {trash('tw-w-6 tw-text-white ')}
                                             </td>
-                                            <td onClick={() => history.push(`/editStream/${x.id}`)} className="tw-cursor-pointer">
+                                            <td onClick={() => history.push(`/editStream/${x.id}`)} className="tw-cursor-pointer tw-px-4 tw-py-4">
                                                 {edit('tw-w-6 tw-text-white ')}
                                             </td>
                                         </tr>

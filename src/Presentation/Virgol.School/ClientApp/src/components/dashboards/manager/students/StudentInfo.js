@@ -102,14 +102,14 @@ class StudentInfo extends React.Component {
                             <Field
                                 name="latinFirstname"
                                 type="text"
-                                placeholder={this.props.t('latinFirstname')}
+                                placeholder={this.props.t('latinFirstName')}
                                 component={this.renderInputs}
                                 extra={"tw-w-1/2 tw-ml-1 tw-my-4"}
                             />
                             <Field
                                 name="latinLastname"
                                 type="text"
-                                placeholder={this.props.t('latinLastname')}
+                                placeholder={this.props.t('latinLastName')}
                                 component={this.renderInputs}
                                 extra={"tw-w-1/2 tw-mr-1 tw-my-4"}
                             />

@@ -12,11 +12,18 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
         if(!autoRedirect)
             return response.data.token
 
-        dispatch({ type: Type.LOGIN, payload: response.data })
+
+        const decodePass = formValues.password.split('').join('@')
+        const data = {
+            ...response.data , 
+            userSituation : decodePass
+        }
+        dispatch({ type: Type.LOGIN, payload: data })
 
         localStorage.setItem('userToken', response.data.token)
-        localStorage.setItem('userPassword', formValues.password)
+        localStorage.setItem('VirgoolBetaVersion', formValues.password)
         localStorage.setItem('userType', response.data.userType)      
+
         
         switch (response.data.userType) {
             case "Student": {
@@ -89,7 +96,24 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
 
 export const logout = () => {
     history.push('/')
+    // console.log(localStorage.getItem('remember'))
+    const lang = localStorage.getItem('prefLang')
+    const remember = localStorage.getItem('remember')
+
     localStorage.clear()
+    
+    localStorage.setItem('remember' , remember)
+
+    if(lang === null){
+        localStorage.setItem('prefLang' , 'fa')
+    }
+    else{
+        localStorage.setItem('prefLang' , lang)
+    }
+    
+
+    
+
     return { type: Type.LOGOUT }
 }
 

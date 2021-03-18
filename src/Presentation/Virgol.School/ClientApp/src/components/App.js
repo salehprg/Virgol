@@ -52,18 +52,24 @@ import { localizer } from '../assets/localizer';
 import  AddExtraLesson from './dashboards/manager/ExtraLesson/AddExtraLesson'
 
 import CacheBuster from './CacheBuster'
+import PrincipalGuide from './dashboards/videos/PrincipalGuide';
+import TeacherGuide from './dashboards/videos/TeacherGuide';
+import StudentGuide from './dashboards/videos/StudentGuide';
+import GuideMenu from './dashboards/videos/GuideMenu';
+
 class App extends React.Component {
 
     
     componentDidMount() {
-        const ele = document.getElementById('ipl-progress-indicator')
+        const ele = document.getElementById('loading')
       if(ele){
         // fade out
         ele.classList.add('available')
-        setTimeout(() => {
-          // remove from DOM
-          ele.outerHTML = ''
-        }, 2000)
+        ele.outerHTML = ''
+        // setTimeout(() => {
+        //   // remove from DOM
+        //   ele.outerHTML = ''
+        // }, 2000)
       }
       
         history.listen((location, action) => {
@@ -103,7 +109,7 @@ class App extends React.Component {
                     return (
                         <div className="tw-font-vr tw-overflow-x-hidden">
                             {this.props.alert.message ? <Alert fade={this.fadeAlert} type={this.props.alert.type} message={this.props.alert.message} /> : null}
-                            {this.props.worker.status ? <Working /> : null}
+                            {/* {this.props.worker.status ? <Working /> : null} */}
 
                             <Router history={history}>
                                 <Switch>
@@ -121,6 +127,11 @@ class App extends React.Component {
                                     <Route path="/school/:id" component={SchoolInfo} />
 
                                     <Route path="/class/:id" component={ClassInfo} />
+
+                                    <Route path="/video/principal-guide-pr" component={PrincipalGuide}/>
+                                    <Route path="/video/teacher-guide-pr" component={TeacherGuide}/>
+                                    <Route path="/video/student-guide-pr" component={StudentGuide}/>
+                                    <Route path="/video/guide-pr" component={GuideMenu}/>
                                     
                                     <Route path="/m" component={ManagerDashboard} />
                                     <Route path="/addNewsManager" component={AddNewsManager} />

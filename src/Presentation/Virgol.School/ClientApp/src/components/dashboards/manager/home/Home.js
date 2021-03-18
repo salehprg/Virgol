@@ -11,10 +11,11 @@ import {getManagerDashboardInfo} from "../../../../_actions/managerActions"
 import {GetIncommingNews , GetMyNews} from "../../../../_actions/newsActions"
 import Activation from "./Activation";
 import { localizer } from '../../../../assets/localizer';
+import history from "../../../../history";
 
 class Home extends React.Component {
 
-    state = {loading : false, activeStream: { url: 'ewfewf' }}
+    state = {loading : false, activeStream: { url: 'ewfewf' } , userType : ''}
 
     componentDidMount = async () =>{
             this.setState({loading: true})
@@ -22,7 +23,9 @@ class Home extends React.Component {
             await this.props.getManagerDashboardInfo(this.props.user.token);
             await this.props.GetIncommingNews(this.props.user.token);
             await this.props.GetMyNews(this.props.user.token);
+
             this.setState({loading: false})
+            this.setState({userType : this.props.match.url.substring(1,2)})
     }
 
     getExpireDate() {
@@ -89,25 +92,31 @@ class Home extends React.Component {
 
                         <CounterCard
                             title={this.props.t('onlineClasses')}
-                            icon={user}
+                            icon={key}
                             number={this.props.dashboardInfo.onlineClass}
                             bg="tw-bg-purplish"
+                            link="tracker"
+                            userType={this.state.userType}
                         />
 
                         <CounterCard
                             title={this.props.t('teachers')}
-                            icon={users}
+                            icon={user}
                             number={this.props.dashboardInfo.teacherCount}
                             bg="tw-bg-redish"
                             pos="tw-row-start-3"
+                            link="teachers"
+                            userType={this.state.userType}
                         />
 
                         <CounterCard
                             title={this.props.t('students')}
-                            icon={key}
+                            icon={users}
                             number={this.props.dashboardInfo.studentsCount}
                             bg="tw-bg-greenish"
                             pos="tw-row-start-3"
+                            link="students"
+                            userType={this.state.userType}
                         />
                     </div>
                 </div>

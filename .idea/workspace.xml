@@ -19,7 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="">
+    <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="padding added to tables">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" afterDir="false" />
     </list>
@@ -132,35 +132,28 @@
       <workItem from="1613912937891" duration="56000" />
       <workItem from="1613927520544" duration="59000" />
       <workItem from="1613986130270" duration="1388000" />
-      <workItem from="1613996870329" duration="1099000" />
-    </task>
-    <task id="LOCAL-00001" summary="test">
-      <created>1611421261059</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1611421261059</updated>
-    </task>
-    <task id="LOCAL-00002" summary="a test commit">
-      <created>1611421734193</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1611421734193</updated>
-    </task>
-    <task id="LOCAL-00003" summary="landing page optimized">
-      <created>1612779975970</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1612779975970</updated>
-    </task>
-    <task id="LOCAL-00004" summary="select background changed">
-      <created>1612782750114</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1612782750114</updated>
+      <workItem from="1613996870329" duration="1852000" />
+      <workItem from="1614095903456" duration="100000" />
+      <workItem from="1614098606196" duration="505000" />
+      <workItem from="1614108645495" duration="622000" />
+      <workItem from="1614248530151" duration="2642000" />
+      <workItem from="1614448985202" duration="77000" />
+      <workItem from="1614537440538" duration="324000" />
+      <workItem from="1614623299679" duration="580000" />
+      <workItem from="1614671813355" duration="811000" />
+      <workItem from="1614686790297" duration="192000" />
+      <workItem from="1614869997582" duration="465000" />
+      <workItem from="1614876792899" duration="51000" />
+      <workItem from="1615101879414" duration="337000" />
+      <workItem from="1615206749717" duration="538000" />
+      <workItem from="1615361447568" duration="753000" />
+      <workItem from="1615375074787" duration="2902000" />
+      <workItem from="1615449459099" duration="2594000" />
+      <workItem from="1615466205985" duration="220000" />
+      <workItem from="1615466462285" duration="518000" />
+      <workItem from="1615467084689" duration="732000" />
+      <workItem from="1615558470512" duration="1076000" />
+      <workItem from="1615726971184" duration="1539000" />
     </task>
     <task id="LOCAL-00005" summary="text align for table records changed to right">
       <created>1612898396438</created>
@@ -351,7 +344,161 @@
       <option name="project" value="LOCAL" />
       <updated>1613997195479</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="anchor tag style updated">
+      <created>1613998818149</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1613998818149</updated>
+    </task>
+    <task id="LOCAL-00033" summary="update versioning">
+      <created>1613998898974</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1613998898974</updated>
+    </task>
+    <task id="LOCAL-00034" summary="padding added to tables">
+      <created>1614099077203</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1614099077203</updated>
+    </task>
+    <task id="LOCAL-00035" summary="guide pages added">
+      <created>1614255530893</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1614255530893</updated>
+    </task>
+    <task id="LOCAL-00036" summary="guide pages added part2">
+      <created>1614255645993</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1614255645993</updated>
+    </task>
+    <task id="LOCAL-00037" summary="some uncommited files">
+      <created>1614255857211</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1614255857211</updated>
+    </task>
+    <task id="LOCAL-00038" summary="cleanup code">
+      <created>1614537473513</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1614537473513</updated>
+    </task>
+    <task id="LOCAL-00039" summary="counter card icon changed">
+      <created>1614672000924</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1614672000924</updated>
+    </task>
+    <task id="LOCAL-00040" summary="auto login">
+      <created>1614686862795</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1614686862795</updated>
+    </task>
+    <task id="LOCAL-00041" summary="auto login">
+      <created>1614686908017</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1614686908017</updated>
+    </task>
+    <task id="LOCAL-00042" summary="guide pages redesigned&#10;some translations updated">
+      <created>1614870059228</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1614870059228</updated>
+    </task>
+    <task id="LOCAL-00043" summary="guide pages redesigned&#10;some translations updated">
+      <created>1614870077920</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1614870077920</updated>
+    </task>
+    <task id="LOCAL-00044" summary="update versioning">
+      <created>1614870112962</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1614870112962</updated>
+    </task>
+    <task id="LOCAL-00045" summary="create remember me option but not works ,&#10;improve security :)">
+      <created>1614876822478</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1614876822478</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Guide menu created &#10;remember me commented">
+      <created>1615101963533</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1615101963533</updated>
+    </task>
+    <task id="LOCAL-00047" summary="remember me created &#10;guide routing improved">
+      <created>1615207270003</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1615207270003</updated>
+    </task>
+    <task id="LOCAL-00048" summary="guide pages improved for safari">
+      <created>1615361479736</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1615361479736</updated>
+    </task>
+    <task id="LOCAL-00049" summary="scollbar improved">
+      <created>1615386433374</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1615386433374</updated>
+    </task>
+    <task id="LOCAL-00050" summary="guide page translation completed">
+      <created>1615397565983</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1615397565984</updated>
+    </task>
+    <task id="LOCAL-00051" summary="login redesigned &#10;stream info color changed">
+      <created>1615467035467</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1615467035467</updated>
+    </task>
+    <task id="LOCAL-00052" summary="css file">
+      <created>1615467105937</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1615467105937</updated>
+    </task>
+    <task id="LOCAL-00053" summary="some bug fixed">
+      <created>1615728498587</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1615728498587</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -373,31 +520,31 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="select background changed" />
-    <MESSAGE value="text align for table records changed to right" />
-    <MESSAGE value="stream info page re-designed" />
-    <MESSAGE value="the national code replaced the email" />
-    <MESSAGE value="some bug fixed &#10;&#10;sidebar cards now in one line &#10;all tables data is in right line" />
-    <MESSAGE value="stream tab styles added" />
-    <MESSAGE value="button bugs fixed&#10;all tables in right align right now" />
-    <MESSAGE value="edit lesson modal redesigned&#10;edit session button added&#10;some style added to landing page" />
-    <MESSAGE value="some change into recorded sessions" />
-    <MESSAGE value="side bar changed&#10;crisp commented" />
-    <MESSAGE value="some style changed" />
-    <MESSAGE value="manage session added&#10;paginate added for groups page" />
-    <MESSAGE value="base manager improved" />
-    <MESSAGE value="manage sessions added" />
-    <MESSAGE value="captcha prepare" />
-    <MESSAGE value="Merge remote-tracking branch 'origin/Beta' into Beta" />
-    <MESSAGE value="menubar improved" />
-    <MESSAGE value="translation updated" />
-    <MESSAGE value="some change in side bar" />
-    <MESSAGE value="try for debugging on server" />
     <MESSAGE value="landing page improved&#10;react presist commented" />
     <MESSAGE value="some minor bug fixed&#10;default teacher meeting service selected" />
     <MESSAGE value="some small changes" />
     <MESSAGE value="scroll behavior transferred" />
     <MESSAGE value="anchor tag style updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="anchor tag style updated" />
+    <MESSAGE value="padding added to tables" />
+    <MESSAGE value="guide pages added" />
+    <MESSAGE value="guide pages added part2" />
+    <MESSAGE value="some uncommited files" />
+    <MESSAGE value="cleanup code" />
+    <MESSAGE value="counter card icon changed" />
+    <MESSAGE value="auto login" />
+    <MESSAGE value="guide pages redesigned&#10;some translations updated" />
+    <MESSAGE value="update versioning" />
+    <MESSAGE value="create remember me option but not works ,&#10;improve security :)" />
+    <MESSAGE value="Guide menu created &#10;remember me commented" />
+    <MESSAGE value="remember me created &#10;guide routing improved" />
+    <MESSAGE value="guide pages improved for safari" />
+    <MESSAGE value="scollbar improved" />
+    <MESSAGE value="guide page translation completed" />
+    <MESSAGE value="stream info color changed &#10;login page redesigned" />
+    <MESSAGE value="login page redesigned &#10;stream info color changed" />
+    <MESSAGE value="login redesigned &#10;stream info color changed" />
+    <MESSAGE value="css file" />
+    <MESSAGE value="some bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="some bug fixed" />
   </component>
 </project>

@@ -51,10 +51,10 @@ class RecorededSession extends React.Component {
                                 this.props.recordingsList.map((x,index) => {
                                     return (
                                         <tr>
-                                            <td className="tw-py-4 tw-text-right">{index + 1}</td>
-                                            <td className="tw-py-4 tw-text-right">{x.meeting.meetingName} - {this.props.t('session')} {index + 1}</td>
-                                            <td className="tw-py-4 tw-text-right">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
-                                            <td className="tw-py-4 tw-text-right">
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{index + 1}</td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{x.meeting.meetingName} - {this.props.t('session')} {index + 1}</td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">
                                             {(x.recordsInfo ?
                                                 <>
                                                     <button className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
@@ -62,7 +62,7 @@ class RecorededSession extends React.Component {
                                                 </>
                                             : null )}
                                             </td>
-                                            <td className="tw-py-4 tw-text-right">{x.participant === null || !x.participant.isPresent ? "غایب" : "حاضر"}</td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{x.participant === null || !x.participant.isPresent ? "غایب" : "حاضر"}</td>
                                         </tr>
                                     )
                                 }))

@@ -3,6 +3,10 @@ module.exports = {
   prefix: 'tw-',
   theme: {
     extend: {
+      backgroundImage: theme => ({
+
+        'vst': "url('./videoBack.svg')"
+       }),
       fontFamily: {
         'vr': ['VazirRegular'],
         'vm': ['VazirMedium'],
@@ -19,10 +23,12 @@ module.exports = {
         'greenish': '#41CD7D',
         'pinkish': '#E25B84',
         'grayish': '#707070',
+        
       },
       maxWidth: {
         '250': '250px',
         '350': '350px',
+        '450' : '450px',
         '500': '500px',
         '800': '800px',
         '1000': '1000px',

@@ -5,7 +5,7 @@ import protectedStudent from "../../protectedRoutes/protectedStudent";
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout} from "../../../assets/icons";
+import {layout , loading} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from './home/Home'
 import Classes from "./classes/Classes";
@@ -55,7 +55,7 @@ class StudentDashboard extends React.Component {
     }
 
     render() {
-        if (this.state.loading) return this.props.t('loading')
+        if (this.state.loading) return (<div className="tw-text-center tw-bg-dark-blue tw-w-full tw-h-screen">{loading('centerize tw-w-12')}</div>)
         return (
             <div onClick={() => this.setState({ showLang: false })} className="tw-w-screen tw-min-h-screen">
                 <Sidebar

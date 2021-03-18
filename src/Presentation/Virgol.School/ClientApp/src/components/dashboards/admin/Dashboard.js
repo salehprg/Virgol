@@ -4,7 +4,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import history from "../../../history";
 import Sidebar from "../sidebar/Sidebar";
 import SidebarCard from "../sidebar/SidebarCard";
-import {layout, loading, open_book , users , bell, video} from "../../../assets/icons";
+import {layout, loading, open_book , users , user , bell, video, home, airplay, message} from "../../../assets/icons";
 import Header from "../header/Header";
 import Home from "./home/Home";
 import Schools from "./schools/Schools";
@@ -79,21 +79,21 @@ class Dashboard extends React.Component {
                         active={this.state.active}
                         code="schools"
                         title={this.props.t('schools')}
-                        icon={open_book}
+                        icon={home}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="conference"
                         title={this.props.t('conference')}
-                        icon={video}
+                        icon={airplay}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
                         active={this.state.active}
                         code="teachers"
                         title={this.props.t('teachers')}
-                        icon={users}
+                        icon={user}
                         changeActive={this.changeActive}
                     />
                     <SidebarCard
@@ -107,7 +107,7 @@ class Dashboard extends React.Component {
                         active={this.state.active}
                         code="news"
                         title={this.props.t('news')}
-                        icon={bell}
+                        icon={message}
                         changeActive={this.changeActive}
                     />
                 </Sidebar>

@@ -29,6 +29,8 @@ class Students extends React.Component {
         this.setState({ loading: false })
                 
         this.queriedStudents('')
+
+        console.log(this.props);
     }
 
     checkAll = () => {
@@ -127,8 +129,8 @@ class Students extends React.Component {
                     excel={this.props.t('uploadStudentsExcel')}
                     handleExcel={this.submitExcel}
                     // headers={[ '' ,'نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی' , 'تلفن ولی' , 'حساب تکمیل شده', '' ]}
-                    headers={['نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی', 'تلفن ولی', 'حساب تکمیل شده', '']}
-                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('phoneNumber'), this.props.t('nationCode'), this.props.t('fatherName'), this.props.t('fatherPhoneNumber'),this.props.t('completedAccount'), this.props.t('className') , '']}
+                    // headers={['نام', 'نام خانوادگی', 'تلفن همراه', 'کد ملی', 'نام ولی', 'تلفن ولی', 'حساب تکمیل شده', '']}
+                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('phoneNumber'), this.props.t('nationCode'), this.props.t('fatherName'), this.props.t('fatherPhoneNumber'),this.props.t('completedAccount'), this.props.t('confirmedAccount') ,this.props.t('className') , '']}
                     body={() => {
 
                         return (
@@ -143,15 +145,16 @@ class Students extends React.Component {
                                                     <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
                                                 </div>
                                             </td>
-                                            <td className="tw-py-4 tw-text-right">{x.firstName}</td>
-                                            <td className="tw-text-right tw-px-2">{x.lastName}</td>
-                                            <td className="tw-text-right tw-px-2">{x.phoneNumber}</td>
-                                            <td className="tw-text-right tw-px-2">{x.melliCode}</td>
-                                            <td className="tw-text-right tw-px-2">{x.fatherName}</td>
-                                            <td className="tw-text-right tw-px-2">{x.fatherPhoneNumber}</td>
-                                            <td><span className="tw-text-center">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
-                                            <td className="tw-text-right tw-px-2">{x.classsname}</td>
-                                            <td className="tw-cursor-pointer tw-text-right" onClick={() => history.push(`/student/${x.id}`)}>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{x.firstName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.lastName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.phoneNumber}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.melliCode}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.fatherName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.fatherPhoneNumber}</td>
+                                            <td><span className="tw-text-center tw-px-4 tw-py-4">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td><span className="tw-text-center tw-px-4 tw-py-4">{x.confirmedAcc ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.classsname}</td>
+                                            <td className="tw-cursor-pointer tw-text-right tw-px-4 tw-py-4" onClick={() => history.push(`/student/${x.id}`)}>
                                                 {edit('tw-w-6 tw-text-white')}
                                             </td>  
                                                       

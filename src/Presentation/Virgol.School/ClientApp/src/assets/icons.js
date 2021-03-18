@@ -408,12 +408,78 @@ export const onGoing = (styles) => {
 export const arrowUp = (styles) => {
     return(
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
-            className={styles}
+            className={`${styles} tw-fill-current`}
             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up">
             <path d="M12 19V5M5 12l7-7 7 7"/>
         </svg>
     )
-    
 }
 
+export const airplay = (styles) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            width="24" height="24" fill="none" stroke="currentColor" 
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-airplay"
+            className={`${styles}`}
+            >
+            <path d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1"/>
+            <path d="M12 15l5 6H7l5-6z"/>
+        </svg>
+    )
+}
+
+export const calendar = (styles) => {
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            width="24" height="24" fill="none" stroke="currentColor" 
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+            class="feather feather-calendar"
+            className={`${styles}`}
+            >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>
+    )
+}
+
+export const layers = (styles) =>{
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            width="24" height="24" fill="none" stroke="currentColor" 
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+            class="feather feather-layers"
+            className={`${styles}`}
+            >
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+    )
+}
+
+export const plus_square = (styles) => {
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            width="24" height="24" fill="none" stroke="currentColor" 
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+            class="feather feather-plus-square"
+            className={`${styles}`}
+            >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <path d="M12 8v8M8 12h8"/>
+        </svg>
+    )
+}
+
+export const grid = (styles) =>{
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            width="24" height="24" fill="none" stroke="currentColor" 
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+            class="feather feather-grid"
+            className={`${styles}`}
+            >
+                <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>
+        </svg>
+    )
+}

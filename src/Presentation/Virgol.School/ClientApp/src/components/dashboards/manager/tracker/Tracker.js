@@ -6,7 +6,7 @@ import protectedManager from "../../../protectedRoutes/protectedManager";
 import {GetAllActiveMeeting} from '../../../../_actions/meetingActions'
 import getColor from "../../../../assets/colors";
 import TrackerLessonInfo from "./TrackerLessonInfo";
-import {onGoing} from "../../../../assets/icons";
+import {loading, onGoing} from "../../../../assets/icons";
 
 class Tracker extends React.Component {
 
@@ -28,7 +28,11 @@ class Tracker extends React.Component {
             {i: "t15", name: "21:00", x: 2, y: 0, w: 2, h: 1, static: true},
             {i: "t16", name: "22:00", x: 0, y: 0, w: 2, h: 1, static: true}
     ],
-    lessonInfo: null , showLessonInfo : false , lessons : []}
+    lessonInfo: null , 
+    showLessonInfo : false , 
+    lessons : [] ,
+    loading : false
+    }
     sc = createRef()
 
     handleLessonLayout = () => {
@@ -65,7 +69,9 @@ class Tracker extends React.Component {
 
     componentDidMount = async () => {
 
+        this.setState({loading : true})
         await this.props.GetAllActiveMeeting(this.props.user.token)
+        this.setState({loading : false})
 
         if(this.props.acticeMeeting)
         {
@@ -91,6 +97,7 @@ class Tracker extends React.Component {
 
     render() {
         const layout = this.state.layout.concat(this.state.lessons);
+        if(this.state.loading) return (loading('tw-text-grayish centerize tw-w-12'))
         return (
             <>
                 {this.state.showLessonInfo ? 
@@ -108,14 +115,16 @@ class Tracker extends React.Component {
                 <div className="tw-w-full tw-py-10">
                     <div ref={this.sc} className="tw-w-11/12 tw-p-4 tw-mx-auto tw-rounded-lg tw-min-h-70 tw-border-2 tw-border-dark-blue tw-overflow-auto">
                         <GridLayout className="layout" layout={layout} cols={34} rowHeight={50} width={1800}>
-                            {layout.map(x => {
-                                return (
-                                    <div onClick={() => this.showLessonInfo(x.i)} className={`pointer tw-overflow-hidden border tw-flex tw-flex-col tw-justify-center tw-border-white tw-text-center tw-text-white ${x.c}`} key={x.i}>
-                                        <p className="tw-text-center">{x.name}</p>
-                                        {this.showOnGoing(x.lessonDetail)}
-                                    </div>
-                                );
-                            })}
+                            {
+                                layout.map(x => {
+                                    return (
+                                        <div onClick={() => this.showLessonInfo(x.i)} className={`pointer tw-overflow-hidden border tw-flex tw-flex-col tw-justify-center tw-border-white tw-text-center tw-text-white ${x.c}`} key={x.i}>
+                                            <p className="tw-text-center">{x.name}</p>
+                                            {this.showOnGoing(x.lessonDetail)}
+                                        </div>
+                                    );
+                                })
+                            }
                         </GridLayout>
                     </div>
                 </div>

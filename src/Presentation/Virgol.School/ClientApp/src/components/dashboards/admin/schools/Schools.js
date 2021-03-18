@@ -103,20 +103,22 @@ class Schools extends React.Component {
                                     this.state.schools.map(x => {
                                             return (
                                             <tr key={x.id}>
-                                                <td className="tw-py-4 tw-text-right">{x.schoolName}</td>
-                                                <td className="tw-text-right">{x.schoolIdNumber}</td>
-                                                <td className="tw-text-right">{x.schoolTypeName}</td>
-                                                <td className="tw-text-right">{x.firstName} {x.lastName}</td>
-                                                <td data-tip={this.props.t('enterAsManager')} onClick={() => this.redirect(x.id)} className="tw-cursor-pointer">
+                                                <td className="tw-py-4 tw-text-right tw-px-4">{x.schoolName}</td>
+                                                <td className="tw-text-right tw-px-4 tw-py-4">{x.schoolIdNumber}</td>
+                                                <td className="tw-text-right tw-px-4 tw-py-4">{x.schoolTypeName}</td>
+                                                <td className="tw-text-right tw-px-2 tw-py-4">{x.firstName} {x.lastName}</td>
+                                                <td data-tip={this.props.t('enterAsManager')} onClick={() => this.redirect(x.id)} className="tw-cursor-pointer tw-py-4 tw-px-2">
                                                     {external_link('tw-w-6 tw-text-white ')}
+                                                    <ReactTooltip type="dark" effect="float" place="top"/>
                                                 </td>
-                                                <ReactTooltip type="dark" effect="float" place="top"/>
-                                                <td className="tw-text-right" data-tip={this.props.t('edit')} className="tw-cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
+                                                
+                                                <td className="tw-text-right tw-px-4 tw-py-4" data-tip={this.props.t('edit')} className="tw-cursor-pointer" onClick={() => history.push(`/school/${x.id}`)}>
                                                     {edit('tw-w-6 tw-text-white')}
                                                 </td>
-                                                <td className="tw-text-right" data-tip={this.props.t('delete')} onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
+                                                <td className="tw-text-right tw-px-4 tw-py-4" data-tip={this.props.t('delete')} onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">
                                                     {trash('tw-w-6 tw-text-white ')}
                                                 </td>
+                                                <ReactTooltip place="top" effect="float" type="dark"/>
                                             </tr>
                                             )}
                                         )

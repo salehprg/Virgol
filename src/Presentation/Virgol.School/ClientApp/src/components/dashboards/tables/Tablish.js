@@ -8,7 +8,7 @@ const Tablish = ({ headers, body }) => {
                 <thead className="tw-border-b-2 tw-border-grayish">
                     <tr>
                     {headers.map(header => {
-                        return <th key={header} className="tw-text-right tw-pb-4">{header}</th>
+                        return <th key={header} className="tw-text-right tw-pb-4 tw-px-4">{header}</th>
                     })}
                     </tr>
                 </thead>

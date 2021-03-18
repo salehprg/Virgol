@@ -1,6 +1,6 @@
 import React from "react";
 import { withTranslation } from 'react-i18next';
-import {edit, loading, trash, check_circle, x} from "../../../../assets/icons";
+import {edit, loading, trash, check_circle} from "../../../../assets/icons";
 import history from "../../../../history";
 import { connect } from "react-redux";
 import {getAllTeachers , addBulkTeacher , deleteTeacher} from "../../../../_actions/managerActions"
@@ -117,7 +117,7 @@ class Teachers extends React.Component {
                     sampleLink="/samples/teacherSample.xls"
                     excel={this.props.t('uploadTeachersExcel')}
                     handleExcel={this.submitExcel}
-                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('personelCode'), this.props.t('completedAccount'), '']}
+                    headers={[this.props.t('firstName'), this.props.t('lastName'), this.props.t('nationCode'), this.props.t('phoneNumber'), this.props.t('personelCode'), this.props.t('completedAccount'), this.props.t('confirmedAccount'), '']}
                     body={() => {
                         return (
                             <React.Fragment>
@@ -131,13 +131,14 @@ class Teachers extends React.Component {
                                                     <Checkbox checked={this.state.selected.includes(x.id)} itemId={x.id} check={this.checkItem} uncheck={this.uncheckItem} />
                                                 </div>
                                             </td>
-                                            <td className="tw-py-4 tw-text-right">{x.firstName}</td>
-                                            <td className="tw-text-right">{x.lastName}</td>
-                                            <td className="tw-text-right">{x.melliCode}</td>
-                                            <td className="tw-text-right">{x.phoneNumber}</td>
-                                            <td className="tw-text-right">{x.personalIdNUmber}</td>
-                                            <td className="tw-text-right"><span className="tw-text-center">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
-                                            <td className="tw-text-right" data-tip={this.props.t('edit')} className="tw-cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{x.firstName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.lastName}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.melliCode}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.phoneNumber}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4">{x.personalIdNUmber}</td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4"><span className="tw-text-center">{x.latinFirstname && x.latinLastname ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4"><span className="tw-text-center">{x.confirmedAcc ? check_circle('tw-w-8 tw-text-greenish') : null}</span></td>
+                                            <td className="tw-text-right tw-px-4 tw-py-4" data-tip={this.props.t('edit')} className="tw-cursor-pointer" onClick={() => history.push(`/teacher/${x.id}`)}>
                                                 {edit('tw-w-6 tw-text-white')}
                                             </td>           
                                             {/*<td data-tip="حذف" onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">*/}
