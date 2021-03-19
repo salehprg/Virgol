@@ -6,7 +6,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <RootNamespace>lms_with_moodle</RootNamespace>
+    <RootNamespace>Virgol</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Novell.Directory.Ldap.NETStandard2_0" Version="*"/>

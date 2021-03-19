@@ -14,7 +14,7 @@ https://moodle.vir-gol.ir/admin/settings.php?section=langsettings
 # -------==========-------
 2- Add Persian Cal & set to default
 https://moodle.vir-gol.ir/admin/tool/installaddon/index.php
---install Persian Cal 
+--install Persian Cal From PluginFolder
 
 https://moodle.vir-gol.ir/admin/settings.php?section=calendar
 Calendar type : persian
@@ -152,7 +152,7 @@ Maximum time to edit posts : 60min
 
 20 - https://moodle.vir-gol.ir/admin/settings.php?section=authsettingldap
   LDAP server settings
-    Host URL : ldap://ldap.legace.ir/
+    Host URL : ldap://ldap.vir-gol.ir:390/
   Bind settings
     Distinguished name : cn=admin,dc=legace,dc=ir
     Password : OpenLDAPpass.24

@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 
 using Models;
 using Models.User;
 using Microsoft.AspNetCore.Http;
 using Models.Users.Roles;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     
     [ApiController]
@@ -191,7 +191,7 @@ namespace lms_with_moodle.Controllers
                 string userName = userManager.GetUserId(User);
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
 
-                Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == roomGUID).FirstOrDefault();
+                Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == roomGUID || x.MeetingId.Contains(roomGUID + "|")).FirstOrDefault();
 
                 if(meeting != null)
                 {

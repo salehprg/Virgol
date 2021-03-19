@@ -11,7 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 
 using Models;
 using Models.User;
@@ -21,7 +21,7 @@ using System.IO;
 using Models.InputModel;
 using Newtonsoft.Json;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -48,7 +48,7 @@ namespace lms_with_moodle.Controllers
 
 
             ldap = new LDAP_db(appDbContext);
-            //moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             SMSApi = new FarazSmsApi();
             UserService = new UserService(userManager , appDbContext);
         }

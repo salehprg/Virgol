@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace lms_with_moodle.Migrations
+namespace Virgol.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20200816074315_courseNotify")]

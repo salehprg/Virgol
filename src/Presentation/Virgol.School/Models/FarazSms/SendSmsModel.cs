@@ -1,4 +1,4 @@
-namespace lms_with_moodle.FarazSms
+namespace Virgol.FarazSms
 {
     public class SendSmsModel {
         public string originator { get; set; }

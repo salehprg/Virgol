@@ -10,7 +10,7 @@ using Models;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace lms_with_moodle.Helper
+namespace Virgol.Helper
 {
     public class AdobeApi {
         HttpClient client;

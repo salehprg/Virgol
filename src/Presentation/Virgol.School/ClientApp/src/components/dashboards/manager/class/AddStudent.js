@@ -12,7 +12,8 @@ class AddStudent extends React.Component {
         cats: [{id: 1, name: 'دبستان'}, {id: 2, name: 'متوسطه اول'}, {id: 3, name: 'متوسطه دوم'}],
         selectedStudents: [],
         query: '',
-        loading: false
+        loading: false,
+        adding : false
     }
 
 
@@ -26,6 +27,7 @@ class AddStudent extends React.Component {
     }
 
     addStudentToSchool = async () => {
+        this.setState({ loading: true })
         this.props.onAddStudent(this.state.selectedStudents)
     }
 

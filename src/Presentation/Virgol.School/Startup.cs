@@ -15,7 +15,7 @@ using System.Text;
 
 using Models;
 using Models.User;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Schedule;
 
 using Quartz.Spi;
@@ -28,7 +28,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
-namespace lms_with_moodle
+namespace Virgol
 {
     public class Startup
     {
@@ -76,7 +76,6 @@ namespace lms_with_moodle
                 AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
                 AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
                 AppSettings.moddleCourseUrl = AppSettings.BaseUrl_moodle + "/course/view.php?id=";
-                AppSettings.Token_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_TOKEN");
                 AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
                 AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
                 AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");

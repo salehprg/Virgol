@@ -10,7 +10,7 @@ using Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Models.Users.Roles;
 
-namespace lms_with_moodle.Controllers.Stream
+namespace Virgol.Controllers.Stream
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -31,7 +31,7 @@ namespace lms_with_moodle.Controllers.Stream
             userManager = _userManager;
             appDbContext = dbContext;
 
-            //moodleApi = new MoodleApi();
+            //moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
 
             //classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
             streamService = new StreamService(userManager , appDbContext);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.InputModel;
@@ -26,7 +26,7 @@ public class UserService {
     {
         userManager = _userManager;
         appDbContext = _appDbContext;
-        moodleApi = new MoodleApi();
+        moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
         ldap = new LDAP_db(_appDbContext);
     }
 

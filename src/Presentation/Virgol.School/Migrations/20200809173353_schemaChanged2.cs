@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace lms_with_moodle.Migrations
+namespace Virgol.Migrations
 {
     public partial class schemaChanged2 : Migration
     {

@@ -11,7 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 
 using Models;
 using Models.User;
@@ -20,7 +20,7 @@ using Models.InputModel;
 using Newtonsoft.Json;
 using Models.Users.Teacher;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]

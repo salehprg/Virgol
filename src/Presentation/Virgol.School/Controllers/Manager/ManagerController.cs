@@ -8,7 +8,7 @@ using Models;
 using Microsoft.AspNetCore.Identity;
 using Models.User;
 using Microsoft.AspNetCore.Authorization;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Microsoft.Extensions.Options;
 using Models.Users.Teacher;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 using Models.Users.Roles;
 using Virgol.School.Models;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -49,7 +49,7 @@ namespace lms_with_moodle.Controllers
             roleManager = _roleManager;
             appSettings = _appsetting.Value;
 
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             ldap = new LDAP_db(appDbContext);
 
             UserService = new UserService(userManager , appDbContext);
@@ -945,7 +945,7 @@ namespace lms_with_moodle.Controllers
                 foreach(var studentId in studentIds)
                 {
                     UserModel studentModel = appDbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
-                    if(studentModel != null && result.Where(x => x.Id != studentModel.Id).FirstOrDefault() == null)
+                    if(studentModel != null && result.Where(x => x.Id == studentModel.Id).FirstOrDefault() == null)
                     {
                         result.Add(studentModel);
                     }

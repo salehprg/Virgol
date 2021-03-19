@@ -8,11 +8,11 @@ using Models;
 using Microsoft.AspNetCore.Identity;
 using Models.User;
 using Microsoft.AspNetCore.Authorization;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Models.Users.Roles;
 using Virgol.School.Models;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -39,7 +39,7 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             roleManager = _roleManager;
 
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(dbContext , "Token_moodle"));
 
             classScheduleService = new ClassScheduleService(appDbContext , moodleApi);
             //classScheduleService = new ClassScheduleService(appDbContext);
@@ -413,6 +413,9 @@ namespace lms_with_moodle.Controllers
         {
             try
             {
+                if(classSchedule.DayType == 0 || classSchedule.DayType > 6)
+                    return BadRequest("روز مناسبی برای برگزاری کلاس انتخاب نشده است");
+
                 if(classSchedule.EndHour <= classSchedule.StartHour)
                     return BadRequest("ساعت درس به درستی انتخاب نشده است");
                     
@@ -592,7 +595,7 @@ namespace lms_with_moodle.Controllers
             UserModel userModel = userService.GetUserModel(User);
 
             //LDAP_db ldap = new LDAP_db(appDbContext);
-            MoodleApi moodle = new MoodleApi();
+            MoodleApi moodle = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             ClassScheduleView scheduleVW = appDbContext.ClassScheduleView.Where(x => x.Id == scheduleId).FirstOrDefault();
 
             bool isTeacher = userService.HasRole(userModel , Roles.Teacher);
