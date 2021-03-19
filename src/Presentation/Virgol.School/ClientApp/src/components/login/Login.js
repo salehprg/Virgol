@@ -26,7 +26,7 @@ class Login extends React.Component {
 
     componentDidMount() {
         this.props.logout()
-        if(localStorage.getItem('remember') !== 'false'){
+        if(localStorage.getItem('remember') !== 'false' && this.props.user){
             this.setState({logingin: true})
 
             if(localStorage.getItem('prefLang') === null){
