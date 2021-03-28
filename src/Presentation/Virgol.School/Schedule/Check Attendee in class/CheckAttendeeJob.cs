@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Models;
 using Quartz;
 using Models.User;

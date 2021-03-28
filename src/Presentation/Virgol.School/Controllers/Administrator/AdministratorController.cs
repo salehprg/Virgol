@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
 
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 
 using Models;
 using Models.User;
@@ -20,7 +20,7 @@ using ExcelDataReader;
 using Models.Users.Teacher;
 using Newtonsoft.Json;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -56,7 +56,7 @@ namespace lms_with_moodle.Controllers
             appDbContextBackup = _appDBBackup;
 
             SMSApi = new FarazSmsApi();
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
 
             schoolService = new SchoolService(appDbContext);
             
@@ -892,7 +892,7 @@ namespace lms_with_moodle.Controllers
 
             AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.SchoolsType == schoolType).FirstOrDefault();
 
-            MoodleApi moodleApi = new MoodleApi();
+            MoodleApi moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             List<EnrolUser> enrolsData = new List<EnrolUser>();
 
             List<UserModel> usersData = new List<UserModel>();
@@ -1384,6 +1384,33 @@ namespace lms_with_moodle.Controllers
         }
     }
 
+    public async Task<IActionResult> FixMeetingId()
+    {
+        try
+        {
+            List<Meeting> meetings = appDbContext.Meetings.Where(x => x.MeetingId.Contains("|adobe")).ToList();
+            foreach (var meeting in meetings)
+            {
+                try
+                {
+                    string id = meeting.MeetingId.Split("|adobe")[0];
+                    meeting.MeetingId = id;
+                }
+                catch(Exception)
+                {}
+            }
+
+            appDbContext.UpdateRange(meetings);
+            await appDbContext.SaveChangesAsync();
+
+            return Ok(true);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+            throw;
+        }
+    }
 #endregion
 
 #region Payments

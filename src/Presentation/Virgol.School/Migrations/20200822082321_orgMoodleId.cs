@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace lms_with_moodle.Migrations
+namespace Virgol.Migrations
 {
     public partial class orgMoodleId : Migration
     {

@@ -14,7 +14,7 @@ using System.Text;
 using Models.StreamApi;
 using System.Collections.Generic;
 
-namespace lms_with_moodle.Helper
+namespace Virgol.Helper
 {
     public class StreamApi 
     {

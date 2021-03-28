@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Microsoft.Extensions.Options;
 using Models;
 
@@ -15,7 +15,7 @@ public class SchoolService
     {
         appDbContext = _appdbContext;
 
-        moodleApi = new MoodleApi();
+        moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
     }
 
     public class CreateSchoolResult

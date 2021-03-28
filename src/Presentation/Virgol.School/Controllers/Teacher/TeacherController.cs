@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 
 using Models;
 using Models.User;
 using Models.Users.Roles;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]

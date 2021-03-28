@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Models;
 using Models.User;
 using Models.Users.Roles;
@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Models.InputModel;
 using Newtonsoft.Json;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -42,7 +42,7 @@ namespace lms_with_moodle.Controllers
             signInManager =_signinManager;
             appDbContext = _appdbContext;
 
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             SMSApi = new FarazSmsApi();
             ldap = new LDAP_db(appDbContext);
             UserService = new UserService(userManager , appDbContext);

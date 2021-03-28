@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Identity;
 using Models.User;
 
 using Microsoft.AspNetCore.Authorization;
-using lms_with_moodle.Helper;
+using Virgol.Helper;
 using Microsoft.Extensions.Options;
 using Models.Users.Roles;
 
-namespace lms_with_moodle.Controllers
+namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -45,7 +45,7 @@ namespace lms_with_moodle.Controllers
             roleManager = _roleManager;
             appSettings = _appsetting.Value;
 
-            moodleApi = new MoodleApi();
+            moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
             ldap = new LDAP_db(appDbContext);
 
             UserService = new UserService(userManager , appDbContext);

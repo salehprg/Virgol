@@ -9,7 +9,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using Models.Users.Roles;
 
-namespace lms_with_moodle.Helper
+namespace Virgol.Helper
 {
     public class LDAP_db {
         LdapConnection ldapConn;
