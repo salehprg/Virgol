@@ -34,7 +34,7 @@ class Login extends React.Component {
             }
 
             this.onLogin({username : this.props.user.userInformation.userName ,
-                        password: this.props.user.userSituation.split('@').join('')})
+                        password: this.props.user.userSituation.substring(0 , (this.props.user.userSituation.length)/2)})
 
         }
     }

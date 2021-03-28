@@ -5,8 +5,8 @@ import {check_circle} from "../../../assets/icons";
 const SelectableCard = ({ id, title, isSelected, select , needToHide }) => {
     let showTitle = ''
     if(needToHide){
-        if(title.length > 7){
-            showTitle = title.substring(0,4)+" ..."
+        if(title.length > 15){
+            showTitle = "... "+title.substring(0,15)
         }
         else{
             showTitle = title

@@ -55,7 +55,7 @@
 }
 
 .all-classes {
-    grid-template-columns: repeat(auto-fit, 100px);
+    grid-template-columns: repeat(auto-fit, 200px);
 }
 
 .teacher-classes-cards {
