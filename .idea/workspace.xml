@@ -20,7 +20,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="padding added to tables">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -154,13 +153,7 @@
       <workItem from="1615467084689" duration="732000" />
       <workItem from="1615558470512" duration="1076000" />
       <workItem from="1615726971184" duration="1539000" />
-    </task>
-    <task id="LOCAL-00005" summary="text align for table records changed to right">
-      <created>1612898396438</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1612898396438</updated>
+      <workItem from="1615904976461" duration="214000" />
     </task>
     <task id="LOCAL-00006" summary="stream info page re-designed">
       <created>1612951518003</created>
@@ -498,7 +491,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615728498587</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="password security improved">
+      <created>1615905141537</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1615905141538</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -520,7 +520,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="landing page improved&#10;react presist commented" />
     <MESSAGE value="some minor bug fixed&#10;default teacher meeting service selected" />
     <MESSAGE value="some small changes" />
     <MESSAGE value="scroll behavior transferred" />
@@ -545,6 +544,7 @@
     <MESSAGE value="login redesigned &#10;stream info color changed" />
     <MESSAGE value="css file" />
     <MESSAGE value="some bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="some bug fixed" />
+    <MESSAGE value="password security improved" />
+    <option name="LAST_COMMIT_MESSAGE" value="password security improved" />
   </component>
 </project>
