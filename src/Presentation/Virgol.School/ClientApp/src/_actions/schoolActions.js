@@ -444,6 +444,8 @@ export const addNewClass = (token, formValues,schoolId = 0) => async dispatch =>
             }
         });
 
+        console.log(response);
+
         dispatch({ type: STOP })
         dispatch(alert.success("کلاس جدید افزوده شد"))
         dispatch({ type: Type.AddNewClass, payload: response.data });

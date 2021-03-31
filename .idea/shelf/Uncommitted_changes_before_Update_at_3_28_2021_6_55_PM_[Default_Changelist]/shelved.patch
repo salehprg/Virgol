@@ -1,0 +1,72 @@
+Index: src/Presentation/Virgol.School/ClientApp/src/assets/main.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Presentation/Virgol.School/ClientApp/src/assets/main.css b/src/Presentation/Virgol.School/ClientApp/src/assets/main.css
+--- a/src/Presentation/Virgol.School/ClientApp/src/assets/main.css	(revision 9eec272c4632c951a0a8b148f1baf4dccbb304a9)
++++ b/src/Presentation/Virgol.School/ClientApp/src/assets/main.css	(date 1616936388740)
+@@ -660,7 +660,7 @@
+ }
+ 
+ .all-classes {
+-  grid-template-columns: repeat(auto-fit, 100px);
++  grid-template-columns: repeat(auto-fit, 200px);
+ }
+ 
+ .teacher-classes-cards {
+@@ -12729,8 +12729,8 @@
+   max-width: 350px;
+ }
+ 
+-.tw-max-w-450{
+-  max-width : 450px;
++.tw-max-w-450 {
++  max-width: 450px;
+ }
+ 
+ .tw-max-w-500 {
+@@ -32589,6 +32589,10 @@
+     max-width: 350px;
+   }
+ 
++  .sm\:tw-max-w-450 {
++    max-width: 450px;
++  }
++
+   .sm\:tw-max-w-500 {
+     max-width: 500px;
+   }
+@@ -52415,6 +52419,10 @@
+     max-width: 350px;
+   }
+ 
++  .md\:tw-max-w-450 {
++    max-width: 450px;
++  }
++
+   .md\:tw-max-w-500 {
+     max-width: 500px;
+   }
+@@ -72241,6 +72249,10 @@
+     max-width: 350px;
+   }
+ 
++  .lg\:tw-max-w-450 {
++    max-width: 450px;
++  }
++
+   .lg\:tw-max-w-500 {
+     max-width: 500px;
+   }
+@@ -92067,6 +92079,10 @@
+     max-width: 350px;
+   }
+ 
++  .xl\:tw-max-w-450 {
++    max-width: 450px;
++  }
++
+   .xl\:tw-max-w-500 {
+     max-width: 500px;
+   }
