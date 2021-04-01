@@ -73,6 +73,7 @@ class Schedule extends React.Component {
     componentDidMount() {
         this.handleLessonLayout()
         this.sc.current.scrollLeft = this.sc.current.clientWidth
+        console.log(this.sc);
         
     }   
 

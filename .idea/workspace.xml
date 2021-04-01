@@ -154,13 +154,7 @@
       <workItem from="1615558470512" duration="1076000" />
       <workItem from="1615726971184" duration="1539000" />
       <workItem from="1615904976461" duration="214000" />
-    </task>
-    <task id="LOCAL-00006" summary="stream info page re-designed">
-      <created>1612951518003</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1612951518003</updated>
+      <workItem from="1616147031717" duration="338000" />
     </task>
     <task id="LOCAL-00007" summary="the national code replaced the email">
       <created>1612955779117</created>
@@ -498,7 +492,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615905141538</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="login bug fixed">
+      <created>1616147105721</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1616147105721</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -520,7 +521,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="some minor bug fixed&#10;default teacher meeting service selected" />
     <MESSAGE value="some small changes" />
     <MESSAGE value="scroll behavior transferred" />
     <MESSAGE value="anchor tag style updated" />
@@ -545,6 +545,7 @@
     <MESSAGE value="css file" />
     <MESSAGE value="some bug fixed" />
     <MESSAGE value="password security improved" />
-    <option name="LAST_COMMIT_MESSAGE" value="password security improved" />
+    <MESSAGE value="login bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="login bug fixed" />
   </component>
 </project>

@@ -13,7 +13,7 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
             return response.data.token
 
 
-        const decodePass = formValues.password.split('').join('@')
+        const decodePass = formValues.password+formValues.password
         const data = {
             ...response.data , 
             userSituation : decodePass
@@ -21,7 +21,6 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
         dispatch({ type: Type.LOGIN, payload: data })
 
         localStorage.setItem('userToken', response.data.token)
-        localStorage.setItem('VirgoolBetaVersion', formValues.password)
         localStorage.setItem('userType', response.data.userType)      
 
         
