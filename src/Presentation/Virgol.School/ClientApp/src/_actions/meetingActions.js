@@ -195,6 +195,7 @@ export const CreatePrivateRoom = (token , roomName , schoolId = 0) => async disp
         return true
 
     } catch (e) {
+        //console.log(e);
         dispatch({ type: STOP })
         dispatch(alert.error(e.response.data))
 

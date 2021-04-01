@@ -992,6 +992,7 @@ namespace Virgol.Controllers
                 await moodleApi.DeleteCategory(schoolClass.Moodle_Id);
 
                 appDbContext.School_Classes.Remove(schoolClass);
+                appDbContext.ExtraLessons.RemoveRange(appDbContext.ExtraLessons.Where(x => x.ClassId == classId).ToList());
                 // appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList());
                 // appDbContext.School_Lessons.RemoveRange(appDbContext.School_Lessons.Where(x => x.classId == classId).ToList());
                 // appDbContext.School_StudentClasses.RemoveRange(appDbContext.School_StudentClasses.Where(x => x.ClassId == classId).ToList());

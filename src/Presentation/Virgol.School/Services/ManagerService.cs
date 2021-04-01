@@ -158,20 +158,22 @@ public class ManagerService {
             int moodelId = appDbContext.Users.Where(x => x.Id == userid).FirstOrDefault().Moodle_Id;
 
             School_studentClass student = appDbContext.School_StudentClasses.Where(x => x.UserId == userid).FirstOrDefault();
+            
+            School_Lessons lesson = appDbContext.School_Lessons.Where(x => x.classId == classId && x.Lesson_Id == extraLesson.lessonId).FirstOrDefault();
+            EnrolUser unEnrolInfo = new EnrolUser();
+            unEnrolInfo.lessonId = lesson.Moodle_Id;
+            unEnrolInfo.UserId = moodelId;
+
+            await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{unEnrolInfo});
+            appDbContext.ExtraLessons.Remove(extraLesson);
+
             if(student != null)
             {
-                School_Lessons lesson = appDbContext.School_Lessons.Where(x => x.classId == classId && x.Lesson_Id == extraLesson.lessonId).FirstOrDefault();
-                EnrolUser unEnrolInfo = new EnrolUser();
-                unEnrolInfo.lessonId = lesson.Moodle_Id;
-                unEnrolInfo.UserId = moodelId;
-
-                await moodleApi.UnAssignUsersFromCourse(new List<EnrolUser>{unEnrolInfo});
-
                 appDbContext.School_StudentClasses.Remove(student);
-                appDbContext.ExtraLessons.Remove(extraLesson);
-
-                await appDbContext.SaveChangesAsync();
             }
+
+            await appDbContext.SaveChangesAsync();
+
 
             return true;
         }
