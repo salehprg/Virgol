@@ -38,8 +38,6 @@ class Grades extends React.Component {
                 break;
         }
 
-        console.log(myData);
-        console.log(this.props.classes);
 
     }
 

@@ -21,7 +21,22 @@
   <component name="ChangeListManager">
     <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="padding added to tables">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/guideActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/guideActions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/managerActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/managerActions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/meetingActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_actions/meetingActions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_reducers/guideReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/_reducers/guideReducer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/Teacher/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/Teacher/Dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/admin/Dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/baseManager/BaseManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/baseManager/BaseManager.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/ExtraLesson/AddExtraLesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/ExtraLesson/AddExtraLesson.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/ManagerDashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/ManagerDashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/class/Schedule.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/class/Schedule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/grades/Grades.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/manager/grades/Grades.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/student/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/student/Dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/videos/PrincipalGuide.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/videos/PrincipalGuide.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/videos/StudentGuide.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/videos/StudentGuide.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/videos/TeacherGuide.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/components/dashboards/videos/TeacherGuide.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,21 +173,7 @@
       <workItem from="1616147031717" duration="338000" />
       <workItem from="1616941438278" duration="87000" />
       <workItem from="1617184111259" duration="172000" />
-      <workItem from="1617287929682" duration="714000" />
-    </task>
-    <task id="LOCAL-00009" summary="stream tab styles added">
-      <created>1613039412677</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1613039412677</updated>
-    </task>
-    <task id="LOCAL-00010" summary="button bugs fixed&#10;all tables in right align right now">
-      <created>1613048519441</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1613048519441</updated>
+      <workItem from="1617287929682" duration="2277000" />
     </task>
     <task id="LOCAL-00011" summary="edit lesson modal redesigned&#10;edit session button added&#10;some style added to landing page">
       <created>1613123428130</created>
@@ -503,7 +504,21 @@
       <option name="project" value="LOCAL" />
       <updated>1617184225686</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="guide api created">
+      <created>1617345996582</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1617345996583</updated>
+    </task>
+    <task id="LOCAL-00059" summary="uncommitted file">
+      <created>1617346279755</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1617346279755</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -525,8 +540,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="anchor tag style updated" />
-    <MESSAGE value="padding added to tables" />
     <MESSAGE value="guide pages added" />
     <MESSAGE value="guide pages added part2" />
     <MESSAGE value="some uncommited files" />
@@ -550,6 +563,8 @@
     <MESSAGE value="login bug fixed" />
     <MESSAGE value="bug fixed" />
     <MESSAGE value="uncommitted files" />
-    <option name="LAST_COMMIT_MESSAGE" value="uncommitted files" />
+    <MESSAGE value="guide api created" />
+    <MESSAGE value="uncommitted file" />
+    <option name="LAST_COMMIT_MESSAGE" value="uncommitted file" />
   </component>
 </project>

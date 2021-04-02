@@ -287,6 +287,7 @@ export const AssignUserToLesson = (token , formValue , userId) => async dispatch
         dispatch(alert.success(response.data))
 
         dispatch({ type: Type.AssignUserToClass, payload: response.data });
+        history.goBack()
 
     } catch (e) {
         dispatch({ type: STOP })

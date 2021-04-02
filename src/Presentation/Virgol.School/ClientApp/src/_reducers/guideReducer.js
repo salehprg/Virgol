@@ -7,7 +7,7 @@ const INITIAL_STATE = {
 }
 
 export default (state = INITIAL_STATE , action) =>{
-    switch (action.value) {
+    switch (action.type) {
         case Type.getPrincipalLinks:
             return {...state , principalLinks : action.payload}
         case Type.getTeacherLinks :
