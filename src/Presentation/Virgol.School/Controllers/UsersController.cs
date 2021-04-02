@@ -870,6 +870,33 @@ namespace Virgol.Controllers
         }
 
 #endregion
+    
+#region Tutorial
+    public IActionResult GetTutorialVideo(string UserType)
+    {
+        try
+        {
+            switch (UserType)
+            {
+                case "Manager" :
+                    return Ok(AppSettings.GetValueFromDatabase(appDbContext , "Manager_TutVideo"));
+
+                case "Teacher" :
+                    return Ok(AppSettings.GetValueFromDatabase(appDbContext , "Teacher_TutVideo"));
+
+                case "Student" :
+                    return Ok(AppSettings.GetValueFromDatabase(appDbContext , "Student_TutVideo"));
+            }
+
+            return Ok("کاربر مورد نظر یافت نشد");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("اطلاعات مورد نظر یافت نشد");
+        }
+    }
+#endregion   
+    
     }
 }
 

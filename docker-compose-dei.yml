@@ -17,7 +17,6 @@ services:
       - VIRGOL_DATABASE_USER=postgres
       - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
       - VIRGOL_MOODLE_BASE_URL=https://m-dei.vir-gol.ir
-      - VIRGOL_MOODLE_TOKEN=0e68f54e65aea7bbac176acd69b7378a
       - VIRGOL_FARAZAPI_URL=http://rest.ippanel.com
       - VIRGOL_FARAZAPI_SENDER_NUMBER=+98500010707
       - VIRGOL_FARAZAPI_USERNAME=goldenstarc
