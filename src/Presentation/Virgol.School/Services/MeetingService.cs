@@ -174,7 +174,7 @@ public class MeetingService {
         try
         {
 
-            Console.WriteLine("Make Meeting in Db");
+            //Console.WriteLine("Make Meeting in Db");
             Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
 
             if(meeting == null)

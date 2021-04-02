@@ -76,7 +76,7 @@ public class ManagerService {
                     {
                         EnrolUser enrolInfo = new EnrolUser();
                         enrolInfo.lessonId = lesson.Moodle_Id;
-                        enrolInfo.RoleId = 3;
+                        enrolInfo.RoleId = 5;
                         enrolInfo.UserId = student.Moodle_Id;
 
                         enrolsData.Add(enrolInfo);

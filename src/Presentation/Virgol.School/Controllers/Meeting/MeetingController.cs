@@ -252,19 +252,21 @@ namespace Virgol.Controllers
                     return BadRequest("مدرسه از سرویس دهنده بیگ بلو باتن پشتیبانی نمیکند");
                 }
 
+                int meetingId = -1;
+
                 if(mixed)//if Teacher start Mixed Meeting
                 {
                     MixedSchedule mixedSchedule = appDbContext.MixedSchedules.Where(x => x.Id == classSchedule.MixedId).FirstOrDefault();
 
                     if(mixedSchedule != null)
                     {
-                        Console.WriteLine("Going to start Meeting");
+                        //Console.WriteLine("Going to start Meeting");
                         
                         int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType , mixedSchedule.MixedName);
                         //Get all schedules have same MixedId according to Selected Schedule
                         List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
 
-                        Console.WriteLine("Done !");
+                        //Console.WriteLine("Done !");
 
                         if(parentId != -1)
                         {
@@ -285,14 +287,17 @@ namespace Virgol.Controllers
                 }
                 else
                 {
-                    Console.WriteLine("Going to start Meeting");
-                    int meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
+                    //Console.WriteLine("Going to start Meeting");
+                    meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
 
-                    Console.WriteLine("Done !");
+                    if(meetingId == -1)
+                        Console.WriteLine("Adobe Server isn't available.");
                 }
 
-                Console.WriteLine("Return Phase");
-                return Ok(true);    
+                if(meetingId == -1)
+                    return BadRequest("درحال حاضر سرور مورد نظر در دسترس نمیباشد. لطفا از سرویس دیگری استفاده نمایید");
+
+                return Ok(true);
             }
             catch(Exception ex)
             {

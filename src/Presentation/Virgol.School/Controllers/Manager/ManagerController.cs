@@ -1015,7 +1015,7 @@ namespace Virgol.Controllers
             {   
                 int classMoodleId = appDbContext.School_Classes.Where(x => x.Id == classId).FirstOrDefault().Moodle_Id;
 
-                List<Class_WeeklySchedule> schedules = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classId).ToList();
+                List<School_Lessons> lessons = appDbContext.School_Lessons.Where(x => x.classId == classId).ToList();
                 List<EnrolUser> unEnrolsData = new List<EnrolUser>();
 
                 List<School_studentClass> removedStudents = new List<School_studentClass>();
@@ -1026,9 +1026,8 @@ namespace Virgol.Controllers
                     School_studentClass student = appDbContext.School_StudentClasses.Where(x => x.UserId == userid).FirstOrDefault();
                     if(student != null)
                     {
-                        foreach(var course in schedules)
+                        foreach(var lesson in lessons)
                         {
-                            School_Lessons lesson = appDbContext.School_Lessons.Where(x => x.classId == classId && x.Lesson_Id == course.LessonId).FirstOrDefault();
                             EnrolUser enrolInfo = new EnrolUser();
                             enrolInfo.lessonId = lesson.Moodle_Id;
                             enrolInfo.UserId = moodelId;
