@@ -186,7 +186,7 @@ export const CreatePrivateRoom = (token , roomName , schoolId = 0) => async disp
             }
         });
 
-        // console.log(response);
+        console.log(response);
 
         dispatch({ type: STOP })
         dispatch(alert.success("کلاس خصوصی با موفقیت ایجاد شد"))

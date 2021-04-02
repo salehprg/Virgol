@@ -20,6 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2339b73-0389-46c4-a334-7a3a226d24e3" name="Default Changelist" comment="padding added to tables">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Virgol.School/ClientApp/src/assets/main.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -156,13 +157,8 @@
       <workItem from="1615904976461" duration="214000" />
       <workItem from="1616147031717" duration="338000" />
       <workItem from="1616941438278" duration="87000" />
-    </task>
-    <task id="LOCAL-00008" summary="some bug fixed &#10;&#10;sidebar cards now in one line &#10;all tables data is in right line">
-      <created>1613039295979</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1613039295979</updated>
+      <workItem from="1617184111259" duration="172000" />
+      <workItem from="1617287929682" duration="714000" />
     </task>
     <task id="LOCAL-00009" summary="stream tab styles added">
       <created>1613039412677</created>
@@ -500,7 +496,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616941476417</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="uncommitted files">
+      <created>1617184225678</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1617184225686</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -522,7 +525,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="scroll behavior transferred" />
     <MESSAGE value="anchor tag style updated" />
     <MESSAGE value="padding added to tables" />
     <MESSAGE value="guide pages added" />
@@ -547,6 +549,7 @@
     <MESSAGE value="password security improved" />
     <MESSAGE value="login bug fixed" />
     <MESSAGE value="bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="bug fixed" />
+    <MESSAGE value="uncommitted files" />
+    <option name="LAST_COMMIT_MESSAGE" value="uncommitted files" />
   </component>
 </project>

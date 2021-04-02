@@ -12,7 +12,6 @@ const SelectableCard = ({ id, title, isSelected, select }) => {
         </div>
         
     );
-
 }
 
 export default SelectableCard;

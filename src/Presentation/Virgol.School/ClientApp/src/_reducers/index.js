@@ -12,6 +12,7 @@ import meetingReducer from "./meetingReducer";
 import teachersReducer from "./teachersReducer";
 import streamReducer from "./streamReducer";
 import paymetnsReducer from "./paymetnsReducer";
+import guideReducer from './guideReducer'
 
 
 export default combineReducers({
@@ -27,5 +28,6 @@ export default combineReducers({
     auth: authReducer,
     form: formReducer,
     alert: alertReducer,
-    worker: workerReducer
+    worker: workerReducer,
+    guide:guideReducer
 });

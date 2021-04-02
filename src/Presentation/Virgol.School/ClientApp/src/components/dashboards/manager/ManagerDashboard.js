@@ -62,7 +62,6 @@ class ManagerDashboard extends React.Component {
             this.setState({justSchool : true})
         }
 
-        console.log(this.props);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

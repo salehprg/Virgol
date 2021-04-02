@@ -2,8 +2,14 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 import ReactPlayer from 'react-player'
 import { arrow_left } from '../../../assets/icons';
+import {connect} from 'react-redux'
+import {getLinks} from '../../../_actions/guideActions'
 import history from '../../../history';
 class PrincipalGuide extends React.Component{ 
+
+    async componentDidMount(){
+        await this.props.getLinks('Principal')
+    }
 
     render(){    
         const url = 'https://goldenstarc.arvanvod.com/0WobRajx6K/pZq3EW9vdj/h_,144_200,240_400,360_502,480_502,720_502,1080_502,k.mp4.list/master.m3u8'
@@ -40,4 +46,12 @@ class PrincipalGuide extends React.Component{
     }    
 }
 
-export default withTranslation()(PrincipalGuide)
+const mapStateToProps = state =>{
+    return{
+        link:state.guide.principalLinks
+    }
+}
+
+const cwrapped = connect(mapStateToProps , {getLinks})(PrincipalGuide)
+
+export default withTranslation()(cwrapped)
