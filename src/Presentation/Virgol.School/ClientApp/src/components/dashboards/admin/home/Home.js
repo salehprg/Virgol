@@ -18,10 +18,10 @@ class Home extends React.Component {
 
             this.setState({loading: true})
             await this.props.getDashboardInfo(this.props.user.token);
-            await this.props.GetMyNews(this.props.user.token);
-            this.setState({loading: false})
-            // console.log(this.props.match.url.substring(1,2));
             this.setState({userType : this.props.match.url.substring(1,2)})
+            await this.props.GetMyNews(this.props.user.token);            
+            this.setState({loading: false})
+
         }
     }
     
@@ -53,43 +53,52 @@ class Home extends React.Component {
                             <Hero userInfo={this.props.t('loading')}
                                   title={this.props.t('loading')} />
                     )}
-                    <div className="tw-mt-8">
-                        <CounterCard
-                            title={this.props.t('schools')}
-                            icon={home}
-                            number={this.props.dashboardInfo.schoolCount}
-                            bg="tw-bg-sky-blue"
-                            link="schools"
-                            userType={this.state.userType}
-                        />
 
-                        <CounterCard
-                            title={this.props.t('maxSchools')}
-                            icon={key}
-                            number={this.props.dashboardInfo.keyCount}
-                            bg="tw-bg-greenish"
-                            pos="tw-row-start-3"
-                        />
+                        {
+                            this.state.userType ?
 
-                        <CounterCard
-                            title={this.props.t('teachers')}
-                            icon={user}
-                            number={this.props.dashboardInfo.teacherCount}
-                            bg="tw-bg-purplish"
-                            link="teachers"
-                            userType={this.state.userType}
-                        />
+                            <div className="tw-mt-8">
+                                <CounterCard
+                                    title={this.props.t('schools')}
+                                    icon={home}
+                                    number={this.props.dashboardInfo.schoolCount}
+                                    bg="tw-bg-sky-blue"
+                                    link="schools"
+                                    userType={this.state.userType}
+                                />
 
-                        <CounterCard
-                            title={this.props.t('students')}
-                            icon={users}
-                            number={this.props.dashboardInfo.studentsCount}
-                            bg="tw-bg-redish"
-                            pos="tw-row-start-3"
-                            link="students"
-                            userType={this.state.userType}
-                        />
-                    </div>
+                                <CounterCard
+                                    title={this.props.t('maxSchools')}
+                                    icon={key}
+                                    number={this.props.dashboardInfo.keyCount}
+                                    bg="tw-bg-greenish"
+                                    pos="tw-row-start-3"
+                                />
+
+                                <CounterCard
+                                    title={this.props.t('teachers')}
+                                    icon={user}
+                                    number={this.props.dashboardInfo.teacherCount}
+                                    bg="tw-bg-purplish"
+                                    link="teachers"
+                                    userType={this.state.userType}
+                                />
+
+                                <CounterCard
+                                    title={this.props.t('students')}
+                                    icon={users}
+                                    number={this.props.dashboardInfo.studentsCount}
+                                    bg="tw-bg-redish"
+                                    pos="tw-row-start-3"
+                                    link="students"
+                                    userType={this.state.userType}
+                                />
+                            </div>
+
+                            :
+                            loading('tw-w-12 tw-ml-40 tw-text-grayish')
+                        }
+                    
                 </div>
             </div>
         );

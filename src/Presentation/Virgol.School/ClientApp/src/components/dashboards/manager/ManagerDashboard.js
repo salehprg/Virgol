@@ -62,7 +62,6 @@ class ManagerDashboard extends React.Component {
             this.setState({justSchool : true})
         }
 
-        console.log(this.props);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -70,6 +69,13 @@ class ManagerDashboard extends React.Component {
             this.setState({ active: this.props.location.pathname.split('/')[2] })
             if (window.innerWidth < 1024) {
                 this.setState({ sidebar: false })
+            }
+            
+        }
+
+        window.onresize = () => {
+            if(window.innerWidth >= 1024){
+                this.setState({sidebar : true})
             }
         }
     }

@@ -8,10 +8,12 @@ import {getAllClass , GetClassesCommonLessons} from "../../../../_actions/school
 import {getAllStudents , AssignUserToLesson} from "../../../../_actions/managerActions"
 import Fieldish from '../../../field/Fieldish';
 import {styles} from '../../../../selectStyle'
+import { loading } from '../../../../assets/icons';
 
 class AddExtraLesson extends React.Component {
 
     state = { 
+        loading : false ,
         classes: [],
         lessons: [],
         students: [],
@@ -65,7 +67,9 @@ class AddExtraLesson extends React.Component {
                     lessonId : this.state.selectedLesson.value,
             }
 
+            this.setState({loading : true})
             await this.props.AssignUserToLesson(this.props.user.token , data ,  this.state.selectedStudent.value);
+            this.setState({loading : false})
         }
     }
 
@@ -101,7 +105,7 @@ class AddExtraLesson extends React.Component {
                         placeholder={this.props.t('student')}
                     />
                     
-                    <button onClick={() => this.onSubmit()} className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg"> {this.props.t('save')} </button>
+                    <button onClick={() => this.onSubmit()} className="tw-w-full tw-py-2 tw-mt-4 tw-text-white tw-bg-purplish tw-rounded-lg"> {this.state.loading ? loading('tw-w-6 tw-text-white tw-mx-auto') : this.props.t('save')} </button>
                 </div>
             </Add>
         );

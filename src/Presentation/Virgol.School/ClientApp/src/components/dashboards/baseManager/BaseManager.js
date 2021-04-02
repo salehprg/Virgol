@@ -68,7 +68,7 @@ class BaseManager extends React.Component {
         const {selectedCat , selectField, selectedField, fields, loadingFields  } = this.props
         if (loadingFields) return <div className="centerize">{loading('tw-w-8 tw-text-grayish')}</div>
         if (!selectedCat) return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('selectBase')} </p>
-        if (fields && fields.length === 0)  return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('noField')} </p>
+        if (!fields || fields.length === 0)  return <p className="tw-text-grayish tw-text-center centerize tw-w-full"> {this.props.t('noField')} </p>
         
         return fields.map(field => {
             return (

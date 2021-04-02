@@ -26,6 +26,8 @@ class Home extends React.Component {
 
             this.setState({loading: false})
             this.setState({userType : this.props.match.url.substring(1,2)})
+
+            console.log(this.props);
     }
 
     getExpireDate() {
@@ -90,34 +92,42 @@ class Home extends React.Component {
                             tw-bg="tw-bg-sky-blue"
                         /> */}
 
-                        <CounterCard
-                            title={this.props.t('onlineClasses')}
-                            icon={key}
-                            number={this.props.dashboardInfo.onlineClass}
-                            bg="tw-bg-purplish"
-                            link="tracker"
-                            userType={this.state.userType}
-                        />
+                        {
+                            this.state.userType ?
+                            <div>
+                            <CounterCard
+                                title={this.props.t('onlineClasses')}
+                                icon={key}
+                                number={this.props.dashboardInfo.onlineClass}
+                                bg="tw-bg-purplish"
+                                link="tracker"
+                                userType={this.state.userType}
+                            />
 
-                        <CounterCard
-                            title={this.props.t('teachers')}
-                            icon={user}
-                            number={this.props.dashboardInfo.teacherCount}
-                            bg="tw-bg-redish"
-                            pos="tw-row-start-3"
-                            link="teachers"
-                            userType={this.state.userType}
-                        />
+                            <CounterCard
+                                title={this.props.t('teachers')}
+                                icon={user}
+                                number={this.props.dashboardInfo.teacherCount}
+                                bg="tw-bg-redish"
+                                pos="tw-row-start-3"
+                                link="teachers"
+                                userType={this.state.userType}
+                            />
 
-                        <CounterCard
-                            title={this.props.t('students')}
-                            icon={users}
-                            number={this.props.dashboardInfo.studentsCount}
-                            bg="tw-bg-greenish"
-                            pos="tw-row-start-3"
-                            link="students"
-                            userType={this.state.userType}
-                        />
+                            <CounterCard
+                                title={this.props.t('students')}
+                                icon={users}
+                                number={this.props.dashboardInfo.studentsCount}
+                                bg="tw-bg-greenish"
+                                pos="tw-row-start-3"
+                                link="students"
+                                userType={this.state.userType}
+                            />
+                        </div>
+
+                        : 
+                        loading('tw-text-grayish tw-w-12 tw-ml-40')
+                        }
                     </div>
                 </div>
             </div>

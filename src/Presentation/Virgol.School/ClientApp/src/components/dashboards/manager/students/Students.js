@@ -30,7 +30,7 @@ class Students extends React.Component {
                 
         this.queriedStudents('')
 
-        console.log(this.props);
+        // console.log(this.props);
     }
 
     checkAll = () => {

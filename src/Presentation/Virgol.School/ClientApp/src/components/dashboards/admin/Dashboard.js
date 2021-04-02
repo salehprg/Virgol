@@ -43,6 +43,12 @@ class Dashboard extends React.Component {
                 this.setState({ sidebar: false })
             }
         }
+
+        window.onresize = () => {
+            if(window.innerWidth >= 1024){
+                this.setState({sidebar : true})
+            }
+        }
     }
 
     toggleSidebar = () => {

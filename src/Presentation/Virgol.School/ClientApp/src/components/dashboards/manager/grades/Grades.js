@@ -38,6 +38,7 @@ class Grades extends React.Component {
                 break;
         }
 
+
     }
 
     OnLock = (state) => {
@@ -131,7 +132,6 @@ class Grades extends React.Component {
                                     this.props.allClass.map(x => {
                                         return(
                                             <SelectableCard
-                                                needToHide
                                                 id={x.id}
                                                 title={x.className}
                                                 select={(id) => history.push(`/class/${id}`)}
