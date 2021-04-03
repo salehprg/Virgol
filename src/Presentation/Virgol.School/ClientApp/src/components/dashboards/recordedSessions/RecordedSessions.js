@@ -55,8 +55,8 @@ class RecorededSession extends React.Component {
                                             <td className="tw-py-4 tw-text-right tw-px-4">{index + 1}</td>
                                             <td className="tw-py-4 tw-text-right d-tw-flex tw-flex-wrap">
                                                 <div className="tw-ml-2 tw-pt-2 tw-px-4">{x.meeting.meetingName.split('-')[1]} - {this.props.t('session')} {index + 1}</div>
-                                                <div data-tip={this.props.t('edit')}> {edit('tw-text-white tw-w-10 tw-bg-greenish tw-rounded-lg tw-p-2')}</div>
-                                                <ReactTooltip type="dark" effect="float" place="top"/>
+                                                {/* <div data-tip={this.props.t('edit')}> {edit('tw-text-white tw-w-10 tw-bg-greenish tw-rounded-lg tw-p-2')}</div>
+                                                <ReactTooltip type="dark" effect="float" place="top"/> */}
                                             </td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">

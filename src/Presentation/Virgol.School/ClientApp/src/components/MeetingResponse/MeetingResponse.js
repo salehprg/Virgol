@@ -13,15 +13,15 @@ class MeetingResponse extends React.Component {
     componentDidMount = async () => {
         var userType = localStorage.getItem("userType")
 
-        if(userType == 1)
+        if(userType == "Student")
         {
             history.push("/s/dashboard")
         }
-        else if(userType == 3)
+        else if(userType == "Teacher")
         {
             history.push("/ParticipantInfo/" + this.props.match.params.id)
         }
-        else if(userType == 4)
+        else if(userType == "Manager")
         {
             history.push("/m/tracker")
         }
