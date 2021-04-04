@@ -190,32 +190,8 @@ public class UserService {
             if(ldap.DeleteEntry(user.MelliCode))
                 await moodleApi.DeleteUser(user.Moodle_Id);
 
-            //string userType = GetUserRoles(user).Result.Where(x => x != Roles.User).FirstOrDefault();
-
             await userManager.DeleteAsync(user);
             
-            // switch(userType)
-            // {
-            //     case Roles.Student :
-            //         // appDbContext.StudentDetails.Remove(appDbContext.StudentDetails.Where(x => x.UserId == user.Id).FirstOrDefault());
-            //         // appDbContext.School_StudentClasses.RemoveRange(appDbContext.School_StudentClasses.Where(x => x.UserId == user.Id).ToList());
-
-            //         break;
-
-            //     case Roles.Teacher :
-            //         // appDbContext.ClassWeeklySchedules.RemoveRange(appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == user.Id).ToList());
-            //         // appDbContext.TeacherDetails.Remove(appDbContext.TeacherDetails.Where(x => x.TeacherId == user.Id).FirstOrDefault());
-            //         // appDbContext.Meetings.Remove(appDbContext.Meetings.Where(x => x.TeacherId == user.Id).FirstOrDefault());
-            //         // appDbContext.News.Remove(appDbContext.News.Where(x => x.AutherId == user.Id).FirstOrDefault());
-            //         break;
-
-            //     case Roles.Manager :
-            //         appDbContext.News.RemoveRange(appDbContext.News.Where(x => x.AutherId == user.Id).ToList());
-            //         appDbContext.ManagerDetails.Remove(appDbContext.ManagerDetails.Where(x => x.UserId == user.Id).FirstOrDefault());
-            //         break;
-            // }
-
-            // await appDbContext.SaveChangesAsync();
             return true;
         }
         catch

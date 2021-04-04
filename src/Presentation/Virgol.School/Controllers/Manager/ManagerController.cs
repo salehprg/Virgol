@@ -1166,6 +1166,9 @@ namespace Virgol.Controllers
                     try
                     {
                         selectedUser.ConfirmedAcc = false;
+                        
+                        if(selectedUser.MelliCode.Length == 9)
+                            selectedUser.MelliCode = "0" + selectedUser.MelliCode;
 
                         if(school.Free)
                         {

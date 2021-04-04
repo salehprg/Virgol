@@ -109,32 +109,39 @@ namespace Virgol.Controllers
             throw;
         }
     }
-    public async Task<IActionResult> ChangePassword(string IdNumber , string newPassword)
+    public async Task<IActionResult> ChangePassword(string IdNumber , string schoolId , string newPassword)
     {
         try
         {
             if(newPassword.Length < 8)
                 return BadRequest("ظول پسورد باید حداقل 8 عدد باشد");
 
-            UserModel user = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault();
+            List<UserModel> users = new List<UserModel>();
 
-            if(user != null)
+            if(!string.IsNullOrEmpty(IdNumber))
             {
-                string token = await userManager.GeneratePasswordResetTokenAsync(user);
-                IdentityResult chngPassword = await userManager.ResetPasswordAsync(user , token , newPassword);
-                if(chngPassword.Succeeded)
-                {
-                    ldap.ChangePassword(user.UserName , newPassword);
+                UserModel user = appDbContext.Users.Where(x => x.MelliCode == IdNumber).FirstOrDefault();
+                users.Add(user);
+            }
+            else
+            {
+                users = appDbContext.Users.Where(x => x.SchoolId == int.Parse(schoolId)).ToList();
+            }
 
-                    return Ok(true);
-                }
-                else
+            foreach(var user in users)
+            {
+                if(user != null)
                 {
-                    return BadRequest(chngPassword.Errors);
+                    string token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    IdentityResult chngPassword = await userManager.ResetPasswordAsync(user , token , newPassword);
+                    if(chngPassword.Succeeded)
+                    {
+                        ldap.ChangePassword(user.UserName , newPassword);
+                    }
                 }
             }
 
-            return Ok(false);
+            return Ok(true);
         }
         catch (System.Exception ex)
         {
@@ -142,6 +149,40 @@ namespace Virgol.Controllers
             throw;
         }
     }
+
+    public async Task<IActionResult> to10Mellicode(int schoolId)
+    {
+        try
+        {
+            List<UserModel> users = appDbContext.Users.Where(x => x.SchoolId == schoolId).ToList();
+            List<UserModel> incorrectUser = new List<UserModel>();
+            List<string> onlyusers = new List<string>();
+
+            foreach(var user in users)
+            {
+                if(user.MelliCode.Length == 10)
+                {
+                    //incorrectUser.Add(user);
+                    // if(users.Where(x => x.MelliCode == "0" + user.MelliCode).FirstOrDefault() == null)
+                    //     onlyusers.Add(user.MelliCode);
+                    
+                    UserModel userOld = user;
+                    userOld.MelliCode = user.MelliCode.Remove(0 , 1);
+
+                    await UserService.DeleteUser(userOld);
+                }
+            }
+
+        
+            return Ok(onlyusers);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+            throw;
+        }
+    }
+
 #endregion
 
 #region Admin
