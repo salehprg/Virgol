@@ -1,17 +1,27 @@
 using System;
 using System.Globalization;
 using System.Net;
-using GuerrillaNtp;
+using Yort.Ntp;
 
 public class MyDateTime {
-    static int OffsetHour = 4;
+    static int OffsetHour {
+        get {
+            DateTime result = DateTime.UtcNow;
+
+            bool daylight = TimeZoneInfo.Local.IsDaylightSavingTime(result);
+            TimeSpan time = TimeZoneInfo.Local.BaseUtcOffset;
+
+            if(daylight)
+                return time.Hours + 1;
+
+            return time.Hours;
+        }
+    }
     static int OfssetMinute = 30;
 
-    //For local test
-    //static int Hour = 0;
-    //static int Minute = 30;
     public static DateTime Now(){
         DateTime result = DateTime.UtcNow;
+
 
         result = result.AddHours(OffsetHour);
         result = result.AddMinutes(OfssetMinute);
@@ -49,35 +59,9 @@ public class MyDateTime {
 
     public static int convertDayOfWeek(DateTime time)
     {
-        //Console.WriteLine("Convert day Time = " + time);
-
-        //Console.WriteLine("Day week = " + (int)time.DayOfWeek);
-
         int dayOfWeek = (int)time.DayOfWeek + 2;
         dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
-        //Console.WriteLine("Converted Day week = " + dayOfWeek);
-
         return dayOfWeek;
-    }
-
-    private static DateTime GetNtpTime()
-    {
-        TimeSpan offset;
-        try
-        {
-            using (var ntp = new NtpClient(Dns.GetHostAddresses("ir.pool.ntp.org")[0]))
-                offset = ntp.GetCorrectionOffset();
-        }
-        catch (Exception)
-        {
-            // timeout or bad SNTP reply
-            offset = TimeSpan.Zero;
-        }
-
-        // use the offset throughout your app
-        DateTime accurateTime = DateTime.UtcNow + offset;
-
-        return accurateTime;
     }
 }
