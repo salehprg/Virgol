@@ -4,7 +4,7 @@ using System.Net;
 using GuerrillaNtp;
 
 public class MyDateTime {
-    static int OffsetHour = 3;
+    static int OffsetHour = 4;
     static int OfssetMinute = 30;
 
     //For local test
