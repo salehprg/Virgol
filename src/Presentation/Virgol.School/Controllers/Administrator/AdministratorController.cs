@@ -1453,6 +1453,40 @@ namespace Virgol.Controllers
             throw;
         }
     }
+
+    public async Task<IActionResult> FixMeetingServiceId()
+    {
+        try
+        {
+            int bbbService = appDbContext.Services.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault().Id;
+            int adobeService = appDbContext.Services.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault().Id;
+
+            List<Meeting> meetings = appDbContext.Meetings.ToList();
+            foreach (var meeting in meetings)
+            {
+                if(meeting.ServiceId != 0)
+                {
+                    meeting.SchoolId = meeting.ServiceId;
+                }
+
+                if(meeting.ServiceType == ServiceType.BBB)
+                    meeting.ServiceId = bbbService;
+
+                if(meeting.ServiceType == ServiceType.AdobeConnect)
+                    meeting.ServiceId = adobeService;
+            }
+
+            appDbContext.Meetings.UpdateRange(meetings);
+            await appDbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 #endregion
 
 #region Payments

@@ -58,10 +58,14 @@ class RecorededSession extends React.Component {
                                                 {/* <div data-tip={this.props.t('edit')}> {edit('tw-text-white tw-w-10 tw-bg-greenish tw-rounded-lg tw-p-2')}</div>
                                                 <ReactTooltip type="dark" effect="float" place="top"/> */}
                                             </td>
-                                            <td className="tw-py-4 tw-text-right tw-px-4">{new Date(x.meeting.startTime).toLocaleString('IR-fa')}</td>
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">
-                                            <button className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
-                                            <button onClick={() => window.open(x.url , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
+                                            {x.recordsInfo.length > 0 ?
+                                                <> 
+                                                    <button className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
+                                                    <button onClick={() => window.open(x.recordsInfo[0].url , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
+                                                </>
+                                            : null}
                                             </td>
                                             <td className="tw-text-right tw-px-4 tw-py-4" onClick={() => history.push(`/ParticipantInfo/${x.meeting.id}`)}>
                                                 {users('tw-w-8 tw-cursor-pointer tw-text-white')}

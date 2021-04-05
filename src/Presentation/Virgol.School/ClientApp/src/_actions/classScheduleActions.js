@@ -91,7 +91,7 @@ export const AddClassSchedule = (token, formValues) => async dispatch => {
         });
 
         dispatch({ type: STOP })
-        dispatch(alert.success("ساعت درسی با موفقیت اضافه شد. لطفا رفرش کنید"))
+        dispatch(alert.success("ساعت درسی با موفقیت اضافه شد."))
         dispatch({ type: Type.AddClassSchedule, payload: response.data });
 
     } catch (e) {

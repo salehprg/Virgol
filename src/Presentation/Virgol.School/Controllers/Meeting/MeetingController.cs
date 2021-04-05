@@ -565,6 +565,7 @@ namespace Virgol.Controllers
                 foreach (var meeting in meetings)
                 {
                     RecordedMeeting temp = new RecordedMeeting();
+                    temp.recordsInfo = new List<RecordInfo>();
                     temp.meeting = meeting;
 
                     ParticipantInfo participantInfo = appDbContext.ParticipantInfos.Where(x => x.UserId == userModel.Id && x.MeetingId == meeting.Id).FirstOrDefault();

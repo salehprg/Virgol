@@ -16,10 +16,11 @@ import Modal from "../../../modals/Modal";
 import Fieldish from "../../../field/Fieldish";
 import Select from "react-select";
 import {styles} from '../../../../selectStyle'
+import QuestionModal from "../../../modals/QuestionModal";
 
 class Home extends React.Component {
 
-    state = {loading : false, newPrivateModal: false, 
+    state = {loading : false, newPrivateModal: false, outOfTime : false, startClassId : 0 ,
             activeStream: { url: 'ewfewf' } , schoolOptions : [] , selectedSchool : {} , privateName : ''}
 
     componentDidMount = async () =>{
@@ -29,29 +30,47 @@ class Home extends React.Component {
             await this.props.GetIncommingNews(this.props.user.token);
             await this.props.GetRecentClass(this.props.user.token);
             this.setState({loading: false})
-
-
-
-            
-
     }
+    
+    InCurrentTime = (start , end) =>
+    {
+        var currentTime = new Date().getHours();
+        currentTime += new Date().getMinutes() / 60;
 
+        if(currentTime >= start && currentTime <= end)
+            return true;
+
+        return false;
+    }
     StatrMeeting = async(id) => {
+        var recClass = this.props.recentClass.find(x => x.id == id);
 
-        await this.props.StartMeeting(this.props.user.token , id)
+        if(!this.InCurrentTime(recClass.startHour , recClass.endHour))
+        {
+            this.setState({outOfTime : true , startClassId : id});
+        }
+    }
+    reqStartMeeting = async() => {
+
+        this.setState({loading : true , outOfTime : false})
+        await this.props.StartMeeting(this.props.user.token , this.state.startClassId)
+        this.setState({loading : false});
+
         this.componentDidMount()
         this.render()
     }
 
     EndMeeting = async(bbbId) => {
 
+        this.setState({loading : true})
         await this.props.EndMeeting(this.props.user.token , bbbId)
         this.componentDidMount()
         this.render()
     }
 
-    JoinMeeting = async(id) => {
 
+    JoinMeeting = async(id) => {
+        this.setState({loading : true})
         await this.props.JoinMeeting(this.props.user.token , id)
         this.componentDidMount()
         this.render()
@@ -89,8 +108,8 @@ class Home extends React.Component {
     }
     
     createPrivateRoom = async () => {
-        // console.log(this.state.privateName);
-        // console.log(this.state.selectedSchool);
+        this.setState({loading : true})
+        
         await this.props.CreatePrivateRoom(this.props.user.token , this.state.privateName , this.state.selectedSchool.value)
         this.hidePrivateModal()
         this.setState({privateName : ""})
@@ -104,6 +123,11 @@ class Home extends React.Component {
 
     render() {
         if(this.state.loading) return (<div className="tw-text-center tw-bg-dark-blue tw-w-full tw-h-screen">{loading('centerize tw-text-grayish tw-w-12')}</div>)
+        if(this.state.outOfTime) return <QuestionModal 
+                                            title="قصد ایجاد کلاس در خارج از ساعت فعلی را دارید ممکن است دانش آموزان تا زمان مقرر شده نتوانند وارد کلاس شوند ادامه میدهید ؟"
+                                            confirm={this.reqStartMeeting}
+                                            cancel={() => this.setState({ outOfTime: false , startClassId : 0})}>
+                                        </QuestionModal>
         return (
             <div className="tw-grid sm:tw-grid-cols-2 tw-grid-cols-1 tw-gap-4 tw-py-6">
                 {this.state.newPrivateModal ?
