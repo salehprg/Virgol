@@ -20,7 +20,7 @@ import QuestionModal from "../../../modals/QuestionModal";
 
 class Home extends React.Component {
 
-    state = {loading : false, newPrivateModal: false, outOfTime : false, startClassId : 0 ,
+    state = {loading : false, newPrivateModal: false, outOfTime : false, startClassId : 0 , outOfJoinTime : false, joinClassId : 0 ,
             activeStream: { url: 'ewfewf' } , schoolOptions : [] , selectedSchool : {} , privateName : ''}
 
     componentDidMount = async () =>{
@@ -37,23 +37,25 @@ class Home extends React.Component {
         var currentTime = new Date().getHours();
         currentTime += new Date().getMinutes() / 60;
 
-        if(currentTime >= start && currentTime <= end)
-            return true;
-
-        return false;
+        return (currentTime - start) * 60;
     }
     StatrMeeting = async(id) => {
         var recClass = this.props.recentClass.find(x => x.id == id);
-
-        if(!this.InCurrentTime(recClass.startHour , recClass.endHour))
+        var remainTime = this.InCurrentTime(recClass.startHour , recClass.endHour)
+        if(remainTime <= -15)
         {
-            this.setState({outOfTime : true , startClassId : id});
+            this.setState({outOfTime : true , startClassId : id , remainTime : remainTime * (-1)});
+        }
+        else
+        {
+            this.reqStartMeeting(id)
         }
     }
-    reqStartMeeting = async() => {
+    reqStartMeeting = async(id) => {
 
         this.setState({loading : true , outOfTime : false})
-        await this.props.StartMeeting(this.props.user.token , this.state.startClassId)
+
+        await this.props.StartMeeting(this.props.user.token , id)
         this.setState({loading : false});
 
         this.componentDidMount()
@@ -70,7 +72,22 @@ class Home extends React.Component {
 
 
     JoinMeeting = async(id) => {
-        this.setState({loading : true})
+        var recClass = this.props.recentClass.find(x => x.id == id);
+        if(!recClass)
+            recClass = this.props.meetingList.find(x => x.id == id);
+        var remainTime = this.InCurrentTime(recClass.startHour , recClass.endHour)
+        if(remainTime < -15)
+        {
+            this.setState({outOfJoinTime : true , joinClassId : id , remainJoinTime : remainTime * (-1)});
+        }
+        else
+        {
+            this.reqJoinMeeting(id)
+        }
+
+    }
+    reqJoinMeeting = async(id) => {
+        this.setState({loading : true , outOfJoinTime : false})
         await this.props.JoinMeeting(this.props.user.token , id)
         this.componentDidMount()
         this.render()
@@ -124,10 +141,16 @@ class Home extends React.Component {
     render() {
         if(this.state.loading) return (<div className="tw-text-center tw-bg-dark-blue tw-w-full tw-h-screen">{loading('centerize tw-text-grayish tw-w-12')}</div>)
         if(this.state.outOfTime) return <QuestionModal 
-                                            title="قصد ایجاد کلاس در خارج از ساعت فعلی را دارید ممکن است دانش آموزان تا زمان مقرر شده نتوانند وارد کلاس شوند ادامه میدهید ؟"
-                                            confirm={this.reqStartMeeting}
-                                            cancel={() => this.setState({ outOfTime: false , startClassId : 0})}>
+                                            title={"قصد ایجاد کلاس در خارج از موعد آن را دارید  زمان باقی مانده تا شروع کلاس : " + (this.state.remainTime > 15 ? "بیش از 15 دقیقه" : this.state.remainTime.toFixed(0) + "دقیقه ")}
+                                            confirm={() => this.reqStartMeeting(this.state.startClassId)}
+                                            cancel={() => this.setState({ outOfTime: false})}>
                                         </QuestionModal>
+        if(this.state.outOfJoinTime) return <QuestionModal 
+                                            title={"قصد ورود کلاس در خارج از موعد آن را دارید  زمان باقی مانده تا شروع کلاس : " + (this.state.remainJoinTime > 15 ? "بیش از 15 دقیقه" : this.state.remainTime.toFixed(0) + "دقیقه ")}
+                                            confirm={() => this.reqJoinMeeting(this.state.joinClassId)}
+                                            cancel={() => this.setState({ outOfJoinTime: false})}>
+                                        </QuestionModal>
+
         return (
             <div className="tw-grid sm:tw-grid-cols-2 tw-grid-cols-1 tw-gap-4 tw-py-6">
                 {this.state.newPrivateModal ?
