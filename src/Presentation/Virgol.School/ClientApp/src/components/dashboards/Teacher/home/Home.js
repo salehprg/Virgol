@@ -138,15 +138,24 @@ class Home extends React.Component {
         this.setState({selectedSchool : selectedSchool})
     }
 
+    getTimeFormatted = (time) => {
+        const h = Math.floor(time / 60);
+        const m = time % 60;
+        let ftime = '';
+        if (h > 0) ftime = `${h} ساعت`
+        if (m > 0) ftime = ftime + ` ${m} دقیقه`
+        return ftime;
+    }
+
     render() {
         if(this.state.loading) return (<div className="tw-text-center tw-bg-dark-blue tw-w-full tw-h-screen">{loading('centerize tw-text-grayish tw-w-12')}</div>)
         if(this.state.outOfTime) return <QuestionModal 
-                                            title={"قصد ایجاد کلاس در خارج از موعد آن را دارید  زمان باقی مانده تا شروع کلاس : " + (this.state.remainTime > 15 ? "بیش از 15 دقیقه" : this.state.remainTime.toFixed(0) + "دقیقه ")}
+                                            title={"قصد ایجاد کلاس در خارج از موعد آن را دارید  زمان باقی مانده تا شروع کلاس : " + this.getTimeFormatted(this.state.remainTime)}
                                             confirm={() => this.reqStartMeeting(this.state.startClassId)}
                                             cancel={() => this.setState({ outOfTime: false})}>
                                         </QuestionModal>
         if(this.state.outOfJoinTime) return <QuestionModal 
-                                            title={"قصد ورود کلاس در خارج از موعد آن را دارید  زمان باقی مانده تا شروع کلاس : " + (this.state.remainJoinTime > 15 ? "بیش از 15 دقیقه" : this.state.remainTime.toFixed(0) + "دقیقه ")}
+                                            title={"قصد ورود کلاس در خارج از موعد آن را دارید  زمان باقی مانده تا شروع کلاس : " + this.getTimeFormatted(this.state.remainTime)}
                                             confirm={() => this.reqJoinMeeting(this.state.joinClassId)}
                                             cancel={() => this.setState({ outOfJoinTime: false})}>
                                         </QuestionModal>
