@@ -20,6 +20,7 @@ public class Meeting {
     ///</summary>
     public string ServiceType {get; set;}
     public int ServiceId {get; set;}
+    public int SchoolId {get; set;}
 
 
     [NotMapped]

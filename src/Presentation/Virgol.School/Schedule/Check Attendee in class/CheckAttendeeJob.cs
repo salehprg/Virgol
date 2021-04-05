@@ -79,7 +79,7 @@ namespace Schedule
                                                         if(participantInfo != null)
                                                         {
                                                             participantInfo.PresentCount++;
-                                                            participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeetingVW.CheckCount + 1) * 100 ) > 70 ? true : false;
+                                                            participantInfo.IsPresent = (participantInfo.PresentCount / (oldMeetingVW.CheckCount + 1) * 100 ) > 30 ? true : false;
                                                             dbContext.ParticipantInfos.Update(participantInfo);
                                                         }
                                                         else

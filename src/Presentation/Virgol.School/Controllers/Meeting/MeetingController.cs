@@ -96,9 +96,12 @@ namespace Virgol.Controllers
             foreach (var student in students)
             {
                 ParticipantInfo participantInfo = appDbContext.ParticipantInfos.Where(x => x.Id == student.Id).FirstOrDefault();
-                participantInfo.IsPresent = student.IsPresent;
-                
-                appDbContext.ParticipantInfos.Update(participantInfo);
+                if(participantInfo != null)
+                {
+                    participantInfo.IsPresent = student.IsPresent;
+                    
+                    appDbContext.ParticipantInfos.Update(participantInfo);
+                }
             }
 
             await appDbContext.SaveChangesAsync();
@@ -567,6 +570,7 @@ namespace Virgol.Controllers
                     ParticipantInfo participantInfo = appDbContext.ParticipantInfos.Where(x => x.UserId == userModel.Id && x.MeetingId == meeting.Id).FirstOrDefault();
                     temp.participant = participantInfo;
                     
+                    ServicesModel serviceModel = appDbContext.Services.Where(x => x.Id == meeting.ServiceId).FirstOrDefault();
 
                     if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.BBB)
                     {
@@ -594,6 +598,29 @@ namespace Virgol.Controllers
                                 }
                             }
                         }
+                    }
+
+                    if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.AdobeConnect)
+                    {
+                        AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
+                        RecordList recordList = adobeApi.GetRecordings(meeting.MeetingId);
+
+                        RecordedMeeting recordedMeeting = new RecordedMeeting();
+                        recordedMeeting.meeting = meeting;
+                        
+                        List<RecordInfo> recordInfos = new List<RecordInfo>();
+                        recordInfos.Add(new RecordInfo{date = recordList.recordings.scoInfo.dateCreated , 
+                                                        name = meeting.MeetingName ,
+                                                        url = recordList.recordings.scoInfo.urlPath ,
+                                                        recordID = recordList.recordings.scoInfo.scoId});
+
+                        RecordsResponse response = new RecordsResponse();
+                        response.recordings = new Recordings{recording = recordInfos};
+                        
+                        recordedMeeting.recordsInfo = recordInfos;
+
+
+                        recordsResponses.Add(recordedMeeting);
                     }
                     
                     recordsResponses.Add(temp);

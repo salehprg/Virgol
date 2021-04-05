@@ -139,7 +139,32 @@ namespace Virgol.Helper
 
             return result;
         }
+        
+        public RecordList GetRecordings(string scoid)
+        {
+            try
+            {
+                MeetingInfoResponse meetingInfo = FindScoInfo(scoid);
+                if(meetingInfo != null)
+                {
+                    Uri uri = new Uri (URL + "/api/xml?action=list-recordings&folder-id=" + meetingInfo.scoInfo.folderId);
+                    HttpResponseMessage response = client.GetAsync(uri).Result;
 
+                    XmlSerializer serializer = new XmlSerializer(typeof(MeetingInfoResponse));
+                    RecordList result = (RecordList)serializer.Deserialize(response.Content.ReadAsStreamAsync().Result);
+
+                    return result;
+                }
+
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
         public MeetingInfoResponse StartMeeting(string RoomName)
         {
             try

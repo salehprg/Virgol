@@ -102,6 +102,8 @@ public class MeetingService {
             return false;
         }
 
+        meeting.ServiceId = serviceModel.Id;
+
         if(serviceType == ServiceType.BBB)
         {
             BBBApi bbbApi = new BBBApi(appDbContext);
@@ -436,7 +438,7 @@ public class MeetingService {
         meeting.ServiceType = serviceType;
         meeting.StartTime = timeNow;
         //We set ScheduleId as School Id for future use
-        meeting.ServiceId = school.Id;
+        meeting.SchoolId = school.Id;
         meeting.TeacherId = userId;
         meeting.Private = true;
         meeting.MeetingId = RandomPassword.GenerateGUID(true , true , true);
@@ -512,7 +514,7 @@ public class MeetingService {
         else
         {
             //We set School id as Schedule Id in CreatePrivateRoom
-            school = appDbContext.Schools.Where(x => x.Id == meeting.ServiceId).FirstOrDefault();
+            school = appDbContext.Schools.Where(x => x.Id == meeting.SchoolId).FirstOrDefault();
         }
 
         if(school == null)
@@ -571,7 +573,7 @@ public class MeetingService {
         int schoolId = 0;
         if(meeting.Private)
         {
-            schoolId = meeting.ServiceId;
+            schoolId = meeting.SchoolId;
         }
         else
         {
@@ -587,7 +589,7 @@ public class MeetingService {
         if(meeting.Private)
         {
             //We set School id as Schedule Id in CreatePrivateRoom
-            school = appDbContext.Schools.Where(x => x.Id == meeting.ServiceId).FirstOrDefault();
+            school = appDbContext.Schools.Where(x => x.Id == meeting.SchoolId).FirstOrDefault();
         }
         
         bool resultEnd = false;
