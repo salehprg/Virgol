@@ -4,19 +4,7 @@ using System.Net;
 using Yort.Ntp;
 
 public class MyDateTime {
-    static int OffsetHour {
-        get {
-            DateTime result = DateTime.UtcNow;
-
-            bool daylight = TimeZoneInfo.Local.IsDaylightSavingTime(result);
-            TimeSpan time = TimeZoneInfo.Local.BaseUtcOffset;
-
-            if(daylight)
-                return time.Hours + 1;
-
-            return time.Hours;
-        }
-    }
+    static int OffsetHour = 4 ;
     static int OfssetMinute = 30;
 
     public static DateTime Now(){
