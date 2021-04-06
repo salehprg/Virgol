@@ -10,19 +10,24 @@ public class MyDateTime {
     public static DateTime Now(){
         DateTime result = DateTime.UtcNow;
 
+        NtpClient client = new NtpClient("ntp.day.ir");
+        RequestTimeResult req = client.RequestTimeAsync().Result;
 
-        result = result.AddHours(OffsetHour);
-        result = result.AddMinutes(OfssetMinute);
+        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Iran Standard Time");
+        DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(result, cstZone);
 
-        string devStatus = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        // result = result.AddHours(OffsetHour);
+        // result = result.AddMinutes(OfssetMinute);
 
-        if(devStatus == "Development")
-        {
-            result = DateTime.Now;
-        }
+        // string devStatus = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+        // if(devStatus == "Development")
+        // {
+        //     result = DateTime.Now;
+        // }
         
-        Console.WriteLine(result);
-        return result;
+        Console.WriteLine(cstTime);
+        return cstTime;
     }
 
     public static DateTime ConvertToServerTime(DateTime dateTime){
