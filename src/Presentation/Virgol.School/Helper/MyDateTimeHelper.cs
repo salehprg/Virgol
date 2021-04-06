@@ -21,6 +21,7 @@ public class MyDateTime {
             result = DateTime.Now;
         }
         
+        Console.WriteLine(result);
         return result;
     }
 
