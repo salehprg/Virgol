@@ -25,6 +25,8 @@ namespace Virgol.Helper
             URL = _url;
             UserAdmin = _UserAdmin;
             AdminPassword = _UserPassword;
+
+            Login(_UserAdmin , _UserPassword);
         }
 
 
@@ -150,7 +152,7 @@ namespace Virgol.Helper
                     Uri uri = new Uri (URL + "/api/xml?action=list-recordings&folder-id=" + meetingInfo.scoInfo.folderId);
                     HttpResponseMessage response = client.GetAsync(uri).Result;
 
-                    XmlSerializer serializer = new XmlSerializer(typeof(MeetingInfoResponse));
+                    XmlSerializer serializer = new XmlSerializer(typeof(RecordList));
                     RecordList result = (RecordList)serializer.Deserialize(response.Content.ReadAsStreamAsync().Result);
 
                     return result;

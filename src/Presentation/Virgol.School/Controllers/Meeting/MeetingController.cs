@@ -610,13 +610,16 @@ namespace Virgol.Controllers
                         recordedMeeting.meeting = meeting;
                         
                         List<RecordInfo> recordInfos = new List<RecordInfo>();
-                        recordInfos.Add(new RecordInfo{date = recordList.recordings.scoInfo.dateCreated , 
-                                                        name = meeting.MeetingName ,
-                                                        url = recordList.recordings.scoInfo.urlPath ,
-                                                        recordID = recordList.recordings.scoInfo.scoId});
+                        if(recordList.recordings.scoInfo != null)
+                        {
+                            recordInfos.Add(new RecordInfo{date = recordList.recordings.scoInfo.dateCreated , 
+                                                            name = meeting.MeetingName ,
+                                                            url = recordList.recordings.scoInfo.urlPath ,
+                                                            recordID = recordList.recordings.scoInfo.scoId});
 
-                        RecordsResponse response = new RecordsResponse();
-                        response.recordings = new Recordings{recording = recordInfos};
+                            RecordsResponse response = new RecordsResponse();
+                            response.recordings = new Recordings{recording = recordInfos};
+                        }
                         
                         recordedMeeting.recordsInfo = recordInfos;
 
