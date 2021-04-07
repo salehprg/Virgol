@@ -272,6 +272,7 @@ namespace Virgol.Controllers
                 if(phoneInterupt)
                     return BadRequest("شماره تلفن وارد شده تکراریست");
 
+                inputData.AutoFill = adminDetail.Autofill;
                 inputData.Free = adminDetail.Free;
                 inputData.SchoolType = schoolType;
                 SchoolModel schoolResult = await schoolService.CreateSchool(inputData);

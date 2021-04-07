@@ -82,7 +82,11 @@ public class UserService {
                     userData.SchoolId = schoolId;
                 }
                 
-                if((await userManager.CreateAsync(user , (!string.IsNullOrEmpty(password) ? password : user.MelliCode))).Succeeded)
+                string _password = (!string.IsNullOrEmpty(password) ? password : user.MelliCode);
+                if(!string.IsNullOrEmpty(user.password))
+                    _password = user.password;
+
+                if((await userManager.CreateAsync(user , _password)).Succeeded)
                 {
                     userData.Id = user.Id;
                     await userManager.AddToRolesAsync(user , userRoles);
@@ -100,7 +104,7 @@ public class UserService {
                     }
                     
                     userData.Id = user.Id;
-                    bool ldapResult = (userRoles.Contains(Roles.Manager) ? await ldap.AddUserToLDAP(user , hasTeacherRole , password) : await ldap.AddUserToLDAP(user , hasTeacherRole , user.MelliCode));
+                    bool ldapResult = await ldap.AddUserToLDAP(user , hasTeacherRole , _password);
                     //bool ldapResult = true;
                     if(ldapResult)
                     {

@@ -1024,6 +1024,9 @@ namespace Virgol.Migrations
                     b.Property<int>("ActiveContract")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("AutoFill")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Balance")
                         .HasColumnType("integer");
 

@@ -21,6 +21,8 @@ namespace Models.User
 
         [NotMapped]
         public bool completed {get;set;}
+        [NotMapped]
+        public string password {get;set;}
 
     }
 

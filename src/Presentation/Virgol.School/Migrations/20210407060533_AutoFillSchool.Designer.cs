@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Virgol.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210406051818_AutoFillSchool")]
+    [Migration("20210407060533_AutoFillSchool")]
     partial class AutoFillSchool
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1025,6 +1025,9 @@ namespace Virgol.Migrations
 
                     b.Property<int>("ActiveContract")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("AutoFill")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Balance")
                         .HasColumnType("integer");

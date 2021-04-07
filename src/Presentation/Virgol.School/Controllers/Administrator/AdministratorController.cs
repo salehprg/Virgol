@@ -736,8 +736,26 @@ namespace Virgol.Controllers
             {
                 appDbContext.Lessons.Add(newStudyF);
                 await appDbContext.SaveChangesAsync();
+                List<EnrolUser> data = new List<EnrolUser>();
 
-                return Ok(appDbContext.Lessons.OrderByDescending(x => x.Id).FirstOrDefault());
+                List<School_Class> school_Classes = appDbContext.School_Classes.Where(x => x.Grade_Id == newStudyF.Grade_Id).ToList();
+
+                foreach (var classs in school_Classes)
+                {
+                    School_Lessons lessons = new School_Lessons{classId = classs.Id , Lesson_Id = newStudyF.Id , School_Id = classs.School_Id};
+                    appDbContext.School_Lessons.Add(lessons);
+                    await appDbContext.SaveChangesAsync();
+
+                    School_Grades grade = appDbContext.School_Grades.Where(x => x.Grade_Id == model.Grade_Id && x.School_Id == classs.School_Id).FirstOrDefault();
+                    SchoolModel school = appDbContext.Schools.Where(x => x.Id == classs.School_Id).FirstOrDefault();
+
+                    await UpdateSchoolMoodle(grade , school , data);
+                }
+
+                
+                await moodleApi.AssignUsersToCourse(data);
+                
+                return Ok(true);
             }
             catch(Exception ex)
             {

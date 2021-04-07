@@ -200,6 +200,7 @@ public class FileController {
                 {
                     excelData.Read(); //read column header name
 
+                    int passwordId = -1;
                     int firstNameId = -1;
                     int lastNameId = -1;
                     int phoneNumberId = -1;
@@ -215,6 +216,10 @@ public class FileController {
 
                         if(value != null)
                         {
+                            if(((string)value).Trim().Contains("پسورد") || ((string)value).Trim().Contains("رمز عبور"))
+                            {
+                                passwordId = i;
+                            }
                             if(((string)value).Trim() == "نام" || ((string)value).Trim() == "firstname")
                             {
                                 firstNameId = i;
@@ -289,7 +294,8 @@ public class FileController {
                                     PhoneNumber = (phoneNumberId != -1 ? 
                                                     (excelData.GetValue(phoneNumberId) != null ? excelData.GetValue(phoneNumberId).ToString() : null) 
                                                     : null),
-                                    Sexuality = sexCode
+                                    Sexuality = sexCode,
+                                    password = (excelData.GetValue(passwordId) != null ? excelData.GetValue(passwordId).ToString() : null)
                                 };
 
                                 if(!isTeacher)

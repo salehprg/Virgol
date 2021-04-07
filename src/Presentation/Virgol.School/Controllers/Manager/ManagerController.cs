@@ -212,12 +212,15 @@ namespace Virgol.Controllers
 
                 student.SchoolId = school.Id;
                 student.UserName = student.MelliCode;
-                student.ConfirmedAcc = false;
+                student.ConfirmedAcc = school.Free;
 
                 ServicePrice servicePrice = appDbContext.ServicePrices.Where(x => x.Id == school.ActiveContract).FirstOrDefault();
-                if(school.Free)
+
+                if(school.AutoFill)
                 {
-                    student.ConfirmedAcc = true;
+                    student.LatinFirstname = "ff";
+                    student.LatinLastname = "ll";
+                    student.Email = "ff.ll." + student.MelliCode.Substring(student.MelliCode.Length - 2 , 2);
                 }
                 else if(servicePrice != null && (school.Balance - servicePrice.pricePerUser) >= 0)
                 {
@@ -1165,14 +1168,16 @@ namespace Virgol.Controllers
                 {
                     try
                     {
-                        selectedUser.ConfirmedAcc = false;
+                        selectedUser.ConfirmedAcc = school.Free;
                         
                         if(selectedUser.MelliCode.Length == 9)
                             selectedUser.MelliCode = "0" + selectedUser.MelliCode;
 
-                        if(school.Free)
+                        if(school.AutoFill)
                         {
-                            selectedUser.ConfirmedAcc = true;
+                            selectedUser.LatinFirstname = "ff";
+                            selectedUser.LatinLastname = "ll";
+                            selectedUser.Email = "ff.ll." + selectedUser.MelliCode.Substring(selectedUser.MelliCode.Length - 2 , 2);
                         }
                         if(servicePrice != null && (school.Balance - servicePrice.pricePerUser) >= 0)
                         {

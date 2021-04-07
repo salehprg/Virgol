@@ -7,6 +7,12 @@ namespace Virgol.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
+                name: "AutoFill",
+                table: "Schools",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.AddColumn<bool>(
                 name: "Autofill",
                 table: "AdminDetails",
                 nullable: false,
@@ -15,6 +21,10 @@ namespace Virgol.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "AutoFill",
+                table: "Schools");
+
             migrationBuilder.DropColumn(
                 name: "Autofill",
                 table: "AdminDetails");

@@ -26,6 +26,8 @@ namespace Models.InputModel
 
         [NotMapped]
         public bool completed {get;set;}
+        [NotMapped]
+        public string password {get;set;}
         
         [NotMapped]
         public StudentDetail studentDetail {get; set;}

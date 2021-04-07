@@ -26,6 +26,7 @@ public class SchoolModel {
     public bool SelfSign {get; set;}
     public bool EnableSms {get; set;}
     public bool Free {get; set;}
+    public bool AutoFill {get; set;}
     public bool RemindUser {get; set;}
     ///<summar>
     ///Split each ServiceId by comma ','
