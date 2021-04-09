@@ -37,6 +37,7 @@ namespace Virgol.Helper
 
 
         public static string ServerRootUrl { get; set; }
+        public static string TimeZone { get; set; }
 
         public static string GetValueFromDatabase (AppDbContext appDbContext , string key)
         {

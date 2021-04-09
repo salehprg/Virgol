@@ -90,6 +90,8 @@ namespace Virgol
 
                 AppSettings.REACT_APP_MOODLE_URL = AppSettings.BaseUrl_moodle + "/login/index.php";
 
+                AppSettings.TimeZone = Environment.GetEnvironmentVariable("VIRGOL_TZ");
+
             }
             else
             {

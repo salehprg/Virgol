@@ -29,6 +29,7 @@ services:
       - VIRGOL_LDAP_PORT=390
       - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
+      - VIRGOL_TZ=Asia/Tehran
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`panel.vir-gol.ir`)"

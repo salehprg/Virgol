@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Net;
+using Virgol.Helper;
 using Yort.Ntp;
 
 public class MyDateTime {
@@ -10,10 +11,9 @@ public class MyDateTime {
     public static DateTime Now(){
         DateTime result = DateTime.UtcNow;
 
-        // NtpClient client = new NtpClient("ntp.day.ir");
-        // RequestTimeResult req = client.RequestTimeAsync().Result;
+        string timeZone = AppSettings.TimeZone;
 
-        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Iran Standard Time");
+        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
         DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(result, cstZone);
 
         // result = result.AddHours(OffsetHour);
