@@ -24,7 +24,7 @@ namespace Virgol.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     public class AdminController : ControllerBase
     {
         private readonly UserManager<UserModel> userManager;
@@ -460,18 +460,20 @@ namespace Virgol.Controllers
 
                 List<string> userRoles = new List<string>{Roles.CoManager};
 
-                List<UserDataModel> managerDatas = await UserService.CreateUser(new List<UserDataModel>{coManagerData} , userRoles, model.SchoolId);
-
-                SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId).FirstOrDefault();
+                UserModel userModel = UserService.GetUserModel(User);
+                AdminDetail adminDetail = appDbContext.AdminDetails.Where(x => x.UserId == userModel.Id).FirstOrDefault();
+                SchoolModel school = appDbContext.Schools.Where(x => x.Id == model.SchoolId && x.SchoolType == adminDetail.SchoolsType).FirstOrDefault();
 
                 if(school != null)
                 {
-                    school.ManagerId = managerDatas[0].Id;
-                    appDbContext.Schools.Update(school);
-                    await appDbContext.SaveChangesAsync();
-                }           
+                    List<UserDataModel> managerDatas = await UserService.CreateUser(new List<UserDataModel>{coManagerData} , userRoles, model.SchoolId);
+                    if(managerDatas.Count > 0)
+                        return Ok(managerDatas[0]);
 
-                return Ok(model);
+                    return BadRequest("اطلاعات وارد شده صحیح نمیابشد");
+                }         
+
+                return BadRequest("اجازه افزودن معاون به این مدرسه را ندارید ");
             }
             catch(Exception ex)
             {
@@ -580,14 +582,14 @@ namespace Virgol.Controllers
             try
             {
                 UserModel coManager = appDbContext.Users.Where(x => x.Id == coManagerId).FirstOrDefault();
-                bool removedCoManager = userManager.DeleteAsync(coManager).Result.Succeeded;
+                bool removedCoManager = await UserService.DeleteUser(coManager);
 
                 if(removedCoManager)
                 {
-                    await appDbContext.SaveChangesAsync();
+                    return Ok(coManagerId);
                 }
                 
-                return Ok(coManagerId);
+                return BadRequest("حذف با مشکل مواجه شد");
             }
             catch(Exception ex)
             {
