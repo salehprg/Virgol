@@ -88,7 +88,7 @@ namespace Virgol.Controllers
                 
                 int onlineClass = 0;
 
-                List<MeetingView> onlineClassList = meetingService.GetAllActiveMeeting(userModel.Id);
+                List<MeetingView> onlineClassList = meetingService.GetAllActiveMeeting(userModel.Id , school.Id);
 
                 onlineClass = onlineClassList.Count;
 

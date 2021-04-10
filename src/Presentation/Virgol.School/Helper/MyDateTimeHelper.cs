@@ -26,7 +26,7 @@ public class MyDateTime {
         //     result = DateTime.Now;
         // }
         
-        Console.WriteLine(cstTime);
+        //Console.WriteLine(cstTime);
         return cstTime;
     }
 

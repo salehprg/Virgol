@@ -62,7 +62,7 @@ namespace Virgol.Helper
             return string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n{12}" ,
                                     moddleCourseUrl , BaseUrl_moodle ,
                                     FarazAPI_URL , FarazAPI_SendNumber , FarazAPI_Username , FarazAPI_Password , FarazAPI_ApiKey
-                                    , JWTSecret , LDAPServer , LDAPPort , LDAPUserAdmin , LDAPPassword , ServerRootUrl);
+                                    , JWTSecret , LDAPServer , LDAPPort , LDAPUserAdmin , LDAPPassword , ServerRootUrl , MyDateTime.Now());
         }
 
     }

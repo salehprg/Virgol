@@ -43,7 +43,11 @@ export const login = (formValues , autoRedirect = true) => async dispatch => {
                 } 
                 break;
             }
-            case "Manager": {
+            case "Manager" : {
+                history.push('/m/dashboard');
+                break;
+            }
+            case "CoManager" : {
                 history.push('/m/dashboard');
                 break;
             }

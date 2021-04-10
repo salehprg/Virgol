@@ -715,9 +715,10 @@ public class MeetingService {
         return result;
     }
 
-    public List<MeetingView> GetAllActiveMeeting(int managerId)
+    public List<MeetingView> GetAllActiveMeeting(int managerId , int  schoolId = 0)
     {
-        int schoolId = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault().Id;
+        if(schoolId == 0)
+            schoolId = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault().Id;
 
         List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == schoolId).ToList();
         
