@@ -255,8 +255,8 @@ namespace Virgol.Controllers
             {
                 string username = userManager.GetUserId(User);
                 UserModel manager = appDbContext.Users.Where(x => x.UserName == username).FirstOrDefault();
-                int schoolId = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault().Id;
-
+                int schoolId = appDbContext.Schools.Where(x => x.ManagerId == manager.Id || x.Id == manager.SchoolId).FirstOrDefault().Id;
+                
                 List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.MixedId != 0 && x.School_Id == schoolId).ToList();
 
                 var groupedMixed = classScheduleViews

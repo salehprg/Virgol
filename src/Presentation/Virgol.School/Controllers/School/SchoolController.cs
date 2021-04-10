@@ -878,8 +878,12 @@ namespace Virgol.Controllers
             try
             {   
                 string ManagerUserName = userManager.GetUserId(User);
-                int managerId = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault().Id;
+                UserModel userModel = appDbContext.Users.Where(x => x.UserName == ManagerUserName).FirstOrDefault();
+                int managerId = userModel.Id;
+
                 SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+                if(school == null)
+                    school = appDbContext.Schools.Where(x => x.Id == userModel.SchoolId).FirstOrDefault();
 
                 List<School_Class> classes = new List<School_Class>();
                 if(gradeId != -1)
