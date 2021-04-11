@@ -138,7 +138,7 @@ class BaseManager extends React.Component {
     }
 
     render() {
-        const {editable, classable, classes, onEdit, selectedClass, categories, deleteCat, deleteField, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
+        const {editable, coManager, classable, classes, onEdit, selectedClass, categories, deleteCat, deleteField, fields, grades, courses, selectedCat, selectedCourse, selectedGrade, selectedField } = this.props
         // console.log(this.props.classes);
 
         return (
@@ -162,7 +162,7 @@ class BaseManager extends React.Component {
                     : 
                     <BMCard
                         title={this.props.t('classes')}
-                        editable={true}
+                        editable={!coManager}
                         editIcon={true}
                         onEdit={onEdit}
                         isSelected={selectedClass}

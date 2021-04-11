@@ -15,6 +15,7 @@ import LogoutSSO from "./login/LogoutSSO";
 import AdminDashboard from "./dashboards/admin/Dashboard";
 import NoFound from "./NoFound";
 import SchoolInfo from './dashboards/admin/schools/SchoolInfo'
+import CoManagerDashboard from './dashboards/comanager/CoManagerDashboard';
 import ManagerDashboard from './dashboards/manager/ManagerDashboard';
 import AddSchool from './dashboards/admin/schools/addSchool/AddSchool';
 import StudentDashboard from './dashboards/student/Dashboard';
@@ -142,6 +143,11 @@ class App extends React.Component {
                                     <Route path="/newStudent" component={AddStudent} />
                                     <Route path="/newGroup" component={AddGroup} />
                                     <Route path="/addExtraLesson" component={AddExtraLesson} />
+
+                                    <Route path="/c" component={CoManagerDashboard} />
+                                    
+                                    <Route path="/teacher/:id" component={TeacherInfo} />
+                                    <Route path="/student/:id" component={StudentInfo} />
 
                                     <Route path="/editGroup/:id" component={EditGroup} />
                                     <Route path="/plans" component={Plans} />

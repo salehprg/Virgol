@@ -61,6 +61,22 @@ export const getManagerDashboardInfo = token => async dispatch => {
 
 }
 
+export const getCoManagerDashboardInfo = token => async dispatch => {
+
+    try {
+        const response = await lms.get("/CoManager/getCoManagerDashboardInfo", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: Type.getManagerDashboardInfo, payload: response.data });
+    } catch (e) {
+        dispatch(alert.error("خطا دربرقراری اتصال"))
+    }
+
+}
+
 //#region Students
 
 

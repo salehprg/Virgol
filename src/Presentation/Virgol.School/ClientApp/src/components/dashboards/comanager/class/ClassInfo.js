@@ -12,7 +12,7 @@ import {arrow_left, plus, x} from "../../../../assets/icons";
 import DeleteConfirm from '../../../modals/DeleteConfirm'
 import PencilText from '../../../field/PencilText';
 import AddStudent from './AddStudent'
-import protectedManagement from "../../../protectedRoutes/protectedManagement";
+import protectedManager from "../../../protectedRoutes/protectedManager";
 import history from "../../../../history";
 
 class ClassInfo extends React.Component {
@@ -133,9 +133,7 @@ class ClassInfo extends React.Component {
                 <div onClick={() => history.goBack()} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-4 tw-rounded-lg tw-border-2 tw-border-purplish">
                     {arrow_left('tw-w-6 centerize tw-text-purplish')}
                 </div>
-                {this.props.editable ? 
-                <>
-                    {this.state.addStudent ? 
+                {this.state.addStudent ? 
                     <AddStudent IsFreeClass={this.state.classDetail.grade_Id == 0 ? true : false} 
                                 onAddStudent={(dataIds) => this.onAddStudent(dataIds)} 
                                 cancel={() => this.setState({addStudent : false})} /> 
@@ -169,9 +167,6 @@ class ClassInfo extends React.Component {
                 : 
                 null
                 }
-                </> 
-                : 
-                null}
                 <div className="addStudent lg:tw-row-start-1 tw-row-start-2 tw-w-full tw-relative tw-rounded-lg lg:tw-min-h-90 tw-text-center tw-min-h-0 tw-py-6 tw-px-4 tw-mt-4 tw-col-span-1 tw-border-2 tw-border-dark-blue">
             <p className="tw-text-xl tw-text-white tw-mb-8">{this.state.classDetail.grade_Id == 0 ? this.props.t('participantList') : this.props.t('studentsList')} </p>
                     {/* <label htmlFor="excel" className="tw-px-1 tw-cursor-pointer tw-py-1 tw-border-2 tw-border-greenish tw-text-greenish tw-rounded-lg">*/}
@@ -194,7 +189,7 @@ class ClassInfo extends React.Component {
                             return ((std ?
                                         <div className="tw-flex tw-flex-row-reverse tw-justify-between tw-items-center">
                                             {/* <input type="checkbox" value={std.id} onChange={this.handleSelectStudent}></input> */}
-                                            <span className={`${this.props.editable ? '' : 'tw-hidden'}`} onClick={() => this.showUnassign(std.id)}>{x('tw-w-6 tw-text-redish tw-cursor-pointer')}</span>
+                                            <span onClick={() => this.showUnassign(std.id)}>{x('tw-w-6 tw-text-redish tw-cursor-pointer')}</span>
                                             <p className="tw-text-right tw-text-white">{std.firstName} {std.lastName}</p>
                                             <p className="tw-text-right tw-text-white">{std.melliCode}</p>
                                         </div>
@@ -204,7 +199,7 @@ class ClassInfo extends React.Component {
                             })
                         )
                      )}
-                    <div className={`addStudentBtn tw-transition-all tw-duration-200 tw-absolute tw-bottom-0 tw-mb-4 tw-flex tw-flex-row tw-justify-start tw-items-center ${this.props.editable ? '' : 'tw-hidden'}`}>
+                    <div className={`addStudentBtn tw-transition-all tw-duration-200 tw-absolute tw-bottom-0 tw-mb-4 tw-flex tw-flex-row tw-justify-start tw-items-center`}>
                         <div onClick={() => this.setState({ showAdd: !this.state.showAdd})} className={`tw-w-12 tw-cursor-pointer tw-h-12 tw-mx-2 tw-relative tw-rounded-full tw-bg-greenish`}>
                             {this.state.showAdd ?
                                 x('tw-w-6 tw-text-white centerize')
@@ -237,8 +232,7 @@ class ClassInfo extends React.Component {
                     <div className="tw-flex tw-flex-row-reverse tw-justify-between">
                         <div className="tw-flex tw-flex-row-reverse tw-justify-between">
                             {(this.state.classDetail ?
-                                this.props.editable ? 
-                                <PencilText 
+                            <PencilText 
                                 text={this.state.classDetail.className} 
                                 className="tw-text-right tw-text-white tw-text-2xl" 
                                 show={this.state.showChangeName}
@@ -246,9 +240,7 @@ class ClassInfo extends React.Component {
                                 value={this.state.className}
                                 changeValue={(className) => this.setState({ className  })}
                                 submit={this.onEdit}
-                            /> 
-                                : 
-                                <p className="tw-text-right tw-text-white tw-text-2xl">{this.state.classDetail.className}</p>
+                            />
                             : null)}
                             {/*{(this.props.classDetail ?*/}
                             {/*    <React.Fragment>*/}
@@ -261,17 +253,17 @@ class ClassInfo extends React.Component {
                         </div>
                         <div>
                             {/*<Link className="tw-px-6 tw-py-1 tw-rounded-lg tw-border-2 tw-border-grayish tw-text-grayish" to="/m/bases">بازگشت</Link>*/}
-                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className={`tw-px-6 tw-py-1 tw-mx-0 tw-mt-4 tw-ml-0 tw-rounded-lg tw-border-2 tw-border-redish tw-text-redish ${this.props.editable ? '' : 'tw-hidden'}`}>{this.state.classDetail.grade_Id == 0 ? this.props.t('deleteRoom') : this.props.t('deleteClass')} </button>
+                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className="tw-px-6 tw-py-1 tw-mx-0 tw-mt-4 tw-ml-0 tw-rounded-lg tw-border-2 tw-border-redish tw-text-redish">{this.state.classDetail.grade_Id == 0 ? this.props.t('deleteRoom') : this.props.t('deleteClass')} </button>
                         </div>
                     </div>
                     <div className="tw-my-8">
-                        <button onClick={() => this.setState({ addLesson: true })} className={`tw-px-6 tw-py-1 tw-bg-greenish tw-text-white tw-rounded-lg tw-mb-2 ${this.props.editable ? '' : 'tw-hidden'}`}> {this.state.classDetail.grade_Id == 0 ? this.props.t('addFreeMeeting') : this.props.t('addLesson')} </button>
+                        <button onClick={() => this.setState({ addLesson: true })} className="tw-px-6 tw-py-1 tw-bg-greenish tw-text-white tw-rounded-lg tw-mb-2"> {this.state.classDetail.grade_Id == 0 ? this.props.t('addFreeMeeting') : this.props.t('addLesson')} </button>
                         <div ref={this.sc} className="tw-border-2 tw-border-dark-blue tw-overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
                                     isManager={true}
                                     isTeacher={true}
-                                    editable={this.props.editable}
+                                    editable={true}
                                     lessons={this.props.schedules}
                                     deleteSchedule={(id)  => this.deleteLesson(id)}
                                     rerenderIt={() => this.rerenderIt()}
@@ -296,7 +288,7 @@ const mapStateToProps = state => {
     return {user : state.auth.userInfo  , allClass : state.schoolData.allClass , schedules : state.schedules.classSchedules , students : state.managerData.studentsInClass}
 }
 
-const authWrapped = protectedManagement(ClassInfo)
+const authWrapped = protectedManager(ClassInfo)
 
 const cwrapped = connect(mapStateToProps , {AddClassSchedule , getStudentsClass , 
     DeleteClassSchedule , getClassSchedule , UnAssignUserFromClass ,
