@@ -717,8 +717,21 @@ public class MeetingService {
 
     public List<MeetingView> GetAllActiveMeeting(int managerId , int  schoolId = 0)
     {
+        UserModel userModel = appDbContext.Users.Where(x => x.Id == managerId).FirstOrDefault();
+
         if(schoolId == 0)
-            schoolId = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault().Id;
+        {
+            SchoolModel schoolModel = appDbContext.Schools.Where(x => x.ManagerId == managerId).FirstOrDefault();
+            if(schoolModel != null)
+                schoolId = schoolModel.Id;
+            else
+            {
+                schoolModel = appDbContext.Schools.Where(x => x.Id == userModel.SchoolId).FirstOrDefault();
+                
+                if(schoolModel !=null)
+                    schoolId = schoolModel.Id;
+            }
+        }
 
         List<School_Class> classes = appDbContext.School_Classes.Where(x => x.School_Id == schoolId).ToList();
         

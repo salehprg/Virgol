@@ -17,7 +17,7 @@ import history from "../../../../history";
 
 class ClassInfo extends React.Component {
 
-    state = {lessons : [], addLesson: false, loading: false , showChangeName: false, selected : [],
+    state = {lessons : [], addLesson: false, loading: false , showChangeName: false, selected : [], editable : false,
         classDetail : {}, showAdd: false , showUnAssignModal : false, className : "" , addStudent : false}
 
         sc = createRef()
@@ -37,6 +37,7 @@ class ClassInfo extends React.Component {
     }
 
     componentDidMount = async () =>{
+        this.setState({editable : (this.props.type != "CoManager")})
         this.setState({loading : true})
         await this.props.getClassSchedule(this.props.user.token , this.props.match.params.id)
         await this.props.getStudentsClass(this.props.user.token , this.props.match.params.id)
@@ -48,7 +49,7 @@ class ClassInfo extends React.Component {
     
 
         this.sc.current.scrollLeft = this.sc.current.clientWidth
-        
+        console.log(this.props.type)
     }
 
     showDelete = () => {
@@ -133,7 +134,7 @@ class ClassInfo extends React.Component {
                 <div onClick={() => history.goBack()} className="tw-w-10 tw-h-10 tw-cursor-pointer tw-absolute tw-top-0 tw-left-0 tw-mt-4 tw-ml-4 tw-rounded-lg tw-border-2 tw-border-purplish">
                     {arrow_left('tw-w-6 centerize tw-text-purplish')}
                 </div>
-                {this.props.editable ? 
+                {this.state.editable ? 
                 <>
                     {this.state.addStudent ? 
                     <AddStudent IsFreeClass={this.state.classDetail.grade_Id == 0 ? true : false} 
@@ -194,7 +195,7 @@ class ClassInfo extends React.Component {
                             return ((std ?
                                         <div className="tw-flex tw-flex-row-reverse tw-justify-between tw-items-center">
                                             {/* <input type="checkbox" value={std.id} onChange={this.handleSelectStudent}></input> */}
-                                            <span className={`${this.props.editable ? '' : 'tw-hidden'}`} onClick={() => this.showUnassign(std.id)}>{x('tw-w-6 tw-text-redish tw-cursor-pointer')}</span>
+                                            <span className={`${this.state.editable ? '' : 'tw-hidden'}`} onClick={() => this.showUnassign(std.id)}>{x('tw-w-6 tw-text-redish tw-cursor-pointer')}</span>
                                             <p className="tw-text-right tw-text-white">{std.firstName} {std.lastName}</p>
                                             <p className="tw-text-right tw-text-white">{std.melliCode}</p>
                                         </div>
@@ -204,7 +205,7 @@ class ClassInfo extends React.Component {
                             })
                         )
                      )}
-                    <div className={`addStudentBtn tw-transition-all tw-duration-200 tw-absolute tw-bottom-0 tw-mb-4 tw-flex tw-flex-row tw-justify-start tw-items-center ${this.props.editable ? '' : 'tw-hidden'}`}>
+                    <div className={`addStudentBtn tw-transition-all tw-duration-200 tw-absolute tw-bottom-0 tw-mb-4 tw-flex tw-flex-row tw-justify-start tw-items-center ${this.state.editable ? '' : 'tw-hidden'}`}>
                         <div onClick={() => this.setState({ showAdd: !this.state.showAdd})} className={`tw-w-12 tw-cursor-pointer tw-h-12 tw-mx-2 tw-relative tw-rounded-full tw-bg-greenish`}>
                             {this.state.showAdd ?
                                 x('tw-w-6 tw-text-white centerize')
@@ -237,7 +238,7 @@ class ClassInfo extends React.Component {
                     <div className="tw-flex tw-flex-row-reverse tw-justify-between">
                         <div className="tw-flex tw-flex-row-reverse tw-justify-between">
                             {(this.state.classDetail ?
-                                this.props.editable ? 
+                                this.state.editable ? 
                                 <PencilText 
                                 text={this.state.classDetail.className} 
                                 className="tw-text-right tw-text-white tw-text-2xl" 
@@ -261,17 +262,17 @@ class ClassInfo extends React.Component {
                         </div>
                         <div>
                             {/*<Link className="tw-px-6 tw-py-1 tw-rounded-lg tw-border-2 tw-border-grayish tw-text-grayish" to="/m/bases">بازگشت</Link>*/}
-                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className={`tw-px-6 tw-py-1 tw-mx-0 tw-mt-4 tw-ml-0 tw-rounded-lg tw-border-2 tw-border-redish tw-text-redish ${this.props.editable ? '' : 'tw-hidden'}`}>{this.state.classDetail.grade_Id == 0 ? this.props.t('deleteRoom') : this.props.t('deleteClass')} </button>
+                            <button onClick={() => this.showDelete(this.state.classDetail.id)} className={`tw-px-6 tw-py-1 tw-mx-0 tw-mt-4 tw-ml-0 tw-rounded-lg tw-border-2 tw-border-redish tw-text-redish ${this.state.editable ? '' : 'tw-hidden'}`}>{this.state.classDetail.grade_Id == 0 ? this.props.t('deleteRoom') : this.props.t('deleteClass')} </button>
                         </div>
                     </div>
                     <div className="tw-my-8">
-                        <button onClick={() => this.setState({ addLesson: true })} className={`tw-px-6 tw-py-1 tw-bg-greenish tw-text-white tw-rounded-lg tw-mb-2 ${this.props.editable ? '' : 'tw-hidden'}`}> {this.state.classDetail.grade_Id == 0 ? this.props.t('addFreeMeeting') : this.props.t('addLesson')} </button>
+                        <button onClick={() => this.setState({ addLesson: true })} className={`tw-px-6 tw-py-1 tw-bg-greenish tw-text-white tw-rounded-lg tw-mb-2 ${this.state.editable ? '' : 'tw-hidden'}`}> {this.state.classDetail.grade_Id == 0 ? this.props.t('addFreeMeeting') : this.props.t('addLesson')} </button>
                         <div ref={this.sc} className="tw-border-2 tw-border-dark-blue tw-overflow-auto">
                             {!this.props.loading ?
                                 <Schedule
                                     isManager={true}
                                     isTeacher={true}
-                                    editable={this.props.editable}
+                                    editable={this.state.editable}
                                     lessons={this.props.schedules}
                                     deleteSchedule={(id)  => this.deleteLesson(id)}
                                     rerenderIt={() => this.rerenderIt()}
