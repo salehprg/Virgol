@@ -17,6 +17,7 @@ import Fieldish from "../../../field/Fieldish";
 import Select from "react-select";
 import {styles} from '../../../../selectStyle'
 import QuestionModal from "../../../modals/QuestionModal";
+import {getDayOfWeek} from "../../../Utilities/TmeHelper"
 
 class Home extends React.Component {
 
@@ -32,16 +33,26 @@ class Home extends React.Component {
             this.setState({loading: false})
     }
     
-    InCurrentTime = (start , end) =>
+    getRemainingTime = (start , classInfo) =>
     {
-        var currentTime = new Date().getHours();
-        currentTime += new Date().getMinutes() / 60;
+        var time = new Date();
+        var currentTime = time.getHours();
+        currentTime += time.getMinutes() / 60;
+        
+        var dayOffset = 0;
+        var todayNum = getDayOfWeek()
+        if(classInfo.dayType > todayNum)
+            dayOffset = 24;
 
-        return (currentTime - start) * 60;
+        var result = (currentTime - start - dayOffset) * 60;
+
+        return result;
     }
     StatrMeeting = async(id) => {
         var recClass = this.props.recentClass.find(x => x.id == id);
-        var remainTime = this.InCurrentTime(recClass.startHour , recClass.endHour)
+        this.setState({recClass : recClass})
+        var remainTime = this.getRemainingTime(recClass.startHour , recClass)
+
         if(remainTime <= -15)
         {
             this.setState({outOfTime : true , startClassId : id , remainTime : remainTime * (-1)});
@@ -75,7 +86,7 @@ class Home extends React.Component {
         var recClass = this.props.recentClass.find(x => x.id == id);
         if(!recClass)
             recClass = this.props.meetingList.find(x => x.id == id);
-        var remainTime = this.InCurrentTime(recClass.startHour , recClass.endHour)
+        var remainTime = this.getRemainingTime(recClass.startHour , recClass)
         if(remainTime < -15)
         {
             this.setState({outOfJoinTime : true , joinClassId : id , remainJoinTime : remainTime * (-1)});
@@ -150,12 +161,12 @@ class Home extends React.Component {
     render() {
         if(this.state.loading) return (<div className="tw-text-center tw-bg-dark-blue tw-w-full tw-h-screen">{loading('centerize tw-text-grayish tw-w-12')}</div>)
         if(this.state.outOfTime) return <QuestionModal 
-                                            title={"قصد ایجاد کلاس در خارج از موعد آن را دارید  زمان باقی مانده تا شروع کلاس : " + this.getTimeFormatted(this.state.remainTime)}
+                                            title={"قصد ایجاد کلاس در خارج از موعد آن را دارید. زمان باقی مانده تا شروع کلاس " + this.state.recClass.orgLessonName + " : " + this.getTimeFormatted(this.state.remainTime)}
                                             confirm={() => this.reqStartMeeting(this.state.startClassId)}
                                             cancel={() => this.setState({ outOfTime: false})}>
                                         </QuestionModal>
         if(this.state.outOfJoinTime) return <QuestionModal 
-                                            title={"قصد ورود کلاس در خارج از موعد آن را دارید  زمان باقی مانده تا شروع کلاس : " + this.getTimeFormatted(this.state.remainTime)}
+                                            title={"قصد ورود کلاس در خارج از موعد آن را دارید. زمان باقی مانده تا شروع کلاس " + this.state.recClass.orgLessonName + " : " + this.getTimeFormatted(this.state.remainTime)}
                                             confirm={() => this.reqJoinMeeting(this.state.joinClassId)}
                                             cancel={() => this.setState({ outOfJoinTime: false})}>
                                         </QuestionModal>
