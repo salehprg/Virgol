@@ -8,6 +8,9 @@ const checkEnglish = (value) => {
 
 
 const checkMelliCode = (value) => {
+    if(!value)
+        return false
+        
     return true
     // if (!/^\d{10}$/.test(value))
     //     return false;

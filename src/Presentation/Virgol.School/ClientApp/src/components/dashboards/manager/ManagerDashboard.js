@@ -20,6 +20,7 @@ import Payments from "../../payments/AllPayments"
 import ExtraLessons from "./ExtraLesson/ExtraLessons"
 import Sessions from './sessions/Sessions'
 import {GetSchoolInfo} from '../../../_actions/schoolActions'
+import CoManagers from "./CoManagers/CoManagers"
 
 class ManagerDashboard extends React.Component {
 
@@ -196,6 +197,13 @@ class ManagerDashboard extends React.Component {
                     />
                     <SidebarCard
                         active={this.state.active}
+                        code="coManagers"
+                        title="کارکنان"
+                        icon={user}
+                        changeActive={this.changeActive}
+                    />
+                    <SidebarCard
+                        active={this.state.active}
                         code="students"
                         title={this.state.justCompany ? this.props.t('participants') : this.props.t('students')}
                         icon={users}
@@ -227,6 +235,7 @@ class ManagerDashboard extends React.Component {
                     <Switch>
                         <Route path={this.props.match.url + "/dashboard"} component={Home}/>
                         <Route path={this.props.match.url + "/teachers"} component={Teachers}/>
+                        <Route path={this.props.match.url + "/coManagers"} component={CoManagers}/>
                         <Route path={this.props.match.url + "/bases"} component={Grades}/>
                         <Route path={this.props.match.url + "/sessions"} component={Sessions}/>
                         <Route path={this.props.match.url + "/groups"} component={Groups}/>

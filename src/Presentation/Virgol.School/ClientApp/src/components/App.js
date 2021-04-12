@@ -16,6 +16,9 @@ import AdminDashboard from "./dashboards/admin/Dashboard";
 import NoFound from "./NoFound";
 import SchoolInfo from './dashboards/admin/schools/SchoolInfo'
 import CoManagerDashboard from './dashboards/comanager/CoManagerDashboard';
+import AddCoManager from './dashboards/manager/CoManagers/AddCoManager';
+import EditCoManager from './dashboards/manager/CoManagers/CoManagerInfo';
+
 import ManagerDashboard from './dashboards/manager/ManagerDashboard';
 import AddSchool from './dashboards/admin/schools/addSchool/AddSchool';
 import StudentDashboard from './dashboards/student/Dashboard';
@@ -135,6 +138,8 @@ class App extends React.Component {
                                     <Route path="/video/guide-pr" component={GuideMenu}/>
                                     
                                     <Route path="/m" component={ManagerDashboard} />
+                                    <Route path="/c/:id" component={EditCoManager} />
+                                    <Route path="/newCoManager" component={AddCoManager} />
                                     <Route path="/addNewsManager" component={AddNewsManager} />
                                     <Route path="/managerNews/:id" component={ManagerNewsInfo} />
                                     <Route path="/teacher/:id" component={TeacherInfo} />
@@ -144,7 +149,8 @@ class App extends React.Component {
                                     <Route path="/newGroup" component={AddGroup} />
                                     <Route path="/addExtraLesson" component={AddExtraLesson} />
 
-                                    <Route path="/c" component={CoManagerDashboard} />
+                                    <Route path="/CoManager" component={CoManagerDashboard} />
+                                    
                                     
                                     <Route path="/teacher/:id" component={TeacherInfo} />
                                     <Route path="/student/:id" component={StudentInfo} />
@@ -170,7 +176,7 @@ class App extends React.Component {
 
                                     <Route path="/stream" component={Streamer} />   
                                     <Route path="/editStream/:id" component={EditStream} />
-                                    <Route path="" component={NoFound} />
+                                    {/* <Route path="" component={NoFound} /> */}
                                 </Switch>
                             </Router>
                         </div>       

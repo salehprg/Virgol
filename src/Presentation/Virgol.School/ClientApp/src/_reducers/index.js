@@ -13,6 +13,7 @@ import teachersReducer from "./teachersReducer";
 import streamReducer from "./streamReducer";
 import paymetnsReducer from "./paymetnsReducer";
 import guideReducer from './guideReducer'
+import coManagerReducer from './coManagerReducer'
 
 
 export default combineReducers({
@@ -29,5 +30,6 @@ export default combineReducers({
     form: formReducer,
     alert: alertReducer,
     worker: workerReducer,
-    guide:guideReducer
+    guide:guideReducer,
+    coManagersData:coManagerReducer
 });
