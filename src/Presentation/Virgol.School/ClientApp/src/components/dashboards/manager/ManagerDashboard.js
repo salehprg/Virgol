@@ -198,7 +198,7 @@ class ManagerDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="coManagers"
-                        title="کارکنان"
+                        title="معاونین"
                         icon={user}
                         changeActive={this.changeActive}
                     />
