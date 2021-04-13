@@ -83,7 +83,7 @@ public class MeetingService {
     }
     private async Task<bool> CreateRoom(Meeting meeting , float duration , string serviceType , SchoolModel school,  string customMeetingId = "")
     {
-        string callBackUrl = AppSettings.ServerRootUrl + "/meetingResponse/" + meeting.Id;
+        string callBackUrl = AppSettings.ServerRootUrl;
 
         if(meeting.Private)
             callBackUrl = AppSettings.ServerRootUrl;
@@ -113,7 +113,7 @@ public class MeetingService {
             Console.WriteLine("Set Connection");
             Console.WriteLine("URL: " + serviceModel.Service_URL + " Secret : " + serviceModel.Service_Key);
 
-            MeetingsResponse bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration);
+            MeetingsResponse bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration , school.EnableRecord);
 
             Console.WriteLine("Room in BBB Created");
             if(bbb_response == null)

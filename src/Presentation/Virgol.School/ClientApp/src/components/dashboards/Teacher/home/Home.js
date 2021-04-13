@@ -86,6 +86,8 @@ class Home extends React.Component {
         var recClass = this.props.recentClass.find(x => x.id == id);
         if(!recClass)
             recClass = this.props.meetingList.find(x => x.id == id);
+
+        this.setState({recClass : recClass})
         var remainTime = this.getRemainingTime(recClass.startHour , recClass)
         if(remainTime < -15)
         {
@@ -166,7 +168,7 @@ class Home extends React.Component {
                                             cancel={() => this.setState({ outOfTime: false})}>
                                         </QuestionModal>
         if(this.state.outOfJoinTime) return <QuestionModal 
-                                            title={"قصد ورود کلاس در خارج از موعد آن را دارید. زمان باقی مانده تا شروع کلاس " + this.state.recClass.orgLessonName + " : " + this.getTimeFormatted(this.state.remainTime)}
+                                            title={"قصد ورود کلاس در خارج از موعد آن را دارید. زمان باقی مانده تا شروع کلاس " + this.state.recClass.orgLessonName + " : " + this.getTimeFormatted(this.state.remainJoinTime)}
                                             confirm={() => this.reqJoinMeeting(this.state.joinClassId)}
                                             cancel={() => this.setState({ outOfJoinTime: false})}>
                                         </QuestionModal>

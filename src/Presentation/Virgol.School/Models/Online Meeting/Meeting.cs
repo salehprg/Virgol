@@ -18,6 +18,8 @@ public class Meeting {
     ///<summary>
     ///UsSe ServiceType Class
     ///</summary>
+    public string RecordURL {get; set;}
+    public string RecordId {get; set;}
     public string ServiceType {get; set;}
     public int ServiceId {get; set;}
     public int SchoolId {get; set;}

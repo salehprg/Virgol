@@ -191,7 +191,7 @@ class ManagerDashboard extends React.Component {
                     <SidebarCard
                         active={this.state.active}
                         code="teachers"
-                        title={this.state.justCompany ? this.props.t('hosts') : this.props.t('teacher')}
+                        title={this.state.justCompany ? this.props.t('hosts') : this.props.t('teachers')}
                         icon={user}
                         changeActive={this.changeActive}
                     />

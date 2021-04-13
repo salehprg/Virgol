@@ -21,6 +21,10 @@ class RecorededSession extends React.Component {
         this.setState({ query })
     }
 
+    getMinutes = (start , end) => {
+        return Math.round((((end.getTime() - start.getTime()) % 86400000) % 3600000) / 60000)
+    }
+
     render() {
         return (
             <div className="tw-w-screen tw-min-h-screen tw-bg-black-blue md:tw-px-16 tw-px-4 tw-pb-6 md:tw-pt-6 tw-pt-24">
@@ -39,7 +43,7 @@ class RecorededSession extends React.Component {
                     query={this.state.query}
                     changeQuery={this.changeQuery}
                     button={() => null}
-                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date'), 'ضبط', this.props.t('ParticipantionStatus')]}
+                    headers={[this.props.t('col'), this.props.t('name'), this.props.t('date') , "مدت زمان", 'ضبط', this.props.t('ParticipantionStatus')]}
                     body={() => {
                         return (
 
@@ -59,10 +63,14 @@ class RecorededSession extends React.Component {
                                                 <ReactTooltip type="dark" effect="float" place="top"/> */}
                                             </td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
+                                            {
+                                                console.log()
+                                            }
+                                            <td className="tw-py-4 tw-text-right tw-px-4">{this.getMinutes(new Date(x.meeting.startTime) , new Date(x.meeting.endTime)) + " دقیقه"}</td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">
                                             {x.recordsInfo.length > 0 ?
                                                 <> 
-                                                    <button className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
+                                                    <button onClick={() => window.open(x.recordsInfo[0].downloadURL , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
                                                     <button onClick={() => window.open(x.recordsInfo[0].url , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
                                                 </>
                                             : null}

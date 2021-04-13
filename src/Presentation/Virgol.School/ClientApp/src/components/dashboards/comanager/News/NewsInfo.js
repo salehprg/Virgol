@@ -13,6 +13,7 @@ import {EditNews , GetNewsDetail} from "../../../../_actions/newsActions";
 import getColor from "../../../../assets/colors";
 import protectedManager from "../../../protectedRoutes/protectedManager";
 import {styles} from '../../../../selectStyle'
+import protectedCoManager from "../../../protectedRoutes/protectedCoManager";
 
 
 class NewsInfo extends React.Component {
@@ -20,7 +21,7 @@ class NewsInfo extends React.Component {
     state = { showManagerInfo: true , tags : []}
 
     options = [
-        { value: 3, label: this.props.t('students') },
+        { value: 6, label: this.props.t('students') },
         { value: 2, label: this.props.t('teachers') }
     ];
 
@@ -73,7 +74,7 @@ class NewsInfo extends React.Component {
         const result = await this.props.EditNews(this.props.user.token , formValues)
         if(result)
         {
-            history.push('/m/news')
+            history.push('/CoManager/News')
         }
         this.setState({showManagerInfo : false})
     }
@@ -83,7 +84,7 @@ class NewsInfo extends React.Component {
             <Add 
                 isNews={true}
                 newsClassName={"w-2/4"}
-                onCancel={() => history.push('/m/news')}
+                onCancel={() => history.push('/CoManager/News')}
                 title={this.props.t('editNews')}
             >
             <form className="tw-w-full " style={{direction : "rtl"}} onSubmit={this.props.handleSubmit(this.onSubmit)}>
@@ -162,7 +163,7 @@ const formWrapped = reduxForm({
     validate
 })(NewsInfo)
 
-const authWrapped = protectedManager(formWrapped)
+const authWrapped = protectedCoManager(formWrapped)
 
 const cwrapped = connect(mapStateToProps,{EditNews , GetNewsDetail})(authWrapped);
 

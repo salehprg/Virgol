@@ -16,6 +16,8 @@ public class RecordInfo {
     [JsonIgnore]
     public string url { get; set; }
     [JsonIgnore]
+    public string downloadURL { get; set; }
+    [JsonIgnore]
     public DateTime date { get; set; }
 
 

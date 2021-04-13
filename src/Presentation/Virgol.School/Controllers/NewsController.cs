@@ -46,8 +46,7 @@ namespace Virgol.Controllers
         {
             try
             {
-                string userName = userManager.GetUserId(User);
-                UserModel userModel = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+                UserModel userModel = UserService.GetUserModel(User);
                 
                 List<string> userRoles = UserService.GetUserRoles(userModel).Result;
 
@@ -78,9 +77,9 @@ namespace Virgol.Controllers
                         news.tagsStr = tags;
                         
                         //Get news according to School if authur is Manager
-                        if(UserService.HasRole(auther , Roles.Manager , autherRoles))
+                        if(UserService.HasRole(auther , Roles.Manager , autherRoles) || UserService.HasRole(auther , Roles.CoManager , autherRoles))
                         {
-                            int schoolId = appDbContext.Users.Where(x => x.Id == autherId).FirstOrDefault().SchoolId;
+                            int schoolId = auther.SchoolId;
                             if(UserService.HasRole(userModel , Roles.Student , userRoles))
                             {
                                 if(userModel.SchoolId == schoolId)
@@ -194,6 +193,10 @@ namespace Virgol.Controllers
 
                     switch(role.Name)
                     {
+                        case Roles.CoManager:
+                            editRole.Name = "معاون";
+                            break;
+
                         case Roles.Manager:
                             editRole.Name = "مدیر";
                             break;

@@ -36,6 +36,9 @@ import NewsInfo from './dashboards/admin/News/NewsInfo';
 import AddNewsManager from './dashboards/manager/News/AddNews';
 import ManagerNewsInfo from './dashboards/manager/News/NewsInfo';
 
+import AddNewsCoManager from './dashboards/comanager/News/AddNews'
+import CoManagerNewsInfo from './dashboards/comanager/News/NewsInfo';
+
 import AddNewsTeacher from './dashboards/Teacher/News/AddNews';
 import TeacherNewsInfo from './dashboards/Teacher/News/NewsInfo';
 
@@ -150,7 +153,8 @@ class App extends React.Component {
                                     <Route path="/addExtraLesson" component={AddExtraLesson} />
 
                                     <Route path="/CoManager" component={CoManagerDashboard} />
-                                    
+                                    <Route path="/CoManagerAddNews" component={AddNewsCoManager} />
+                                    <Route path="/CoManager/News/:id" component={CoManagerNewsInfo} />
                                     
                                     <Route path="/teacher/:id" component={TeacherInfo} />
                                     <Route path="/student/:id" component={StudentInfo} />

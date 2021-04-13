@@ -24,6 +24,7 @@ public class SchoolModel {
     ///</summary>
     public int sexuality {get; set;}
     public bool SelfSign {get; set;}
+    public bool EnableRecord {get; set;}
     public bool EnableSms {get; set;}
     public bool Free {get; set;}
     public bool AutoFill {get; set;}

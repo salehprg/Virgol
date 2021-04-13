@@ -53,7 +53,7 @@ class News extends React.Component {
                     changeQuery={this.changeQuery}
                     button={() => {
                         return (
-                            <button onClick={() => history.push('/addNewsManager')} className="tw-px-6 tw-py-1 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg"> {this.props.t('addNews')} </button>
+                            <button onClick={() => history.push('/CoManagerAddNews')} className="tw-px-6 tw-py-1 tw-border-2 tw-border-sky-blue tw-text-sky-blue tw-rounded-lg"> {this.props.t('addNews')} </button>
                         );
                     }}
                     headers={[this.props.t('newsText'), this.props.t('tags'), this.props.t('newsDate')]}
@@ -75,7 +75,7 @@ class News extends React.Component {
                                                 : null}
                                                 </td>
                                                 <td className="tw-text-right tw-px-4 tw-py-4">{new Date(x.createTime).toLocaleDateString('fa-IR')}</td>
-                                                <td className="tw-cursor-pointer tw-text-right tw-px-4 tw-py-4" onClick={() => history.push(`/managerNews/${x.id}`)}>
+                                                <td className="tw-cursor-pointer tw-text-right tw-px-4 tw-py-4" onClick={() => history.push(`/CoManager/News/${x.id}`)}>
                                                     {edit('tw-w-6 tw-text-white')}
                                                 </td>
                                                 <td className="tw-text-right tw-px-4 tw-py-4" onClick={() => this.showDelete(x.id)} className="tw-cursor-pointer">

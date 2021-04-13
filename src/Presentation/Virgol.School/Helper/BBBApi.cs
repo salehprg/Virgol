@@ -16,8 +16,8 @@ namespace Virgol.Helper
         static HttpClient client;
         string bbbUrl = "";
         string bbbSecret = "";
-        string attendeePassword = "";
-        string moderatePassword = "";
+        string attendeePassword = "ap";
+        string moderatePassword = "mp";
         AppDbContext appDbContext;
 
         public BBBApi(AppDbContext _appDbContext , int scheduleId = 0)
@@ -187,10 +187,12 @@ namespace Virgol.Helper
 
         }
         
-        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , string callbackUrl , int duration)
+        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , string rootURl , int duration , bool canRecord)
         {
             try
             {
+                string callbackUrl = rootURl + "/meetingResponse/" + meetingId;
+
                 name = HttpUtility.UrlEncode(name).ToUpper();
                 //https://myapp.example.com/callback?meetingID=test01
 
@@ -198,9 +200,12 @@ namespace Virgol.Helper
 
                 string notifyEncoded = WebUtility.UrlEncode(notify);
                 string urlEncoded = WebUtility.UrlEncode(callbackUrl);
+                string recordReadyURL = WebUtility.UrlEncode(rootURl + "/api/RecordReady/PublishMeeting?meetingId=" + meetingId);
 
-                string FunctionName = string.Format("create?allowStartStopRecording=true&record=true&attendeePW={5}&meetingID={1}&moderatorPW={6}&name={0}&duration={2}&logoutURL={3}&welcome={4}"
-                                                     , name , meetingId , duration.ToString(), urlEncoded , notifyEncoded , attendeePassword , moderatePassword );
+                string FunctionName = string.Format("create?allowStartStopRecording={8}&record=true&attendeePW={5}" +
+                                                        "&meetingID={1}&moderatorPW={6}&name={0}&duration={2}&logoutURL={3}&welcome={4}" + 
+                                                        "&meta_bbb-recording-ready-url={7}"
+                                                     , name , meetingId , duration.ToString(), urlEncoded , notifyEncoded , attendeePassword , moderatePassword , recordReadyURL , canRecord ? "true" : "false");
                 
                 string data = FunctionName;
 
@@ -208,7 +213,6 @@ namespace Virgol.Helper
                 string _response = await sendData(data);
 
                 Console.WriteLine("Send Done !");
-                Console.WriteLine("Response : " + _response);
 
                 var meetingsInfo = JsonConvert.DeserializeObject<MeetingsResponse>(_response);
                 
@@ -276,6 +280,12 @@ namespace Virgol.Helper
         
 #endregion
 
+        public void SetConnectionInfo(string _bbbUrl , string _bbbSecret)
+        {
+            bbbUrl = _bbbUrl;
+            bbbSecret = _bbbSecret;
+        }
+
         public void SetConnectionInfo(string _bbbUrl , string _bbbSecret , UserModel manager)
         {
             bbbUrl = _bbbUrl;
@@ -285,7 +295,6 @@ namespace Virgol.Helper
             
         }
     
-
         public void SetConnectionInfo(int ScheduleId)
         {
             if(ScheduleId != 0)

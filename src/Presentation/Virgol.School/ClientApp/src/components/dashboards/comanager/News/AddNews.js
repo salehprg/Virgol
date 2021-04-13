@@ -14,6 +14,7 @@ import { alert } from "../../../../_actions/alertActions";
 import getColor from "../../../../assets/colors";
 import protectedManager from "../../../protectedRoutes/protectedManager";
 import {styles} from '../../../../selectStyle'
+import protectedCoManager from "../../../protectedRoutes/protectedCoManager";
 
 class AddNews extends React.Component {
   state = { showManagerInfo: true, tags: [] };
@@ -60,7 +61,7 @@ class AddNews extends React.Component {
       const result = await this.props.CreateNews(
         this.props.user.token,
         formValues,
-        "/m/news"
+        "/CoManager/News"
       );
       this.setState({ showManagerInfo: false });
     } else {
@@ -73,7 +74,7 @@ class AddNews extends React.Component {
       <Add
         isNews={true}
         newsClassName={"w-2/4"}
-        onCancel={() => history.push("/m/news")}
+        onCancel={() => history.push("/CoManager/News")}
         title={this.props.t("sendNews")}
       >
         <form
@@ -154,7 +155,7 @@ const formWrapped = reduxForm(
   mapStateToProps
 )(AddNews);
 
-const authWrapped = protectedManager(formWrapped);
+const authWrapped = protectedCoManager(formWrapped);
 
 const cwrapped = connect(mapStateToProps, { CreateNews, ShowError })(
   authWrapped

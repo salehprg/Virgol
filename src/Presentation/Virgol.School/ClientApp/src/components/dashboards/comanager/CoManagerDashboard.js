@@ -232,7 +232,7 @@ class ManagerDashboard extends React.Component {
                         <Route path={this.props.match.url + "/groups"} component={Groups}/>
                         <Route path={this.props.match.url + "/students"} component={Students}/>
                         {/* <Route path={this.props.match.url + "/conference"} component={StreamInfo}/> */}
-                        {/* <Route path={this.props.match.url + "/news"} component={News}/> */}
+                        <Route path={this.props.match.url + "/News"} component={News}/>
                         <Route path={this.props.match.url + "/tracker"} component={Tracker}/>
                         {/* <Route path={this.props.match.url + "/payments"} component={Payments}/> */}
                         <Route path={this.props.match.url + "/extraLesson"} component={ExtraLessons}/>

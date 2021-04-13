@@ -593,6 +593,9 @@ namespace Virgol.Controllers
                                         record.name = classSchedule.OrgLessonName;
                                         record.url = record.playback.format[0].url;
                                         record.date = meeting.StartTime;
+                                        string[] splitted = serviceModel.Service_URL.Split("/bigbluebutton/api");
+                                        string baseURl = splitted[0];
+                                        record.downloadURL = string.Format("{0}/download/presentation/{1}/{1}.mp4" , baseURl , record.recordID);
                                     }
 
                                     temp.recordsInfo.AddRange(records);
@@ -610,12 +613,14 @@ namespace Virgol.Controllers
                         recordedMeeting.meeting = meeting;
                         
                         List<RecordInfo> recordInfos = new List<RecordInfo>();
-                        if(recordList.recordings.scoInfo != null)
+                        if(recordList != null && recordList.recordings.scoInfo != null)
                         {
-                            recordInfos.Add(new RecordInfo{date = recordList.recordings.scoInfo.dateCreated , 
+                            RecordInfo recordInfo = new RecordInfo{date = recordList.recordings.scoInfo.dateCreated , 
                                                             name = meeting.MeetingName ,
                                                             url = recordList.recordings.scoInfo.urlPath ,
-                                                            recordID = recordList.recordings.scoInfo.scoId});
+                                                            recordID = recordList.recordings.scoInfo.scoId};
+                            //recordInfo.downloadURL = string.Format("{0}/download/presentation/{1}/{1}.mp4" , serviceModel.Service_URL , recordInfo.recordID);
+                            recordInfos.Add(recordInfo);
 
                             RecordsResponse response = new RecordsResponse();
                             response.recordings = new Recordings{recording = recordInfos};
