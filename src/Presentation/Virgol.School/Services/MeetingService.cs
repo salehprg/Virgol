@@ -513,7 +513,6 @@ public class MeetingService {
         }
         else
         {
-            //We set School id as Schedule Id in CreatePrivateRoom
             school = appDbContext.Schools.Where(x => x.Id == meeting.SchoolId).FirstOrDefault();
         }
 

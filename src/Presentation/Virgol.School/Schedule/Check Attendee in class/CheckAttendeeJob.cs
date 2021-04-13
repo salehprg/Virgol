@@ -96,6 +96,8 @@ namespace Schedule
                                                 }
                                                 oldMeetingInfo.CheckCount++;
                                                 dbContext.Update(oldMeetingInfo);
+
+                                                dbContext.SaveChangesAsync();
                                             }
                                         }
                                     }
