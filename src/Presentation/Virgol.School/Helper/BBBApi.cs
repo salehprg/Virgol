@@ -9,6 +9,7 @@ using System.Net;
 using Models;
 using System.Linq;
 using Models.User;
+using System.Text;
 
 namespace Virgol.Helper
 {
@@ -31,15 +32,10 @@ namespace Virgol.Helper
             }
         }       
 
-        async Task<string> sendData (string data , bool joinRoom = false)
+        async Task<string> sendData (string data , bool joinRoom = false , string slideURL = null)
         {
             try
             {
-                //data should like this
-                //getMeetings
-                //Or
-                //getMeetingInfo?meetingID=123
-                //then add checksum=???? to the end
                 string modifiedData = "";
                 if(data.IndexOf("?") != -1) // if has any query in data
                 {
@@ -49,17 +45,29 @@ namespace Virgol.Helper
                 {
                     modifiedData = data + "?";
                 }
-
                 string checkSum = "";
                 data = data.Replace("?" , "");
-                
                 checkSum = SHA1Creator.sha1Creator(data + bbbSecret);
 
-                Uri uri = new Uri (bbbUrl + modifiedData + "checksum=" + checkSum.ToLower() );
+                string url = bbbUrl + modifiedData + "checksum=" + checkSum.ToLower();
+
+                Uri uri = new Uri (url);
                 if(joinRoom)
                     return uri.AbsoluteUri;
 
-                HttpResponseMessage response = client.GetAsync(uri).Result;  // Send data then get response
+                HttpResponseMessage response = null;
+
+                if(slideURL != null)
+                {
+                    string xml = GetXMLBody(slideURL);
+                    var content = new StringContent(xml , Encoding.UTF8 ,"text/xml");
+                    
+                    response = await client.PostAsync(url , content); 
+                }
+                else
+                {
+                    response = client.GetAsync(uri).Result;  // Send data then get response
+                }
 
                 try
                 {
@@ -100,6 +108,14 @@ namespace Virgol.Helper
 
 #region ApiFunctions
 
+        public string GetXMLBody(string SlideURL)
+        {
+            return string.Format("<?xml version='1.0' encoding='UTF-8'?> <modules>" +
+                                        "<module name='presentation'>" +
+                                            "<document url='{0}'/>" +
+                                        "</module>"+
+                                    "</modules>" , SlideURL);
+        }
         public async Task<bool> CheckStatus()
         {
             try
@@ -187,14 +203,15 @@ namespace Virgol.Helper
 
         }
         
-        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , string rootURl , int duration , bool canRecord)
+        public async Task<MeetingsResponse> CreateRoom(string name , string meetingId , 
+                                                        string rootURl , int duration , 
+                                                        bool canRecord , string slideURL = null)
         {
             try
             {
                 string callbackUrl = rootURl + "/meetingResponse/" + meetingId;
 
                 name = HttpUtility.UrlEncode(name).ToUpper();
-                //https://myapp.example.com/callback?meetingID=test01
 
                 string notify = "<a href='" + callbackUrl + "' target='_self'>معلم گرامی  برای اتمام کلاس و ورود به صفحه حضور و غیاب خودکار روی این لینک کلیک کنید</a>";
 
@@ -208,9 +225,18 @@ namespace Virgol.Helper
                                                      , name , meetingId , duration.ToString(), urlEncoded , notifyEncoded , attendeePassword , moderatePassword , recordReadyURL , canRecord ? "true" : "false");
                 
                 string data = FunctionName;
-
                 Console.WriteLine("Sending Data in BBB API");
-                string _response = await sendData(data);
+
+                string _response = "";
+
+                if(!string.IsNullOrEmpty(slideURL))
+                {
+                    _response = await sendData(data , false , slideURL);
+                }
+                else
+                {
+                    _response = await sendData(data);
+                }
 
                 Console.WriteLine("Send Done !");
 

@@ -92,6 +92,11 @@ namespace Virgol
 
                 AppSettings.TimeZone = Environment.GetEnvironmentVariable("VIRGOL_TZ");
 
+                AppSettings.smtpHost = Environment.GetEnvironmentVariable("VIRGOL_SMTP_HOST");
+                AppSettings.smtpPassword = Environment.GetEnvironmentVariable("VIRGOL_SMTP_PASS");
+                AppSettings.smtpPort = Environment.GetEnvironmentVariable("VIRGOL_SMTP_PORT");
+
+
             }
             else
             {

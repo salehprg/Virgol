@@ -68,10 +68,10 @@ class RecorededSession extends React.Component {
                                             }
                                             <td className="tw-py-4 tw-text-right tw-px-4">{this.getMinutes(new Date(x.meeting.startTime) , new Date(x.meeting.endTime)) + " دقیقه"}</td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">
-                                            {x.recordsInfo.length > 0 ?
+                                            {x.meeting.recordURL ?
                                                 <> 
-                                                    <button onClick={() => window.open(x.recordsInfo[0].downloadURL , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
-                                                    <button onClick={() => window.open(x.recordsInfo[0].url , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
+                                                    <button onClick={() => window.open(x.meeting.downloadURL , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
+                                                    <button onClick={() => window.open(x.meeting.recordURL , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
                                                 </>
                                             : null}
                                             </td>

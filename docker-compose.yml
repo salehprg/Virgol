@@ -30,6 +30,10 @@ services:
       - VIRGOL_LDAP_USER_ADMIN=cn=admin,dc=legace,dc=ir
       - VIRGOL_LDAP_PASSWORD=OpenLDAPpass.24
       - VIRGOL_TZ=Asia/Tehran
+      - VIRGOL_SMTP_HOST
+      - VIRGOL_SMTP_PASS
+      - VIRGOL_SMTP_PORT
+      - VIRGOL_SMTP_USER
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.virgol.rule=Host(`panel.vir-gol.ir`)"

@@ -113,7 +113,9 @@ public class MeetingService {
             Console.WriteLine("Set Connection");
             Console.WriteLine("URL: " + serviceModel.Service_URL + " Secret : " + serviceModel.Service_Key);
 
-            MeetingsResponse bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , callBackUrl , (int)duration , school.EnableRecord);
+            MeetingsResponse bbb_response = await bbbApi.CreateRoom(meeting.MeetingName , 
+                                                                    (customMeetingId == "" ? meeting.Id.ToString() : customMeetingId) , 
+                                                                    callBackUrl , (int)duration , school.EnableRecord , school.DefaultSlideURL);
 
             Console.WriteLine("Room in BBB Created");
             if(bbb_response == null)

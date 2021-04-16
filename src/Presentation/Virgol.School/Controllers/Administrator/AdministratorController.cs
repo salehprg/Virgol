@@ -1121,6 +1121,54 @@ namespace Virgol.Controllers
 #endregion
     
 #region FixInteruptData
+
+    [HttpGet]
+    public async Task<IActionResult> FixRecordURLBBB(int schoolId)
+    {
+        try
+        {
+            var meetings = appDbContext.Meetings.Where(x => x.RecordId == null && x.ServiceId != 0).ToList();
+            if(schoolId != 0)
+                meetings = meetings.Where(x => x.SchoolId == schoolId).ToList();
+
+            foreach (var meeting in meetings)
+            {
+                ServicesModel serviceModel = appDbContext.Services.Where(x => x.Id == meeting.ServiceId).FirstOrDefault();
+                if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.BBB)
+                {
+                    BBBApi bBApi = new BBBApi(appDbContext);
+                    bBApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key);
+
+                    RecordsResponse response = await bBApi.GetMeetingRecords(meeting.MeetingId.ToString());
+
+                    if(response != null)
+                    {
+                        Recordings recordings = (response).recordings;
+
+                        if(recordings != null)
+                        {
+                            List<RecordInfo> records = recordings.recording;
+                            if(records.Count > 0)
+                            {
+                                meeting.RecordId = records[0].recordID;
+                                meeting.RecordURL = records[0].playback.format[0].url;
+
+                                appDbContext.Meetings.Update(meeting);
+                                await appDbContext.SaveChangesAsync();
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Ok(true);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.StackTrace);
+            throw;
+        }
+    }
     [HttpGet]
     public async Task<IActionResult> FixSchedulesLessonId([FromBody]List<int> classesId)
     {

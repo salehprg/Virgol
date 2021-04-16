@@ -52,7 +52,8 @@ namespace Virgol.Helper
                 
                 HttpResponseMessage responseMessage = client.PostAsync(BaseUrl + Method, 
                     new StringContent(JsonData, Encoding.UTF8, "application/json")).Result;
-                    
+                string response = responseMessage.Content.ReadAsStringAsync().Result;
+
                 result = responseMessage.IsSuccessStatusCode;
             }
 

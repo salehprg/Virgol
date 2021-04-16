@@ -28,6 +28,8 @@ public class Meeting {
     [NotMapped]
     public string className {get; set;}
     [NotMapped]
+    public string downloadURL {get; set;}
+    [NotMapped]
     public string schoolName {get; set;}
     [NotMapped]
     public string nameWithoutCounter {get; set;}

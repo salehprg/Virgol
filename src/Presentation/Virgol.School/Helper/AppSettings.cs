@@ -8,6 +8,12 @@ namespace Virgol.Helper
 {
     public class AppSettings
     {
+        //EmailServer Configuration
+        public static string smtpHost { get; set; }
+        public static string smtpPort { get; set; }
+        public static string smtpUsername { get; set; }
+        public static string smtpPassword { get; set; }
+
         //Moodle Configuration
         public static string moddleCourseUrl { get; set; }
         public static string BaseUrl_moodle { get; set; }

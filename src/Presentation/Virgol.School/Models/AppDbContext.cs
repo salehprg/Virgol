@@ -49,6 +49,7 @@ namespace Models
         public DbSet<ServicesModel> Services {get; set;}
         public DbSet<DomainInfoModel> DomainInfos {get; set;}
         public DbSet<ExtraLesson> ExtraLessons {get; set;}
+        public DbSet<ReqForm> ReqForms {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}

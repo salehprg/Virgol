@@ -566,71 +566,79 @@ namespace Virgol.Controllers
                 {
                     RecordedMeeting temp = new RecordedMeeting();
                     temp.recordsInfo = new List<RecordInfo>();
-                    temp.meeting = meeting;
-
+                    
                     ParticipantInfo participantInfo = appDbContext.ParticipantInfos.Where(x => x.UserId == userModel.Id && x.MeetingId == meeting.Id).FirstOrDefault();
                     temp.participant = participantInfo;
                     
                     ServicesModel serviceModel = appDbContext.Services.Where(x => x.Id == meeting.ServiceId).FirstOrDefault();
-
-                    if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.BBB)
+                    if(serviceModel != null)
                     {
-                        BBBApi bBApi = new BBBApi(appDbContext , scheduleId);
+                        string[] splitted = serviceModel.Service_URL.Split("/bigbluebutton/api");
+                        string baseURl = splitted[0];
+                        if(!string.IsNullOrEmpty(meeting.RecordId))
+                            meeting.downloadURL = string.Format("{0}/download/presentation/{1}/{1}.mp4" , baseURl , meeting.RecordId);
 
-                        RecordsResponse response = await bBApi.GetMeetingRecords(meeting.MeetingId.ToString());
-
-                        if(response != null)
-                        {
-                            Recordings recordings = (response).recordings;
-
-                            if(recordings != null)
-                            {
-                                List<RecordInfo> records = recordings.recording;
-                                if(records.Count > 0)
-                                {
-                                    foreach (var record in records)
-                                    {
-                                        record.name = classSchedule.OrgLessonName;
-                                        record.url = record.playback.format[0].url;
-                                        record.date = meeting.StartTime;
-                                        string[] splitted = serviceModel.Service_URL.Split("/bigbluebutton/api");
-                                        string baseURl = splitted[0];
-                                        record.downloadURL = string.Format("{0}/download/presentation/{1}/{1}.mp4" , baseURl , record.recordID);
-                                    }
-
-                                    temp.recordsInfo.AddRange(records);
-                                }
-                            }
-                        }
+                        temp.meeting = meeting;
                     }
 
-                    if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.AdobeConnect)
-                    {
-                        AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
-                        RecordList recordList = adobeApi.GetRecordings(meeting.MeetingId);
+                    // if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.BBB)
+                    // {
+                    //     BBBApi bBApi = new BBBApi(appDbContext , scheduleId);
 
-                        RecordedMeeting recordedMeeting = new RecordedMeeting();
-                        recordedMeeting.meeting = meeting;
+                    //     RecordsResponse response = await bBApi.GetMeetingRecords(meeting.MeetingId.ToString());
+
+                    //     if(response != null)
+                    //     {
+                    //         Recordings recordings = (response).recordings;
+
+                    //         if(recordings != null)
+                    //         {
+                    //             List<RecordInfo> records = recordings.recording;
+                    //             if(records.Count > 0)
+                    //             {
+                    //                 foreach (var record in records)
+                    //                 {
+                    //                     record.name = classSchedule.OrgLessonName;
+                    //                     record.url = record.playback.format[0].url;
+                    //                     record.date = meeting.StartTime;
+                    //                     string[] splitted = serviceModel.Service_URL.Split("/bigbluebutton/api");
+                    //                     string baseURl = splitted[0];
+                    //                     record.downloadURL = string.Format("{0}/download/presentation/{1}/{1}.mp4" , baseURl , record.recordID);
+                    //                 }
+
+                    //                 temp.recordsInfo.AddRange(records);
+                    //             }
+                    //         }
+                    //     }
+                    // }
+
+                    // if(meeting.MeetingId != null && meeting.ServiceType == ServiceType.AdobeConnect)
+                    // {
+                    //     AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
+                    //     RecordList recordList = adobeApi.GetRecordings(meeting.MeetingId);
+
+                    //     RecordedMeeting recordedMeeting = new RecordedMeeting();
+                    //     recordedMeeting.meeting = meeting;
                         
-                        List<RecordInfo> recordInfos = new List<RecordInfo>();
-                        if(recordList != null && recordList.recordings.scoInfo != null)
-                        {
-                            RecordInfo recordInfo = new RecordInfo{date = recordList.recordings.scoInfo.dateCreated , 
-                                                            name = meeting.MeetingName ,
-                                                            url = recordList.recordings.scoInfo.urlPath ,
-                                                            recordID = recordList.recordings.scoInfo.scoId};
-                            //recordInfo.downloadURL = string.Format("{0}/download/presentation/{1}/{1}.mp4" , serviceModel.Service_URL , recordInfo.recordID);
-                            recordInfos.Add(recordInfo);
+                    //     List<RecordInfo> recordInfos = new List<RecordInfo>();
+                    //     if(recordList != null && recordList.recordings.scoInfo != null)
+                    //     {
+                    //         RecordInfo recordInfo = new RecordInfo{date = recordList.recordings.scoInfo.dateCreated , 
+                    //                                         name = meeting.MeetingName ,
+                    //                                         url = recordList.recordings.scoInfo.urlPath ,
+                    //                                         recordID = recordList.recordings.scoInfo.scoId};
+                    //         //recordInfo.downloadURL = string.Format("{0}/download/presentation/{1}/{1}.mp4" , serviceModel.Service_URL , recordInfo.recordID);
+                    //         recordInfos.Add(recordInfo);
 
-                            RecordsResponse response = new RecordsResponse();
-                            response.recordings = new Recordings{recording = recordInfos};
-                        }
+                    //         RecordsResponse response = new RecordsResponse();
+                    //         response.recordings = new Recordings{recording = recordInfos};
+                    //     }
                         
-                        recordedMeeting.recordsInfo = recordInfos;
+                    //     recordedMeeting.recordsInfo = recordInfos;
 
 
-                        recordsResponses.Add(recordedMeeting);
-                    }
+                    //     recordsResponses.Add(recordedMeeting);
+                    // }
                     
                     recordsResponses.Add(temp);
                 }

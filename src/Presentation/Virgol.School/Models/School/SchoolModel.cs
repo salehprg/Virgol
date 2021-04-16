@@ -33,6 +33,7 @@ public class SchoolModel {
     ///Split each ServiceId by comma ','
     ///</summar>
     public string ServiceIds {get; set;}
+    public string DefaultSlideURL {get; set;}
 
     // public string AdobeUrl {get; set;}
     // public string Adobe_Username {get; set;}
