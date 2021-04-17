@@ -16,8 +16,9 @@ public class Meeting {
     public int ScheduleId {get; set;}
     public bool Private {get; set;}
     ///<summary>
-    ///UsSe ServiceType Class
+    ///Use ServiceType Class
     ///</summary>
+    public string ServerURL {get; set;}
     public string RecordURL {get; set;}
     public string RecordId {get; set;}
     public string ServiceType {get; set;}

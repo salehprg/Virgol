@@ -159,16 +159,27 @@ namespace Virgol.Controllers
                 ServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
                 ServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
 
+                ServicesModel selectedService = null;
+
                 if(serviceType == ServiceType.AdobeConnect && adobeServiceModel == null)
                 {
                     return BadRequest("مدرسه از سرویس دهنده ادوب کانکت پشتیبانی نمیکند");
                 }
+                else if(serviceType == ServiceType.AdobeConnect)
+                {
+                    selectedService = adobeServiceModel;
+                }
+
                 if(serviceType == ServiceType.BBB && bbbServiceModel == null)
                 {
                     return BadRequest("مدرسه از سرویس دهنده بیگ بلو باتن پشتیبانی نمیکند");
                 }
-
-                Meeting meeting = await meetingService.StartPrivateMeeting(school , roomName , userId , serviceType);
+                else if(serviceType == ServiceType.BBB)
+                {
+                    selectedService = bbbServiceModel;
+                }
+                
+                Meeting meeting = await meetingService.StartPrivateMeeting(school , roomName , userId , selectedService);
 
                 if(meeting != null)
                 {
@@ -246,13 +257,24 @@ namespace Virgol.Controllers
                 ServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
                 ServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
 
+                ServicesModel selectedService = null;
+
                 if(serviceType == ServiceType.AdobeConnect && adobeServiceModel == null)
                 {
                     return BadRequest("مدرسه از سرویس دهنده ادوب کانکت پشتیبانی نمیکند");
                 }
+                else if(serviceType == ServiceType.AdobeConnect)
+                {
+                    selectedService = adobeServiceModel;
+                }
+
                 if(serviceType == ServiceType.BBB && bbbServiceModel == null)
                 {
                     return BadRequest("مدرسه از سرویس دهنده بیگ بلو باتن پشتیبانی نمیکند");
+                }
+                else if(serviceType == ServiceType.BBB)
+                {
+                    selectedService = bbbServiceModel;
                 }
 
                 int meetingId = -1;
@@ -265,7 +287,7 @@ namespace Virgol.Controllers
                     {
                         //Console.WriteLine("Going to start Meeting");
                         
-                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType , mixedSchedule.MixedName);
+                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , selectedService , mixedSchedule.MixedName);
                         //Get all schedules have same MixedId according to Selected Schedule
                         List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
 
@@ -291,7 +313,7 @@ namespace Virgol.Controllers
                 else
                 {
                     //Console.WriteLine("Going to start Meeting");
-                    meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , serviceType);
+                    meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , selectedService);
 
                     if(meetingId == -1)
                         Console.WriteLine("Adobe Server isn't available.");
@@ -666,6 +688,30 @@ namespace Virgol.Controllers
 
                 return BadRequest(ex.Message);
                 throw;
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveRecording(string recordId)
+        {
+            try
+            {
+                UserModel userModel = UserService.GetUserModel(User);
+
+                Meeting meeting = appDbContext.Meetings.Where(x => x.RecordId == recordId).FirstOrDefault();
+                if(meeting == null)
+                    return BadRequest("جلسه مورد نظر یافت نشد");
+
+                if(meeting.TeacherId != userModel.Id)
+                    return BadRequest("شما اجازه دسترسی به این جلسه را ندارید");
+
+               bool result = await meetingService.RemoveRecording(meeting.RecordId);
+
+               return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("پردازش درخواست با مشکل مواجه شد");
             }
         }
 #endregion

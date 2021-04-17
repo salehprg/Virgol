@@ -24,7 +24,7 @@ public class MeetingService {
 #region Private Functions
     
     #region Start Meeting
-    private async Task<Meeting> CreateInDb(ClassScheduleView classSchedule , int teacherId , string serviceType  , string meetingName = "")
+    private async Task<Meeting> CreateInDb(ClassScheduleView classSchedule , int teacherId , ServicesModel servicesModel  , string meetingName = "")
     {
         try
         {
@@ -53,11 +53,11 @@ public class MeetingService {
             meeting.nameWithoutCounter = meetingName;
 
             //Display meeting name Without number Just for main adobe meeting
-            if(serviceType == ServiceType.AdobeConnect && newMeetingNo != 1)
+            if(servicesModel.ServiceType == ServiceType.AdobeConnect && newMeetingNo != 1)
             {
                 meetingName += " جلسه " + newMeetingNo;
             }
-            else if(serviceType == ServiceType.BBB)
+            else if(servicesModel.ServiceType == ServiceType.BBB)
             {
                 meetingName += " جلسه " + newMeetingNo;
             }
@@ -65,8 +65,10 @@ public class MeetingService {
             meeting.MeetingName = meetingName;
             meeting.StartTime = timeNow;
             meeting.ScheduleId = scheduleId;
+            meeting.SchoolId = classSchedule.School_Id;
             meeting.TeacherId = teacherId;
-            meeting.ServiceType = serviceType;
+            meeting.ServiceType = servicesModel.ServiceType;
+            meeting.ServerURL = servicesModel.Service_URL;
             meeting.Finished = false;
 
             await appDbContext.Meetings.AddAsync(meeting);
@@ -81,7 +83,7 @@ public class MeetingService {
             return null;
         }
     }
-    private async Task<bool> CreateRoom(Meeting meeting , float duration , string serviceType , SchoolModel school,  string customMeetingId = "")
+    private async Task<bool> CreateRoom(Meeting meeting , float duration , ServicesModel serviceModel , SchoolModel school,  string customMeetingId = "")
     {
         string callBackUrl = AppSettings.ServerRootUrl;
 
@@ -95,8 +97,6 @@ public class MeetingService {
         MeetingInfoResponse adobe_MeetingInfo = new MeetingInfoResponse();
         List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
 
-        ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == serviceType).FirstOrDefault();
-
         if(serviceModel == null)
         {
             return false;
@@ -104,7 +104,7 @@ public class MeetingService {
 
         meeting.ServiceId = serviceModel.Id;
 
-        if(serviceType == ServiceType.BBB)
+        if(serviceModel.ServiceType == ServiceType.BBB)
         {
             BBBApi bbbApi = new BBBApi(appDbContext);
             UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
@@ -127,7 +127,7 @@ public class MeetingService {
             result = true;
         }
 
-        if(serviceType == ServiceType.AdobeConnect)
+        if(serviceModel.ServiceType == ServiceType.AdobeConnect)
         {
             AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
             adobe_MeetingInfo = adobeApi.StartMeeting(meeting.nameWithoutCounter);
@@ -147,7 +147,7 @@ public class MeetingService {
 
         if(result = true && !meeting.Private)
         {
-            if(serviceType == ServiceType.BBB)
+            if(serviceModel.ServiceType == ServiceType.BBB)
             {
                 meeting.MeetingId = meeting.Id.ToString();
             }
@@ -160,7 +160,7 @@ public class MeetingService {
         }
         else if(result = true && meeting.Private)
         {
-            if(serviceType == ServiceType.AdobeConnect)
+            if(serviceModel.ServiceType == ServiceType.AdobeConnect)
             {
                 meeting.MeetingId = customMeetingId + "|" + adobe_MeetingInfo.scoInfo.scoId;
             }
@@ -173,13 +173,11 @@ public class MeetingService {
 
         return false;
     }
-    private async Task<Meeting> StartMeeting(ClassScheduleView classSchedule , int teacherId , string serviceType, string meetingName = "" )
+    private async Task<Meeting> StartMeeting(ClassScheduleView classSchedule , int teacherId , ServicesModel serviceModel, string meetingName = "" )
     {
         try
         {
-
-            //Console.WriteLine("Make Meeting in Db");
-            Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
+            Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceModel , meetingName);
 
             if(meeting == null)
             {
@@ -199,19 +197,13 @@ public class MeetingService {
                 duration += classSchedule.EndHour * 60;
             }
 
-            MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
-            SchoolModel school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
-            List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
-
             bool result = false , createRoom = true;
 
-            List<Meeting> adobeMeetings = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id && x.TeacherId == teacherId && x.ServiceType == serviceType && x.MeetingId != null).ToList();
+            List<Meeting> adobeMeetings = appDbContext.Meetings.Where(x => x.ScheduleId == classSchedule.Id && x.TeacherId == teacherId && x.ServiceType == serviceModel.ServiceType && x.MeetingId != null).ToList();
             Meeting mainAdobeMeeting = adobeMeetings.FirstOrDefault();
             //Just for Optimizing Meeting
-            if(mainAdobeMeeting != null && serviceType == ServiceType.AdobeConnect)
+            if(mainAdobeMeeting != null && serviceModel.ServiceType == ServiceType.AdobeConnect)
             {
-                ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
-
                 AdobeApi adobeApi = new AdobeApi(serviceModel.Service_URL , serviceModel.Service_Login , serviceModel.Service_Key);
 
                 string scoId = mainAdobeMeeting.MeetingId;
@@ -238,9 +230,12 @@ public class MeetingService {
                 }
             }
 
+            MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
+            SchoolModel school = appDbContext.Schools.Where(x => x.Id == meetingView.School_Id).FirstOrDefault();
+            
             if(createRoom)
             {
-                result = await CreateRoom(meeting , duration , serviceType , school);
+                result = await CreateRoom(meeting , duration , serviceModel , school);
             }
 
             if(result)
@@ -431,13 +426,13 @@ public class MeetingService {
 
 #endregion
 
-    public async Task<Meeting> StartPrivateMeeting(SchoolModel school , string meetingName , int userId , string serviceType)
+    public async Task<Meeting> StartPrivateMeeting(SchoolModel school , string meetingName , int userId , ServicesModel serviceModel)
     {   
         DateTime timeNow = MyDateTime.Now();
 
         Meeting meeting = new Meeting();
         meeting.MeetingName = meetingName;
-        meeting.ServiceType = serviceType;
+        meeting.ServiceType = serviceModel.ServiceType;
         meeting.StartTime = timeNow;
         //We set ScheduleId as School Id for future use
         meeting.SchoolId = school.Id;
@@ -448,7 +443,7 @@ public class MeetingService {
         appDbContext.Meetings.Add(meeting);
         await appDbContext.SaveChangesAsync();
 
-        bool result = await CreateRoom(meeting , 0 , serviceType , school , meeting.MeetingId);
+        bool result = await CreateRoom(meeting , 0 , serviceModel , school , meeting.MeetingId);
 
         if(meeting != null && result)
         {
@@ -458,9 +453,9 @@ public class MeetingService {
         return null;
     }
 
-    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId , string ServiceType , string meetingName = "")
+    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId , ServicesModel serviceModel , string meetingName = "")
     {   
-        Meeting meeting = await StartMeeting(classSchedule , teacherId , ServiceType , meetingName);
+        Meeting meeting = await StartMeeting(classSchedule , teacherId , serviceModel , meetingName);
 
         if(meeting != null)
         {
@@ -469,9 +464,9 @@ public class MeetingService {
 
         return -1;
     }
-    public async Task<int> StartMixedMeeting(ClassScheduleView classSchedule , int teacherId , int parentMeetingId , string serviceType , string meetingName)
+    public async Task<int> StartMixedMeeting(ClassScheduleView classSchedule , int teacherId , int parentMeetingId , ServicesModel serviceModel , string meetingName)
     {
-        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceType , meetingName);
+        Meeting meeting = await CreateInDb(classSchedule , teacherId , serviceModel , meetingName);
         Meeting parentMeeting = appDbContext.Meetings.Where(x => x.Id == parentMeetingId).FirstOrDefault();
 
         meeting.StartTime = parentMeeting.StartTime;
@@ -523,6 +518,7 @@ public class MeetingService {
 
         List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
         ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == meeting.ServiceType).FirstOrDefault();
+        UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
 
         if(meeting.ServiceType == ServiceType.AdobeConnect)
         {
@@ -538,7 +534,6 @@ public class MeetingService {
             BBBApi bbbApi = new BBBApi(appDbContext);
             if(meeting.Private)
             {
-                UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
                 bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key , manager);
             }
             else
@@ -547,6 +542,15 @@ public class MeetingService {
             }
             
             classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
+            if(classUrl == "")
+            {
+                ServicesModel alternateServer = servicesModel.Where(x => x.Service_URL == meeting.ServerURL).FirstOrDefault();
+                if(alternateServer != null)
+                {
+                    bbbApi.SetConnectionInfo(alternateServer.Service_URL , alternateServer.Service_Key , manager);
+                    classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
+                }
+            }
         }
 
         if(classUrl != "")
@@ -604,13 +608,12 @@ public class MeetingService {
         if(meeting.ServiceType == ServiceType.BBB && !resultEnd)
         {
             List<ServicesModel> servicesModel = schoolService.GetSchoolMeetingServices(school.Id);
-
+            UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
             ServicesModel serviceModel = servicesModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
 
             BBBApi bbbApi = new BBBApi(appDbContext);
             if(meeting.Private)
             {
-                UserModel manager = appDbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
                 bbbApi.SetConnectionInfo(serviceModel.Service_URL , serviceModel.Service_Key , manager);
             }
             else
@@ -618,9 +621,27 @@ public class MeetingService {
                 bbbApi.SetConnectionInfo(meeting.ScheduleId);
             }
 
-            resultEnd = await bbbApi.EndRoom(bbbMeetingId);
+            
+            MeetingsResponse meetingsResponse = null;
+            bool onAlternateEnd = false;
+            if(!resultEnd)
+            {
+                ServicesModel alternate = servicesModel.Where(x => x.Service_URL == meeting.ServerURL).FirstOrDefault();
+                if(alternate != null)
+                {
+                    bbbApi.SetConnectionInfo(alternate.Service_URL , alternate.Service_Key , manager);
+                    resultEnd = await bbbApi.EndRoom(bbbMeetingId);
+                    if(resultEnd)
+                    {
+                        meetingsResponse = bbbApi.GetMeetings().Result; 
+                        onAlternateEnd = true;
+                    }
+                }
+            }
 
-            MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
+            if(!onAlternateEnd)
+                meetingsResponse = bbbApi.GetMeetings().Result; 
+
             List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
 
             if(meetingsResponse.meetings != null)
@@ -655,6 +676,52 @@ public class MeetingService {
     }
 
 
+    public async Task<bool> RemoveRecording(string RecordId)
+    {
+        try
+        {
+            Meeting meeting = appDbContext.Meetings.Where(x => x.RecordId == RecordId).FirstOrDefault();
+
+            if(meeting != null)
+            {
+                bool result = false;
+
+                ServicesModel servicesModel = appDbContext.Services.Where(x => x.Id == meeting.ServiceId).FirstOrDefault();
+                if(servicesModel.ServiceType == ServiceType.BBB)
+                {
+                    BBBApi bBBApi = new BBBApi(appDbContext);
+                    bBBApi.SetConnectionInfo(servicesModel.Service_URL , servicesModel.Service_Key);
+                    result = await bBBApi.DeleteRecording(meeting.RecordId);
+
+                    if(!result)
+                    {
+                        // Try alternate Server URL
+                        servicesModel = appDbContext.Services.Where(x => x.Service_URL == meeting.ServerURL).FirstOrDefault();
+                        bBBApi.SetConnectionInfo(servicesModel.Service_URL , servicesModel.Service_Key);
+                        result = await bBBApi.DeleteRecording(meeting.RecordId);
+
+                    }
+                }
+
+                if(result)
+                {
+                    meeting.RecordURL = null;
+                    meeting.RecordId = null;
+
+                    appDbContext.Meetings.Update(meeting);
+                }
+
+                return result;
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
     public List<MeetingView> GetActiveMeeting(UserModel user)
     {   
         List<MeetingView> meetingViews = appDbContext.MeetingViews.Where(x => x.TeacherId == user.Id && x.Finished == false).ToList();

@@ -304,6 +304,31 @@ namespace Virgol.Helper
 
         }
         
+        public async Task<bool> DeleteRecording(string recordId)
+        {
+            try
+            {
+                string FunctionName = string.Format("deleteRecordings?recordID={0}" , recordId );
+                string data = FunctionName;
+
+                string response = await sendData(data);
+
+                MeetingsResponse meeting = JsonConvert.DeserializeObject<MeetingsResponse>(response);
+                
+                return (meeting.returncode != "FAILED");
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return false;
+            }
+
+        }
+        
+
 #endregion
 
         public void SetConnectionInfo(string _bbbUrl , string _bbbSecret)
