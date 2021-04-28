@@ -11,9 +11,9 @@ TAG_REVISION=0
 sudo git stash
 sudo git pull origin master
 
+sudo docker login
 # docker image prune
 sudo sed -i 's/process.env.REACT_APP_VERSION/'$IMAGE_TAG' نسخه/g' ./src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js
-sudo docker login
 sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest --force-rm .
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
