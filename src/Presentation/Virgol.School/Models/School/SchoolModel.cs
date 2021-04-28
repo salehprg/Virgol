@@ -25,7 +25,6 @@ public class SchoolModel {
     public int sexuality {get; set;}
     public bool SelfSign {get; set;}
     public bool EnableRecord {get; set;}
-    public bool EnableSms {get; set;}
     public bool Free {get; set;}
     public bool AutoFill {get; set;}
     public bool RemindUser {get; set;}
@@ -33,6 +32,7 @@ public class SchoolModel {
     ///Split each ServiceId by comma ','
     ///</summar>
     public string ServiceIds {get; set;}
+    public int SMSService {get; set;}
     public string DefaultSlideURL {get; set;}
 
     // public string AdobeUrl {get; set;}
@@ -69,4 +69,6 @@ public class SchoolModel {
             throw;
         }
     }
+
+
 }

@@ -26,7 +26,6 @@ namespace Virgol.Controllers
         private readonly UserManager<UserModel> userManager;
         private readonly AppDbContext appDbContext;
 
-        FarazSmsApi SMSApi;
         UserService UserService;
         PaymentService PaymentService;
         public PaymentController(UserManager<UserModel> _userManager
@@ -35,7 +34,6 @@ namespace Virgol.Controllers
             userManager = _userManager;
 
             appDbContext = _appdbContext;
-            SMSApi = new FarazSmsApi();
             UserService = new UserService(userManager , appDbContext);
             string url = httpContext.HttpContext.Request.Host.Value;
 

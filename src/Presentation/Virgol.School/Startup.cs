@@ -76,11 +76,7 @@ namespace Virgol
                 AppSettings.JWTSecret = Environment.GetEnvironmentVariable("VIRGOL_JWT_SECRET");
                 AppSettings.BaseUrl_moodle = Environment.GetEnvironmentVariable("VIRGOL_MOODLE_BASE_URL");
                 AppSettings.moddleCourseUrl = AppSettings.BaseUrl_moodle + "/course/view.php?id=";
-                AppSettings.FarazAPI_URL = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_URL");
-                AppSettings.FarazAPI_SendNumber = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_SENDER_NUMBER");
-                AppSettings.FarazAPI_Username = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_USERNAME");
-                AppSettings.FarazAPI_Password = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_PASSWORD");
-                AppSettings.FarazAPI_ApiKey = Environment.GetEnvironmentVariable("VIRGOL_FARAZAPI_API_KEY");
+                AppSettings.Default_SMSProvider = Environment.GetEnvironmentVariable("VIRGOL_Default_SMSProvider");
 
                 AppSettings.LDAPServer = Environment.GetEnvironmentVariable("VIRGOL_LDAP_SERVER");
                 AppSettings.LDAPPort = int.Parse(Environment.GetEnvironmentVariable("VIRGOL_LDAP_PORT"));

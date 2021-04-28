@@ -19,11 +19,7 @@ services:
       - VIRGOL_DATABASE_USER=postgres
       - VIRGOL_DATABASE_PASSWORD=PostgreSQLpass.24
       - VIRGOL_MOODLE_BASE_URL=https://moodle.vir-gol.ir
-      - VIRGOL_FARAZAPI_URL=http://rest.ippanel.com
-      - VIRGOL_FARAZAPI_SENDER_NUMBER=+98500010707
-      - VIRGOL_FARAZAPI_USERNAME=goldenstarc
-      - VIRGOL_FARAZAPI_PASSWORD=hektug-fakbAm-0vypje
-      - VIRGOL_FARAZAPI_API_KEY=qcP4IQp3PPRV3ppvkG9ScHJcwvUPL3iOJrV9n7QiqDA=
+      - VIRGOL_Default_SMSProvider=Faraz
       - VIRGOL_JWT_SECRET=Saleh Secret Key
       - VIRGOL_LDAP_SERVER=ldap.vir-gol.ir
       - VIRGOL_LDAP_PORT=390

@@ -24,8 +24,6 @@ namespace Virgol.Controllers
         private readonly SignInManager<UserModel> signInManager;
         private readonly AppDbContext appDbContext;
         UserService UserService;
-
-        FarazSmsApi SMSApi;
         public NewsController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -36,7 +34,6 @@ namespace Virgol.Controllers
             signInManager =_signinManager;
             appDbContext = _appdbContext;
 
-            SMSApi = new FarazSmsApi();
             UserService = new UserService(userManager , appDbContext);
         }
         

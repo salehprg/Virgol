@@ -1,5 +1,6 @@
 using Virgol.FarazSms;
 using Virgol.Helper;
+using Virgol.School.Models;
 
 namespace Virgol.Services
 {
@@ -11,18 +12,22 @@ namespace Virgol.Services
     
     public class SMSService
     {
-        string Username;
-        string Password;
-        string URL;
-        string SenderNumber;
         SMSProvider provider;
+        SMSServiceModel serviceModel;
 
-        SMSService(string _username , string _password , string _URL , string _SenderNumber , SMSProvider _provider)
+        public SMSService(SMSServiceModel _serviceModel)
         {
-            Username = _username;
-            Password = _password;
-            URL = _URL;
-            SenderNumber = _SenderNumber;
+            serviceModel = _serviceModel;
+
+            if(_serviceModel.ServiceName == "Faraz")
+                provider = SMSProvider.Faraz;
+
+            if(_serviceModel.ServiceName == "Negin")
+                provider = SMSProvider.Negin;
+        }
+        public SMSService(SMSServiceModel _serviceModel , SMSProvider _provider)
+        {
+            serviceModel = _serviceModel;
             provider = _provider;
         }
         public bool SendVerifySms(string Number , string personName , string code)
@@ -30,11 +35,11 @@ namespace Virgol.Services
             switch(provider)   
             {
                 case SMSProvider.Faraz :
-                    FarazSmsApi faraz = new FarazSmsApi();
+                    FarazSmsApi faraz = new FarazSmsApi(serviceModel);
                     return faraz.SendVerifySms(Number , personName , code);
 
                 case SMSProvider.Negin :
-                    NeginAPI neginAPI = new NeginAPI(URL , Username , Password , SenderNumber);
+                    NeginAPI neginAPI = new NeginAPI(serviceModel);
                     return neginAPI.SendVerifySms(Number , personName , code);
             }
 
@@ -46,11 +51,11 @@ namespace Virgol.Services
             switch(provider)   
             {
                 case SMSProvider.Faraz :
-                    FarazSmsApi faraz = new FarazSmsApi();
+                    FarazSmsApi faraz = new FarazSmsApi(serviceModel);
                     return faraz.SendSchoolData(Number , schoolName , personName , password);
 
                 case SMSProvider.Negin :
-                    NeginAPI neginAPI = new NeginAPI(URL , Username , Password , SenderNumber);
+                    NeginAPI neginAPI = new NeginAPI(serviceModel);
                     return neginAPI.SendSchoolData(Number , schoolName , personName , password);
             }
 
@@ -62,11 +67,11 @@ namespace Virgol.Services
             switch(provider)   
             {
                 case SMSProvider.Faraz :
-                    FarazSmsApi faraz = new FarazSmsApi();
+                    FarazSmsApi faraz = new FarazSmsApi(serviceModel);
                     return faraz.SendScheduleNotify(Number , personName , className , dateTime);
 
                 case SMSProvider.Negin :
-                    NeginAPI neginAPI = new NeginAPI(URL , Username , Password , SenderNumber);
+                    NeginAPI neginAPI = new NeginAPI(serviceModel);
                     return neginAPI.SendScheduleNotify(Number , personName , className , dateTime);
             }
 
@@ -78,11 +83,11 @@ namespace Virgol.Services
             switch(provider)   
             {
                 case SMSProvider.Faraz :
-                    FarazSmsApi faraz = new FarazSmsApi();
+                    FarazSmsApi faraz = new FarazSmsApi(serviceModel);
                     return faraz.SendErrorCollecotr(Numbers , serviceError , singularPlural);
 
                 case SMSProvider.Negin :
-                    NeginAPI neginAPI = new NeginAPI(URL , Username , Password , SenderNumber);
+                    NeginAPI neginAPI = new NeginAPI(serviceModel);
                     return neginAPI.SendErrorCollecotr(Numbers , serviceError , singularPlural);
             }
 
@@ -94,11 +99,11 @@ namespace Virgol.Services
             switch(provider)   
             {
                 case SMSProvider.Faraz :
-                    FarazSmsApi faraz = new FarazSmsApi();
+                    FarazSmsApi faraz = new FarazSmsApi(serviceModel);
                     return faraz.SendSms(Numbers , Message);
 
                 case SMSProvider.Negin :
-                    NeginAPI neginAPI = new NeginAPI(URL , Username , Password , SenderNumber);
+                    NeginAPI neginAPI = new NeginAPI(serviceModel);
                     return neginAPI.SendSms(Numbers , Message);
             }
 

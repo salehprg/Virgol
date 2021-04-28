@@ -38,7 +38,6 @@ namespace Virgol.Controllers
         SchoolService schoolService;
         ClassScheduleService scheduleService;
         ManagerService managerService;
-        FarazSmsApi SMSApi;
         UserService UserService;
         AdministratorService administratorService;
         PaymentService PaymentService;
@@ -55,7 +54,6 @@ namespace Virgol.Controllers
             appDbContext = _appdbContext;
             appDbContextBackup = _appDBBackup;
 
-            SMSApi = new FarazSmsApi();
             moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
 
             schoolService = new SchoolService(appDbContext);

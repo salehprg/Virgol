@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Models.Users.Roles;
 using Models;
 using Virgol.School.Models;
+using Virgol.Services;
 
 namespace Virgol.Controllers
 {
@@ -50,7 +51,8 @@ namespace Virgol.Controllers
                 if(string.IsNullOrEmpty(reqForm.FirstName) || string.IsNullOrEmpty(reqForm.LastName))
                     return BadRequest("اطلاعات به درستي تكميل نشده است");
 
-                FarazSmsApi smsApi = new FarazSmsApi();
+                SMSService sMSService = new SMSService(appDbContext.SMSServices.Where(x => x.ServiceName == AppSettings.Default_SMSProvider).FirstOrDefault());
+
                 await appDbContext.ReqForms.AddAsync(reqForm);
                 await appDbContext.SaveChangesAsync();
 
@@ -60,7 +62,7 @@ namespace Virgol.Controllers
                 message = message.Replace("\n" , Environment.NewLine);
                 string adminPhone = AppSettings.GetValueFromDatabase(appDbContext , "Admin_Phone");
 
-                smsApi.SendSms(new string[]{adminPhone} , message);
+                sMSService.SendSms(new string[]{adminPhone} , message);
 
                 if(reqForm.email != null)
                 {

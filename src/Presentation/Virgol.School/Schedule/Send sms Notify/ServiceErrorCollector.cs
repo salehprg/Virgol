@@ -12,6 +12,8 @@ using Quartz;
 using Models.User;
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using Virgol.School.Models;
+using Virgol.Services;
 
 namespace Schedule
 {
@@ -31,8 +33,7 @@ namespace Schedule
                 using(var scope = _provider.CreateScope())
                 {
                     var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
-                    var appSetting = scope.ServiceProvider.GetService<IOptions<AppSettings>>().Value;
-                    FarazSmsApi smsApi = new FarazSmsApi();
+                    AppSettings appSetting = scope.ServiceProvider.GetService<IOptions<AppSettings>>().Value;
 
                     string message = "";
                     string service = " - ";
@@ -53,63 +54,66 @@ namespace Schedule
 
                     foreach (var school in schools)
                     {
-                        if(school.EnableSms)
+                        List<ServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
+
+                        ServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
+                        ServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+
+                        if(bbbServiceModel != null)
                         {
-                            List<ServicesModel> serviceModel = schoolService.GetSchoolMeetingServices(school.Id);
+                            UserModel manager = dbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
+                            bBBApi.SetConnectionInfo(bbbServiceModel.Service_URL , bbbServiceModel.Service_Key , manager);
 
-                            ServicesModel bbbServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.BBB).FirstOrDefault();
-                            ServicesModel adobeServiceModel = serviceModel.Where(x => x.ServiceType == ServiceType.AdobeConnect).FirstOrDefault();
+                            bool bbbResponse = bBBApi.CheckStatus().Result;
 
-                            if(bbbServiceModel != null)
+                            if(!bbbResponse)
                             {
-                                UserModel manager = dbContext.Users.Where(x => x.Id == school.ManagerId).FirstOrDefault(); 
-                                bBBApi.SetConnectionInfo(bbbServiceModel.Service_URL , bbbServiceModel.Service_Key , manager);
+                                message += (counter > 0 ? " و " : "") + " سرویس BBB مدرسه " + school.SchoolName;
 
-                                bool bbbResponse = bBBApi.CheckStatus().Result;
-
-                                if(!bbbResponse)
-                                {
-                                    message += (counter > 0 ? " و " : "") + " سرویس BBB مدرسه " + school.SchoolName;
-
-                                    counter++;
-                                }
-                                
+                                counter++;
                             }
+                            
+                        }
 
-                            if(adobeServiceModel != null)
+                        if(adobeServiceModel != null)
+                        {
+                            AdobeApi adobeApi = new AdobeApi(adobeServiceModel.Service_URL , adobeServiceModel.Service_Login , adobeServiceModel.Service_Key);
+                            bool adobeResult = adobeApi.CheckStatus();
+
+                            if(!adobeResult)
                             {
-                                AdobeApi adobeApi = new AdobeApi(adobeServiceModel.Service_URL , adobeServiceModel.Service_Login , adobeServiceModel.Service_Key);
-                                bool adobeResult = adobeApi.CheckStatus();
+                                message += (counter > 0 ? " و " : "") + " سرویس adobe مدرسه " + school.SchoolName;
 
-                                if(!adobeResult)
-                                {
-                                    message += (counter > 0 ? " و " : "") + " سرویس adobe مدرسه " + school.SchoolName;
-
-                                    counter++;
-                                }
+                                counter++;
                             }
                         }
                     }
 
                     if(!string.IsNullOrEmpty(message))
                     {
-                        string[] numbers = {"09154807673" , "09333545494" , "09361207250"};
-                        if(counter > 1)
+                        string[] numbers = {"09154807673" , "09361207250"};
+                        
+                        SMSServiceModel smsServiceModel = dbContext.SMSServices.Where(x => x.ServiceName ==  AppSettings.Default_SMSProvider).FirstOrDefault();
+                        SMSService smsService = new SMSService(smsServiceModel);
+
+                        if(smsServiceModel != null)
                         {
-                            foreach (var number in numbers)
+                            if(counter > 1)
                             {
-                                smsApi.SendErrorCollecotr(number , message , " اند ");    
+                                foreach (var number in numbers)
+                                {
+                                    smsService.SendErrorCollecotr(number , message , " اند ");    
+                                }
                             }
-                        }
-                        if(counter == 1)
-                        {
-                            foreach (var number in numbers)
+                            if(counter == 1)
                             {
-                                smsApi.SendErrorCollecotr(number , message , " است ");    
+                                foreach (var number in numbers)
+                                {
+                                    smsService.SendErrorCollecotr(number , message , " است ");    
+                                }
                             }
                         }
                     }
-                    
                 }
             }
             catch(Exception ex)

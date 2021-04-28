@@ -1,7 +1,7 @@
-public enum ShareType
+public class ShareType
 {
-    privately = 0,
-    classly = 1,
-    schoolly = 2,
-    publicly = 3
+    public static string privately = "Private";
+    public static string classly = "Class";
+    public static string schoolly = "School";
+    public static string publicly = "Public";
 }

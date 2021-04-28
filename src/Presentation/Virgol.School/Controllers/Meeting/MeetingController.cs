@@ -718,20 +718,52 @@ namespace Virgol.Controllers
 
 #region PreSlide
 
-        public async Task<IActionResult> UploadPreSlide([FromForm]IFormCollection preSlide)
+        public IActionResult GetSlides()
+        {
+            try
+            {
+                UserModel userModel = UserService.GetUserModel(User);
+                List<DocumentModel> documents = appDbContext.Documents.Where(x => x.userId == userModel.Id || x.shareType == ShareType.publicly).ToList();
+                TeacherDetail teacher = appDbContext.TeacherDetails.Where(x => x.TeacherId == userModel.Id).FirstOrDefault();
+                if(teacher != null)
+                {
+                    List<int> schoolIds = teacher.getTeacherSchoolIds();
+                    foreach (var schoolId in schoolIds)
+                    {
+                        documents.AddRange(appDbContext.Documents.Where(x => x.subSpaceId == schoolId || x.shareType == ShareType.schoolly).ToList());
+                    }
+                    List<int> classIds = appDbContext.ClassWeeklySchedules.Where(x => x.TeacherId == userModel.Id).Select(x => x.ClassId).Distinct().ToList();
+                    foreach (var schoolId in schoolIds)
+                    {
+                        documents.AddRange(appDbContext.Documents.Where(x => x.subSpaceId == schoolId || x.shareType == ShareType.schoolly).ToList());
+                    }
+                }
+
+                return Ok(documents);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("دریافت اطلاعات با خطا مواجه شد");
+            }
+        }
+        public async Task<IActionResult> UploadPreSlide([FromForm]IFormCollection preSlide , string shareType)
         {
             try
             {
                 string userName = userManager.GetUserId(User);
                 int userId = appDbContext.Users.Where(x => x.MelliCode == userName).FirstOrDefault().Id;
 
-                bool FileOk = await FileController.UploadFile(preSlide.Files[0] , preSlide.Files[0].FileName , "PreSlides");
+                double miliseconds = (MyDateTime.Now() - new DateTime(1970, 1, 1)).TotalMilliseconds;
+                string hashName = SHA1Creator.sha1Creator(preSlide.Files[0].FileName + miliseconds.ToString() + MyDateTime.Now().ToLongTimeString());
+                bool FileOk = await FileController.UploadFile(preSlide.Files[0] , hashName , "PreSlides");
 
                 if(FileOk)
                 {
                     DocumentModel document = new DocumentModel();
+                    document.hashName = hashName;
                     document.docName = "PreSlides" + preSlide.Files[0].FileName;
                     document.userId = userId;
+                    document.shareType = shareType;
                     document.uploadTime = MyDateTime.Now();
                     
                     await appDbContext.Documents.AddAsync(document);

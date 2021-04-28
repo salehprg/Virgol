@@ -15,6 +15,7 @@ using Virgol.Helper;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Virgol.FarazSms;
+using Virgol.School.Models;
 
 namespace Virgol.Helper
 {
@@ -33,14 +34,14 @@ namespace Virgol.Helper
         private string BaseUrl;
         private string FromNumber;
 
-        public FarazSmsApi()
+        public FarazSmsApi(SMSServiceModel serviceModel)
         {
-            BaseUrl = AppSettings.FarazAPI_URL;
-            Username = AppSettings.FarazAPI_Username;
-            Password = AppSettings.FarazAPI_Password;
-            ApiKey = AppSettings.FarazAPI_ApiKey;
-            FromNumber = AppSettings.FarazAPI_SendNumber;
-        }   
+            Username = serviceModel.Username;
+            Password = serviceModel.Password;
+            BaseUrl = serviceModel.URL;
+            FromNumber = serviceModel.SendNumber;
+            ApiKey = serviceModel.APIKey;
+        }
 
         bool SendData(string JsonData , string Method)
         {

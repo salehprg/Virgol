@@ -14,6 +14,7 @@ using Models.Users.Roles;
 using Microsoft.AspNetCore.Http;
 using Models.InputModel;
 using Newtonsoft.Json;
+using Virgol.Services;
 
 namespace Virgol.Controllers
 {
@@ -30,7 +31,6 @@ namespace Virgol.Controllers
         MoodleApi moodleApi;
         SchoolService schoolService;
         LDAP_db ldap;
-        FarazSmsApi SMSApi;
         UserService UserService;
         public SchoolController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
@@ -43,7 +43,6 @@ namespace Virgol.Controllers
             appDbContext = _appdbContext;
 
             moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
-            SMSApi = new FarazSmsApi();
             ldap = new LDAP_db(appDbContext);
             UserService = new UserService(userManager , appDbContext);
             schoolService = new SchoolService(appDbContext);
@@ -307,7 +306,9 @@ namespace Virgol.Controllers
                     appDbContext.Schools.Update(schoolResult);
                     await appDbContext.SaveChangesAsync();
                     
-                    SMSApi.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
+                    SMSService sMSService = new SMSService(appDbContext.SMSServices.Where(x => x.ServiceName == AppSettings.Default_SMSProvider).FirstOrDefault());
+
+                    sMSService.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                     //SMSApi.SendSchoolData(manager.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                     
                     return Ok(new{

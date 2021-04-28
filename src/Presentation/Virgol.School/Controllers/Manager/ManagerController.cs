@@ -16,6 +16,7 @@ using Models.InputModel;
 using Newtonsoft.Json;
 using Models.Users.Roles;
 using Virgol.School.Models;
+using Virgol.Services;
 
 namespace Virgol.Controllers
 {
@@ -456,6 +457,8 @@ namespace Virgol.Controllers
         {
             try
             {
+                UserModel manager = UserService.GetUserModel(User);
+
                 List<EnrolUser> enrolUsers = new List<EnrolUser>();
 
                 foreach(var id in usersId)
@@ -503,7 +506,10 @@ namespace Virgol.Controllers
 
                             enrolUsers.Add(enrolUser);
 
-                            FarazSmsApi smsApi = new FarazSmsApi();
+                            SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
+
+                            SMSService sMSService = new SMSService(appDbContext.SMSServices.Where(x => x.Id == school.SMSService).FirstOrDefault());
+
                             String welcomeMessage = string.Format("{0} {1} عزیز ثبت نام شما با موفقیت انجام شد \n" +
                                                                     "نام کاربری و رمز عبور شما کدملی شما میباشد" , SelectedUser.FirstName , SelectedUser.LastName);
 

@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Models.InputModel;
 using Newtonsoft.Json;
+using Virgol.Services;
 
 namespace Virgol.Controllers
 {
@@ -35,7 +36,6 @@ namespace Virgol.Controllers
 
         //MoodleApi moodleApi;
         UserService UserService;
-        FarazSmsApi SMSApi;
         public UsersController(UserManager<UserModel> _userManager 
                                 , SignInManager<UserModel> _signinManager
                                 , RoleManager<IdentityRole<int>> _roleManager
@@ -48,8 +48,6 @@ namespace Virgol.Controllers
 
 
             ldap = new LDAP_db(appDbContext);
-            //moodleApi = new MoodleApi(AppSettings.GetValueFromDatabase(appDbContext , "Token_moodle"));
-            SMSApi = new FarazSmsApi();
             UserService = new UserService(userManager , appDbContext);
         }
         
@@ -810,9 +808,11 @@ namespace Virgol.Controllers
         {
             try
             {
+                SMSService sMSService = new SMSService(appDbContext.SMSServices.Where(x => x.ServiceName == AppSettings.Default_SMSProvider).FirstOrDefault());
+
                 string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , phoneNumber);// Make new Verification code
 
-                bool SmsResult = SMSApi.SendVerifySms(phoneNumber , user.FirstName + " " + user.LastName , Code);
+                bool SmsResult = sMSService.SendVerifySms(phoneNumber , user.FirstName + " " + user.LastName , Code);
                 //bool SmsResult = true;
 
                 if(SmsResult)

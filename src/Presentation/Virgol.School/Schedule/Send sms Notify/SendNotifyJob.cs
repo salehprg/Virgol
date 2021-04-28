@@ -12,6 +12,8 @@ using Quartz;
 using Models.User;
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using Virgol.Services;
+using Virgol.School.Models;
 
 namespace Schedule
 {
@@ -40,46 +42,53 @@ namespace Schedule
                     dayOfWeek = (dayOfWeek > 7 ? dayOfWeek - 7 : dayOfWeek);
 
                     List<ClassScheduleView> classes = dbContext.ClassScheduleView.Where(x => (x.StartHour - currnetTime) <= 0.5 && (x.StartHour - currnetTime) >=0 && x.DayType == dayOfWeek ).ToList();
-                    FarazSmsApi smsApi = new FarazSmsApi();
-
                     foreach (var schedule in classes)
                     {
-                        List<int> studentIds = dbContext.School_StudentClasses.Where(x => x.ClassId == schedule.ClassId).Select(x => x.UserId).ToList();
-                        foreach (var studentId in studentIds)
+                        int schoolId = schedule.School_Id;
+                        SchoolModel school = dbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+                        SMSServiceModel smsServiceModel = dbContext.SMSServices.Where(x => x.Id == school.SMSService).FirstOrDefault();
+
+                        if(smsServiceModel != null)
                         {
-                            UserModel student = dbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
-                                                            //Prevent from duplicate Sent
-                            if(student.PhoneNumber != null && dbContext.CourseNotifies.Where(x => x.UserId == student.Id && x.ScheduleId == schedule.Id).FirstOrDefault() == null)
+                            List<int> studentIds = dbContext.School_StudentClasses.Where(x => x.ClassId == schedule.ClassId).Select(x => x.UserId).ToList();
+                            foreach (var studentId in studentIds)
+                            {
+                                UserModel student = dbContext.Users.Where(x => x.Id == studentId).FirstOrDefault();
+                                                                //Prevent from duplicate Sent
+                                if(student.PhoneNumber != null && dbContext.CourseNotifies.Where(x => x.UserId == student.Id && x.ScheduleId == schedule.Id).FirstOrDefault() == null)
+                                {
+                                    CourseNotify courseNotify = new CourseNotify();
+                                    courseNotify.ScheduleId = schedule.Id;
+                                    courseNotify.UserId = student.Id;
+                                    courseNotify.SentTime = MyDateTime.Now();
+
+                                    float min = (schedule.StartHour - (float)Math.Floor(schedule.StartHour)) * 60;
+                                    string dateTime = "ساعت " + (int)Math.Floor(schedule.StartHour) + ":" + (min == 0 ? "00" : min.ToString());
+                                    
+                                    SMSService smsService = new SMSService(smsServiceModel);
+                                    smsService.SendScheduleNotify(student.PhoneNumber , student.FirstName + " " + student.LastName , schedule.OrgLessonName , dateTime);
+
+                                    dbContext.CourseNotifies.Add(courseNotify);
+                                    dbContext.SaveChanges();
+                                }
+                            }
+                            UserModel teacher = dbContext.Users.Where(x => x.Id == schedule.TeacherId).FirstOrDefault();
+                            if(teacher.PhoneNumber != null && dbContext.CourseNotifies.Where(x => x.UserId == teacher.Id && x.ScheduleId == schedule.Id).FirstOrDefault() == null)
                             {
                                 CourseNotify courseNotify = new CourseNotify();
                                 courseNotify.ScheduleId = schedule.Id;
-                                courseNotify.UserId = student.Id;
+                                courseNotify.UserId = teacher.Id;
                                 courseNotify.SentTime = MyDateTime.Now();
 
                                 float min = (schedule.StartHour - (float)Math.Floor(schedule.StartHour)) * 60;
                                 string dateTime = "ساعت " + (int)Math.Floor(schedule.StartHour) + ":" + (min == 0 ? "00" : min.ToString());
                                 
-                                smsApi.SendScheduleNotify(student.PhoneNumber , student.FirstName + " " + student.LastName , schedule.OrgLessonName , dateTime);
+                                SMSService smsService = new SMSService(smsServiceModel);
+                                smsService.SendScheduleNotify(teacher.PhoneNumber , teacher.FirstName + " " + teacher.LastName + " معلم ", schedule.OrgLessonName , dateTime);
 
                                 dbContext.CourseNotifies.Add(courseNotify);
                                 dbContext.SaveChanges();
                             }
-                        }
-                        UserModel teacher = dbContext.Users.Where(x => x.Id == schedule.TeacherId).FirstOrDefault();
-                        if(teacher.PhoneNumber != null && dbContext.CourseNotifies.Where(x => x.UserId == teacher.Id && x.ScheduleId == schedule.Id).FirstOrDefault() == null)
-                        {
-                            CourseNotify courseNotify = new CourseNotify();
-                            courseNotify.ScheduleId = schedule.Id;
-                            courseNotify.UserId = teacher.Id;
-                            courseNotify.SentTime = MyDateTime.Now();
-
-                            float min = (schedule.StartHour - (float)Math.Floor(schedule.StartHour)) * 60;
-                            string dateTime = "ساعت " + (int)Math.Floor(schedule.StartHour) + ":" + (min == 0 ? "00" : min.ToString());
-                            
-                            smsApi.SendScheduleNotify(teacher.PhoneNumber , teacher.FirstName + " " + teacher.LastName + " معلم ", schedule.OrgLessonName , dateTime);
-
-                            dbContext.CourseNotifies.Add(courseNotify);
-                            dbContext.SaveChanges();
                         }
                     }
                 }

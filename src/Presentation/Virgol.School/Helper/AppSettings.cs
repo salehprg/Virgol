@@ -30,12 +30,8 @@ namespace Virgol.Helper
         //--------------------
 
 
-        //SMS API (Faraz sms) Configuration
-        public static string FarazAPI_Username { get; set; }
-        public static string FarazAPI_URL { get; set; }
-        public static string FarazAPI_SendNumber { get; set; }
-        public static string FarazAPI_Password { get; set; }
-        public static string FarazAPI_ApiKey { get; set; }
+        //SMS API Configuration
+        public static string Default_SMSProvider { get; set; }
 
         //------------------------------
         //React Env Variables
@@ -65,10 +61,10 @@ namespace Virgol.Helper
 
         public override string ToString()
         {
-            return string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n{12}" ,
-                                    moddleCourseUrl , BaseUrl_moodle ,
-                                    FarazAPI_URL , FarazAPI_SendNumber , FarazAPI_Username , FarazAPI_Password , FarazAPI_ApiKey
-                                    , JWTSecret , LDAPServer , LDAPPort , LDAPUserAdmin , LDAPPassword , ServerRootUrl , MyDateTime.Now());
+            return string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}" ,
+                                    moddleCourseUrl , BaseUrl_moodle , JWTSecret , Default_SMSProvider ,
+                                    LDAPServer , LDAPPort , LDAPUserAdmin , LDAPPassword , 
+                                    ServerRootUrl , MyDateTime.Now());
         }
 
     }
