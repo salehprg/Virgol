@@ -215,10 +215,10 @@ namespace Virgol
             if(!environment.IsDevelopment())
             {
                 // Add Error Collector job
-                services.AddSingleton<ServiceErrorCollector>();
-                services.AddSingleton(new JobSchedule(
-                    jobType: typeof(ServiceErrorCollector),
-                    cronExpression: "0 0 0/2 ? * * *"));
+                // services.AddSingleton<ServiceErrorCollector>();
+                // services.AddSingleton(new JobSchedule(
+                //     jobType: typeof(ServiceErrorCollector),
+                //     cronExpression: "0 0 0/2 ? * * *"));
             }
             else
             {
