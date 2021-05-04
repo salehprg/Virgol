@@ -15,6 +15,7 @@ using Virgol.Helper;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Virgol.School.Models;
+using Virgol.School.Models.SMS.NeginAPI;
 
 namespace Virgol.Helper
 {
@@ -33,13 +34,19 @@ namespace Virgol.Helper
             FromNumber = serviceModel.SendNumber;
         }   
 
-        bool SendData(string JsonData , string Method)
+        bool SendData(SimpleSend data)
         {
+            data.username = Username;
+            data.password = Password;
+            data.line = FromNumber;
+
+            string JsonData = JsonConvert.SerializeObject(data);
+
             bool result = false;
 
             using (var client = new HttpClient())
             {
-                HttpResponseMessage responseMessage = client.PostAsync(BaseUrl + Method, 
+                HttpResponseMessage responseMessage = client.PostAsync(BaseUrl, 
                     new StringContent(JsonData, Encoding.UTF8, "application/json")).Result;
                     
                 NeginSMS neginSMS = JsonConvert.DeserializeObject<NeginSMS>(responseMessage.Content.ReadAsStringAsync().Result);
@@ -52,66 +59,39 @@ namespace Virgol.Helper
         }
         public bool SendVerifySms(string Number , string userName , string code)
         {
-            // ForgotPassword forgotPassword = new ForgotPassword();
-            // forgotPassword.verificationCode = code;
-            // forgotPassword.userName = userName;
-
-            // SendPatternModel<ForgotPassword> patternModel = new SendPatternModel<ForgotPassword>();
-
-            // patternModel.pattern_code = "5qhnalxjc0";
-            // patternModel.originator = FromNumber;
-            // patternModel.recipient = Number;
-            // patternModel.values = forgotPassword;
-
-            // string json = JsonConvert.SerializeObject(patternModel);
-
-            // // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
-
-            // return SendData(json , "/v1/messages/patterns/send");
-
-            return true;
-            
+            SimpleSend simple = new SimpleSend();
+            simple.mobile = Number;
+            simple.message = string.Format("{0} گرامی" , 
+                                        "کد تایید شما عبارت است از:" ,
+                                        "{1}" ,
+                                        "سامانه آموزش مجازی ویرگول" , userName , code);
+        
+            return SendData(simple);    
         }
 
         public bool SendSchoolData(string Number , string schoolName , string userName , string password)
         {
-            // SchoolDataSMS schoolDataSMS = new SchoolDataSMS();
-            // schoolDataSMS.schoolName = schoolName;
-            // schoolDataSMS.userName = userName;
-            // schoolDataSMS.password = password;
+            SimpleSend simple = new SimpleSend();
+            simple.mobile = Number;
+            simple.message = string.Format("مدرسه {0} با موفقیت ایجاد شد " ,
+                "اطلاعات ورود مدیر مدرسه به شرح زیر می‌باشد:" ,
+                "نام کاربری: {1}" ,
+                "رمز عبور: {2}" ,
+                "سامانه اموزش مجازی ویرگول" , schoolName , userName , password);
+        
+            return SendData(simple);
 
-            // SendPatternModel<SchoolDataSMS> patternModel = new SendPatternModel<SchoolDataSMS>();
-
-            // patternModel.pattern_code = "9zgw29uffx";
-            // patternModel.originator = FromNumber;
-            // patternModel.recipient = Number;
-            // patternModel.values = schoolDataSMS;
-
-            // string json = JsonConvert.SerializeObject(patternModel);
-
-            // return SendData(json , "/v1/messages/patterns/send");
-
-            return true;
         }
 
         public bool SendScheduleNotify(string Number , string userName , string className , string dateTime)
         {
-            // NotifySMSModel notifySMSModel = new NotifySMSModel();
-            // notifySMSModel.userName = userName;
-            // notifySMSModel.className = className;
-            // notifySMSModel.dateTime = dateTime;
-
-            // SendPatternModel<NotifySMSModel> patternModel = new SendPatternModel<NotifySMSModel>();
-
-            // patternModel.pattern_code = "cwf9r8lirp";
-            // patternModel.originator = FromNumber;
-            // patternModel.recipient = Number;
-            // patternModel.values = notifySMSModel;
-
-            // string json = JsonConvert.SerializeObject(patternModel);
-
-            // //return SendData(json , "/v1/messages/patterns/send");
-            return true;
+            SimpleSend simple = new SimpleSend();
+            simple.mobile = Number;
+            simple.message = string.Format("{0} گرامی" , 
+                "کلاس {1} شما در {2} شروع خواهد شد." ,
+                "سامانه آموزش مجازی ویرگول" , userName , className , dateTime);
+        
+            return SendData(simple);
         }
 
         public bool SendErrorCollecotr(string Numbers , string serviceError , string singularPlural)
@@ -138,18 +118,13 @@ namespace Virgol.Helper
 
         public bool SendSms(string[] Numbers , string Message)
         {
-            // SendSmsModel smsModel = new SendSmsModel();
-
-            // smsModel.originator = FromNumber;
-            // smsModel.recipients = Numbers;
-            // smsModel.message = Message;
-
-            // string json = JsonConvert.SerializeObject(smsModel);
-
-            // // string postData = "op=send&uname=" + Username + "&pass=" + Password + "&message=" + Message +"&to="+json+"&from=+98" + FromNumber;
-
-            // return SendData(json , "/v1/messages");
-
+            foreach(var number in Numbers)
+            {
+                SimpleSend simple = new SimpleSend();
+                simple.mobile = number;
+                simple.message = Message;
+                SendData(simple);
+            }
             return true;
         }
 
