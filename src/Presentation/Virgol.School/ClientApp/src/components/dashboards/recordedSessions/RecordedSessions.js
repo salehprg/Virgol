@@ -63,9 +63,6 @@ class RecorededSession extends React.Component {
                                                 <ReactTooltip type="dark" effect="float" place="top"/> */}
                                             </td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
-                                            {
-                                                console.log()
-                                            }
                                             <td className="tw-py-4 tw-text-right tw-px-4">{this.getMinutes(new Date(x.meeting.startTime) , new Date(x.meeting.endTime)) + " دقیقه"}</td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">
                                             {x.meeting.recordURL ?

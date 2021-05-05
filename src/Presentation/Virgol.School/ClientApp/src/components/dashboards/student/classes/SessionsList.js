@@ -55,12 +55,12 @@ class RecorededSession extends React.Component {
                                             <td className="tw-py-4 tw-text-right tw-px-4">{x.meeting.meetingName} - {this.props.t('session')} {index + 1}</td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">{new Date(x.meeting.startTime).toLocaleString('fa-IR').replace('،' , ' - ')}</td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">
-                                            {(x.recordsInfo.length > 0 ?
-                                                <>
-                                                    <button className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
-                                                    <button onClick={() => window.open(x.recordsInfo[0].url , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
+                                            {x.meeting.recordURL ?
+                                                <> 
+                                                    <button onClick={() => window.open(x.meeting.downloadURL , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-greenish">{this.props.t('download')}</button>
+                                                    <button onClick={() => window.open(x.meeting.recordURL , "_blank")} className="tw-px-8 tw-py-1 tw-m-1 tw-rounded-lg tw-bg-purplish">{this.props.t('view')}</button>
                                                 </>
-                                            : null )}
+                                            : null}
                                             </td>
                                             <td className="tw-py-4 tw-text-right tw-px-4">{x.participant === null || !x.participant.isPresent ? "غایب" : "حاضر"}</td>
                                         </tr>
