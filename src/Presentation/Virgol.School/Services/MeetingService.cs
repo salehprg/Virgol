@@ -338,23 +338,27 @@ public class MeetingService {
         }
         else
         {
-            School_studentClass school_Student = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).FirstOrDefault();
-            int classId = 0;
+            List<School_studentClass> school_Students = appDbContext.School_StudentClasses.Where(x => x.UserId == userId).ToList();
 
-            if(school_Student != null)
+            foreach (var school_Student in school_Students)
             {
-                classId = school_Student.ClassId;
-            }
+                int classId = 0;
 
-            result = schedules.Where(x => x.ClassId == classId).ToList();
+                if(school_Student != null)
+                {
+                    classId = school_Student.ClassId;
+                }
 
-            List<ExtraLesson> extraLessons = appDbContext.ExtraLessons.Where(x => x.UserId == userId).ToList();
-            foreach (var extraLesson in extraLessons)
-            {
-                List<ClassScheduleView> extraLessonSchedule = appDbContext.ClassScheduleView.Where(x => x.ClassId == extraLesson.ClassId && x.LessonId == extraLesson.lessonId).ToList();
-                extraLessonSchedule = extraLessonSchedule.Where(x => ((currentTime <= x.EndHour && x.DayType == dayOfWeek ) || x.DayType == dayOfTommorow) && (x.weekly == 0 || x.weekly == weekType)).ToList();                                                                          
-                
-                result.AddRange(extraLessonSchedule);
+                result.AddRange(schedules.Where(x => x.ClassId == classId).ToList());
+
+                List<ExtraLesson> extraLessons = appDbContext.ExtraLessons.Where(x => x.UserId == userId).ToList();
+                foreach (var extraLesson in extraLessons)
+                {
+                    List<ClassScheduleView> extraLessonSchedule = appDbContext.ClassScheduleView.Where(x => x.ClassId == extraLesson.ClassId && x.LessonId == extraLesson.lessonId).ToList();
+                    extraLessonSchedule = extraLessonSchedule.Where(x => ((currentTime <= x.EndHour && x.DayType == dayOfWeek ) || x.DayType == dayOfTommorow) && (x.weekly == 0 || x.weekly == weekType)).ToList();                                                                          
+                    
+                    result.AddRange(extraLessonSchedule);
+                }
             }
         }
 
