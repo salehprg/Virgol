@@ -215,7 +215,7 @@ namespace Virgol.Controllers
                         
                         return BadRequest("در هر 30 دقیقه 3 بار مجاز به ارسال پیامک هستید");
                     }
-                     return BadRequest("شما هنوز حساب کاربری خودرا تکمیل نکرده اید");
+                     return BadRequest("شماره موبایل خودرا ثبت نکرده اید");
 
                 }
                 else if(type == 1)

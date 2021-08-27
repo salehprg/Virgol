@@ -413,7 +413,7 @@ namespace Virgol.Controllers
         {
             try
             {
-                if(classSchedule.DayType == 0 || classSchedule.DayType > 6)
+                if(classSchedule.DayType == 0 || classSchedule.DayType > 7)
                     return BadRequest("روز مناسبی برای برگزاری کلاس انتخاب نشده است");
 
                 if(classSchedule.EndHour <= classSchedule.StartHour)
