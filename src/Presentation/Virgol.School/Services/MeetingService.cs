@@ -634,12 +634,12 @@ public class MeetingService {
                 if(alternate != null)
                 {
                     bbbApi.SetConnectionInfo(alternate.Service_URL , alternate.Service_Key , manager);
-                    resultEnd = await bbbApi.EndRoom(bbbMeetingId);
-                    if(resultEnd)
-                    {
-                        meetingsResponse = bbbApi.GetMeetings().Result; 
-                        onAlternateEnd = true;
-                    }
+                }
+                resultEnd = await bbbApi.EndRoom(bbbMeetingId);
+                if(resultEnd)
+                {
+                    meetingsResponse = bbbApi.GetMeetings().Result; 
+                    onAlternateEnd = true;
                 }
             }
 
