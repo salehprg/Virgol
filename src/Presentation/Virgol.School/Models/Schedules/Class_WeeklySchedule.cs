@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 public class Class_WeeklySchedule {
@@ -11,6 +12,9 @@ public class Class_WeeklySchedule {
     public int DayType {get; set;}
     public int LessonId {get; set;}
     public int TeacherId {get; set;}
+
+    [NotMapped]
+    public List<int> ListTeacherId {get; set;}
     public float StartHour {get; set;}
     public float EndHour {get; set;}
     ///<summary>
@@ -20,6 +24,7 @@ public class Class_WeeklySchedule {
     ///</sumary>
     public int weekly {get; set;}
     public int MixedId {get;set;}
+    public bool MultiTeacher {get;set;}
 
     [NotMapped]
     public string CustomLessonName {get;set;}

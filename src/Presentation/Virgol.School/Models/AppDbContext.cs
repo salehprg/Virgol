@@ -51,6 +51,7 @@ namespace Models
         public DbSet<ExtraLesson> ExtraLessons {get; set;}
         public DbSet<ReqForm> ReqForms {get; set;}
         public DbSet<SMSServiceModel> SMSServices {get; set;}
+        public DbSet<MultiTeacherSchedules> MultiTeacherSchedules {get; set;}
 
         //Views
         public DbSet<ClassScheduleView> ClassScheduleView {get; set;}

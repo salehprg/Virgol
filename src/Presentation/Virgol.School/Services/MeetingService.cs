@@ -288,6 +288,20 @@ public class MeetingService {
 
             List<ClassScheduleView> truncated = new List<ClassScheduleView>();
 
+            List<MultiTeacherSchedules> multiSchedules = appDbContext.MultiTeacherSchedules.Where(x => x.TeacherId == user.Id).ToList();
+
+            foreach (var multiSchedule in multiSchedules)
+            {
+                ClassScheduleView scheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == multiSchedule.ScheduleId).FirstOrDefault();
+                scheduleView.TeacherId = user.Id;
+                scheduleView.FirstName = user.FirstName;
+                scheduleView.FirstName = user.LastName;
+
+                result.Add(scheduleView);
+            }
+
+            result = result.Distinct().ToList();
+            
             foreach (var schedule in result)
             {
                 //Add one Of the same Schedules that have same MixedId 
@@ -728,9 +742,22 @@ public class MeetingService {
     }
     public List<MeetingView> GetActiveMeeting(UserModel user)
     {   
-        List<MeetingView> meetingViews = appDbContext.MeetingViews.Where(x => x.TeacherId == user.Id && x.Finished == false).ToList();
-                    
-        return meetingViews;
+        List<MeetingView> meetingViews = appDbContext.MeetingViews.Where(x => x.Finished == false).ToList();
+
+        List<MeetingView> result = new List<MeetingView>();
+        result.AddRange(meetingViews.Where(x => x.TeacherId == user.Id).ToList());
+
+        List<MultiTeacherSchedules> multiSchedules = appDbContext.MultiTeacherSchedules.Where(x => x.TeacherId == user.Id).ToList();
+        
+        foreach (var schedule in multiSchedules)
+        {
+            MeetingView temp = meetingViews.Where(x => x.ScheduleId == schedule.ScheduleId).FirstOrDefault();
+            
+            if(temp != null)
+                result.Add(temp);
+        }
+        
+        return result;
     }
     
     public List<MeetingView> GetComingMeeting(UserModel user)
@@ -746,14 +773,7 @@ public class MeetingService {
         {
             Meeting meeting = new Meeting();
 
-            if(schedule.teacherAsStudent || !isTeacher)
-            {
-                meeting = activeMeetings.Where(x => x.ScheduleId == schedule.Id).FirstOrDefault();
-            }
-            else
-            {
-                meeting = activeMeetings.Where(x => x.ScheduleId == schedule.Id && x.TeacherId == user.Id).FirstOrDefault();
-            }
+            meeting = activeMeetings.Where(x => x.ScheduleId == schedule.Id).FirstOrDefault();
 
             if(schedule.MixedId != 0)
             {  

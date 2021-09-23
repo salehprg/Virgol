@@ -478,8 +478,7 @@ namespace Virgol.Controllers
         {
             try
             {
-                string userName = userManager.GetUserId(User);
-                UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
+                UserModel user  = UserService.GetUserModel(User);
                 int userId = user.Id;
                 bool isTeacher = UserService.HasRole(user , Roles.Teacher);
 

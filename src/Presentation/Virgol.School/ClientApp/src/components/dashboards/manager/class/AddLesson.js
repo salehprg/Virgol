@@ -90,6 +90,7 @@ class AddLesson extends React.Component {
                 lessonId : (this.props.IsFreeClass ? 0 : this.state.selectedCourse.value) ,
                 customLessonName : (this.props.IsFreeClass ? this.state.selectedCourse : null),
                 teacherId : this.state.selectedTeacher.value,
+                ListTeacherId : [this.state.selectedTeacher.value],
                 startHour : this.state.selectedStartTime.value,
                 endHour : this.state.selectedEndTime.value,
                 weekly : parseInt(this.state.week)

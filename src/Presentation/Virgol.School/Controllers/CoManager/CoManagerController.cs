@@ -104,7 +104,7 @@ namespace Virgol.Controllers
                 if(managerDatas.Count > 0)
                     return Ok(managerDatas[0]);      
 
-                return BadRequest("اجازه افزودن معاون به این مدرسه را ندارید ");
+                return BadRequest("درحال حاضر امکان افزودن معاون به مدرسه وجود ندارد");
             }
             catch(Exception ex)
             {

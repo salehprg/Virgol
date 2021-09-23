@@ -202,11 +202,25 @@ namespace Virgol.Controllers
         {
             try
             {   
-                string userName = userManager.GetUserId(User);
-                int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
+                UserModel model = userService.GetUserModel(User);
+                int teacherId = model.Id;
                 //We set IdNumber as userId in Token
                 
                 List<ClassScheduleView> classScheduleViews = appDbContext.ClassScheduleView.Where(x => x.TeacherId == teacherId).ToList();
+                List<MultiTeacherSchedules> multiSchedules = appDbContext.MultiTeacherSchedules.Where(x => x.TeacherId == teacherId).ToList();
+
+                foreach (var multiSchedule in multiSchedules)
+                {
+                    ClassScheduleView scheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == multiSchedule.ScheduleId).FirstOrDefault();
+                    scheduleView.TeacherId = teacherId;
+                    scheduleView.FirstName = model.FirstName;
+                    scheduleView.FirstName = model.LastName;
+
+                    classScheduleViews.Add(scheduleView);
+                }
+
+                classScheduleViews.Distinct();
+
                 foreach (var schedule in classScheduleViews)
                 {
                     int moodleId = appDbContext.School_Lessons.Where(x => x.classId == schedule.ClassId && x.Lesson_Id == schedule.LessonId).FirstOrDefault().Moodle_Id;
@@ -409,111 +423,139 @@ namespace Virgol.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> AddClassSchedule([FromBody]Class_WeeklySchedule classSchedule)
+        public async Task<IActionResult> AddClassSchedule([FromBody]Class_WeeklySchedule baseSchedule)
         {
             try
             {
-                if(classSchedule.DayType == 0 || classSchedule.DayType > 7)
+                if(baseSchedule.DayType == 0 || baseSchedule.DayType > 7)
                     return BadRequest("روز مناسبی برای برگزاری کلاس انتخاب نشده است");
 
-                if(classSchedule.EndHour <= classSchedule.StartHour)
+                if(baseSchedule.EndHour <= baseSchedule.StartHour)
                     return BadRequest("ساعت درس به درستی انتخاب نشده است");
                     
-                if(classSchedule.TeacherId == 0)
-                    return BadRequest("معلمی انتخاب شده است");
-                    
-                if(classSchedule.ClassId != 0)
-                {
+                if(baseSchedule.ListTeacherId.Count == 0)
+                    return BadRequest("معلمی انتخاب نشده است");
+
+                if(baseSchedule.ClassId == 0)
+                    return BadRequest("کلاسی انتخاب نشده است");
+
+                string message = "";
+                bool noInterupt = false;
+
+                foreach (var teacherId in baseSchedule.ListTeacherId)
+                {            
                     //Check for interupt class Schedule
-                    object result = classScheduleService.CheckInteruptSchedule(classSchedule);
-                    bool noInterupt = false;
+                    Class_WeeklySchedule temp = baseSchedule;
+                    temp.TeacherId = teacherId;
 
-                    try{noInterupt = (bool)result;}catch{}
+                    message = classScheduleService.CheckInteruptSchedule(temp);
+                    noInterupt = string.IsNullOrEmpty(message);
 
-                    if(noInterupt)
-                    {
-                        if(!string.IsNullOrEmpty(classSchedule.CustomLessonName))
-                        {
-                            
-                            UserModel manager = userService.GetUserModel(User);
-                            SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
-                            School_Class school_Class = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Id == classSchedule.ClassId).FirstOrDefault();
+                    if(!noInterupt)
+                        break;
 
-                            LessonModel freeLesson = appDbContext.Lessons.Where(x => x.Grade_Id == 0 && x.LessonName == classSchedule.CustomLessonName).FirstOrDefault();
-
-                            School_Lessons schoolLesson = null;
-                            if(freeLesson != null)
-                            {
-                                schoolLesson = appDbContext.School_Lessons.Where(x => x.Lesson_Id == freeLesson.Id && x.classId == classSchedule.ClassId).FirstOrDefault();
-                            }
-
-                            if(schoolLesson != null && schoolLesson.Moodle_Id == -1)
-                            {
-                                int moodleId = await moodleApi.CreateCourse(freeLesson.LessonName + " (" + school.Moodle_Id + "-" + school_Class.Moodle_Id + ")", freeLesson.LessonName + " (" + school.SchoolName + "-" + school_Class.ClassName + ")" , school_Class.Moodle_Id);
-                                schoolLesson.Moodle_Id = moodleId;
-
-                                appDbContext.School_Lessons.Update(schoolLesson);
-                                await appDbContext.SaveChangesAsync();
-                            }
-                            if(schoolLesson == null)
-                            {
-                              
-                                freeLesson = new LessonModel();
-                                freeLesson.Grade_Id = 0;
-                                freeLesson.LessonCode = "F_" + classSchedule.ClassId.ToString();
-                                freeLesson.LessonName = classSchedule.CustomLessonName;
-                                freeLesson.OrgLessonName = freeLesson.LessonName;
-                                freeLesson.Vahed = 0;
-                                
-                                appDbContext.Lessons.Add(freeLesson);
-                                await appDbContext.SaveChangesAsync();
-                                
-                                List<EnrolUser> enrolsManager = new List<EnrolUser>();
-                                int managerMoodleId = manager.Moodle_Id;
-                                int moodleId = await moodleApi.CreateCourse(freeLesson.LessonName + " (" + school.Moodle_Id + "-" + school_Class.Moodle_Id + ")", freeLesson.LessonName + " (" + school.SchoolName + "-" + school_Class.ClassName + ")" , school_Class.Moodle_Id);
-                                //int moodleId = 0;
-
-                                schoolLesson = new School_Lessons();
-                                schoolLesson.Lesson_Id = freeLesson.Id;
-                                schoolLesson.Moodle_Id = moodleId;
-                                schoolLesson.School_Id = school.Id;
-                                schoolLesson.classId = school_Class.Id;
-
-                                //Enrol manager to all Lessons
-
-                                EnrolUser enrol = new EnrolUser();
-                                enrol.lessonId = moodleId;
-                                enrol.UserId = managerMoodleId;
-                                enrol.RoleId = 3;
-
-                                enrolsManager.Add(enrol);
-                                
-                                appDbContext.School_Lessons.AddRange(schoolLesson);
-                                await appDbContext.SaveChangesAsync();
-
-                                await moodleApi.AssignUsersToCourse(enrolsManager);
-                            }
-
-                            classSchedule.LessonId = schoolLesson.Lesson_Id;
-                        }
-
-                        Class_WeeklySchedule schedule = await classScheduleService.AddClassSchedule(classSchedule);
-                        ClassScheduleView classScheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == schedule.Id).FirstOrDefault();
-
-                        if(classScheduleView != null)
-                        {
-                            return Ok(classScheduleView);
-                        }
-                        
-                        return BadRequest("افزودن ساعت با مشکل مواجه لطفا بعدا تلاش نمایدد");
-                    }
-                    else
-                    {
-                        return BadRequest((string)result);
-                    }
                 }
 
-                return BadRequest("کلاسی انتخاب شده است");
+                if(noInterupt)
+                {
+                    if(baseSchedule.ListTeacherId.Count > 1)
+                    {
+                        baseSchedule.MultiTeacher = true;
+                    }
+
+                    if(!string.IsNullOrEmpty(baseSchedule.CustomLessonName))
+                    {
+                        
+                        UserModel manager = userService.GetUserModel(User);
+                        SchoolModel school = appDbContext.Schools.Where(x => x.ManagerId == manager.Id).FirstOrDefault();
+                        School_Class school_Class = appDbContext.School_Classes.Where(x => x.School_Id == school.Id && x.Id == baseSchedule.ClassId).FirstOrDefault();
+
+                        LessonModel freeLesson = appDbContext.Lessons.Where(x => x.Grade_Id == 0 && x.LessonName == baseSchedule.CustomLessonName).FirstOrDefault();
+
+                        School_Lessons schoolLesson = null;
+                        if(freeLesson != null)
+                        {
+                            schoolLesson = appDbContext.School_Lessons.Where(x => x.Lesson_Id == freeLesson.Id && x.classId == baseSchedule.ClassId).FirstOrDefault();
+                        }
+
+                        if(schoolLesson != null && schoolLesson.Moodle_Id == -1)
+                        {
+                            int moodleId = await moodleApi.CreateCourse(freeLesson.LessonName + " (" + school.Moodle_Id + "-" + school_Class.Moodle_Id + ")", freeLesson.LessonName + " (" + school.SchoolName + "-" + school_Class.ClassName + ")" , school_Class.Moodle_Id);
+                            schoolLesson.Moodle_Id = moodleId;
+
+                            appDbContext.School_Lessons.Update(schoolLesson);
+                            await appDbContext.SaveChangesAsync();
+                        }
+                        if(schoolLesson == null)
+                        {
+                        
+                            freeLesson = new LessonModel();
+                            freeLesson.Grade_Id = 0;
+                            freeLesson.LessonCode = "F_" + baseSchedule.ClassId.ToString();
+                            freeLesson.LessonName = baseSchedule.CustomLessonName;
+                            freeLesson.OrgLessonName = freeLesson.LessonName;
+                            freeLesson.Vahed = 0;
+                            
+                            appDbContext.Lessons.Add(freeLesson);
+                            await appDbContext.SaveChangesAsync();
+                            
+                            List<EnrolUser> enrolsManager = new List<EnrolUser>();
+                            int managerMoodleId = manager.Moodle_Id;
+                            int moodleId = await moodleApi.CreateCourse(freeLesson.LessonName + " (" + school.Moodle_Id + "-" + school_Class.Moodle_Id + ")", freeLesson.LessonName + " (" + school.SchoolName + "-" + school_Class.ClassName + ")" , school_Class.Moodle_Id);
+                            //int moodleId = 0;
+
+                            schoolLesson = new School_Lessons();
+                            schoolLesson.Lesson_Id = freeLesson.Id;
+                            schoolLesson.Moodle_Id = moodleId;
+                            schoolLesson.School_Id = school.Id;
+                            schoolLesson.classId = school_Class.Id;
+
+                            //Enrol manager to all Lessons
+
+                            EnrolUser enrol = new EnrolUser();
+                            enrol.lessonId = moodleId;
+                            enrol.UserId = managerMoodleId;
+                            enrol.RoleId = 3;
+
+                            enrolsManager.Add(enrol);
+                            
+                            appDbContext.School_Lessons.AddRange(schoolLesson);
+                            await appDbContext.SaveChangesAsync();
+
+                            await moodleApi.AssignUsersToCourse(enrolsManager);
+                        }
+
+                        baseSchedule.LessonId = schoolLesson.Lesson_Id;
+                    }
+
+                    await classScheduleService.AddClassSchedule(baseSchedule);
+                }
+                else
+                {
+                    return BadRequest(message);
+                }
+
+                if(baseSchedule.ListTeacherId.Count > 1)
+                {
+                    foreach (var teacherId in baseSchedule.ListTeacherId)
+                    {
+                        MultiTeacherSchedules multiTeacher = new MultiTeacherSchedules();
+                        multiTeacher.TeacherId = teacherId;
+                        multiTeacher.ScheduleId = baseSchedule.Id;
+
+                        appDbContext.MultiTeacherSchedules.Add(multiTeacher);
+                    }
+
+                    await appDbContext.SaveChangesAsync();
+                }
+
+                ClassScheduleView classScheduleView = appDbContext.ClassScheduleView.Where(x => x.Id == baseSchedule.Id).FirstOrDefault();
+                if(classScheduleView != null)
+                {
+                    return Ok(classScheduleView);
+                }
+                        
+                return BadRequest("مشکلی در ثبت ساعت درسی بوجود آمد");
             }
             catch(Exception ex)
             {
@@ -530,10 +572,48 @@ namespace Virgol.Controllers
             {
                 if(classSchedule.Id != 0)
                 {
+                    List<MultiTeacherSchedules> multiTeachers = appDbContext.MultiTeacherSchedules.Where(x => x.ScheduleId == classSchedule.Id).ToList();
+                    
+                    List<int> oldIds = multiTeachers.Select(x => x.TeacherId).ToList();
+
+                    List<int> addTeacherIds = classSchedule.ListTeacherId.Except(oldIds).ToList();
+                    List<int> removeTeacherIds = oldIds.Except(classSchedule.ListTeacherId).ToList();
+
                     //Check for interupt class Schedule
-                    object result = classScheduleService.CheckInteruptSchedule(classSchedule);
-                    if((bool)result)
+                    bool interupt = false;
+                    string message = "";
+
+                    foreach (var teacherId in classSchedule.ListTeacherId)
+                    {            
+                        //Check for interupt class Schedule
+                        Class_WeeklySchedule temp = classSchedule;
+                        temp.TeacherId = teacherId;
+
+                        message = classScheduleService.CheckInteruptSchedule(temp);
+                        interupt = string.IsNullOrEmpty(message);
+
+                        if(interupt)
+                            break;
+                    }
+
+                    
+                    if(!interupt)
                     {
+                        foreach (var teacherId in addTeacherIds)
+                        {
+                            MultiTeacherSchedules multiTeacher = new MultiTeacherSchedules();
+                            multiTeacher.TeacherId = teacherId;
+                            multiTeacher.ScheduleId = classSchedule.Id;
+
+                            appDbContext.MultiTeacherSchedules.Add(multiTeacher);
+                        }
+                        foreach (var teacherId in removeTeacherIds)
+                        {
+                            MultiTeacherSchedules multiTeacher = appDbContext.MultiTeacherSchedules.Where(x => x.ScheduleId == classSchedule.Id && x.TeacherId == teacherId).FirstOrDefault();
+
+                            appDbContext.MultiTeacherSchedules.Remove(multiTeacher);
+                        }
+
                         appDbContext.ClassWeeklySchedules.Update(classSchedule);
                         await appDbContext.SaveChangesAsync();
 
@@ -541,7 +621,7 @@ namespace Virgol.Controllers
                     }
                     else
                     {
-                        return BadRequest((string)result);
+                        return BadRequest(message);
                     }
                 }
 

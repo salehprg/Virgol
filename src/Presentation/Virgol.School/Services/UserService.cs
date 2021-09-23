@@ -53,6 +53,23 @@ public class UserService {
             
         }
     }
+    public UserModel GetUserModel (string mellicode)
+    {
+        try
+        {
+            UserModel userModel = appDbContext.Users.Where(x => x.MelliCode == mellicode).FirstOrDefault();
+
+            return userModel;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+
+            return null;
+            
+        }
+    }
 
     ///<summary>
     ///Every user should have MelliCode property 
@@ -399,6 +416,22 @@ public class UserService {
 #endregion
 
 #region Roles
+
+    public async Task<bool> AddRole(UserModel userModel , string role)
+    {
+        try
+        {
+            await userManager.AddToRoleAsync(userModel , role);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.StackTrace);
+
+            return false;
+        }
+    }
+
     public bool HasRole(UserModel userModel , string RoleName , bool OnlyThisRole = false)
     {
         try

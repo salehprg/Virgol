@@ -18,7 +18,7 @@ public class ClassScheduleService {
         moodleApi = _moodleApi;
     }
 
-    public object CheckInteruptSchedule(Class_WeeklySchedule classSchedule)
+    public string CheckInteruptSchedule(Class_WeeklySchedule classSchedule)
     {
         List<Class_WeeklySchedule> classInterupts = appDbContext.ClassWeeklySchedules.Where(x => x.ClassId == classSchedule.ClassId &&
                                                                             x.DayType == classSchedule.DayType && //Check same day
@@ -43,7 +43,7 @@ public class ClassScheduleService {
             }
         }
 
-        return true;
+        return "";
     }
     
     public async Task<Class_WeeklySchedule> AddClassSchedule(Class_WeeklySchedule classSchedule)
@@ -161,6 +161,8 @@ public class ClassScheduleService {
                     appDbContext.Lessons.Remove(lesson);
                     appDbContext.School_Lessons.Remove(school_Lesson);
                 }
+
+                appDbContext.MultiTeacherSchedules.RemoveRange(appDbContext.MultiTeacherSchedules.Where(x => x.ScheduleId == classSchedule.Id).ToList());
 
                 await appDbContext.SaveChangesAsync();
 

@@ -216,7 +216,7 @@ public class FileController {
 
                         if(value != null)
                         {
-                            if(((string)value).Trim().Contains("پسورد") || ((string)value).Trim().Contains("رمز عبور"))
+                            if(((string)value).Trim().Contains("پسورد") || ((string)value).Trim().Contains("رمزعبور"))
                             {
                                 passwordId = i;
                             }
@@ -232,7 +232,7 @@ public class FileController {
                             {
                                 phoneNumberId = i;
                             }
-                            if(((string)value).Trim().Contains("کد ملی") || ((string)value).Trim().Contains("national_code"))
+                            if(((string)value).Trim().Contains("کد ملی".Trim()) || ((string)value).Trim().Contains("national_code"))
                             {
                                 melliCodeId = i;
                             }
