@@ -82,15 +82,14 @@ class AddLesson extends React.Component {
     }
 
     onAddSchedule = async () => {
-
         if (this.state.selectedDay && this.state.selectedCourse && this.state.selectedTeacher && this.state.selectedStartTime && this.state.selectedEndTime) {
             const classSchedule = {
                 classId : parseInt(this.props.classId),
                 dayType : this.state.selectedDay.value,
                 lessonId : (this.props.IsFreeClass ? 0 : this.state.selectedCourse.value) ,
                 customLessonName : (this.props.IsFreeClass ? this.state.selectedCourse : null),
-                teacherId : this.state.selectedTeacher.value,
-                ListTeacherId : [this.state.selectedTeacher.value],
+                // teacherId : this.state.selectedTeacher.value,
+                ListTeacherId : this.state.selectedTeacher.map(t => t.value),
                 startHour : this.state.selectedStartTime.value,
                 endHour : this.state.selectedEndTime.value,
                 weekly : parseInt(this.state.week)
@@ -141,6 +140,7 @@ class AddLesson extends React.Component {
                             styles={styles}
                             className="tw-w-1/2 tw-mx-auto tw-my-4"
                             value={this.state.selectedTeacher}
+                            isMulti={true}
                             onChange={this.handleChangeTeacher}
                             options={this.state.teachers}
                             placeholder={this.props.IsFreeClass ? this.props.t('host') : this.props.t('teacher')}

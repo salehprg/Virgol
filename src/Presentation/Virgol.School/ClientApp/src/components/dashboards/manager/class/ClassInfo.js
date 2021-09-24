@@ -49,7 +49,7 @@ class ClassInfo extends React.Component {
     
 
         this.sc.current.scrollLeft = this.sc.current.clientWidth
-        console.log(this.props.type)
+        // console.log(this.props.type)
     }
 
     showDelete = () => {

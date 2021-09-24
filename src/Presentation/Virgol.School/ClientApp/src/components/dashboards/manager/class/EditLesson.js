@@ -99,7 +99,8 @@ class EditLesson extends React.Component {
                 classId : parseInt(this.props.info.classId),
                 dayType : this.state.selectedDay.value,
                 lessonId : this.props.info.lessonId,
-                teacherId : this.state.selectedTeacher.value,
+                // teacherId : this.state.selectedTeacher.value,
+                ListTeacherId : this.state.selectedTeacher.map(t => t.value),
                 startHour : this.state.selectedStartTime.value,
                 endHour : this.state.selectedEndTime.value,
                 weekly : parseInt(this.state.week) ,
@@ -132,6 +133,7 @@ class EditLesson extends React.Component {
                                 className="tw-w-1/2 tw-mx-auto tw-my-4"
                                 value={this.state.selectedTeacher}
                                 onChange={this.handleChangeTeacher}
+                                isMulti={true}
                                 options={this.state.teachers}
                                 placeholder={this.props.classLessons[0].grade_Id === 0 ? this.props.t('host') : this.props.t('teacher')}
                             />

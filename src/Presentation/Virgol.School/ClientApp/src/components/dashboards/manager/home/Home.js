@@ -27,7 +27,7 @@ class Home extends React.Component {
             this.setState({loading: false})
             this.setState({userType : this.props.match.url.substring(1,2)})
 
-            console.log(this.props);
+            // console.log(this.props);
     }
 
     getExpireDate() {
