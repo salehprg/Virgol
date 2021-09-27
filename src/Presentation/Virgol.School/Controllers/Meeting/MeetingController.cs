@@ -240,12 +240,16 @@ namespace Virgol.Controllers
         {
             try
             {
+                Meeting meeting = appDbContext.Meetings.Where(x => x.ScheduleId == lessonId & !x.Finished).FirstOrDefault();
+                if(meeting != null)
+                    return BadRequest("کلاس درحال برگذاری میباشد");
+
+
                 string userName = userManager.GetUserId(User);
                 int teacherId = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault().Id;
 
                 TeacherDetail teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacherId).FirstOrDefault();
                 string serviceType = (string.IsNullOrEmpty(teacherDetail.MeetingService) ? ServiceType.BBB : teacherDetail.MeetingService);
-
 
                 ClassScheduleView classSchedule = appDbContext.ClassScheduleView.Where(x => x.Id == lessonId).FirstOrDefault();
                 SchoolModel school = appDbContext.Schools.Where(x => x.Id == classSchedule.School_Id).FirstOrDefault();
@@ -277,7 +281,6 @@ namespace Virgol.Controllers
                     selectedService = bbbServiceModel;
                 }
 
-                int meetingId = -1;
 
                 if(mixed)//if Teacher start Mixed Meeting
                 {
@@ -287,22 +290,14 @@ namespace Virgol.Controllers
                     {
                         //Console.WriteLine("Going to start Meeting");
                         
-                        int parentId = await meetingService.StartSingleMeeting(classSchedule , teacherId , selectedService , mixedSchedule.MixedName);
+                        Meeting parent = await meetingService.StartSingleMeeting(classSchedule , teacherId , selectedService , mixedSchedule.MixedName);
                         //Get all schedules have same MixedId according to Selected Schedule
-                        List<ClassScheduleView> mixedSchedules = appDbContext.ClassScheduleView.Where(x => x.MixedId == classSchedule.MixedId).ToList();
-
-                        //Console.WriteLine("Done !");
-
-                        if(parentId != -1)
+                        if(parent != null)
                         {
-                            mixedSchedule.MeetingId = parentId;
+                            mixedSchedule.MeetingId = parent.Id;
                             
                             appDbContext.MixedSchedules.Update(mixedSchedule);
                             await appDbContext.SaveChangesAsync();
-                            // foreach (var schedule in mixedSchedules)
-                            // {
-                            //     await meetingService.StartMixedMeeting(schedule , teacherId , parentId , serviceType , mixedSchedule.MixedName);
-                            // }
                         }
                         else
                         {
@@ -313,13 +308,13 @@ namespace Virgol.Controllers
                 else
                 {
                     //Console.WriteLine("Going to start Meeting");
-                    meetingId = await meetingService.StartSingleMeeting(classSchedule , teacherId , selectedService);
+                    meeting = await meetingService.StartSingleMeeting(classSchedule , teacherId , selectedService);
 
-                    if(meetingId == -1)
+                    if(meeting == null)
                         Console.WriteLine("Adobe Server isn't available.");
                 }
 
-                if(meetingId == -1)
+                if(meeting == null)
                     return BadRequest("درحال حاضر سرور مورد نظر در دسترس نمیباشد. لطفا از سرویس دیگری استفاده نمایید");
 
                 return Ok(true);
@@ -343,6 +338,9 @@ namespace Virgol.Controllers
                 UserModel user = appDbContext.Users.Where(x => x.UserName == userName).FirstOrDefault();
                 
                 string URL = await meetingService.JoinMeeting(user , meetingId);
+                
+                if(URL == "1")
+                    return BadRequest("کلاس هنوز آغاز نشده است");
 
                 if(URL != null)
                 {
@@ -371,6 +369,16 @@ namespace Virgol.Controllers
 
                 if(isTeacher)
                 {
+                    Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId).FirstOrDefault();
+
+                    if(meeting != null)
+                    {
+                        Class_WeeklySchedule schedule = appDbContext.ClassWeeklySchedules.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
+                        
+                        if(schedule.MultiTeacher && meeting.TeacherId != user.Id)
+                            return Unauthorized("شما اجازه بستن این کلاس را ندارید");
+                    }
+
                     bool result = await meetingService.EndMeeting(bbbMeetingId , user.Id);
 
                     if(result)

@@ -471,16 +471,16 @@ public class MeetingService {
         return null;
     }
 
-    public async Task<int> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId , ServicesModel serviceModel , string meetingName = "")
+    public async Task<Meeting> StartSingleMeeting(ClassScheduleView classSchedule , int teacherId , ServicesModel serviceModel , string meetingName = "")
     {   
         Meeting meeting = await StartMeeting(classSchedule , teacherId , serviceModel , meetingName);
 
         if(meeting != null)
         {
-            return meeting.Id;
+            return meeting;
         }
 
-        return -1;
+        return null;
     }
     public async Task<int> StartMixedMeeting(ClassScheduleView classSchedule , int teacherId , int parentMeetingId , ServicesModel serviceModel , string meetingName)
     {
@@ -512,11 +512,19 @@ public class MeetingService {
             meeting = appDbContext.Meetings.Where(x => x.Id == meetingId).FirstOrDefault();
         }
         
+        if(meeting == null)
+            return null;
 
         bool isModerator = (user.Id == meeting.TeacherId || UserService.HasRole(user , Roles.Manager));
 
-        if(meeting == null)
-            return null;
+        Meeting temp = appDbContext.Meetings.Where(x => x.ScheduleId == meeting.ScheduleId && !x.Finished).FirstOrDefault();
+        if(temp != null)
+            meeting = temp;
+        else
+        {
+            if(!isModerator)
+                return "1";
+        }
 
         string classUrl = "";
         MeetingView meetingView = appDbContext.MeetingViews.Where(x => x.Id == meeting.Id).FirstOrDefault();
@@ -558,8 +566,45 @@ public class MeetingService {
             {
                 bbbApi.SetConnectionInfo(meeting.ScheduleId);
             }
+
+            MeetingsResponse meetingsResponse = bbbApi.GetMeetings().Result; 
+            List<MeetingInfo> newMeetingList = new List<MeetingInfo>();
+            if(meetingsResponse.meetings != null)
+                newMeetingList = meetingsResponse.meetings.meeting;
             
+            if(newMeetingList.Where(x => x.meetingID == meeting.MeetingId).FirstOrDefault() == null)
+            {
+                await EndMeeting(meeting.MeetingId , meeting.TeacherId);
+
+                ClassScheduleView schedule = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
+
+                bool mixed = (schedule.MixedId != 0 ? true : false); // if Teacher start mixed class
+
+                if(mixed)
+                {
+                    MixedSchedule mixedSchedule = appDbContext.MixedSchedules.Where(x => x.Id == schedule.MixedId).FirstOrDefault();
+                    if(mixedSchedule != null)
+                    {
+
+                        meeting = await StartSingleMeeting(schedule , meeting.TeacherId , serviceModel , mixedSchedule.MixedName);
+                        //Get all schedules have same MixedId according to Selected Schedule
+                        if(meeting != null)
+                        {
+                            mixedSchedule.MeetingId = meeting.Id;
+                            
+                            appDbContext.MixedSchedules.Update(mixedSchedule);
+                            await appDbContext.SaveChangesAsync();
+                        }
+                    }
+                }
+                else
+                {
+                    meeting = await StartSingleMeeting(schedule , meeting.TeacherId , serviceModel);
+                }
+            }
+
             classUrl = await bbbApi.JoinRoom(isModerator , meeting.MeetingId , user.FirstName + " " + user.LastName , user.Id.ToString());
+
             if(classUrl == "")
             {
                 ServicesModel alternateServer = servicesModel.Where(x => x.Service_URL == meeting.ServerURL).FirstOrDefault();
@@ -578,14 +623,15 @@ public class MeetingService {
 
         return null;
     }
-    public async Task<bool> EndMeeting(string bbbMeetingId , int teacherId)
+
+    public async Task<bool> EndMeeting(string bbbMeetingId , int userId)
     {
         Meeting meeting = new Meeting();
-        meeting = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId && x.TeacherId == teacherId).FirstOrDefault();
+        meeting = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId && x.TeacherId == userId).FirstOrDefault();
 
         if(meeting == null)
         {
-            meeting = appDbContext.Meetings.Where(x => x.Id == int.Parse(bbbMeetingId) && x.TeacherId == teacherId).FirstOrDefault();
+            meeting = appDbContext.Meetings.Where(x => x.Id == int.Parse(bbbMeetingId) && x.TeacherId == userId).FirstOrDefault();
         }
 
         if(meeting == null || meeting.Id == 0)
