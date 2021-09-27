@@ -93,7 +93,7 @@ export const RemoveCoManager = (token, id) => async dispatch => {
         
 
     } catch (e) {
-        console.log(e)
+        // console.log(e)
         dispatch({ type: STOP })
         dispatch(alert.error("خطا در حذف معاون"))
     }
