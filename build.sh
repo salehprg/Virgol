@@ -12,16 +12,16 @@ sudo git stash
 sudo git pull origin master
 
 sudo docker login
-# docker image prune
 sudo sed -i 's/process.env.REACT_APP_VERSION/'$IMAGE_TAG' نسخه/g' ./src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js
 sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest --force-rm .
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO
 sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG
 
-cp src/Presentation/Virgol.School/ClientApp/public/index-dei.html src/Presentation/Virgol.School/ClientApp/public/index.html
-cp src/Presentation/Virgol.School/ClientApp/public/manifest-dei.json src/Presentation/Virgol.School/ClientApp/public/manifest.json 
-sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei --force-rm .
-sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei
-sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei
+# DEI
+#cp src/Presentation/Virgol.School/ClientApp/public/index-dei.html src/Presentation/Virgol.School/ClientApp/public/index.html
+#cp src/Presentation/Virgol.School/ClientApp/public/manifest-dei.json src/Presentation/Virgol.School/ClientApp/public/manifest.json 
+#sudo docker build -t $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei -t $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei --force-rm .
+#sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:latest-dei
+#sudo docker push $IMAGE_ACCOUNT/$IMAGE_REPO:$IMAGE_TAG-dei
 
 echo -e "\ncd ~/docker/virgol/ && docker-compose pull && docker-compose up -d\n"
