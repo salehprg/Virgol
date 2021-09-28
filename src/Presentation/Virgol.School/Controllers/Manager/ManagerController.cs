@@ -765,8 +765,7 @@ namespace Virgol.Controllers
         {
             try
             {
-                string userNameManager = userManager.GetUserId(User);
-                int schoolId = appDbContext.Users.Where(x => x.UserName == userNameManager).FirstOrDefault().SchoolId;
+                UserModel manager = UserService.GetUserModel(User);
 
                 teacher.UserName = teacher.MelliCode;
                 //teacher.UserType = Roles.Teacher;
@@ -793,11 +792,11 @@ namespace Virgol.Controllers
                     teacher.Id = newTeacher.Id;
                     
                     teacher.teacherDetail = appDbContext.TeacherDetails.Where(x => x.TeacherId == teacher.Id).FirstOrDefault();
-                    result = await UserService.EditUsers(new List<UserDataModel>{teacher} , schoolId , true);
+                    result = await UserService.EditUsers(new List<UserDataModel>{teacher} , manager.SchoolId , true);
                 }
                 else
                 {
-                    result = await UserService.CreateUser(new List<UserDataModel>{teacher} , new List<string>{Roles.Teacher} , schoolId);
+                    result = await UserService.CreateUser(new List<UserDataModel>{teacher} , new List<string>{Roles.Teacher} , manager.SchoolId);
                 }
 
                 if(result.Count > 0)

@@ -76,6 +76,8 @@ public class UserService {
     ///</summary>
     public async Task<List<UserDataModel>> CreateUser(List<UserDataModel> users , List<string> userRoles , int schoolId , string password = null)
     {
+        SchoolModel schoolModel = appDbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
+
         users = users.Where(x => x.MelliCode != null).ToList();
 
         List<UserDataModel> result = new List<UserDataModel>();
@@ -84,7 +86,13 @@ public class UserService {
         {
             var serialized = JsonConvert.SerializeObject(userData);
             UserModel user = JsonConvert.DeserializeObject<UserModel>(serialized);
-
+               
+            if(schoolModel.AutoFill)
+            {
+                user.LatinFirstname = "ff";
+                user.LatinLastname = "ll";
+                user.Email = "ff.ll." + user.MelliCode.Substring(user.MelliCode.Length - 2 , 2);
+            }
 
             bool melliCodeIterupt = CheckMelliCodeInterupt(user.MelliCode , 0);
             bool phoneInterupt = CheckPhoneInterupt(user.PhoneNumber);
