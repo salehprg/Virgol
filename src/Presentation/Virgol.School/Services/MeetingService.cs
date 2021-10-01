@@ -576,30 +576,33 @@ public class MeetingService {
             {
                 await EndMeeting(meeting.MeetingId , meeting.TeacherId);
 
-                ClassScheduleView schedule = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
-
-                bool mixed = (schedule.MixedId != 0 ? true : false); // if Teacher start mixed class
-
-                if(mixed)
+                if(isModerator)
                 {
-                    MixedSchedule mixedSchedule = appDbContext.MixedSchedules.Where(x => x.Id == schedule.MixedId).FirstOrDefault();
-                    if(mixedSchedule != null)
-                    {
+                    ClassScheduleView schedule = appDbContext.ClassScheduleView.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
 
-                        meeting = await StartSingleMeeting(schedule , meeting.TeacherId , serviceModel , mixedSchedule.MixedName);
-                        //Get all schedules have same MixedId according to Selected Schedule
-                        if(meeting != null)
+                    bool mixed = (schedule.MixedId != 0 ? true : false); // if Teacher start mixed class
+
+                    if(mixed)
+                    {
+                        MixedSchedule mixedSchedule = appDbContext.MixedSchedules.Where(x => x.Id == schedule.MixedId).FirstOrDefault();
+                        if(mixedSchedule != null)
                         {
-                            mixedSchedule.MeetingId = meeting.Id;
-                            
-                            appDbContext.MixedSchedules.Update(mixedSchedule);
-                            await appDbContext.SaveChangesAsync();
+
+                            meeting = await StartSingleMeeting(schedule , meeting.TeacherId , serviceModel , mixedSchedule.MixedName);
+                            //Get all schedules have same MixedId according to Selected Schedule
+                            if(meeting != null)
+                            {
+                                mixedSchedule.MeetingId = meeting.Id;
+                                
+                                appDbContext.MixedSchedules.Update(mixedSchedule);
+                                await appDbContext.SaveChangesAsync();
+                            }
                         }
                     }
-                }
-                else
-                {
-                    meeting = await StartSingleMeeting(schedule , meeting.TeacherId , serviceModel);
+                    else
+                    {
+                        meeting = await StartSingleMeeting(schedule , meeting.TeacherId , serviceModel);
+                    }
                 }
             }
 

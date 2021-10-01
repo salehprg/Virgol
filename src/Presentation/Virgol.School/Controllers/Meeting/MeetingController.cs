@@ -347,7 +347,7 @@ namespace Virgol.Controllers
                     return Ok(URL);
                 }
 
-                return BadRequest("در ورود به کلاس مشکلی پیش آمد لطفا چند دقیقه دیگر دوباره تلاش نمایید");
+                return BadRequest("کلاس مورد نظر پایان یافته است لطفا صبر کنید تا ارائه دهنده دوباره آنرا ایجاد نماید");
             }
             catch(Exception ex)
             {
