@@ -558,7 +558,6 @@ namespace Virgol.Controllers
 #region Recordings
 
         [HttpGet]
-        [Authorize(Roles = Roles.Student + "," + Roles.Teacher)]
         [ProducesResponseType(typeof(List<Meeting>), 200)]
         public async Task<IActionResult> GetRecordList(int scheduleId) 
         {
