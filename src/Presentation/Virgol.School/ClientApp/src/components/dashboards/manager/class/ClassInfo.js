@@ -48,7 +48,7 @@ class ClassInfo extends React.Component {
         this.setState({classDetail : classDetail[0]})
     
 
-        this.sc.current.scrollLeft = this.sc.current.clientWidth
+        if (this.sc.current) this.sc.current.scrollLeft = this.sc.current.clientWidth
         // console.log(this.props.type)
     }
 
