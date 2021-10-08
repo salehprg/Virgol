@@ -157,7 +157,7 @@ class LessonInfoModal extends React.Component {
 
                             {(this.props.isTeacher ?
                                 <a onClick={() => history.push("/recordedSessions/" + this.props.lessonInfo.lessonDetail.id)} className="tw-relative tw-text-white tw-bg-purplish tw-rounded-full tw-cursor-pointer tw-px-3 tw-py-2">
-                                    {this.props.t('showSessionsInfo')}
+                                    {this.props.t('showSessionInfo')}
                                 </a>
                                 : null )}
                         </div>
