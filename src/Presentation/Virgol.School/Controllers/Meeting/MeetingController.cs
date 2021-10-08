@@ -44,7 +44,7 @@ namespace Virgol.Controllers
 
 #region AfterMeeting
         [HttpGet]
-        [Authorize(Roles = Roles.Teacher)]
+        [Authorize(Roles = Roles.Teacher + " , " + Roles.Manager)]
         [ProducesResponseType(typeof(List<ParticipantView>), 200)]
         public async Task<IActionResult> GetParticipantList(int meetingId) 
         {
@@ -89,7 +89,7 @@ namespace Virgol.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Roles.Teacher)]
+        [Authorize(Roles = Roles.Teacher + " , " + Roles.Manager)]
         [ProducesResponseType(typeof(List<ClassScheduleView>), 200)]
         public async Task<IActionResult> SetPresentStatus(List<ParticipantView> students) 
         {
