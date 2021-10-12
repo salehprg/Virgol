@@ -349,11 +349,9 @@ namespace Virgol.Controllers
                     if(tempSchedule.ClassId != 0)
                     {
                         //Check for interupt class Schedule
-                        object result = classScheduleService.CheckInteruptSchedule(tempSchedule);
+                        string result = classScheduleService.CheckInteruptSchedule(tempSchedule);
 
-                        try{hasInterupt = (bool)result;}catch{}
-
-                        if(!hasInterupt)
+                        if(!string.IsNullOrEmpty(result))
                         {
                             return BadRequest((string)result);
                         }

@@ -298,10 +298,12 @@ namespace Virgol.Controllers
                             
                             appDbContext.MixedSchedules.Update(mixedSchedule);
                             await appDbContext.SaveChangesAsync();
+
+                            meeting = parent;
                         }
                         else
                         {
-                            return BadRequest(false);
+                            return BadRequest("جوابی از سرور ارائه دهنده دریافت نشد");
                         }
                     }
                 }
