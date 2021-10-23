@@ -129,6 +129,8 @@ namespace Virgol.Controllers
         {
             try
             {
+                return BadRequest("درحال حاضر امکان ایجاد کلاس خصوصی وجود ندارد");
+
                 if(schoolId == 0)
                     return BadRequest("یک مدرسه را برای سرور کلاس انتخاب کنید");
 
@@ -373,6 +375,7 @@ namespace Virgol.Controllers
                 {
                     Meeting meeting = appDbContext.Meetings.Where(x => x.MeetingId == bbbMeetingId).FirstOrDefault();
 
+                
                     if(meeting != null && !meeting.Private)
                     {
                         Class_WeeklySchedule schedule = appDbContext.ClassWeeklySchedules.Where(x => x.Id == meeting.ScheduleId).FirstOrDefault();
