@@ -13,6 +13,7 @@ sudo git pull origin master
 
 sudo docker login
 
+sudo sed -i 's/process.env.REACT_APP_VERSION/'$IMAGE_TAG' نسخه/g' ./src/Presentation/Virgol.School/ClientApp/src/components/login/Login.js
 # DEI
 cp src/Presentation/Virgol.School/ClientApp/public/index-dei.html src/Presentation/Virgol.School/ClientApp/public/index.html
 cp src/Presentation/Virgol.School/ClientApp/public/manifest-dei.json src/Presentation/Virgol.School/ClientApp/public/manifest.json 
