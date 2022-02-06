@@ -9,6 +9,7 @@ import Fieldish from "../field/Fieldish";
 import Passish from "../field/Passish";
 import SelectLang from "./SelectLang";
 import { localizer } from '../../assets/localizer'
+import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 import './rememberStyles.css'
 
 class Login extends React.Component {
@@ -25,7 +26,10 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        this.props.logout()
+        this.props.logout() 
+
+        loadCaptchaEnginge(4); 
+
         if(localStorage.getItem('remember') !== 'false' && this.props.user){
             this.setState({logingin: true})
 
@@ -39,9 +43,10 @@ class Login extends React.Component {
         }
     }
 
-    renderInputs = ({ input, meta, type, placeholder }) => {
+    renderInputs = ({ input, meta, type, placeholder , id }) => {
         return (
-            <Fieldish
+            <Fieldish   
+                id={id}
                 input={input}
                 redCondition={meta.touched && meta.error}
                 type={type}
@@ -70,17 +75,25 @@ class Login extends React.Component {
 
     onLogin = async formValues => {
         if (!this.state.logingin) {
-            this.setState({logingin: true})
+            let user_captcha_value = document.getElementById('user_captcha_input').value;
 
-            if(this.state.check){
-                localStorage.setItem('remember' , this.state.check)
-            }
-            else{
-                localStorage.setItem('remember' , false)
-            }
+            if (validateCaptcha(user_captcha_value)==true) {
+                this.setState({logingin: true})
 
-            const success = await this.props.login(formValues)
-            if (!success) this.setState({ logingin: false })
+                if(this.state.check){
+                    localStorage.setItem('remember' , this.state.check)
+                }
+                else{
+                    localStorage.setItem('remember' , false)
+                }
+
+                const success = await this.props.login(formValues)
+
+                if (!success) this.setState({ logingin: false })
+            }
+            else {
+                alert('کد امنیتی صحیح نمیباشد');
+            }
         }
     }
 
@@ -116,34 +129,35 @@ class Login extends React.Component {
                             placeholder={this.props.t('username')}
                             component={this.renderInputs}
                         />
-
-                        <a onClick={() => this.setState({ panel: 'sendcode' })} className={`tw-w-5/6 tw-cursor-pointer hover:tw-no-underline  tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-ml-20 tw-pb-0 focus:tw-outline-none tw-mt-4 tw-text-white tw-text-right`}>
-                            {this.props.t('forgotPassword')} 
-                        </a>
-
                         <Field
                             name="password"
                             type={this.state.passVisibility ? 'text' : 'password'}
                             placeholder={this.props.t('password')}
                             component={this.renderPassword}
                         />
-                        {/* <div>
-                            <label className="tw-text-white" for="remember">{this.props.t('remember')}</label>
-                            <input type="checkbox"  id="remember" onClick={changeVal} value={this.state.check}  className="tw-ml-4"/>
-                        </div> */}
-
-                        {/* <div className="custom-control custom-switch">
-                            <input type="checkbox" className="custom-control-input" id="customSwitch1"/>
-                            <label className="custom-control-label tw-text-white " for="customSwitch1">{this.props.t('remember')}</label>
-                        </div> */}
-
-                        
+                        <a onClick={() => this.setState({ panel: 'sendcode' })} className={`tw-w-5/6 tw-cursor-pointer hover:tw-no-underline  tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-ml-20 tw-pb-0 focus:tw-outline-none tw-mt-4 tw-text-white tw-text-right`}>
+                            {this.props.t('forgotPassword')} 
+                        </a>
 
                         <label class="switch">
                             <input type="checkbox" value={this.state.check} onClick={changeVal}/>
                             <span className="slider round"></span>
                         </label>
                         <label class="tw-text-white tw-p-4">{this.props.t('remember')}</label>
+
+                        <div className="d-flex justify-content-center">
+                            <LoadCanvasTemplate reloadText="کد جدید" reloadColor="white"/>
+                        </div>
+
+                        <Field
+                            id="user_captcha_input"
+                            name="captcha"
+                            type='text'
+                            placeholder={this.props.t('captcha')}
+                            component={this.renderInputs}
+                        />
+                        <span className="d-block text-white">کد امنیتی به بزرگ و کوچکی حروف حساس میباشد</span>
+
 
                         <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
                             {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('enter')}

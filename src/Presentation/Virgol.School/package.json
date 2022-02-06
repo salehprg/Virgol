@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-simple-captcha": "^8.2.6",
+    "reactjs-captcha": "^1.2.1"
+  }
+}
