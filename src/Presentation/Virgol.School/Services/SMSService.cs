@@ -30,7 +30,7 @@ namespace Virgol.Services
             serviceModel = _serviceModel;
             provider = _provider;
         }
-        public bool SendVerifySms(string Number , string personName , string code)
+        public bool SendVerifySms(string Number , string personName , string code , string pattern = "")
         {
             switch(provider)   
             {
@@ -40,13 +40,13 @@ namespace Virgol.Services
 
                 case SMSProvider.Negin :
                     NeginAPI neginAPI = new NeginAPI(serviceModel);
-                    return neginAPI.SendVerifySms(Number , personName , code);
+                    return neginAPI.SendVerifySms(Number , personName , code , pattern);
             }
 
             return false;
         }
 
-        public bool SendSchoolData(string Number , string schoolName , string personName , string password)
+        public bool SendSchoolData(string Number , string schoolName , string personName , string password, string pattern = "")
         {
             switch(provider)   
             {
@@ -56,13 +56,13 @@ namespace Virgol.Services
 
                 case SMSProvider.Negin :
                     NeginAPI neginAPI = new NeginAPI(serviceModel);
-                    return neginAPI.SendSchoolData(Number , schoolName , personName , password);
+                    return neginAPI.SendSchoolData(Number , schoolName , personName , password , pattern);
             }
 
             return false;
         }
 
-        public bool SendScheduleNotify(string Number , string personName , string className , string dateTime)
+        public bool SendScheduleNotify(string Number , string personName , string className , string dateTime , string pattern = "")
         {
             switch(provider)   
             {
@@ -72,7 +72,7 @@ namespace Virgol.Services
 
                 case SMSProvider.Negin :
                     NeginAPI neginAPI = new NeginAPI(serviceModel);
-                    return neginAPI.SendScheduleNotify(Number , personName , className , dateTime);
+                    return neginAPI.SendScheduleNotify(Number , personName , className , dateTime , pattern);
             }
 
             return false;

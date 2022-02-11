@@ -57,39 +57,39 @@ namespace Virgol.Helper
             return result;
 		
         }
-        public bool SendVerifySms(string Number , string userName , string code)
+        public bool SendVerifySms(string Number , string userName , string code , string pattern)
         {
+            if(string.IsNullOrEmpty(pattern))
+                return false;
+                
             SimpleSend simple = new SimpleSend();
             simple.mobile = Number;
-            simple.message = string.Format("{0} گرامی" , 
-                                        "کد تایید شما عبارت است از:" ,
-                                        "{1}" ,
-                                        "سامانه آموزش مجازی ویرگول" , userName , code);
+            simple.message = string.Format(pattern , userName , code);
         
             return SendData(simple);    
         }
 
-        public bool SendSchoolData(string Number , string schoolName , string userName , string password)
+        public bool SendSchoolData(string Number , string schoolName , string userName , string password  , string pattern)
         {
+            if(string.IsNullOrEmpty(pattern))
+                return false;
+
             SimpleSend simple = new SimpleSend();
             simple.mobile = Number;
-            simple.message = string.Format("مدرسه {0} با موفقیت ایجاد شد " ,
-                "اطلاعات ورود مدیر مدرسه به شرح زیر می‌باشد:" ,
-                "نام کاربری: {1}" ,
-                "رمز عبور: {2}" ,
-                "سامانه اموزش مجازی ویرگول" , schoolName , userName , password);
+            simple.message = string.Format(pattern , schoolName , userName , password);
         
             return SendData(simple);
 
         }
 
-        public bool SendScheduleNotify(string Number , string userName , string className , string dateTime)
+        public bool SendScheduleNotify(string Number , string userName , string className , string dateTime  , string pattern)
         {
+            if(string.IsNullOrEmpty(pattern))
+                return false;
+
             SimpleSend simple = new SimpleSend();
             simple.mobile = Number;
-            simple.message = string.Format("{0} گرامی" , 
-                "کلاس {1} شما در {2} شروع خواهد شد." ,
-                "سامانه آموزش مجازی ویرگول" , userName , className , dateTime);
+            simple.message = string.Format(pattern , userName , className , dateTime);
         
             return SendData(simple);
         }

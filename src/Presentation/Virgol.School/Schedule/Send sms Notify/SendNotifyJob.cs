@@ -48,6 +48,9 @@ namespace Schedule
                         SchoolModel school = dbContext.Schools.Where(x => x.Id == schoolId).FirstOrDefault();
                         SMSServiceModel smsServiceModel = dbContext.SMSServices.Where(x => x.Id == school.SMSService).FirstOrDefault();
 
+                        if(smsServiceModel == null)
+                            smsServiceModel = dbContext.SMSServices.Where(x => x.ServiceName == AppSettings.Default_SMSProvider).FirstOrDefault();
+
                         if(smsServiceModel != null)
                         {
                             List<int> studentIds = dbContext.School_StudentClasses.Where(x => x.ClassId == schedule.ClassId).Select(x => x.UserId).ToList();
@@ -66,7 +69,11 @@ namespace Schedule
                                     string dateTime = "ساعت " + (int)Math.Floor(schedule.StartHour) + ":" + (min == 0 ? "00" : min.ToString());
                                     
                                     SMSService smsService = new SMSService(smsServiceModel);
-                                    smsService.SendScheduleNotify(student.PhoneNumber , student.FirstName + " " + student.LastName , schedule.OrgLessonName , dateTime);
+                                    smsService.SendScheduleNotify(student.PhoneNumber , 
+                                                                    student.FirstName + " " + student.LastName , 
+                                                                    schedule.OrgLessonName , 
+                                                                    dateTime , 
+                                                                    smsServiceModel.ServiceName == "Negin" ? AppSettings.GetValueFromDatabase(dbContext , Settingkey.Negin_schedule) : "");
 
                                     dbContext.CourseNotifies.Add(courseNotify);
                                     dbContext.SaveChanges();
@@ -84,7 +91,11 @@ namespace Schedule
                                 string dateTime = "ساعت " + (int)Math.Floor(schedule.StartHour) + ":" + (min == 0 ? "00" : min.ToString());
                                 
                                 SMSService smsService = new SMSService(smsServiceModel);
-                                smsService.SendScheduleNotify(teacher.PhoneNumber , teacher.FirstName + " " + teacher.LastName + " معلم ", schedule.OrgLessonName , dateTime);
+                                smsService.SendScheduleNotify(teacher.PhoneNumber , 
+                                                            teacher.FirstName + " " + teacher.LastName + " معلم ", 
+                                                            schedule.OrgLessonName , 
+                                                            dateTime  , 
+                                                            AppSettings.Default_SMSProvider == "Negin" ? AppSettings.GetValueFromDatabase(dbContext , Settingkey.Negin_schedule) : "");
 
                                 dbContext.CourseNotifies.Add(courseNotify);
                                 dbContext.SaveChanges();

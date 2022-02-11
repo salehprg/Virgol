@@ -308,7 +308,8 @@ namespace Virgol.Controllers
                     
                     SMSService sMSService = new SMSService(appDbContext.SMSServices.Where(x => x.ServiceName == AppSettings.Default_SMSProvider).FirstOrDefault());
 
-                    sMSService.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
+                    sMSService.SendSchoolData(adminModel.PhoneNumber , schoolResult.SchoolName , manager.UserName , password  , 
+                                                            AppSettings.Default_SMSProvider == "Negin" ? AppSettings.GetValueFromDatabase(appDbContext , Settingkey.Negin_schooldata) : "");
                     //SMSApi.SendSchoolData(manager.PhoneNumber , schoolResult.SchoolName , manager.UserName , password);
                     
                     return Ok(new{

@@ -812,7 +812,10 @@ namespace Virgol.Controllers
 
                 string Code = await userManager.GenerateChangePhoneNumberTokenAsync(user , phoneNumber);// Make new Verification code
 
-                bool SmsResult = sMSService.SendVerifySms(phoneNumber , user.FirstName + " " + user.LastName , Code);
+                bool SmsResult = sMSService.SendVerifySms(phoneNumber , 
+                                                            user.FirstName + " " + user.LastName , 
+                                                            Code  , 
+                                                            AppSettings.Default_SMSProvider == "Negin" ? AppSettings.GetValueFromDatabase(appDbContext , Settingkey.Negin_VerifySMS) : "");
                 //bool SmsResult = true;
 
                 if(SmsResult)
