@@ -22,13 +22,15 @@ class Login extends React.Component {
         reseting: false,
         IdNumer: null,
         showLang: false,
-        check: false
+        check: false,
+        captchaloaded : false
     }
 
     componentDidMount() {
         this.props.logout() 
 
         loadCaptchaEnginge(4); 
+        console.log("Load completed");
 
         if(localStorage.getItem('remember') !== 'false' && this.props.user){
             this.setState({logingin: true})
@@ -117,6 +119,7 @@ class Login extends React.Component {
 
     renderPanel = () => {
         if (this.state.panel === 'login') {
+                   
             const changeVal = () =>{
                 this.setState({check : !this.state.check})
             }
@@ -139,15 +142,19 @@ class Login extends React.Component {
                             {this.props.t('forgotPassword')} 
                         </a>
 
-                        <label class="switch">
+                        <label className="switch">
                             <input type="checkbox" value={this.state.check} onClick={changeVal}/>
                             <span className="slider round"></span>
                         </label>
-                        <label class="tw-text-white tw-p-4">{this.props.t('remember')}</label>
+                        <label className="tw-text-white tw-p-4">{this.props.t('remember')}</label>
 
                         <div className="d-flex justify-content-center">
-                            <LoadCanvasTemplate reloadText="کد جدید" reloadColor="white"/>
+                            <LoadCanvasTemplate reloadText=" " reloadColor="black"/>   
                         </div>
+
+                        <button type="button" onClick={() => loadCaptchaEnginge(4)} className={`tw-w-1/5 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-1 focus:tw-outline-none focus:tw-shadow-outline tw-my-4 tw-text-white`}>
+                            کد جدید
+                        </button>
 
                         <Field
                             id="user_captcha_input"
@@ -159,7 +166,7 @@ class Login extends React.Component {
                         <span className="d-block text-white">کد امنیتی به بزرگ و کوچکی حروف حساس میباشد</span>
 
 
-                        <button className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
+                        <button type="submit" className={`tw-w-5/6 tw-mx-auto tw-flex tw-justify-center tw-rounded-lg tw-py-2 focus:tw-outline-none focus:tw-shadow-outline tw-my-8 tw-bg-purplish tw-text-white`}>
                             {this.state.logingin ? loading('tw-w-6 tw-text-white') : this.props.t('enter')}
                         </button>
                         {
