@@ -129,7 +129,7 @@ namespace Virgol.Controllers
         {
             try
             {
-                return BadRequest("درحال حاضر امکان ایجاد کلاس خصوصی وجود ندارد");
+                //return BadRequest("درحال حاضر امکان ایجاد کلاس خصوصی وجود ندارد");
 
                 if(schoolId == 0)
                     return BadRequest("یک مدرسه را برای سرور کلاس انتخاب کنید");

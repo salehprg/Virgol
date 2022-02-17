@@ -91,7 +91,11 @@ class Login extends React.Component {
 
                 const success = await this.props.login(formValues)
 
-                if (!success) this.setState({ logingin: false })
+                if (!success) 
+                {
+                    this.setState({ logingin: false })
+                    loadCaptchaEnginge(4); 
+                }
             }
             else {
                 alert('کد امنیتی صحیح نمیباشد');
