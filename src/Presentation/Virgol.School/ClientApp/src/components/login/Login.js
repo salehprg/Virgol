@@ -142,7 +142,7 @@ class Login extends React.Component {
                             placeholder={this.props.t('password')}
                             component={this.renderPassword}
                         />
-                        <a onClick={() => this.setState({ panel: 'sendcode' })} className={`tw-w-5/6 tw-cursor-pointer hover:tw-no-underline  tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-ml-20 tw-pb-0 focus:tw-outline-none tw-mt-4 tw-text-white tw-text-right`}>
+                        <a onClick={() => this.setState({ panel: 'sendcode' })} href="#" className={`tw-w-5/6 tw-cursor-pointer hover:tw-no-underline  tw-text-sm tw-flex tw-justify-center tw-rounded-lg tw-ml-20 tw-pb-0 focus:tw-outline-none tw-mt-4 tw-text-white tw-text-right`}>
                             {this.props.t('forgotPassword')} 
                         </a>
 
