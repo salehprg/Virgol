@@ -10,7 +10,7 @@ RUN apt update -yq --allow-releaseinfo-change \
 
 # Fetch and install Node 12 LTS
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE 1
-RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash -  
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -  
 RUN apt install -y nodejs 
 RUN node -v
 RUN npm -v
